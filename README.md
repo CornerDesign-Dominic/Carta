@@ -28,6 +28,18 @@ Der finale PDF-Export ist als Vercel Function vorbereitet. Das Frontend sendet e
 
 Lokal kann für Puppeteer ein eigener Chromium-Pfad über `PUPPETEER_EXECUTABLE_PATH` gesetzt werden, falls kein serverless Chromium gestartet werden kann.
 
+Direkter API-Test lokal mit laufendem `vercel dev`:
+
+```powershell
+$body = @{
+  documentType = "invoice"
+  filename = "test.pdf"
+  html = "<!doctype html><html><body><h1>PDF-Test</h1></body></html>"
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:3000/api/generate-pdf" -Method POST -ContentType "application/json" -Body $body -OutFile "test.pdf"
+```
+
 ## Technischer Hinweis
 
 Der interne Projektname darf weiterhin `Carta` bleiben.

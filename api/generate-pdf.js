@@ -1,5 +1,10 @@
 export const config = {
   maxDuration: 60,
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
 };
 
 function normalizeBody(body) {
@@ -40,6 +45,10 @@ function sanitizeFilename(filename, documentType) {
     .replace(/\s+/g, '-');
 
   return candidate.toLowerCase().endsWith('.pdf') ? candidate : `${candidate}.pdf`;
+}
+
+function isPdfBuffer(buffer) {
+  return Buffer.isBuffer(buffer) && buffer.subarray(0, 5).toString('ascii') === '%PDF-';
 }
 
 async function getExecutablePath(chromium) {
@@ -85,7 +94,8 @@ export default async function handler(request, response) {
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: ['load', 'networkidle0'] });
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.evaluate(() => document.fonts?.ready);
     await page.emulateMediaType('print');
 
     const pdf = await page.pdf({
@@ -99,13 +109,22 @@ export default async function handler(request, response) {
       },
       preferCSSPageSize: true,
     });
+    const pdfBuffer = Buffer.from(pdf);
+
+    if (!isPdfBuffer(pdfBuffer)) {
+      throw new Error('Puppeteer did not return a valid PDF buffer.');
+    }
 
     response.setHeader('Content-Type', 'application/pdf');
+    response.setHeader('Content-Length', String(pdfBuffer.length));
+    response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader(
       'Content-Disposition',
       `attachment; filename="${sanitizeFilename(filename, documentType)}"`,
     );
-    response.status(200).send(pdf);
+    response.statusCode = 200;
+    response.end(pdfBuffer);
   } catch (error) {
     response.status(500).json({
       error: 'PDF generation failed.',

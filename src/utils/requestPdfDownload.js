@@ -128,6 +128,17 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
+function isPdfArrayBuffer(arrayBuffer) {
+  const header = new Uint8Array(arrayBuffer.slice(0, 5));
+  return (
+    header[0] === 0x25 &&
+    header[1] === 0x50 &&
+    header[2] === 0x44 &&
+    header[3] === 0x46 &&
+    header[4] === 0x2d
+  );
+}
+
 export async function requestPdfDownload({ sheet, documentType, filename }) {
   if (!sheet) {
     throw new Error('Kein Dokument zum Exportieren gefunden.');
@@ -158,6 +169,15 @@ export async function requestPdfDownload({ sheet, documentType, filename }) {
     throw new Error(message);
   }
 
-  const pdfBlob = await response.blob();
+  const arrayBuffer = await response.arrayBuffer();
+
+  if (!isPdfArrayBuffer(arrayBuffer)) {
+    const preview = new TextDecoder().decode(arrayBuffer.slice(0, 240));
+    throw new Error(
+      `Die API hat keine gültige PDF-Datei zurückgegeben. Antwort beginnt mit: ${preview || '(leer)'}`,
+    );
+  }
+
+  const pdfBlob = new Blob([arrayBuffer], { type: 'application/pdf' });
   downloadBlob(pdfBlob, filename);
 }
