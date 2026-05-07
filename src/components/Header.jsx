@@ -9,9 +9,9 @@ export default function Header({ currentView, onNavigate }) {
         className="brand"
         type="button"
         onClick={() => onNavigate({ view: 'home' })}
-        aria-label="Carta Startseite"
+        aria-label="Belege24 Startseite"
       >
-        Carta
+        Belege24
       </button>
       <nav className="nav-links">
         {navigationItems.map((item) => {

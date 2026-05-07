@@ -52,7 +52,8 @@ export const documentSections = [
         label: 'Rechnung schreiben',
         title: 'Rechnung schreiben',
         formType: 'invoice',
-        description: '',
+        description:
+          'Erstelle eine Rechnung direkt im A4-Dokument mit Absender, Empfänger, Positionen, Steuern und Fußdaten.',
       },
     ],
   },
@@ -93,8 +94,39 @@ export const documentSections = [
         id: 'write-offer',
         label: 'Angebot schreiben',
         title: 'Angebot schreiben',
+        formType: 'offer',
         description:
           'Diese Ansicht bereitet später die Erstellung eines neuen Angebots mit Leistungen, Preisen und gültigen Konditionen vor.',
+      },
+    ],
+  },
+  {
+    id: 'reminders',
+    label: 'Mahnungen',
+    title: 'Mahnungen',
+    description:
+      'Bereite klare Zahlungserinnerungen und Mahnungen mit Bezug zur Rechnung, Fristen und offenen Beträgen im Browser vor.',
+    contentSections: [
+      {
+        heading: 'Was ist eine Mahnung?',
+        paragraphs: [
+          'Eine Mahnung erinnert an eine offene Forderung und stellt den Bezug zur ursprünglichen Rechnung her. Sie sollte sachlich, nachvollziehbar und mit klarer Zahlungsfrist formuliert sein.',
+        ],
+      },
+      {
+        heading: 'Welche Angaben sind wichtig?',
+        paragraphs: [
+          'Typische Angaben sind Absender, Empfänger, Mahnungsnummer, Rechnungsnummer, Rechnungsdatum, Fälligkeit, offener Betrag, mögliche Mahngebühren und ein eindeutiger Zahlungshinweis.',
+        ],
+      },
+    ],
+    children: [
+      {
+        id: 'write-reminder',
+        label: 'Mahnung schreiben',
+        title: 'Mahnung schreiben',
+        formType: 'reminder',
+        description: '',
       },
     ],
   },

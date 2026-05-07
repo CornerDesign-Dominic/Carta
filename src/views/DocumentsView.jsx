@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
 import InvoiceForm from '../components/InvoiceForm.jsx';
+import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
+import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
 import { documentSections, findDocumentItem } from '../data/documents.js';
 
 export default function DocumentsView() {
@@ -43,6 +45,8 @@ export default function DocumentsView() {
         )}
 
         {!isOverview && activeDocument.formType === 'invoice' && <InvoiceForm />}
+        {!isOverview && activeDocument.formType === 'offer' && <OfferDocumentEditor />}
+        {!isOverview && activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}
       </section>
     </main>
   );
@@ -54,7 +58,7 @@ function DocumentOverview({ onSelect }) {
       <p className="eyebrow">DOKUMENTE</p>
       <h1 id="document-title">Dokumente einfach im Browser erstellen</h1>
       <p className="intro document-intro">
-        Carta bietet eine ruhige Grundlage, um digitale Geschäftsdokumente direkt im
+        Belege24 bietet eine ruhige Grundlage, um digitale Geschäftsdokumente direkt im
         Browser vorzubereiten. Rechnungen und Angebote werden übersichtlich aufgebaut
         und können später um Vorlagen, Eingabemasken und Exportfunktionen erweitert
         werden.

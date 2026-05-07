@@ -7,7 +7,7 @@ export default function HomeView() {
         <p className="eyebrow">DIGITALES BÜRO</p>
         <h1>Geschäftsdokumente einfach im Browser erstellen.</h1>
         <p className="intro">
-          Carta hilft dir dabei, Angebote, Rechnungen und weitere Belege schnell,
+          Belege24 hilft dir dabei, Angebote, Rechnungen und weitere Belege schnell,
           übersichtlich und ohne Anmeldung vorzubereiten.
         </p>
       </section>
@@ -28,7 +28,7 @@ export default function HomeView() {
           <h2>Bereit für ein leichtes Dokumenten-Tool.</h2>
         </div>
         <p>
-          Carta startet mit einer reduzierten, schnellen Oberfläche und einer klaren
+          Belege24 startet mit einer reduzierten, schnellen Oberfläche und einer klaren
           Struktur. So bleibt die Anwendung angenehm schlank und kann später Schritt
           für Schritt um Vorlagen, Bearbeitung und Exportfunktionen erweitert werden.
         </p>
