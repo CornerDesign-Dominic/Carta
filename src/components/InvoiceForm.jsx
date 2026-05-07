@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialLabels = {
   title: 'Rechnung',
@@ -78,8 +79,25 @@ function getInlineValueWidth(value) {
   return `${Math.max(String(value).length, 4)}ch`;
 }
 
+function createPdfFileName(type, number) {
+  const cleanType = String(type || 'rechnung')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9äöüß]+/gi, '-')
+    .replace(/^-+|-+$/g, '');
+  const cleanNumber = String(number || new Date().toISOString().slice(0, 10))
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9äöüß]+/gi, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return `${cleanType || 'rechnung'}-${cleanNumber || 'dokument'}.pdf`;
+}
+
 export default function InvoiceForm() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const sheetRef = useRef(null);
   const introTextRef = useRef(null);
   const closingTextRef = useRef(null);
   const dateInputRefs = useRef({});
@@ -229,6 +247,24 @@ export default function InvoiceForm() {
     );
   }
 
+  async function handleCreatePdf() {
+    setIsExporting(true);
+
+    try {
+      await requestPdfDownload({
+        sheet: sheetRef.current,
+        documentType: 'invoice',
+        filename: createPdfFileName(labels.title, details.invoiceNumber),
+      });
+    } catch (error) {
+      window.alert(
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   function handlePrint() {
     document.body.classList.add('document-print-mode');
     window.print();
@@ -256,12 +292,13 @@ export default function InvoiceForm() {
         <button type="button" onClick={handlePrint}>
           Drucken
         </button>
-        <button type="button" onClick={() => window.alert('PDF erstellen ist als Platzhalter vorbereitet.')}>
-          PDF erstellen
+        <button type="button" onClick={handleCreatePdf} disabled={isExporting}>
+          {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
         </button>
       </div>
 
       <article
+        ref={sheetRef}
         className={`offer-sheet invoice-sheet${highlightFields ? ' is-highlight-mode' : ''}`}
         aria-label="Editierbare Rechnung"
       >

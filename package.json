@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sparticuz/chromium": "latest",
     "html2pdf.js": "^0.10.2",
+    "puppeteer-core": "latest",
     "react": "latest",
     "react-dom": "latest"
   },

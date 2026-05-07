@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialOfferLabels = {
   title: 'Angebot',
@@ -186,40 +187,14 @@ export default function OfferDocumentEditor() {
     setIsExporting(true);
 
     try {
-      const html2pdfPackage = 'html2pdf.js';
-      const html2pdfModule = await import(/* @vite-ignore */ html2pdfPackage);
-      const html2pdf = html2pdfModule.default ?? html2pdfModule;
-
-      await runWithCleanDocument(async (sheet) => {
-        await html2pdf()
-          .set({
-            filename: createPdfFileName(labels.title, details.offerNumber),
-            margin: 0,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-              backgroundColor: '#ffffff',
-              scale: 2,
-              scrollX: 0,
-              scrollY: 0,
-              useCORS: true,
-            },
-            jsPDF: {
-              unit: 'mm',
-              format: 'a4',
-              orientation: 'portrait',
-              compress: true,
-            },
-            pagebreak: {
-              mode: ['css', 'legacy'],
-              avoid: ['tr', '.offer-summary', '.invoice-footer-data'],
-            },
-          })
-          .from(sheet)
-          .save();
+      await requestPdfDownload({
+        sheet: sheetRef.current,
+        documentType: 'offer',
+        filename: createPdfFileName(labels.title, details.offerNumber),
       });
     } catch (error) {
       window.alert(
-        'PDF-Erstellung ist vorbereitet, aber die Bibliothek html2pdf.js ist noch nicht installiert. Bitte installiere die Abhängigkeiten und versuche es erneut.',
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
       );
     } finally {
       setIsExporting(false);

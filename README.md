@@ -20,6 +20,14 @@ Belege24 soll eine einfache, moderne und professionelle Dokumentenerstellung dir
 - Mehrseitigkeit soll später sauber unterstützbar sein.
 - PDF-Export soll technisch vorbereitbar bleiben.
 
+## PDF-Export
+
+Der finale PDF-Export ist als Vercel Function vorbereitet. Das Frontend sendet eine bereinigte A4-HTML-Version an `/api/generate-pdf`; die Function rendert daraus serverseitig per `puppeteer-core` und `@sparticuz/chromium` ein echtes A4-PDF mit Text und CSS.
+
+`html2pdf.js` ist nicht der finale Exportweg und soll für neue PDF-Buttons nicht mehr verwendet werden.
+
+Lokal kann für Puppeteer ein eigener Chromium-Pfad über `PUPPETEER_EXECUTABLE_PATH` gesetzt werden, falls kein serverless Chromium gestartet werden kann.
+
 ## Technischer Hinweis
 
 Der interne Projektname darf weiterhin `Carta` bleiben.
