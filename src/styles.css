@@ -466,8 +466,10 @@ h1 {
 
 .visual-editor {
   display: grid;
-  gap: 18px;
-  margin-top: 24px;
+  gap: 30px;
+  margin-top: 42px;
+  overflow: auto;
+  padding: 0 0 78px;
   min-width: 0;
 }
 
@@ -508,13 +510,17 @@ h1 {
 }
 
 .offer-sheet {
-  width: min(100%, 794px);
+  width: 794px;
+  height: 1123px;
+  min-width: 794px;
   min-height: 1123px;
+  flex-shrink: 0;
   margin: 0 auto;
   padding: 56px 64px 46px 72px;
   background: #ffffff;
   color: #232320;
-  box-shadow: 0 18px 50px rgba(35, 35, 32, 0.13);
+  border: 1px solid #d8d2c8;
+  box-shadow: 0 22px 58px rgba(35, 35, 32, 0.16);
   break-after: auto;
 }
 
@@ -895,8 +901,9 @@ h1 {
 }
 
 .invoice-visual-editor {
-  margin-top: 24px;
-  padding: 0;
+  margin-top: 42px;
+  padding: 0 0 78px;
+  overflow: auto;
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -2114,30 +2121,6 @@ h1 {
 
   .visual-toolbar {
     flex-wrap: wrap;
-  }
-
-  .offer-sheet {
-    min-height: auto;
-    padding: 28px 22px;
-  }
-
-  .offer-header,
-  .offer-address-row,
-  .reminder-reference-grid,
-  .reminder-amount-box,
-  .invoice-document-header,
-  .invoice-address-row,
-  .invoice-footer-data {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .invoice-recipient-location {
-    grid-template-columns: 1fr;
-  }
-
-  .offer-address-row > textarea {
-    min-height: 100px;
   }
 
   .offer-position-table {
