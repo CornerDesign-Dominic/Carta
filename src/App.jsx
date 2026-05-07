@@ -7,8 +7,13 @@ import LegalPage from './views/LegalPage.jsx';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
+  const [documentsViewKey, setDocumentsViewKey] = useState(0);
 
   function handleNavigate(item) {
+    if (item.view === 'documents') {
+      setDocumentsViewKey((key) => key + 1);
+    }
+
     setCurrentView(item.view);
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -18,7 +23,7 @@ export default function App() {
     <div className="site-shell">
       <Header currentView={currentView} onNavigate={handleNavigate} />
       <div className="site-main">
-        {currentView === 'documents' && <DocumentsView />}
+        {currentView === 'documents' && <DocumentsView key={documentsViewKey} />}
         {currentView === 'home' && <HomeView />}
         {currentView.startsWith('legal:') && (
           <LegalPage pageId={currentView.replace('legal:', '')} />

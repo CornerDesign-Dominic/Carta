@@ -20,6 +20,41 @@ export const documentSections = [
     title: 'Rechnungen',
     description:
       'Bereite klare Rechnungsdokumente im Browser vor. Später finden hier Positionen, Nummernkreise, Steuerangaben und Exportoptionen ihren Platz.',
+    contentSections: [
+      {
+        heading: 'Was ist eine Rechnung?',
+        paragraphs: [
+          'Eine Rechnung dokumentiert eine erbrachte Leistung oder gelieferte Ware und fordert den offenen Betrag beim Kunden an. Sie ist damit nicht nur Zahlungsaufforderung, sondern auch ein wichtiger Nachweis für Buchhaltung und Steuerunterlagen.',
+        ],
+      },
+      {
+        heading: 'Welche Angaben gehören hinein?',
+        paragraphs: [
+          'Typische Rechnungen enthalten Absender, Empfänger, Rechnungsnummer, Rechnungsdatum, Leistungszeitraum, Positionen, Beträge, Steuersätze und Zahlungsinformationen. Je nach Unternehmen und Fall können zusätzliche Hinweise oder Pflichtangaben erforderlich sein.',
+        ],
+      },
+      {
+        heading: 'Warum ist eine klare Struktur wichtig?',
+        paragraphs: [
+          'Eine übersichtliche Rechnung reduziert Rückfragen und erleichtert die interne Prüfung beim Kunden. Klare Positionen, verständliche Summen und ein ruhiger Aufbau sorgen dafür, dass das Dokument professionell wirkt und schneller verarbeitet werden kann.',
+        ],
+      },
+      {
+        heading: 'Digitale Rechnungserstellung im Browser',
+        paragraphs: [
+          'Ein browserbasiertes Werkzeug kann helfen, Rechnungen ohne schwere Software vorzubereiten. Vorlagen, wiederkehrende Angaben und ein konsistentes Layout schaffen eine verlässliche Grundlage für einen schnellen Dokumentenprozess.',
+        ],
+      },
+    ],
+    children: [
+      {
+        id: 'write-invoice',
+        label: 'Rechnung schreiben',
+        title: 'Rechnung schreiben',
+        formType: 'invoice',
+        description: '',
+      },
+    ],
   },
   {
     id: 'offers',
@@ -27,5 +62,60 @@ export const documentSections = [
     title: 'Angebote',
     description:
       'Erstelle eine saubere Grundlage für Angebote mit Leistungen, Konditionen und einem professionellen Aufbau für Kundenkommunikation.',
+    contentSections: [
+      {
+        heading: 'Was ist ein Angebot?',
+        paragraphs: [
+          'Ein Angebot beschreibt Leistungen, Produkte, Preise und Rahmenbedingungen, bevor ein Auftrag zustande kommt. Es schafft eine verbindliche Gesprächsgrundlage und hilft beiden Seiten, Umfang und Erwartungen klar zu verstehen.',
+        ],
+      },
+      {
+        heading: 'Welche Informationen sollten enthalten sein?',
+        paragraphs: [
+          'Zu einem professionellen Angebot gehören Kontaktdaten, Angebotsdatum, Leistungsbeschreibung, Einzelpreise, Gesamtsumme, mögliche Steuern, Gültigkeit und Zahlungs- oder Lieferbedingungen. Je genauer diese Angaben sind, desto belastbarer ist die Entscheidung des Kunden.',
+        ],
+      },
+      {
+        heading: 'Warum professionelle Angebote wichtig sind',
+        paragraphs: [
+          'Ein gut strukturiertes Angebot vermittelt Verlässlichkeit und erleichtert die Freigabe. Es zeigt, dass Leistungen nachvollziehbar kalkuliert wurden und schafft Vertrauen, bevor ein Projekt oder Auftrag beginnt.',
+        ],
+      },
+      {
+        heading: 'Angebote schnell vorbereiten',
+        paragraphs: [
+          'Mit einer digitalen Oberfläche lassen sich Angebote wiederholbar und sauber aufbauen. Einheitliche Bausteine, klare Positionen und ein ruhiges Layout sparen Zeit und sorgen dafür, dass auch einfache Angebote hochwertig wirken.',
+        ],
+      },
+    ],
+    children: [
+      {
+        id: 'write-offer',
+        label: 'Angebot schreiben',
+        title: 'Angebot schreiben',
+        description:
+          'Diese Ansicht bereitet später die Erstellung eines neuen Angebots mit Leistungen, Preisen und gültigen Konditionen vor.',
+      },
+    ],
   },
 ];
+
+export function findDocumentItem(activeId) {
+  if (activeId === 'overview') {
+    return { item: null, parentId: null };
+  }
+
+  for (const section of documentSections) {
+    if (section.id === activeId) {
+      return { item: section, parentId: section.id };
+    }
+
+    const child = section.children?.find((entry) => entry.id === activeId);
+
+    if (child) {
+      return { item: child, parentId: section.id };
+    }
+  }
+
+  return { item: documentSections[0], parentId: documentSections[0].id };
+}
