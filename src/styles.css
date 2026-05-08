@@ -1353,8 +1353,9 @@ h1 {
 }
 
 .invoice-hidden-field-actions {
-  top: 0;
+  top: calc(100% + 3px);
   right: calc(100% + 7px);
+  flex-direction: column;
 }
 
 .invoice-flow-config-row .invoice-field-actions,
@@ -1363,18 +1364,22 @@ h1 {
   left: -30px;
 }
 
+.invoice-text-hidden-anchor .invoice-hidden-field-actions {
+  top: 0;
+}
+
 .invoice-field-actions button,
 .invoice-hidden-field-actions button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border: 1px solid rgba(95, 94, 89, 0.2);
   border-radius: 999px;
   background: rgba(255, 254, 250, 0.92);
   color: #67645e;
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 760;
   line-height: 1;
 }
@@ -1397,9 +1402,9 @@ h1 {
 .invoice-icon-eye-off {
   position: relative;
   display: block;
-  width: 14px;
-  height: 9px;
-  border: 1.5px solid currentColor;
+  width: 12px;
+  height: 8px;
+  border: 1.3px solid currentColor;
   border-radius: 999px / 720px;
 }
 
@@ -1420,8 +1425,8 @@ h1 {
   position: absolute;
   top: 3px;
   left: -2px;
-  width: 17px;
-  border-top: 1.5px solid currentColor;
+  width: 15px;
+  border-top: 1.3px solid currentColor;
   transform: rotate(-35deg);
   transform-origin: center;
 }
