@@ -1076,6 +1076,7 @@ h1 {
 }
 
 .invoice-sheet {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -1094,6 +1095,7 @@ h1 {
 }
 
 .invoice-sender-side {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 0;
@@ -1182,6 +1184,7 @@ h1 {
 }
 
 .invoice-details {
+  position: relative;
   display: grid;
   gap: 0;
   justify-self: end;
@@ -1311,6 +1314,131 @@ h1 {
 .invoice-details label.is-emphasized input {
   color: #232320;
   font-weight: 760;
+}
+
+.invoice-config-row,
+.invoice-flow-config-row {
+  position: relative;
+  min-width: 0;
+}
+
+.invoice-sender-side .invoice-config-row {
+  height: 18px;
+}
+
+.invoice-flow-config-row {
+  display: grid;
+}
+
+.invoice-text-hidden-anchor {
+  position: relative;
+  height: 0;
+}
+
+.invoice-field-actions,
+.invoice-hidden-field-actions {
+  position: absolute;
+  z-index: 4;
+  display: inline-flex;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.invoice-field-actions {
+  top: 50%;
+  right: calc(100% + 7px);
+  transform: translateY(-50%);
+}
+
+.invoice-hidden-field-actions {
+  top: 0;
+  right: calc(100% + 7px);
+}
+
+.invoice-flow-config-row .invoice-field-actions,
+.invoice-text-hidden-anchor .invoice-hidden-field-actions {
+  right: auto;
+  left: -30px;
+}
+
+.invoice-field-actions button,
+.invoice-hidden-field-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(95, 94, 89, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 254, 250, 0.92);
+  color: #67645e;
+  font-size: 0.72rem;
+  font-weight: 760;
+  line-height: 1;
+}
+
+.invoice-field-actions button:hover,
+.invoice-field-actions button:focus-visible,
+.invoice-hidden-field-actions button:hover,
+.invoice-hidden-field-actions button:focus-visible {
+  border-color: rgba(95, 94, 89, 0.36);
+  background: rgba(95, 94, 89, 0.1);
+  color: #3f3b35;
+}
+
+.invoice-field-actions button:disabled {
+  cursor: default;
+  opacity: 0.38;
+}
+
+.invoice-icon-eye,
+.invoice-icon-eye-off {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 9px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px / 720px;
+}
+
+.invoice-icon-eye::after,
+.invoice-icon-eye-off::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.invoice-icon-eye-off::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: -2px;
+  width: 17px;
+  border-top: 1.5px solid currentColor;
+  transform: rotate(-35deg);
+  transform-origin: center;
+}
+
+.invoice-sheet:hover .invoice-field-actions,
+.invoice-sheet:focus-within .invoice-field-actions,
+.invoice-sheet.is-highlight-mode .invoice-field-actions,
+.invoice-sheet:hover .invoice-hidden-field-actions,
+.invoice-sheet:focus-within .invoice-hidden-field-actions,
+.invoice-sheet.is-highlight-mode .invoice-hidden-field-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.offer-sheet.is-export-mode .invoice-field-actions,
+.offer-sheet.is-export-mode .invoice-hidden-field-actions {
+  display: none;
 }
 
 .invoice-document-title {
@@ -1490,6 +1618,7 @@ h1 {
 }
 
 .invoice-footer-data section {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 2px;
@@ -2415,6 +2544,8 @@ h1 {
   }
 
   body.document-print-mode .offer-sheet .invoice-icon-action,
+  body.document-print-mode .offer-sheet .invoice-field-actions,
+  body.document-print-mode .offer-sheet .invoice-hidden-field-actions,
   body.document-print-mode .offer-sheet .offer-remove,
   body.document-print-mode .offer-sheet .offer-add-position {
     display: none;

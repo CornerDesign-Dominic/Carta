@@ -90,6 +90,8 @@ function buildExportHtml(sheet) {
 
     .visual-toolbar,
     .invoice-icon-action,
+    .invoice-field-actions,
+    .invoice-hidden-field-actions,
     .offer-remove,
     .offer-add-position {
       display: none !important;

@@ -25,6 +25,35 @@ const initialLabels = {
   contactWebsite: 'Website',
 };
 
+const contactFieldDefinitions = [
+  { field: 'email', labelField: 'contactEmail', label: 'E-Mail' },
+  { field: 'phone', labelField: 'contactPhone', label: 'Telefon' },
+  { field: 'fax', labelField: 'contactFax', label: 'Fax' },
+  { field: 'website', labelField: 'contactWebsite', label: 'Website' },
+];
+
+const detailFieldDefinitions = [
+  { field: 'invoiceDate', label: 'Rechnungsdatum', type: 'date' },
+  { field: 'serviceDate', label: 'Leistungsdatum', type: 'date' },
+  { field: 'internalNumber', label: 'Interne Nummer', type: 'text' },
+  { field: 'externalNumber', label: 'Externe Nummer', type: 'text' },
+  { field: 'customerNumber', label: 'Kundennummer', type: 'text' },
+];
+
+const footerMiddleDefinitions = [
+  { field: 'vatId', label: 'USt-IdNr.' },
+  { field: 'taxNumber', label: 'Steuernummer' },
+  { field: 'commercialRegister', label: 'Handelsregister' },
+  { field: 'managingDirector', label: 'Geschäftsführer' },
+];
+
+function createFieldConfig(fields) {
+  return {
+    hidden: [],
+    order: fields.map((field) => field.field),
+  };
+}
+
 function createPosition() {
   return {
     id: crypto.randomUUID(),
@@ -168,6 +197,57 @@ function InvoicePanelTextarea({ label, value, placeholder, onChange }) {
   );
 }
 
+function FieldActions({ canMove = false, isHidden, isFirst, isLast, label, onMoveDown, onMoveUp, onToggle }) {
+  return (
+    <span className="invoice-field-actions" aria-label={`${label} konfigurieren`}>
+      <button
+        type="button"
+        aria-label={isHidden ? `${label} einblenden` : `${label} ausblenden`}
+        onClick={onToggle}
+      >
+        <span className={isHidden ? 'invoice-icon-eye-off' : 'invoice-icon-eye'} aria-hidden="true" />
+      </button>
+      {canMove && (
+        <>
+          <button type="button" aria-label={`${label} nach oben`} disabled={isFirst} onClick={onMoveUp}>
+            ↑
+          </button>
+          <button type="button" aria-label={`${label} nach unten`} disabled={isLast} onClick={onMoveDown}>
+            ↓
+          </button>
+        </>
+      )}
+    </span>
+  );
+}
+
+function HiddenFieldActions({ block, definitions, hiddenFields, onToggle }) {
+  if (hiddenFields.length === 0) {
+    return null;
+  }
+
+  return (
+    <span className="invoice-hidden-field-actions" aria-label="Ausgeblendete Felder">
+      {hiddenFields.map((field) => {
+        const definition = definitions.find((entry) => entry.field === field);
+        const label = definition?.label ?? field;
+
+        return (
+          <button
+            key={`${block}-${field}`}
+            type="button"
+            aria-label={`${label} einblenden`}
+            title={`${label} einblenden`}
+            onClick={() => onToggle(block, field)}
+          >
+            <span className="invoice-icon-eye-off" aria-hidden="true" />
+          </button>
+        );
+      })}
+    </span>
+  );
+}
+
 function createPdfFileName(type, number) {
   const cleanType = String(type || 'rechnung')
     .trim()
@@ -199,6 +279,15 @@ export default function InvoiceForm() {
   const [introText, setIntroText] = useState(defaultIntroText);
   const [closingText, setClosingText] = useState(defaultClosingText);
   const [positions, setPositions] = useState([createPosition()]);
+  const [fieldConfig, setFieldConfig] = useState({
+    contact: createFieldConfig(contactFieldDefinitions),
+    details: createFieldConfig(detailFieldDefinitions),
+    footerMiddle: createFieldConfig(footerMiddleDefinitions),
+    texts: {
+      hidden: [],
+      order: ['introText', 'closingText'],
+    },
+  });
 
   useEffect(() => {
     resizeTextarea(introTextRef.current);
@@ -273,6 +362,54 @@ export default function InvoiceForm() {
         position.id === positionId ? { ...position, [field]: value } : position,
       ),
     );
+  }
+
+  function isFieldHidden(block, field) {
+    return fieldConfig[block].hidden.includes(field);
+  }
+
+  function getOrderedDefinitions(block, definitions) {
+    return fieldConfig[block].order
+      .map((field) => definitions.find((definition) => definition.field === field))
+      .filter(Boolean);
+  }
+
+  function toggleConfiguredField(block, field) {
+    setFieldConfig((current) => {
+      const hidden = current[block].hidden.includes(field)
+        ? current[block].hidden.filter((entry) => entry !== field)
+        : [...current[block].hidden, field];
+
+      return {
+        ...current,
+        [block]: {
+          ...current[block],
+          hidden,
+        },
+      };
+    });
+  }
+
+  function moveConfiguredField(block, field, direction) {
+    setFieldConfig((current) => {
+      const order = [...current[block].order];
+      const index = order.indexOf(field);
+      const nextIndex = index + direction;
+
+      if (index < 0 || nextIndex < 0 || nextIndex >= order.length) {
+        return current;
+      }
+
+      [order[index], order[nextIndex]] = [order[nextIndex], order[index]];
+
+      return {
+        ...current,
+        [block]: {
+          ...current[block],
+          order,
+        },
+      };
+    });
   }
 
   function addPosition() {
@@ -591,26 +728,47 @@ export default function InvoiceForm() {
           </div>
 
           <div className="invoice-sender-side">
-            {[
-              ['email', 'contactEmail', 'E-Mail'],
-              ['phone', 'contactPhone', 'Telefon'],
-              ['fax', 'contactFax', 'Fax'],
-              ['website', 'contactWebsite', 'Website'],
-            ].map(([field, labelField, label]) => (
-              <label key={field}>
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${label}`}
-                  value={labels[labelField]}
-                  onChange={(event) => updateLabel(labelField, event.target.value)}
-                />
-                <input
-                  aria-label={label}
-                  value={sender[field]}
-                  onChange={(event) => updateSender(field, event.target.value)}
-                />
-              </label>
-            ))}
+            {getOrderedDefinitions('contact', contactFieldDefinitions).map((definition, index) => {
+              const isHidden = isFieldHidden('contact', definition.field);
+
+              if (isHidden) {
+                return null;
+              }
+
+              return (
+                <div className="invoice-config-row" key={definition.field}>
+                  <label>
+                    <input
+                      className="document-label-input"
+                      aria-label={`Beschriftung ${definition.label}`}
+                      value={labels[definition.labelField]}
+                      onChange={(event) => updateLabel(definition.labelField, event.target.value)}
+                    />
+                    <input
+                      aria-label={definition.label}
+                      value={sender[definition.field]}
+                      onChange={(event) => updateSender(definition.field, event.target.value)}
+                    />
+                  </label>
+                  <FieldActions
+                    canMove
+                    isFirst={index === 0}
+                    isLast={index === fieldConfig.contact.order.length - 1}
+                    isHidden={isHidden}
+                    label={definition.label}
+                    onMoveDown={() => moveConfiguredField('contact', definition.field, 1)}
+                    onMoveUp={() => moveConfiguredField('contact', definition.field, -1)}
+                    onToggle={() => toggleConfiguredField('contact', definition.field)}
+                  />
+                </div>
+              );
+            })}
+            <HiddenFieldActions
+              block="contact"
+              definitions={contactFieldDefinitions}
+              hiddenFields={fieldConfig.contact.hidden}
+              onToggle={toggleConfiguredField}
+            />
           </div>
         </header>
 
@@ -650,52 +808,85 @@ export default function InvoiceForm() {
           </div>
 
           <div className="invoice-details">
-            {[
-              ['invoiceNumber', 'Rechnungsnummer'],
-              ['invoiceDate', 'Rechnungsdatum'],
-              ['serviceDate', 'Leistungsdatum'],
-              ['internalNumber', 'Interne Nummer'],
-              ['externalNumber', 'Externe Nummer'],
-              ['customerNumber', 'Kundennummer'],
-            ].map(([field, ariaLabel]) => (
-              <label className={field === 'invoiceNumber' ? 'is-emphasized' : undefined} key={field}>
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${ariaLabel}`}
-                  value={labels[field]}
-                  onChange={(event) => updateLabel(field, event.target.value)}
-                />
-                {['invoiceDate', 'serviceDate'].includes(field) ? (
-                  <span className="invoice-date-field">
+            <label className="is-emphasized">
+              <input
+                className="document-label-input"
+                aria-label="Beschriftung Rechnungsnummer"
+                value={labels.invoiceNumber}
+                onChange={(event) => updateLabel('invoiceNumber', event.target.value)}
+              />
+              <input
+                aria-label="Rechnungsnummer"
+                type="text"
+                value={details.invoiceNumber}
+                onChange={(event) => updateDetail('invoiceNumber', event.target.value)}
+              />
+            </label>
+            {getOrderedDefinitions('details', detailFieldDefinitions).map((definition, index) => {
+              const isHidden = isFieldHidden('details', definition.field);
+
+              if (isHidden) {
+                return null;
+              }
+
+              return (
+                <div className="invoice-config-row" key={definition.field}>
+                  <label>
                     <input
-                      ref={(element) => {
-                        dateInputRefs.current[field] = element;
-                      }}
-                      className="invoice-date-input"
-                      aria-label={ariaLabel}
-                      type="date"
-                      value={details[field]}
-                      onChange={(event) => updateDetail(field, event.target.value)}
+                      className="document-label-input"
+                      aria-label={`Beschriftung ${definition.label}`}
+                      value={labels[definition.field]}
+                      onChange={(event) => updateLabel(definition.field, event.target.value)}
                     />
-                    <button
-                      className="invoice-icon-action invoice-date-picker"
-                      type="button"
-                      aria-label={`${ariaLabel} auswählen`}
-                      onClick={() => openDatePicker(field)}
-                    >
-                      <span aria-hidden="true" />
-                    </button>
-                  </span>
-                ) : (
-                  <input
-                    aria-label={ariaLabel}
-                    type="text"
-                    value={details[field]}
-                    onChange={(event) => updateDetail(field, event.target.value)}
+                    {definition.type === 'date' ? (
+                      <span className="invoice-date-field">
+                        <input
+                          ref={(element) => {
+                            dateInputRefs.current[definition.field] = element;
+                          }}
+                          className="invoice-date-input"
+                          aria-label={definition.label}
+                          type="date"
+                          value={details[definition.field]}
+                          onChange={(event) => updateDetail(definition.field, event.target.value)}
+                        />
+                        <button
+                          className="invoice-icon-action invoice-date-picker"
+                          type="button"
+                          aria-label={`${definition.label} auswählen`}
+                          onClick={() => openDatePicker(definition.field)}
+                        >
+                          <span aria-hidden="true" />
+                        </button>
+                      </span>
+                    ) : (
+                      <input
+                        aria-label={definition.label}
+                        type="text"
+                        value={details[definition.field]}
+                        onChange={(event) => updateDetail(definition.field, event.target.value)}
+                      />
+                    )}
+                  </label>
+                  <FieldActions
+                    canMove
+                    isFirst={index === 0}
+                    isLast={index === fieldConfig.details.order.length - 1}
+                    isHidden={isHidden}
+                    label={definition.label}
+                    onMoveDown={() => moveConfiguredField('details', definition.field, 1)}
+                    onMoveUp={() => moveConfiguredField('details', definition.field, -1)}
+                    onToggle={() => toggleConfiguredField('details', definition.field)}
                   />
-                )}
-              </label>
-            ))}
+                </div>
+              );
+            })}
+            <HiddenFieldActions
+              block="details"
+              definitions={detailFieldDefinitions}
+              hiddenFields={fieldConfig.details.hidden}
+              onToggle={toggleConfiguredField}
+            />
           </div>
         </section>
 
@@ -708,16 +899,37 @@ export default function InvoiceForm() {
           />
         </h2>
 
-        <textarea
-          ref={introTextRef}
-          className="offer-flow-text invoice-flow-text"
-          aria-label="Vorlauftext"
-          value={introText}
-          onChange={(event) => {
-            setIntroText(event.target.value);
-            resizeTextarea(event.target);
-          }}
-        />
+        <div className="invoice-text-hidden-anchor">
+          <HiddenFieldActions
+            block="texts"
+            definitions={[
+              { field: 'introText', label: 'Vorlauftext' },
+              { field: 'closingText', label: 'Nachlauftext' },
+            ]}
+            hiddenFields={fieldConfig.texts.hidden}
+            onToggle={toggleConfiguredField}
+          />
+        </div>
+
+        {!isFieldHidden('texts', 'introText') && (
+          <div className="invoice-flow-config-row">
+            <textarea
+              ref={introTextRef}
+              className="offer-flow-text invoice-flow-text"
+              aria-label="Vorlauftext"
+              value={introText}
+              onChange={(event) => {
+                setIntroText(event.target.value);
+                resizeTextarea(event.target);
+              }}
+            />
+            <FieldActions
+              isHidden={false}
+              label="Vorlauftext"
+              onToggle={() => toggleConfiguredField('texts', 'introText')}
+            />
+          </div>
+        )}
 
         <table className="offer-position-table invoice-position-table">
           <thead>
@@ -850,16 +1062,25 @@ export default function InvoiceForm() {
           </div>
         </aside>
 
-        <textarea
-          ref={closingTextRef}
-          className="offer-flow-text invoice-flow-text"
-          aria-label="Nachlauftext"
-          value={closingText}
-          onChange={(event) => {
-            setClosingText(event.target.value);
-            resizeTextarea(event.target);
-          }}
-        />
+        {!isFieldHidden('texts', 'closingText') && (
+          <div className="invoice-flow-config-row">
+            <textarea
+              ref={closingTextRef}
+              className="offer-flow-text invoice-flow-text"
+              aria-label="Nachlauftext"
+              value={closingText}
+              onChange={(event) => {
+                setClosingText(event.target.value);
+                resizeTextarea(event.target);
+              }}
+            />
+            <FieldActions
+              isHidden={false}
+              label="Nachlauftext"
+              onToggle={() => toggleConfiguredField('texts', 'closingText')}
+            />
+          </div>
+        )}
 
         <footer className="invoice-footer-data" aria-label="Fußbereich">
           <section>
@@ -879,19 +1100,39 @@ export default function InvoiceForm() {
           </section>
 
           <section>
-            {[
-              ['vatId', 'USt-IdNr.'],
-              ['taxNumber', 'Steuernummer'],
-              ['commercialRegister', 'Handelsregister'],
-              ['managingDirector', 'Geschäftsführer'],
-            ].map(([field, label]) => (
-              <input
-                key={field}
-                aria-label={label}
-                value={footerLines[field]}
-                onChange={(event) => updateFooterLine(field, event.target.value)}
-              />
-            ))}
+            {getOrderedDefinitions('footerMiddle', footerMiddleDefinitions).map((definition, index) => {
+              const isHidden = isFieldHidden('footerMiddle', definition.field);
+
+              if (isHidden) {
+                return null;
+              }
+
+              return (
+                <div className="invoice-config-row" key={definition.field}>
+                  <input
+                    aria-label={definition.label}
+                    value={footerLines[definition.field]}
+                    onChange={(event) => updateFooterLine(definition.field, event.target.value)}
+                  />
+                  <FieldActions
+                    canMove
+                    isFirst={index === 0}
+                    isLast={index === fieldConfig.footerMiddle.order.length - 1}
+                    isHidden={isHidden}
+                    label={definition.label}
+                    onMoveDown={() => moveConfiguredField('footerMiddle', definition.field, 1)}
+                    onMoveUp={() => moveConfiguredField('footerMiddle', definition.field, -1)}
+                    onToggle={() => toggleConfiguredField('footerMiddle', definition.field)}
+                  />
+                </div>
+              );
+            })}
+            <HiddenFieldActions
+              block="footerMiddle"
+              definitions={footerMiddleDefinitions}
+              hiddenFields={fieldConfig.footerMiddle.hidden}
+              onToggle={toggleConfiguredField}
+            />
           </section>
 
           <section>
