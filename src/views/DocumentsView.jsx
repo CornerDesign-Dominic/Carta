@@ -47,7 +47,8 @@ export default function DocumentsView() {
   const [activeDocumentId, setActiveDocumentId] = useState('overview');
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
-  const showDocumentDescription = activeDocumentId !== 'write-invoice' && activeDocument?.description;
+  const showDocumentDescription = !['write-invoice', 'write-offer'].includes(activeDocumentId)
+    && activeDocument?.description;
 
   return (
     <main className="documents-layout">
