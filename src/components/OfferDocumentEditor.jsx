@@ -1,14 +1,14 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialOfferLabels = {
   title: 'Angebot',
   offerNumber: 'Angebotsnummer',
   offerDate: 'Angebotsdatum',
-  validUntil: 'Gültigkeit',
-  customerNumber: 'Kundennummer',
+  validUntil: 'Gültig bis',
   internalNumber: 'Interne Nummer',
   externalNumber: 'Externe Nummer',
+  customerNumber: 'Kundennummer',
   position: 'Pos.',
   description: 'Beschreibung',
   unitPrice: 'Einzelpreis',
@@ -19,6 +19,10 @@ const initialOfferLabels = {
   net: 'Nettobetrag',
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Gesamtbetrag',
+  contactEmail: 'E-Mail',
+  contactPhone: 'Telefon',
+  contactFax: 'Fax',
+  contactWebsite: 'Website',
 };
 
 function createOfferPosition() {
@@ -44,10 +48,27 @@ function formatCurrency(value) {
   }).format(value);
 }
 
+function formatPercent(value) {
+  return new Intl.NumberFormat('de-DE', {
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 function calculatePosition(position) {
   const net = toNumber(position.unitPrice) * toNumber(position.quantity);
-  const tax = net * (toNumber(position.taxRate) / 100);
-  return { net, tax, gross: net + tax };
+  const taxRate = Math.max(0, toNumber(position.taxRate));
+  const tax = net * (taxRate / 100);
+
+  return { net, tax, gross: net + tax, taxRate };
+}
+
+function resizeTextarea(textarea) {
+  if (!textarea) {
+    return;
+  }
+
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
 function createPdfFileName(title, number) {
@@ -70,57 +91,85 @@ export default function OfferDocumentEditor() {
   const [isExporting, setIsExporting] = useState(false);
   const [labels, setLabels] = useState(initialOfferLabels);
   const sheetRef = useRef(null);
+  const introTextRef = useRef(null);
+  const closingTextRef = useRef(null);
+  const dateInputRefs = useRef({});
   const [sender, setSender] = useState({
     company: 'Belege24 Muster GmbH',
-    street: 'Musterstraße 12',
-    postalCode: '10115',
-    city: 'Berlin',
+    senderLine: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     email: 'kontakt@belege24.com',
     phone: '+49 30 123456',
     fax: '+49 30 123457',
     website: 'www.belege24.com',
   });
+  const [footerLines, setFooterLines] = useState({
+    companyName: 'Belege24 Muster GmbH',
+    companyStreet: 'Musterstraße 12',
+    companyCity: '10115 Berlin',
+    companyExtra: '',
+    vatId: 'USt-IdNr.: DE123456789',
+    taxNumber: 'Steuernummer: 12/345/67890',
+    commercialRegister: 'HRB 123456',
+    managingDirector: 'Geschäftsführer: Max Mustermann',
+    bankName: 'Bankname: Musterbank',
+    iban: 'IBAN: DE00 0000 0000 0000 0000 00',
+    bic: 'BIC: COBADEFFXXX',
+    bankExtra: '',
+  });
   const [recipient, setRecipient] = useState({
     company: 'Beispielkunde GmbH',
+    attention: 'z. Hd. Frau Beispiel',
     name: 'Einkauf',
     street: 'Kundenstraße 8',
-    postalCode: '20095',
-    city: 'Hamburg',
-  });
-  const [taxAndBank, setTaxAndBank] = useState({
-    vatId: 'DE123456789',
-    taxNumber: '12/345/67890',
-    bankName: 'Musterbank',
-    iban: 'DE00 0000 0000 0000 0000 00',
-    bic: 'COBADEFFXXX',
+    cityLine: '20095 Hamburg',
   });
   const [details, setDetails] = useState({
     offerNumber: 'ANG-2026-001',
     offerDate: '2026-05-07',
-    validUntil: '14 Tage',
-    customerNumber: 'K-2048',
+    validUntil: '2026-05-21',
     internalNumber: 'INT-1001',
     externalNumber: 'EXT-4711',
+    customerNumber: 'K-2048',
   });
   const [introText, setIntroText] = useState(
-    'vielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot.',
+    'vielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot:',
   );
   const [closingText, setClosingText] = useState(
-    'Wir freuen uns auf Ihre Rückmeldung und stehen für Fragen jederzeit zur Verfügung.',
+    'Dieses Angebot ist bis zum oben genannten Datum gültig. Wir freuen uns auf Ihre Rückmeldung und stehen für Fragen jederzeit zur Verfügung.',
   );
   const [positions, setPositions] = useState([createOfferPosition()]);
 
+  useEffect(() => {
+    resizeTextarea(introTextRef.current);
+    resizeTextarea(closingTextRef.current);
+  }, [introText, closingText]);
+
   const totals = useMemo(() => {
-    return positions.reduce(
-      (summary, position) => {
+    const summary = positions.reduce(
+      (current, position) => {
         const calculated = calculatePosition(position);
-        summary.net += calculated.net;
-        summary.tax += calculated.tax;
-        summary.gross += calculated.gross;
-        return summary;
+        const taxKey = String(calculated.taxRate);
+        const taxGroup = current.taxGroups.get(taxKey) ?? {
+          taxRate: calculated.taxRate,
+          tax: 0,
+        };
+
+        taxGroup.tax += calculated.tax;
+        current.taxGroups.set(taxKey, taxGroup);
+        current.net += calculated.net;
+        current.tax += calculated.tax;
+
+        return current;
       },
-      { net: 0, tax: 0, gross: 0 },
+      { net: 0, tax: 0, taxGroups: new Map() },
     );
+
+    return {
+      net: summary.net,
+      tax: summary.tax,
+      gross: summary.net + summary.tax,
+      taxGroups: [...summary.taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate),
+    };
   }, [positions]);
 
   function updateLabel(field, value) {
@@ -135,12 +184,12 @@ export default function OfferDocumentEditor() {
     setRecipient((current) => ({ ...current, [field]: value }));
   }
 
-  function updateTaxAndBank(field, value) {
-    setTaxAndBank((current) => ({ ...current, [field]: value }));
-  }
-
   function updateDetail(field, value) {
     setDetails((current) => ({ ...current, [field]: value }));
+  }
+
+  function updateFooterLine(field, value) {
+    setFooterLines((current) => ({ ...current, [field]: value }));
   }
 
   function updatePosition(positionId, field, value) {
@@ -149,6 +198,20 @@ export default function OfferDocumentEditor() {
         position.id === positionId ? { ...position, [field]: value } : position,
       ),
     );
+  }
+
+  function openDatePicker(field) {
+    const dateInput = dateInputRefs.current[field];
+
+    if (!dateInput) {
+      return;
+    }
+
+    dateInput.focus();
+
+    if (typeof dateInput.showPicker === 'function') {
+      dateInput.showPicker();
+    }
   }
 
   function addPosition() {
@@ -218,7 +281,7 @@ export default function OfferDocumentEditor() {
   }
 
   return (
-    <div className="visual-editor">
+    <div className="visual-editor invoice-visual-editor">
       <div className="visual-toolbar" aria-label="Angebot Werkzeuge">
         <button
           className={highlightFields ? 'is-active' : undefined}
@@ -228,7 +291,9 @@ export default function OfferDocumentEditor() {
         >
           {highlightFields ? 'Vorschau' : 'Bearbeiten'}
         </button>
-        <button type="button" onClick={handlePrint}>Drucken</button>
+        <button type="button" onClick={handlePrint}>
+          Drucken
+        </button>
         <button type="button" onClick={handleCreatePdf} disabled={isExporting}>
           {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
         </button>
@@ -246,34 +311,22 @@ export default function OfferDocumentEditor() {
               value={sender.company}
               onChange={(event) => updateSender('company', event.target.value)}
             />
-            <input
-              aria-label="Absender Straße und Hausnummer"
-              value={sender.street}
-              onChange={(event) => updateSender('street', event.target.value)}
-            />
-            <div className="invoice-recipient-location">
-              <input
-                aria-label="Absender PLZ"
-                value={sender.postalCode}
-                onChange={(event) => updateSender('postalCode', event.target.value)}
-              />
-              <input
-                aria-label="Absender Stadt"
-                value={sender.city}
-                onChange={(event) => updateSender('city', event.target.value)}
-              />
-            </div>
           </div>
 
           <div className="invoice-sender-side">
             {[
-              ['email', 'E-Mail'],
-              ['phone', 'Telefon'],
-              ['fax', 'Fax'],
-              ['website', 'Website'],
-            ].map(([field, label]) => (
+              ['email', 'contactEmail', 'E-Mail'],
+              ['phone', 'contactPhone', 'Telefon'],
+              ['fax', 'contactFax', 'Fax'],
+              ['website', 'contactWebsite', 'Website'],
+            ].map(([field, labelField, label]) => (
               <label key={field}>
-                <span>{label}</span>
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${label}`}
+                  value={labels[labelField]}
+                  onChange={(event) => updateLabel(labelField, event.target.value)}
+                />
                 <input
                   aria-label={label}
                   value={sender[field]}
@@ -286,13 +339,21 @@ export default function OfferDocumentEditor() {
 
         <section className="invoice-address-row">
           <div className="invoice-recipient-fields">
-            <p className="invoice-sender-line">
-              {sender.company} | {sender.street} | {sender.postalCode} {sender.city}
-            </p>
+            <input
+              className="invoice-sender-line"
+              aria-label="Absenderzeile über Empfängeradresse"
+              value={sender.senderLine}
+              onChange={(event) => updateSender('senderLine', event.target.value)}
+            />
             <input
               aria-label="Empfänger Firma"
               value={recipient.company}
               onChange={(event) => updateRecipient('company', event.target.value)}
+            />
+            <input
+              aria-label="Empfänger Zusatz oder z. Hd."
+              value={recipient.attention}
+              onChange={(event) => updateRecipient('attention', event.target.value)}
             />
             <input
               aria-label="Ansprechpartner oder Name"
@@ -304,48 +365,64 @@ export default function OfferDocumentEditor() {
               value={recipient.street}
               onChange={(event) => updateRecipient('street', event.target.value)}
             />
-            <div className="invoice-recipient-location">
-              <input
-                aria-label="Empfänger PLZ"
-                value={recipient.postalCode}
-                onChange={(event) => updateRecipient('postalCode', event.target.value)}
-              />
-              <input
-                aria-label="Empfänger Stadt"
-                value={recipient.city}
-                onChange={(event) => updateRecipient('city', event.target.value)}
-              />
-            </div>
+            <input
+              aria-label="Empfänger PLZ und Stadt"
+              value={recipient.cityLine}
+              onChange={(event) => updateRecipient('cityLine', event.target.value)}
+            />
           </div>
 
           <div className="invoice-details">
             {[
               ['offerNumber', 'Angebotsnummer', 'text'],
               ['offerDate', 'Angebotsdatum', 'date'],
-              ['validUntil', 'Gültigkeit', 'text'],
-              ['customerNumber', 'Kundennummer', 'text'],
+              ['validUntil', 'Gültig bis', 'date'],
               ['internalNumber', 'Interne Nummer', 'text'],
               ['externalNumber', 'Externe Nummer', 'text'],
+              ['customerNumber', 'Kundennummer', 'text'],
             ].map(([field, ariaLabel, type]) => (
-              <label key={field}>
+              <label className={field === 'offerNumber' ? 'is-emphasized' : undefined} key={field}>
                 <input
                   className="document-label-input"
                   aria-label={`Beschriftung ${ariaLabel}`}
                   value={labels[field]}
                   onChange={(event) => updateLabel(field, event.target.value)}
                 />
-                <input
-                  aria-label={ariaLabel}
-                  type={type}
-                  value={details[field]}
-                  onChange={(event) => updateDetail(field, event.target.value)}
-                />
+                {type === 'date' ? (
+                  <span className="invoice-date-field">
+                    <input
+                      ref={(element) => {
+                        dateInputRefs.current[field] = element;
+                      }}
+                      className="invoice-date-input"
+                      aria-label={ariaLabel}
+                      type="date"
+                      value={details[field]}
+                      onChange={(event) => updateDetail(field, event.target.value)}
+                    />
+                    <button
+                      className="invoice-icon-action invoice-date-picker"
+                      type="button"
+                      aria-label={`${ariaLabel} auswählen`}
+                      onClick={() => openDatePicker(field)}
+                    >
+                      <span aria-hidden="true" />
+                    </button>
+                  </span>
+                ) : (
+                  <input
+                    aria-label={ariaLabel}
+                    type="text"
+                    value={details[field]}
+                    onChange={(event) => updateDetail(field, event.target.value)}
+                  />
+                )}
               </label>
             ))}
           </div>
         </section>
 
-        <h2>
+        <h2 className="invoice-document-title">
           <input
             className="document-label-input document-title-label"
             aria-label="Dokumenttitel"
@@ -355,10 +432,14 @@ export default function OfferDocumentEditor() {
         </h2>
 
         <textarea
+          ref={introTextRef}
           className="offer-flow-text invoice-flow-text"
           aria-label="Vorlauftext"
           value={introText}
-          onChange={(event) => setIntroText(event.target.value)}
+          onChange={(event) => {
+            setIntroText(event.target.value);
+            resizeTextarea(event.target);
+          }}
         />
 
         <table className="offer-position-table invoice-position-table">
@@ -388,6 +469,7 @@ export default function OfferDocumentEditor() {
           <tbody>
             {positions.map((position, index) => {
               const calculated = calculatePosition(position);
+
               return (
                 <tr key={position.id}>
                   <td>{index + 1}</td>
@@ -401,7 +483,8 @@ export default function OfferDocumentEditor() {
                   <td>
                     <input
                       aria-label={`Einzelpreis Position ${index + 1}`}
-                      type="number"
+                      inputMode="decimal"
+                      type="text"
                       value={position.unitPrice}
                       onChange={(event) => updatePosition(position.id, 'unitPrice', event.target.value)}
                     />
@@ -409,7 +492,8 @@ export default function OfferDocumentEditor() {
                   <td>
                     <input
                       aria-label={`Anzahl Position ${index + 1}`}
-                      type="number"
+                      inputMode="decimal"
+                      type="text"
                       value={position.quantity}
                       onChange={(event) => updatePosition(position.id, 'quantity', event.target.value)}
                     />
@@ -422,15 +506,16 @@ export default function OfferDocumentEditor() {
                     />
                   </td>
                   <td>
-                    <select
-                      aria-label={`Umsatzsteuer Position ${index + 1}`}
-                      value={position.taxRate}
-                      onChange={(event) => updatePosition(position.id, 'taxRate', event.target.value)}
-                    >
-                      <option value="0">0 %</option>
-                      <option value="7">7 %</option>
-                      <option value="19">19 %</option>
-                    </select>
+                    <span className="invoice-tax-rate-cell">
+                      <input
+                        aria-label={`Umsatzsteuer Position ${index + 1}`}
+                        inputMode="decimal"
+                        type="text"
+                        value={position.taxRate}
+                        onChange={(event) => updatePosition(position.id, 'taxRate', event.target.value)}
+                      />
+                      <span>%</span>
+                    </span>
                   </td>
                   <td>{formatCurrency(calculated.net)}</td>
                   <td>
@@ -440,7 +525,7 @@ export default function OfferDocumentEditor() {
                       type="button"
                       onClick={() => removePosition(position.id)}
                     >
-                      ×
+                      &times;
                     </button>
                   </td>
                 </tr>
@@ -463,15 +548,20 @@ export default function OfferDocumentEditor() {
             />
             <strong>{formatCurrency(totals.net)}</strong>
           </div>
-          <div>
-            <input
-              className="document-label-input"
-              aria-label="Beschriftung Umsatzsteuer"
-              value={labels.taxAmount}
-              onChange={(event) => updateLabel('taxAmount', event.target.value)}
-            />
-            <strong>{formatCurrency(totals.tax)}</strong>
-          </div>
+          {totals.taxGroups.map((group) => (
+            <div key={group.taxRate}>
+              <span className="document-summary-label">
+                <input
+                  className="document-label-input"
+                  aria-label="Beschriftung Umsatzsteuer"
+                  value={labels.taxAmount}
+                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
+                />
+                <span>{formatPercent(group.taxRate)}%</span>
+              </span>
+              <strong>{formatCurrency(group.tax)}</strong>
+            </div>
+          ))}
           <div>
             <input
               className="document-label-input"
@@ -484,29 +574,64 @@ export default function OfferDocumentEditor() {
         </aside>
 
         <textarea
+          ref={closingTextRef}
           className="offer-flow-text invoice-flow-text"
           aria-label="Nachlauftext"
           value={closingText}
-          onChange={(event) => setClosingText(event.target.value)}
+          onChange={(event) => {
+            setClosingText(event.target.value);
+            resizeTextarea(event.target);
+          }}
         />
 
-        <footer className="invoice-footer-data" aria-label="Fußbereich mit Steuer- und Bankdaten">
-          {[
-            ['USt-IdNr.', 'vatId'],
-            ['Steuernummer', 'taxNumber'],
-            ['Bankname', 'bankName'],
-            ['IBAN', 'iban'],
-            ['BIC', 'bic'],
-          ].map(([label, field]) => (
-            <label key={field}>
-              <span>{label}</span>
+        <footer className="invoice-footer-data" aria-label="Fußbereich">
+          <section>
+            {[
+              ['companyName', 'Firma'],
+              ['companyStreet', 'Straße und Hausnummer'],
+              ['companyCity', 'PLZ und Stadt'],
+              ['companyExtra', 'Zusatzzeile Firma'],
+            ].map(([field, label]) => (
               <input
+                key={field}
                 aria-label={label}
-                value={taxAndBank[field]}
-                onChange={(event) => updateTaxAndBank(field, event.target.value)}
+                value={footerLines[field]}
+                onChange={(event) => updateFooterLine(field, event.target.value)}
               />
-            </label>
-          ))}
+            ))}
+          </section>
+
+          <section>
+            {[
+              ['vatId', 'USt-IdNr.'],
+              ['taxNumber', 'Steuernummer'],
+              ['commercialRegister', 'Handelsregister'],
+              ['managingDirector', 'Geschäftsführer'],
+            ].map(([field, label]) => (
+              <input
+                key={field}
+                aria-label={label}
+                value={footerLines[field]}
+                onChange={(event) => updateFooterLine(field, event.target.value)}
+              />
+            ))}
+          </section>
+
+          <section>
+            {[
+              ['bankName', 'Bankname'],
+              ['iban', 'IBAN'],
+              ['bic', 'BIC'],
+              ['bankExtra', 'Zusatzzeile Bank'],
+            ].map(([field, label]) => (
+              <input
+                key={field}
+                aria-label={label}
+                value={footerLines[field]}
+                onChange={(event) => updateFooterLine(field, event.target.value)}
+              />
+            ))}
+          </section>
         </footer>
       </article>
     </div>
