@@ -3,7 +3,13 @@ import { documentSections } from '../data/documents.js';
 export default function DocumentSidebar({ activeId, activeParentId, onSelect }) {
   return (
     <aside className="document-sidebar" aria-label="Dokumentnavigation">
-      <div className="sidebar-title">Dokumente</div>
+      <button
+        className={activeId === 'overview' ? 'sidebar-title is-active' : 'sidebar-title'}
+        type="button"
+        onClick={() => onSelect('overview')}
+      >
+        Dokumente
+      </button>
       <nav className="sidebar-nav">
         {documentSections.map((item) => {
           const targetId = item.children?.[0]?.id ?? item.id;
