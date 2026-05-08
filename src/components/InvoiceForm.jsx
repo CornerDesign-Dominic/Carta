@@ -221,30 +221,32 @@ function FieldActions({ canMove = false, isHidden, isFirst, isLast, label, onMov
   );
 }
 
-function HiddenFieldActions({ block, definitions, hiddenFields, onToggle }) {
+function HiddenFieldActions({ block, className = '', definitions, hiddenFields, onToggle }) {
   if (hiddenFields.length === 0) {
     return null;
   }
 
   return (
-    <span className="invoice-hidden-field-actions" aria-label="Ausgeblendete Felder">
-      {hiddenFields.map((field) => {
-        const definition = definitions.find((entry) => entry.field === field);
-        const label = definition?.label ?? field;
+    <div className={`invoice-hidden-field-row${className ? ` ${className}` : ''}`}>
+      <span className="invoice-hidden-field-actions" aria-label="Ausgeblendete Felder">
+        {hiddenFields.map((field) => {
+          const definition = definitions.find((entry) => entry.field === field);
+          const label = definition?.label ?? field;
 
-        return (
-          <button
-            key={`${block}-${field}`}
-            type="button"
-            aria-label={`${label} einblenden`}
-            title={`${label} einblenden`}
-            onClick={() => onToggle(block, field)}
-          >
-            <span className="invoice-icon-eye-off" aria-hidden="true" />
-          </button>
-        );
-      })}
-    </span>
+          return (
+            <button
+              key={`${block}-${field}`}
+              type="button"
+              aria-label={`${label} einblenden`}
+              title={`${label} einblenden`}
+              onClick={() => onToggle(block, field)}
+            >
+              <span className="invoice-icon-eye-off" aria-hidden="true" />
+            </button>
+          );
+        })}
+      </span>
+    </div>
   );
 }
 
@@ -372,6 +374,12 @@ export default function InvoiceForm() {
     return fieldConfig[block].order
       .map((field) => definitions.find((definition) => definition.field === field))
       .filter(Boolean);
+  }
+
+  function getHiddenFields(block, definitions) {
+    return getOrderedDefinitions(block, definitions)
+      .filter((definition) => isFieldHidden(block, definition.field))
+      .map((definition) => definition.field);
   }
 
   function toggleConfiguredField(block, field) {
@@ -766,7 +774,7 @@ export default function InvoiceForm() {
             <HiddenFieldActions
               block="contact"
               definitions={contactFieldDefinitions}
-              hiddenFields={fieldConfig.contact.hidden}
+              hiddenFields={getHiddenFields('contact', contactFieldDefinitions)}
               onToggle={toggleConfiguredField}
             />
           </div>
@@ -884,7 +892,7 @@ export default function InvoiceForm() {
             <HiddenFieldActions
               block="details"
               definitions={detailFieldDefinitions}
-              hiddenFields={fieldConfig.details.hidden}
+              hiddenFields={getHiddenFields('details', detailFieldDefinitions)}
               onToggle={toggleConfiguredField}
             />
           </div>
@@ -899,17 +907,13 @@ export default function InvoiceForm() {
           />
         </h2>
 
-        <div className="invoice-text-hidden-anchor">
-          <HiddenFieldActions
-            block="texts"
-            definitions={[
-              { field: 'introText', label: 'Vorlauftext' },
-              { field: 'closingText', label: 'Nachlauftext' },
-            ]}
-            hiddenFields={fieldConfig.texts.hidden}
-            onToggle={toggleConfiguredField}
-          />
-        </div>
+        <HiddenFieldActions
+          block="texts"
+          className="invoice-flow-hidden-row"
+          definitions={[{ field: 'introText', label: 'Vorlauftext' }]}
+          hiddenFields={fieldConfig.texts.hidden.filter((field) => field === 'introText')}
+          onToggle={toggleConfiguredField}
+        />
 
         {!isFieldHidden('texts', 'introText') && (
           <div className="invoice-flow-config-row">
@@ -1062,6 +1066,14 @@ export default function InvoiceForm() {
           </div>
         </aside>
 
+        <HiddenFieldActions
+          block="texts"
+          className="invoice-flow-hidden-row"
+          definitions={[{ field: 'closingText', label: 'Nachlauftext' }]}
+          hiddenFields={fieldConfig.texts.hidden.filter((field) => field === 'closingText')}
+          onToggle={toggleConfiguredField}
+        />
+
         {!isFieldHidden('texts', 'closingText') && (
           <div className="invoice-flow-config-row">
             <textarea
@@ -1130,7 +1142,7 @@ export default function InvoiceForm() {
             <HiddenFieldActions
               block="footerMiddle"
               definitions={footerMiddleDefinitions}
-              hiddenFields={fieldConfig.footerMiddle.hidden}
+              hiddenFields={getHiddenFields('footerMiddle', footerMiddleDefinitions)}
               onToggle={toggleConfiguredField}
             />
           </section>

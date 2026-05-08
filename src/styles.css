@@ -1317,7 +1317,8 @@ h1 {
 }
 
 .invoice-config-row,
-.invoice-flow-config-row {
+.invoice-flow-config-row,
+.invoice-hidden-field-row {
   position: relative;
   min-width: 0;
 }
@@ -1328,11 +1329,6 @@ h1 {
 
 .invoice-flow-config-row {
   display: grid;
-}
-
-.invoice-text-hidden-anchor {
-  position: relative;
-  height: 0;
 }
 
 .invoice-field-actions,
@@ -1353,19 +1349,19 @@ h1 {
 }
 
 .invoice-hidden-field-actions {
-  top: calc(100% + 3px);
+  top: 0;
   right: calc(100% + 7px);
   flex-direction: column;
 }
 
-.invoice-flow-config-row .invoice-field-actions,
-.invoice-text-hidden-anchor .invoice-hidden-field-actions {
-  right: auto;
-  left: -30px;
+.invoice-hidden-field-row {
+  height: 0;
 }
 
-.invoice-text-hidden-anchor .invoice-hidden-field-actions {
-  top: 0;
+.invoice-flow-config-row .invoice-field-actions,
+.invoice-flow-hidden-row .invoice-hidden-field-actions {
+  right: auto;
+  left: -30px;
 }
 
 .invoice-field-actions button,
