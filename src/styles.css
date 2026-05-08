@@ -185,8 +185,8 @@ h1 {
   max-width: 820px;
   margin-bottom: 24px;
   color: var(--ink);
-  font-size: clamp(2.25rem, 4.6vw, 4.05rem);
-  line-height: 1.05;
+  font-size: clamp(1.85rem, 3.2vw, 3rem);
+  line-height: 1.1;
   letter-spacing: 0;
 }
 
@@ -281,15 +281,15 @@ h1 {
   top: 28px;
   left: -208px;
   width: 190px;
-  padding: 18px 8px 18px 0;
+  padding: 16px 2px 16px 0;
   color: var(--muted);
 }
 
 .sidebar-title {
   display: block;
   width: 100%;
-  margin: 0 0 18px;
-  padding: 0 12px;
+  margin: 0 0 12px;
+  padding: 0 10px;
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 760;
@@ -306,19 +306,19 @@ h1 {
 
 .sidebar-nav {
   display: grid;
-  gap: 6px;
+  gap: 3px;
 }
 
 .sidebar-group {
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 
 .sidebar-nav button,
 .sidebar-subnav button {
   width: 100%;
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 5px;
+  padding: 9px 10px;
   color: var(--muted);
   text-align: left;
   overflow-wrap: anywhere;
@@ -343,13 +343,13 @@ h1 {
 
 .sidebar-subnav {
   display: grid;
-  gap: 3px;
-  padding-left: 18px;
+  gap: 2px;
+  padding-left: 14px;
 }
 
 .sidebar-subnav button {
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: 5px;
+  padding: 7px 10px;
   color: var(--muted);
   font-size: 0.88rem;
 }
@@ -1249,6 +1249,38 @@ h1 {
   text-align: center;
 }
 
+.reminder-invoice-table th:nth-child(1),
+.reminder-invoice-table td:nth-child(1) {
+  width: 24%;
+}
+
+.reminder-invoice-table th:nth-child(2),
+.reminder-invoice-table td:nth-child(2) {
+  width: 24%;
+}
+
+.reminder-invoice-table th:nth-child(3),
+.reminder-invoice-table td:nth-child(3) {
+  width: 20%;
+  text-align: left;
+}
+
+.reminder-invoice-table th:nth-child(4),
+.reminder-invoice-table td:nth-child(4) {
+  width: 28%;
+  text-align: right;
+}
+
+.reminder-invoice-table th:nth-child(5),
+.reminder-invoice-table td:nth-child(5) {
+  width: 4%;
+  text-align: center;
+}
+
+.reminder-invoice-table td:nth-child(4) input {
+  text-align: right;
+}
+
 .invoice-sheet .offer-remove,
 .invoice-sheet .offer-add-position {
   opacity: 0;
@@ -1273,6 +1305,16 @@ h1 {
 
 .invoice-document-summary div:last-child {
   font-size: 0.92rem;
+}
+
+.reminder-document-summary .reminder-summary-value {
+  width: 92px;
+  min-height: 18px;
+  padding: 0;
+  color: #232320;
+  font-weight: 760;
+  line-height: 1.12;
+  text-align: right;
 }
 
 .invoice-footer-data {
@@ -2137,15 +2179,41 @@ h1 {
     margin: 0;
   }
 
+  html,
   body.document-print-mode {
+    width: 210mm;
+    height: 297mm;
+    min-height: 0;
+    margin: 0;
     background: #ffffff;
+    overflow: hidden;
   }
 
   body.document-print-mode * {
     visibility: hidden;
   }
 
-  .visual-toolbar {
+  body.document-print-mode .site-shell,
+  body.document-print-mode .site-main,
+  body.document-print-mode .documents-layout,
+  body.document-print-mode .paper-page,
+  body.document-print-mode .document-paper,
+  body.document-print-mode .visual-editor {
+    display: block;
+    width: 0;
+    height: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    box-shadow: none;
+  }
+
+  body.document-print-mode .site-header,
+  body.document-print-mode .site-footer,
+  body.document-print-mode .document-sidebar,
+  body.document-print-mode .visual-toolbar {
     display: none;
   }
 
@@ -2159,10 +2227,24 @@ h1 {
     top: 0;
     left: 0;
     width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    height: 297mm;
     min-height: 297mm;
+    max-height: 297mm;
     margin: 0;
     padding: 19mm 17mm 16mm 19mm;
+    overflow: hidden;
+    border: 0;
     box-shadow: none;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  body.document-print-mode .offer-sheet .invoice-icon-action,
+  body.document-print-mode .offer-sheet .offer-remove,
+  body.document-print-mode .offer-sheet .offer-add-position {
+    display: none;
   }
 
   .offer-sheet input,

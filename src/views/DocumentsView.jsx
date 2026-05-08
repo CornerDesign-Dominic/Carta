@@ -47,6 +47,7 @@ export default function DocumentsView() {
   const [activeDocumentId, setActiveDocumentId] = useState('overview');
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
+  const showDocumentDescription = activeDocumentId !== 'write-invoice' && activeDocument?.description;
 
   return (
     <main className="documents-layout">
@@ -63,7 +64,7 @@ export default function DocumentsView() {
           <>
             <p className="eyebrow">DOKUMENTE</p>
             <h1 id="document-title">{activeDocument.title}</h1>
-            {activeDocument.description && (
+            {showDocumentDescription && (
               <p className="intro document-intro">{activeDocument.description}</p>
             )}
 
