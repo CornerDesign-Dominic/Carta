@@ -36,6 +36,63 @@ function createPosition() {
   };
 }
 
+const defaultPosition = {
+  description: 'Leistung beschreiben',
+  unitPrice: '0',
+  quantity: '1',
+  unit: 'Stk.',
+  taxRate: '19',
+};
+
+const defaultSender = {
+  company: 'Belege24 Muster GmbH',
+  senderLine: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
+  street: 'Musterstraße 12',
+  cityLine: '10115 Berlin',
+  email: 'kontakt@belege24.com',
+  phone: '+49 30 123456',
+  fax: '+49 30 123457',
+  website: 'www.belege24.com',
+};
+
+const defaultFooterLines = {
+  companyName: 'Belege24 Muster GmbH',
+  companyStreet: 'Musterstraße 12',
+  companyCity: '10115 Berlin',
+  companyExtra: '',
+  vatId: 'USt-IdNr.: DE123456789',
+  taxNumber: 'Steuernummer: 12/345/67890',
+  commercialRegister: 'HRB 123456',
+  managingDirector: 'Geschäftsführer: Max Mustermann',
+  bankName: 'Bankname: Musterbank',
+  iban: 'IBAN: DE00 0000 0000 0000 0000 00',
+  bic: 'BIC: COBADEFFXXX',
+  bankExtra: '',
+};
+
+const defaultRecipient = {
+  company: 'Beispielkunde GmbH',
+  attention: 'z. Hd. Frau Beispiel',
+  name: 'Buchhaltung',
+  street: 'Kundenstraße 8',
+  cityLine: '20095 Hamburg',
+};
+
+const defaultDetails = {
+  invoiceNumber: 'RE-2026-001',
+  invoiceDate: '2026-05-07',
+  serviceDate: '2026-05-07',
+  internalNumber: 'INT-1001',
+  externalNumber: 'EXT-4711',
+  customerNumber: 'K-2048',
+};
+
+const defaultIntroText =
+  'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:';
+
+const defaultClosingText =
+  'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.';
+
 function toNumber(value) {
   const parsed = Number.parseFloat(String(value).replace(',', '.'));
   return Number.isFinite(parsed) ? parsed : 0;
@@ -79,6 +136,38 @@ function getInlineValueWidth(value) {
   return `${Math.max(String(value).length, 4)}ch`;
 }
 
+function getFormValue(value, placeholder) {
+  return value === placeholder ? '' : value;
+}
+
+function InvoicePanelInput({ label, value, placeholder, onChange, type = 'text', inputMode }) {
+  return (
+    <label className="invoice-panel-field">
+      <span>{label}</span>
+      <input
+        inputMode={inputMode}
+        placeholder={placeholder}
+        type={type}
+        value={getFormValue(value, placeholder)}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
+  );
+}
+
+function InvoicePanelTextarea({ label, value, placeholder, onChange }) {
+  return (
+    <label className="invoice-panel-field invoice-panel-field-wide">
+      <span>{label}</span>
+      <textarea
+        placeholder={placeholder}
+        value={getFormValue(value, placeholder)}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
+  );
+}
+
 function createPdfFileName(type, number) {
   const cleanType = String(type || 'rechnung')
     .trim()
@@ -97,65 +186,18 @@ function createPdfFileName(type, number) {
 export default function InvoiceForm() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const sheetRef = useRef(null);
   const introTextRef = useRef(null);
   const closingTextRef = useRef(null);
   const dateInputRefs = useRef({});
   const [labels, setLabels] = useState(initialLabels);
-  const [sender, setSender] = useState({
-    company: 'Belege24 Muster GmbH',
-    senderLine: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
-    street: 'Musterstraße 12',
-    cityLine: '10115 Berlin',
-    email: 'kontakt@belege24.com',
-    phone: '+49 30 123456',
-    fax: '+49 30 123457',
-    website: 'www.belege24.com',
-  });
-  const [taxAndBank, setTaxAndBank] = useState({
-    vatId: 'DE123456789',
-    taxNumber: '12/345/67890',
-    commercialRegister: 'HRB 123456',
-    managingDirector: 'Max Mustermann',
-    bankName: 'Musterbank',
-    iban: 'DE00 0000 0000 0000 0000 00',
-    bic: 'COBADEFFXXX',
-  });
-  const [footerLines, setFooterLines] = useState({
-    companyName: 'Belege24 Muster GmbH',
-    companyStreet: 'Musterstraße 12',
-    companyCity: '10115 Berlin',
-    companyExtra: '',
-    vatId: 'USt-IdNr.: DE123456789',
-    taxNumber: 'Steuernummer: 12/345/67890',
-    commercialRegister: 'HRB 123456',
-    managingDirector: 'Geschäftsführer: Max Mustermann',
-    bankName: 'Bankname: Musterbank',
-    iban: 'IBAN: DE00 0000 0000 0000 0000 00',
-    bic: 'BIC: COBADEFFXXX',
-    bankExtra: '',
-  });
-  const [recipient, setRecipient] = useState({
-    company: 'Beispielkunde GmbH',
-    attention: 'z. Hd. Frau Beispiel',
-    name: 'Buchhaltung',
-    street: 'Kundenstraße 8',
-    cityLine: '20095 Hamburg',
-  });
-  const [details, setDetails] = useState({
-    invoiceNumber: 'RE-2026-001',
-    invoiceDate: '2026-05-07',
-    serviceDate: '2026-05-07',
-    internalNumber: 'INT-1001',
-    externalNumber: 'EXT-4711',
-    customerNumber: 'K-2048',
-  });
-  const [introText, setIntroText] = useState(
-    'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
-  );
-  const [closingText, setClosingText] = useState(
-    'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.',
-  );
+  const [sender, setSender] = useState(defaultSender);
+  const [footerLines, setFooterLines] = useState(defaultFooterLines);
+  const [recipient, setRecipient] = useState(defaultRecipient);
+  const [details, setDetails] = useState(defaultDetails);
+  const [introText, setIntroText] = useState(defaultIntroText);
+  const [closingText, setClosingText] = useState(defaultClosingText);
   const [positions, setPositions] = useState([createPosition()]);
 
   useEffect(() => {
@@ -221,10 +263,6 @@ export default function InvoiceForm() {
     setRecipient((current) => ({ ...current, [field]: value }));
   }
 
-  function updateTaxAndBank(field, value) {
-    setTaxAndBank((current) => ({ ...current, [field]: value }));
-  }
-
   function updateFooterLine(field, value) {
     setFooterLines((current) => ({ ...current, [field]: value }));
   }
@@ -280,6 +318,247 @@ export default function InvoiceForm() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
+      <section className="invoice-form-panel" aria-label="Rechnungsformular">
+        <button
+          className="invoice-form-panel-toggle"
+          type="button"
+          aria-expanded={isFormPanelOpen}
+          onClick={() => setIsFormPanelOpen((current) => !current)}
+        >
+          <span>{isFormPanelOpen ? 'Formular schließen' : 'Formular öffnen'}</span>
+          <span aria-hidden="true">{isFormPanelOpen ? '−' : '+'}</span>
+        </button>
+
+        {isFormPanelOpen && (
+          <div className="invoice-form-panel-body">
+            <div className="invoice-panel-section">
+              <h3>Absender</h3>
+              <div className="invoice-panel-grid">
+                <InvoicePanelInput
+                  label="Firma"
+                  placeholder={defaultSender.company}
+                  value={sender.company}
+                  onChange={(value) => updateSender('company', value)}
+                />
+                <InvoicePanelInput
+                  label="Absenderzeile"
+                  placeholder={defaultSender.senderLine}
+                  value={sender.senderLine}
+                  onChange={(value) => updateSender('senderLine', value)}
+                />
+              </div>
+            </div>
+
+            <div className="invoice-panel-section">
+              <h3>Kontakt</h3>
+              <div className="invoice-panel-grid">
+                <InvoicePanelInput
+                  label="E-Mail"
+                  placeholder={defaultSender.email}
+                  value={sender.email}
+                  onChange={(value) => updateSender('email', value)}
+                />
+                <InvoicePanelInput
+                  label="Telefon"
+                  placeholder={defaultSender.phone}
+                  value={sender.phone}
+                  onChange={(value) => updateSender('phone', value)}
+                />
+                <InvoicePanelInput
+                  label="Fax"
+                  placeholder={defaultSender.fax}
+                  value={sender.fax}
+                  onChange={(value) => updateSender('fax', value)}
+                />
+                <InvoicePanelInput
+                  label="Website"
+                  placeholder={defaultSender.website}
+                  value={sender.website}
+                  onChange={(value) => updateSender('website', value)}
+                />
+              </div>
+            </div>
+
+            <div className="invoice-panel-section">
+              <h3>Empfänger</h3>
+              <div className="invoice-panel-grid">
+                <InvoicePanelInput
+                  label="Firma"
+                  placeholder={defaultRecipient.company}
+                  value={recipient.company}
+                  onChange={(value) => updateRecipient('company', value)}
+                />
+                <InvoicePanelInput
+                  label="Zusatz"
+                  placeholder={defaultRecipient.attention}
+                  value={recipient.attention}
+                  onChange={(value) => updateRecipient('attention', value)}
+                />
+                <InvoicePanelInput
+                  label="Name"
+                  placeholder={defaultRecipient.name}
+                  value={recipient.name}
+                  onChange={(value) => updateRecipient('name', value)}
+                />
+                <InvoicePanelInput
+                  label="Straße"
+                  placeholder={defaultRecipient.street}
+                  value={recipient.street}
+                  onChange={(value) => updateRecipient('street', value)}
+                />
+                <InvoicePanelInput
+                  label="PLZ Ort"
+                  placeholder={defaultRecipient.cityLine}
+                  value={recipient.cityLine}
+                  onChange={(value) => updateRecipient('cityLine', value)}
+                />
+              </div>
+            </div>
+
+            <div className="invoice-panel-section">
+              <h3>Rechnungsdaten</h3>
+              <div className="invoice-panel-grid">
+                <InvoicePanelInput
+                  label="Rechnungsnummer"
+                  placeholder={defaultDetails.invoiceNumber}
+                  value={details.invoiceNumber}
+                  onChange={(value) => updateDetail('invoiceNumber', value)}
+                />
+                <InvoicePanelInput
+                  label="Rechnungsdatum"
+                  placeholder={defaultDetails.invoiceDate}
+                  value={details.invoiceDate}
+                  onChange={(value) => updateDetail('invoiceDate', value)}
+                />
+                <InvoicePanelInput
+                  label="Leistungsdatum"
+                  placeholder={defaultDetails.serviceDate}
+                  value={details.serviceDate}
+                  onChange={(value) => updateDetail('serviceDate', value)}
+                />
+                <InvoicePanelInput
+                  label="Interne Nummer"
+                  placeholder={defaultDetails.internalNumber}
+                  value={details.internalNumber}
+                  onChange={(value) => updateDetail('internalNumber', value)}
+                />
+                <InvoicePanelInput
+                  label="Externe Nummer"
+                  placeholder={defaultDetails.externalNumber}
+                  value={details.externalNumber}
+                  onChange={(value) => updateDetail('externalNumber', value)}
+                />
+                <InvoicePanelInput
+                  label="Kundennummer"
+                  placeholder={defaultDetails.customerNumber}
+                  value={details.customerNumber}
+                  onChange={(value) => updateDetail('customerNumber', value)}
+                />
+              </div>
+            </div>
+
+            <div className="invoice-panel-section invoice-panel-section-wide">
+              <h3>Positionen</h3>
+              <div className="invoice-panel-positions">
+                {positions.map((position, index) => (
+                  <div className="invoice-panel-position" key={position.id}>
+                    <span>{index + 1}</span>
+                    <InvoicePanelInput
+                      label="Leistung"
+                      placeholder={defaultPosition.description}
+                      value={position.description}
+                      onChange={(value) => updatePosition(position.id, 'description', value)}
+                    />
+                    <InvoicePanelInput
+                      inputMode="decimal"
+                      label="Einzelpreis"
+                      placeholder={defaultPosition.unitPrice}
+                      value={position.unitPrice}
+                      onChange={(value) => updatePosition(position.id, 'unitPrice', value)}
+                    />
+                    <InvoicePanelInput
+                      inputMode="decimal"
+                      label="Anzahl"
+                      placeholder={defaultPosition.quantity}
+                      value={position.quantity}
+                      onChange={(value) => updatePosition(position.id, 'quantity', value)}
+                    />
+                    <InvoicePanelInput
+                      label="Einheit"
+                      placeholder={defaultPosition.unit}
+                      value={position.unit}
+                      onChange={(value) => updatePosition(position.id, 'unit', value)}
+                    />
+                    <InvoicePanelInput
+                      inputMode="decimal"
+                      label="USt."
+                      placeholder={defaultPosition.taxRate}
+                      value={position.taxRate}
+                      onChange={(value) => updatePosition(position.id, 'taxRate', value)}
+                    />
+                    <button
+                      className="invoice-panel-remove"
+                      type="button"
+                      aria-label={`Position ${index + 1} löschen`}
+                      onClick={() => removePosition(position.id)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button className="invoice-panel-add" type="button" onClick={addPosition}>
+                + Position hinzufügen
+              </button>
+            </div>
+
+            <div className="invoice-panel-section invoice-panel-section-wide">
+              <h3>Texte</h3>
+              <div className="invoice-panel-grid invoice-panel-grid-two">
+                <InvoicePanelTextarea
+                  label="Vorlauftext"
+                  placeholder={defaultIntroText}
+                  value={introText}
+                  onChange={setIntroText}
+                />
+                <InvoicePanelTextarea
+                  label="Nachlauftext"
+                  placeholder={defaultClosingText}
+                  value={closingText}
+                  onChange={setClosingText}
+                />
+              </div>
+            </div>
+
+            <div className="invoice-panel-section invoice-panel-section-wide">
+              <h3>Fußdaten</h3>
+              <div className="invoice-panel-grid">
+                {[
+                  ['companyName', 'Firma', defaultFooterLines.companyName],
+                  ['companyStreet', 'Straße', defaultFooterLines.companyStreet],
+                  ['companyCity', 'PLZ Ort', defaultFooterLines.companyCity],
+                  ['vatId', 'USt-IdNr.', defaultFooterLines.vatId],
+                  ['taxNumber', 'Steuernummer', defaultFooterLines.taxNumber],
+                  ['commercialRegister', 'Handelsregister', defaultFooterLines.commercialRegister],
+                  ['managingDirector', 'Geschäftsführer', defaultFooterLines.managingDirector],
+                  ['bankName', 'Bankname', defaultFooterLines.bankName],
+                  ['iban', 'IBAN', defaultFooterLines.iban],
+                  ['bic', 'BIC', defaultFooterLines.bic],
+                ].map(([field, label, placeholder]) => (
+                  <InvoicePanelInput
+                    key={field}
+                    label={label}
+                    placeholder={placeholder}
+                    value={footerLines[field]}
+                    onChange={(value) => updateFooterLine(field, value)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
       <div className="visual-toolbar" aria-label="Rechnung Werkzeuge">
         <button
           className={highlightFields ? 'is-active' : undefined}

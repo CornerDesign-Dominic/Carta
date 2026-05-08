@@ -917,6 +917,164 @@ h1 {
   box-shadow: none;
 }
 
+.invoice-form-panel {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 794px);
+  margin: 0 auto;
+}
+
+.invoice-form-panel-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  padding: 9px 12px;
+  background: #f8f7f2;
+  color: var(--accent-deep);
+  font-size: 0.86rem;
+  font-weight: 680;
+  text-align: left;
+}
+
+.invoice-form-panel-toggle:hover {
+  border-color: rgba(206, 200, 188, 0.9);
+  background: #fffefa;
+}
+
+.invoice-form-panel-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  background: rgba(255, 254, 250, 0.72);
+}
+
+.invoice-panel-section {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.invoice-panel-section-wide {
+  grid-column: 1 / -1;
+}
+
+.invoice-panel-section h3 {
+  margin: 0;
+  color: var(--accent-deep);
+  font-size: 0.76rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.invoice-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 10px;
+  min-width: 0;
+}
+
+.invoice-panel-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.invoice-panel-field {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.invoice-panel-field span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.invoice-panel-field input,
+.invoice-panel-field textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(206, 200, 188, 0.72);
+  border-radius: 4px;
+  padding: 7px 8px;
+  background: #fffefa;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.84rem;
+  line-height: 1.2;
+}
+
+.invoice-panel-field textarea {
+  min-height: 62px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.invoice-panel-field input::placeholder,
+.invoice-panel-field textarea::placeholder {
+  color: rgba(105, 104, 100, 0.64);
+}
+
+.invoice-panel-field input:focus,
+.invoice-panel-field textarea:focus {
+  border-color: rgba(79, 111, 104, 0.42);
+  box-shadow: 0 0 0 2px rgba(79, 111, 104, 0.08);
+  outline: none;
+}
+
+.invoice-panel-positions {
+  display: grid;
+  gap: 6px;
+}
+
+.invoice-panel-position {
+  display: grid;
+  grid-template-columns: 22px minmax(160px, 1.7fr) minmax(84px, 0.78fr) minmax(70px, 0.6fr) minmax(64px, 0.58fr) minmax(58px, 0.52fr) 28px;
+  gap: 6px;
+  align-items: end;
+  min-width: 0;
+}
+
+.invoice-panel-position > span {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 720;
+}
+
+.invoice-panel-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(138, 63, 56, 0.22);
+  border-radius: 999px;
+  background: rgba(138, 63, 56, 0.06);
+  color: #7c332d;
+  font-size: 15px;
+  font-weight: 780;
+  line-height: 1;
+}
+
+.invoice-panel-add {
+  justify-self: start;
+  border: 1px solid rgba(79, 111, 104, 0.22);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(79, 111, 104, 0.06);
+  color: #3f5d57;
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
 .invoice-sheet {
   display: flex;
   flex-direction: column;
@@ -2165,6 +2323,20 @@ h1 {
     flex-wrap: wrap;
   }
 
+  .invoice-form-panel-body,
+  .invoice-panel-grid,
+  .invoice-panel-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .invoice-panel-position {
+    grid-template-columns: 22px repeat(2, minmax(0, 1fr)) 28px;
+  }
+
+  .invoice-panel-position .invoice-panel-field:first-of-type {
+    grid-column: 2 / 4;
+  }
+
   .offer-position-table {
     display: block;
     overflow-x: auto;
@@ -2213,6 +2385,7 @@ h1 {
   body.document-print-mode .site-header,
   body.document-print-mode .site-footer,
   body.document-print-mode .document-sidebar,
+  body.document-print-mode .invoice-form-panel,
   body.document-print-mode .visual-toolbar {
     display: none;
   }
