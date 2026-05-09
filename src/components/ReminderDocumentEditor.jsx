@@ -263,15 +263,28 @@ export default function ReminderDocumentEditor() {
         <button
           className={highlightFields ? 'is-active' : undefined}
           type="button"
+          title="Bearbeitbare Felder im Dokument anzeigen"
+          aria-label="Bearbeitbare Felder im Dokument anzeigen"
           aria-pressed={highlightFields}
           onClick={() => setHighlightFields((current) => !current)}
         >
           {highlightFields ? 'Vorschau' : 'Bearbeiten'}
         </button>
-        <button type="button" onClick={handlePrint}>
+        <button
+          type="button"
+          title="Druckdialog öffnen"
+          aria-label="Druckdialog öffnen"
+          onClick={handlePrint}
+        >
           Drucken
         </button>
-        <button type="button" onClick={handleCreatePdf} disabled={isExporting}>
+        <button
+          type="button"
+          title="PDF-Datei erstellen"
+          aria-label="PDF-Datei erstellen"
+          onClick={handleCreatePdf}
+          disabled={isExporting}
+        >
           {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
         </button>
       </div>

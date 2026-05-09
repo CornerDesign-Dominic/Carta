@@ -404,6 +404,41 @@ h1 {
   line-height: 1.62;
 }
 
+.document-actions-help {
+  display: grid;
+  gap: 10px;
+  max-width: 900px;
+  padding: 16px 18px;
+  border: 1px solid rgba(206, 200, 188, 0.54);
+  border-radius: 6px;
+  background: rgba(255, 254, 250, 0.46);
+}
+
+.document-actions-help h2 {
+  margin: 0;
+  color: var(--accent-deep);
+  font-size: 0.94rem;
+  line-height: 1.3;
+}
+
+.document-actions-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 18px;
+}
+
+.document-actions-list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.document-actions-list strong {
+  color: var(--ink);
+  font-weight: 680;
+}
+
 .document-overview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2770,6 +2805,7 @@ h1 {
   .feature-grid,
   .foundation-section,
   .document-usage-grid,
+  .document-actions-list,
   .document-overview-grid,
   .form-grid,
   .position-grid,

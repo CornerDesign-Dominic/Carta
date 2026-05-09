@@ -28,6 +28,28 @@ function DocumentOverview({ onSelect }) {
         'Vor dem Versand sollten Angaben wie Empfänger, Nummern, Beträge, Steuerdaten und Bankverbindung geprüft werden. Die Generatoren helfen beim Aufbau, ersetzen aber keine fachliche Prüfung im Einzelfall.',
     },
   ];
+  const actionSections = [
+    {
+      title: 'Bearbeiten',
+      text: 'Bearbeitbare Felder im Dokument anzeigen',
+    },
+    {
+      title: 'Vorlage laden',
+      text: 'Gespeicherte JSON Vorlage laden',
+    },
+    {
+      title: 'Vorlage erstellen',
+      text: 'Aktuelle Daten als JSON Vorlage speichern',
+    },
+    {
+      title: 'Drucken',
+      text: 'Druckdialog öffnen',
+    },
+    {
+      title: 'PDF',
+      text: 'PDF-Datei erstellen',
+    },
+  ];
 
   return (
     <>
@@ -49,6 +71,17 @@ function DocumentOverview({ onSelect }) {
           </section>
         ))}
       </div>
+
+      <section className="document-actions-help" aria-label="Kurze Erklärung der Aktionen">
+        <h2>Aktionen im Generator</h2>
+        <div className="document-actions-list">
+          {actionSections.map((action) => (
+            <p key={action.title}>
+              <strong>{action.title}:</strong> {action.text}
+            </p>
+          ))}
+        </div>
+      </section>
 
       <div className="document-overview-grid" aria-label="Dokumentgeneratoren">
         {documentSections.map((section) => {

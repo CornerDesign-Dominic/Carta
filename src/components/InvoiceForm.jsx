@@ -867,21 +867,44 @@ export default function InvoiceForm() {
         <button
           className={highlightFields ? 'is-active' : undefined}
           type="button"
+          title="Bearbeitbare Felder im Dokument anzeigen"
+          aria-label="Bearbeitbare Felder im Dokument anzeigen"
           aria-pressed={highlightFields}
           onClick={() => setHighlightFields((current) => !current)}
         >
           {highlightFields ? 'Vorschau' : 'Bearbeiten'}
         </button>
-        <button type="button" onClick={handleLoadTemplateClick}>
+        <button
+          type="button"
+          title="Gespeicherte JSON Vorlage laden"
+          aria-label="Gespeicherte JSON Vorlage laden"
+          onClick={handleLoadTemplateClick}
+        >
           Vorlage laden
         </button>
-        <button type="button" onClick={handleDownloadTemplate}>
-          Vorlage herunterladen
+        <button
+          type="button"
+          title="Aktuelle Daten als JSON Vorlage speichern"
+          aria-label="Aktuelle Daten als JSON Vorlage speichern"
+          onClick={handleDownloadTemplate}
+        >
+          Vorlage erstellen
         </button>
-        <button type="button" onClick={handlePrint}>
+        <button
+          type="button"
+          title="Druckdialog öffnen"
+          aria-label="Druckdialog öffnen"
+          onClick={handlePrint}
+        >
           Drucken
         </button>
-        <button type="button" onClick={handleCreatePdf} disabled={isExporting}>
+        <button
+          type="button"
+          title="PDF-Datei erstellen"
+          aria-label="PDF-Datei erstellen"
+          onClick={handleCreatePdf}
+          disabled={isExporting}
+        >
           {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
         </button>
         <input
