@@ -1523,6 +1523,8 @@ h1 {
 .invoice-date-input::-webkit-datetime-edit {
   display: flex;
   justify-content: flex-end;
+  width: 100%;
+  margin-left: auto;
   direction: ltr;
   padding: 0;
   text-align: right;
@@ -1532,6 +1534,14 @@ h1 {
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.invoice-date-input::-webkit-date-and-time-value {
+  width: 100%;
+  margin-left: auto;
+  text-align: right;
 }
 
 .invoice-date-input::-webkit-calendar-picker-indicator {
@@ -1815,6 +1825,7 @@ h1 {
 
 .invoice-position-table th:nth-child(1),
 .invoice-position-table td:nth-child(1) {
+  position: relative;
   width: 6%;
 }
 
@@ -1850,13 +1861,6 @@ h1 {
   text-align: right;
 }
 
-.invoice-position-table .invoice-position-description-cell {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 5px;
-  align-items: start;
-}
-
 .invoice-position-table th:nth-child(8),
 .invoice-position-table td:nth-child(8) {
   position: relative;
@@ -1869,9 +1873,12 @@ h1 {
 }
 
 .invoice-position-actions {
+  position: absolute;
+  top: 3px;
+  right: calc(100% + 7px);
+  z-index: 3;
   display: inline-flex;
   gap: 2px;
-  padding-top: 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity 160ms ease;

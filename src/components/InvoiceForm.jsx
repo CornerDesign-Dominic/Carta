@@ -1217,8 +1217,7 @@ export default function InvoiceForm() {
 
               return (
                 <tr key={position.id}>
-                  <td>{index + 1}</td>
-                  <td className="invoice-position-description-cell">
+                  <td>
                     <span className="invoice-position-actions">
                       <button
                         aria-label={`Position ${index + 1} löschen`}
@@ -1247,6 +1246,9 @@ export default function InvoiceForm() {
                         ↓
                       </button>
                     </span>
+                    {index + 1}
+                  </td>
+                  <td>
                     <textarea
                       ref={resizeTextarea}
                       className="invoice-position-description"
