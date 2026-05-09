@@ -162,13 +162,17 @@ function calculatePosition(position) {
   return { net, tax, gross: net + tax, taxRate };
 }
 
-function resizeTextarea(textarea) {
+function resizeTextarea(textarea, extraHeight = 0) {
   if (!textarea) {
     return;
   }
 
   textarea.style.height = 'auto';
-  textarea.style.height = `${textarea.scrollHeight}px`;
+  textarea.style.height = `${textarea.scrollHeight + extraHeight}px`;
+}
+
+function resizePositionDescription(textarea) {
+  resizeTextarea(textarea, 6);
 }
 
 function getCompanyNameMaxHeight(textarea) {
@@ -1250,14 +1254,14 @@ export default function InvoiceForm() {
                   </td>
                   <td>
                     <textarea
-                      ref={resizeTextarea}
+                      ref={resizePositionDescription}
                       className="invoice-position-description"
                       aria-label={`Beschreibung Position ${index + 1}`}
                       rows={1}
                       value={position.description}
                       onChange={(event) => {
                         updatePosition(position.id, 'description', event.target.value);
-                        resizeTextarea(event.target);
+                        resizePositionDescription(event.target);
                       }}
                     />
                   </td>

@@ -1802,10 +1802,10 @@ h1 {
 
 .invoice-position-table textarea.invoice-position-description {
   display: block;
-  min-height: 18px;
+  min-height: 22px;
   overflow: hidden;
   resize: none;
-  line-height: 1.24;
+  line-height: 1.34;
 }
 
 .invoice-tax-rate-cell {
