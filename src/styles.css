@@ -1686,8 +1686,8 @@ h1 {
 }
 
 .invoice-sheet .invoice-position-table {
-  width: calc(100% - 28px);
-  max-width: calc(100% - 28px);
+  width: 100%;
+  max-width: 100%;
 }
 
 .invoice-position-table input,
@@ -1719,12 +1719,12 @@ h1 {
 
 .invoice-position-table th:nth-child(2),
 .invoice-position-table td:nth-child(2) {
-  width: 32%;
+  width: 37%;
 }
 
 .invoice-position-table th:nth-child(3),
 .invoice-position-table td:nth-child(3) {
-  width: 12%;
+  width: 14%;
 }
 
 .invoice-position-table th:nth-child(4),
@@ -1736,19 +1736,31 @@ h1 {
 
 .invoice-position-table th:nth-child(6),
 .invoice-position-table td:nth-child(6) {
-  width: 6%;
+  width: 7%;
 }
 
 .invoice-position-table th:nth-child(7),
 .invoice-position-table td:nth-child(7) {
-  width: 9%;
+  width: 16%;
   text-align: right;
 }
 
 .invoice-position-table th:nth-child(8),
 .invoice-position-table td:nth-child(8) {
-  width: 4%;
+  position: relative;
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
   text-align: center;
+}
+
+.invoice-position-table td:nth-child(8) .offer-remove {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
 }
 
 .reminder-invoice-table th:nth-child(1),
