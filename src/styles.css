@@ -1771,10 +1771,6 @@ h1 {
 .invoice-position-table td {
   padding-top: 4px;
   padding-bottom: 4px;
-  vertical-align: middle;
-}
-
-.invoice-position-table td:nth-child(2) {
   vertical-align: top;
 }
 
@@ -1806,7 +1802,7 @@ h1 {
   grid-template-columns: minmax(0, 3.2ch) auto;
   justify-content: start;
   gap: 1px;
-  align-items: center;
+  align-items: start;
   min-width: 0;
 }
 
