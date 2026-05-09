@@ -1217,7 +1217,7 @@ export default function InvoiceForm() {
 
               return (
                 <tr key={position.id}>
-                  <td>
+                  <td className="invoice-position-index-cell">
                     <span className="invoice-position-actions">
                       <button
                         aria-label={`Position ${index + 1} löschen`}
