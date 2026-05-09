@@ -1355,7 +1355,7 @@ h1 {
 }
 
 .invoice-sheet {
-  --invoice-document-right-boundary: 46px;
+  --invoice-right-safe-offset: 46px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1774,8 +1774,10 @@ h1 {
 }
 
 .invoice-sheet .invoice-position-table {
-  width: calc(100% - var(--invoice-document-right-boundary));
-  max-width: calc(100% - var(--invoice-document-right-boundary));
+  width: calc(100% - var(--invoice-right-safe-offset));
+  max-width: calc(100% - var(--invoice-right-safe-offset));
+  margin-left: 0;
+  margin-right: auto;
 }
 
 .invoice-position-table input,
@@ -1902,17 +1904,10 @@ h1 {
 }
 
 .invoice-document-summary {
+  align-self: flex-end;
   margin-top: 18px;
-  margin-right: var(--invoice-document-right-boundary);
-}
-
-.invoice-sheet.is-export-mode .invoice-position-table {
-  width: calc(100% - var(--invoice-document-right-boundary));
-  max-width: calc(100% - var(--invoice-document-right-boundary));
-}
-
-.invoice-sheet.is-export-mode .invoice-document-summary {
-  margin-right: var(--invoice-document-right-boundary);
+  margin-left: auto;
+  margin-right: var(--invoice-right-safe-offset);
 }
 
 .invoice-document-summary div:last-child {
@@ -2824,6 +2819,16 @@ h1 {
     max-width: 100%;
     min-width: 720px;
   }
+
+  .invoice-sheet .invoice-position-table {
+    display: table;
+    width: calc(100% - var(--invoice-right-safe-offset));
+    max-width: calc(100% - var(--invoice-right-safe-offset));
+    min-width: 0;
+    margin-left: 0;
+    margin-right: auto;
+    overflow: visible;
+  }
 }
 
 @media print {
@@ -2904,16 +2909,7 @@ h1 {
   }
 
   body.document-print-mode .invoice-sheet {
-    --invoice-document-right-boundary: 46px;
-  }
-
-  body.document-print-mode .invoice-sheet .invoice-position-table {
-    width: calc(100% - var(--invoice-document-right-boundary));
-    max-width: calc(100% - var(--invoice-document-right-boundary));
-  }
-
-  body.document-print-mode .invoice-sheet .invoice-document-summary {
-    margin-right: var(--invoice-document-right-boundary);
+    --invoice-right-safe-offset: 46px;
   }
 
   .offer-sheet input,
