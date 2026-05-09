@@ -756,8 +756,12 @@ export default function InvoiceForm() {
           aria-expanded={isFormPanelOpen}
           onClick={() => setIsFormPanelOpen((current) => !current)}
         >
-          <span>{isFormPanelOpen ? 'Formular schließen' : 'Formular öffnen'}</span>
-          <span aria-hidden="true">{isFormPanelOpen ? '−' : '+'}</span>
+          <span className="invoice-form-panel-toggle-label">
+            {isFormPanelOpen ? 'Formular schließen' : 'Formular öffnen'}
+          </span>
+          <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
+            {isFormPanelOpen ? '−' : '+'}
+          </span>
         </button>
 
         {isFormPanelOpen && (
