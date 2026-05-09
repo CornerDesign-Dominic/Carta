@@ -7,11 +7,13 @@ const footerItems = [
 export default function Footer({ onNavigate }) {
   return (
     <footer className="site-footer" id="rechtliches">
-      {footerItems.map((item) => (
-        <button type="button" onClick={() => onNavigate(item)} key={item.label}>
-          {item.label}
-        </button>
-      ))}
+      <nav className="footer-links" aria-label="Rechtliches">
+        {footerItems.map((item) => (
+          <button type="button" onClick={() => onNavigate(item)} key={item.label}>
+            {item.label}
+          </button>
+        ))}
+      </nav>
     </footer>
   );
 }
