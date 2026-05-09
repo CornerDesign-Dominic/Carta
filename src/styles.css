@@ -1680,6 +1680,11 @@ h1 {
   padding-bottom: 4px;
 }
 
+.invoice-sheet .invoice-position-table {
+  width: calc(100% - 28px);
+  max-width: calc(100% - 28px);
+}
+
 .invoice-position-table input,
 .invoice-position-table .document-label-input {
   font-size: 0.8rem;
