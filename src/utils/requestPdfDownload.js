@@ -42,10 +42,14 @@ function syncFormValues(root) {
   });
 }
 
-function buildExportHtml(sheet) {
-  const clonedSheet = sheet.cloneNode(true);
+function buildExportHtml(sheet, exportRoot = sheet) {
+  const clonedSheet = exportRoot.cloneNode(true);
   clonedSheet.classList.remove('is-highlight-mode');
   clonedSheet.classList.add('is-export-mode');
+  clonedSheet.querySelectorAll('.offer-sheet, .invoice-print-page').forEach((page) => {
+    page.classList.remove('is-highlight-mode');
+    page.classList.add('is-export-mode');
+  });
   syncFormValues(clonedSheet);
 
   const styles = getDocumentStyles();
@@ -76,7 +80,8 @@ function buildExportHtml(sheet) {
       color: #232320;
     }
 
-    .offer-sheet {
+    .offer-sheet,
+    .invoice-print-page {
       width: 210mm !important;
       min-width: 210mm !important;
       height: 297mm !important;
@@ -85,7 +90,15 @@ function buildExportHtml(sheet) {
       box-shadow: none !important;
       border: 0 !important;
       background: #ffffff !important;
+    }
+
+    .offer-sheet,
+    .invoice-print-page:not(:last-child) {
       break-after: page;
+    }
+
+    .invoice-print-page:last-child {
+      break-after: auto;
     }
 
     .visual-toolbar,
@@ -141,7 +154,7 @@ function isPdfArrayBuffer(arrayBuffer) {
   );
 }
 
-export async function requestPdfDownload({ sheet, documentType, filename }) {
+export async function requestPdfDownload({ sheet, exportRoot, documentType, filename }) {
   if (!sheet) {
     throw new Error('Kein Dokument zum Exportieren gefunden.');
   }
@@ -154,7 +167,7 @@ export async function requestPdfDownload({ sheet, documentType, filename }) {
     body: JSON.stringify({
       documentType,
       filename,
-      html: buildExportHtml(sheet),
+      html: buildExportHtml(sheet, exportRoot),
     }),
   });
 

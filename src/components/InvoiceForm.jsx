@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialLabels = {
@@ -406,11 +406,106 @@ function normalizePositions(templatePositions) {
   }));
 }
 
+const invoicePrintLayout = {
+  firstPageCapacity: 500,
+  followPageCapacity: 790,
+};
+
+function estimateTextBlockHeight(text) {
+  const content = String(text || '').trim();
+
+  if (!content) {
+    return 0;
+  }
+
+  const hardLines = content.split('\n');
+  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 88)), 0);
+
+  return 18 + visualLines * 16;
+}
+
+function splitTextIntoPrintItems(type, text) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+
+  if (words.length === 0) {
+    return [];
+  }
+
+  const items = [];
+  let current = '';
+
+  words.forEach((word) => {
+    const next = current ? `${current} ${word}` : word;
+
+    if (next.length > 520 && current) {
+      items.push({ type, text: current, height: estimateTextBlockHeight(current) });
+      current = word;
+      return;
+    }
+
+    current = next;
+  });
+
+  if (current) {
+    items.push({ type, text: current, height: estimateTextBlockHeight(current) });
+  }
+
+  return items;
+}
+
+function estimatePositionHeight(position) {
+  const description = String(position.description || '');
+  const hardLines = description.split('\n');
+  const descriptionLines = hardLines.reduce(
+    (total, line) => total + Math.max(1, Math.ceil(line.length / 32)),
+    0,
+  );
+
+  return Math.max(34, 18 + descriptionLines * 17);
+}
+
+function createInvoicePrintPages({ closingText, includeClosingText, includeIntroText, introText, positions, totals }) {
+  const items = [
+    ...(includeIntroText ? splitTextIntoPrintItems('introText', introText) : []),
+    ...positions.map((position, index) => ({
+      type: 'position',
+      index,
+      position,
+      height: estimatePositionHeight(position),
+    })),
+    {
+      type: 'summary',
+      height: 88 + totals.taxGroups.length * 18,
+    },
+    ...(includeClosingText ? splitTextIntoPrintItems('closingText', closingText) : []),
+  ];
+  const pages = [{ items: [], used: 0 }];
+
+  items.forEach((item) => {
+    let currentPage = pages[pages.length - 1];
+    const capacity = pages.length === 1 ? invoicePrintLayout.firstPageCapacity : invoicePrintLayout.followPageCapacity;
+
+    if (currentPage.items.length > 0 && currentPage.used + item.height > capacity) {
+      currentPage = { items: [], used: 0 };
+      pages.push(currentPage);
+    }
+
+    currentPage.items.push(item);
+    currentPage.used += item.height;
+  });
+
+  return pages.map((page, index) => ({
+    ...page,
+    pageNumber: index + 1,
+  }));
+}
+
 export default function InvoiceForm() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const sheetRef = useRef(null);
+  const printPagesRef = useRef(null);
   const companyNameRef = useRef(null);
   const introTextRef = useRef(null);
   const closingTextRef = useRef(null);
@@ -472,6 +567,19 @@ export default function InvoiceForm() {
       taxGroups: [...summary.taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate),
     };
   }, [positions]);
+
+  const printPages = useMemo(
+    () =>
+      createInvoicePrintPages({
+        closingText,
+        includeClosingText: !fieldConfig.texts.hidden.includes('closingText'),
+        includeIntroText: !fieldConfig.texts.hidden.includes('introText'),
+        introText,
+        positions,
+        totals,
+      }),
+    [closingText, fieldConfig.texts.hidden, introText, positions, totals],
+  );
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
@@ -726,6 +834,7 @@ export default function InvoiceForm() {
     try {
       await requestPdfDownload({
         sheet: sheetRef.current,
+        exportRoot: printPagesRef.current,
         documentType: 'invoice',
         filename: createPdfFileName(labels.title, details.invoiceNumber),
       });
@@ -1447,6 +1556,276 @@ export default function InvoiceForm() {
           </section>
         </footer>
       </article>
+
+      <InvoicePrintPages
+        ref={printPagesRef}
+        details={details}
+        fieldConfig={fieldConfig}
+        footerLines={footerLines}
+        footerMiddleDefinitions={footerMiddleDefinitions}
+        getOrderedDefinitions={getOrderedDefinitions}
+        labels={labels}
+        pages={printPages}
+        recipient={recipient}
+        sender={sender}
+        totals={totals}
+      />
     </div>
+  );
+}
+
+const InvoicePrintPages = forwardRef(function InvoicePrintPages(
+  {
+    details,
+    fieldConfig,
+    footerLines,
+    footerMiddleDefinitions,
+    getOrderedDefinitions,
+    labels,
+    pages,
+    recipient,
+    sender,
+    totals,
+  },
+  ref,
+) {
+  const visibleFooterMiddleDefinitions = getOrderedDefinitions('footerMiddle', footerMiddleDefinitions).filter(
+    (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
+  );
+  const visibleContactDefinitions = getOrderedDefinitions('contact', contactFieldDefinitions).filter(
+    (definition) => !fieldConfig.contact.hidden.includes(definition.field),
+  );
+  const visibleDetailDefinitions = getOrderedDefinitions('details', detailFieldDefinitions).filter(
+    (definition) => !fieldConfig.details.hidden.includes(definition.field),
+  );
+
+  return (
+    <div className="invoice-print-pages" ref={ref} aria-hidden="true">
+      {pages.map((page) => (
+        <article className="invoice-print-page" key={page.pageNumber}>
+          {page.pageNumber === 1 ? (
+            <InvoicePrintFirstPageHeader
+              details={details}
+              labels={labels}
+              recipient={recipient}
+              sender={sender}
+              visibleContactDefinitions={visibleContactDefinitions}
+              visibleDetailDefinitions={visibleDetailDefinitions}
+            />
+          ) : (
+            <InvoicePrintContinuationHeader companyName={sender.company} />
+          )}
+
+          <div className="invoice-print-page-content">
+            <InvoicePrintPageItems items={page.items} labels={labels} totals={totals} />
+          </div>
+
+          <InvoicePrintFooter
+            footerLines={footerLines}
+            visibleFooterMiddleDefinitions={visibleFooterMiddleDefinitions}
+          />
+        </article>
+      ))}
+    </div>
+  );
+});
+
+function InvoicePrintFirstPageHeader({
+  details,
+  labels,
+  recipient,
+  sender,
+  visibleContactDefinitions,
+  visibleDetailDefinitions,
+}) {
+  return (
+    <>
+      <header className="invoice-print-header">
+        <div>
+          <p className="invoice-print-company-name">{sender.company}</p>
+        </div>
+        <div className="invoice-print-contact">
+          {visibleContactDefinitions.map((definition) => (
+            <p key={definition.field}>
+              <span>{labels[definition.labelField]}</span>
+              {sender[definition.field]}
+            </p>
+          ))}
+        </div>
+      </header>
+
+      <section className="invoice-print-address-row">
+        <div className="invoice-print-recipient">
+          <p className="invoice-print-sender-line">{sender.senderLine}</p>
+          {[recipient.company, recipient.attention, recipient.name, recipient.street, recipient.cityLine]
+            .filter(Boolean)
+            .map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+        </div>
+
+        <div className="invoice-print-details">
+          <PrintDetailRow label={labels.invoiceNumber} value={details.invoiceNumber} emphasized />
+          {visibleDetailDefinitions.map((definition) => (
+            <PrintDetailRow
+              key={definition.field}
+              label={labels[definition.field]}
+              value={details[definition.field]}
+            />
+          ))}
+        </div>
+      </section>
+
+      <h2 className="invoice-print-title">{labels.title}</h2>
+    </>
+  );
+}
+
+function InvoicePrintContinuationHeader({ companyName }) {
+  return (
+    <header className="invoice-print-header invoice-print-continuation-header">
+      <p className="invoice-print-company-name">{companyName}</p>
+    </header>
+  );
+}
+
+function PrintDetailRow({ emphasized = false, label, value }) {
+  return (
+    <p className={emphasized ? 'is-emphasized' : undefined}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </p>
+  );
+}
+
+function InvoicePrintPageItems({ items, labels, totals }) {
+  const renderedItems = [];
+  let index = 0;
+
+  while (index < items.length) {
+    const item = items[index];
+
+    if (item.type === 'position') {
+      const positionItems = [];
+
+      while (items[index]?.type === 'position') {
+        positionItems.push(items[index]);
+        index += 1;
+      }
+
+      renderedItems.push(
+        <InvoicePrintPositionTable
+          key={`positions-${positionItems[0].index}`}
+          labels={labels}
+          positionItems={positionItems}
+        />,
+      );
+      continue;
+    }
+
+    if (item.type === 'summary') {
+      renderedItems.push(<InvoicePrintSummary key="summary" labels={labels} totals={totals} />);
+    }
+
+    if (item.type === 'introText' || item.type === 'closingText') {
+      renderedItems.push(
+        <p className="invoice-print-flow-text" key={`${item.type}-${index}`}>
+          {item.text}
+        </p>,
+      );
+    }
+
+    index += 1;
+  }
+
+  return renderedItems;
+}
+
+function InvoicePrintPositionTable({ labels, positionItems }) {
+  return (
+    <table className="invoice-print-position-table">
+      <thead>
+        <tr>
+          <th>{labels.position}</th>
+          <th>{labels.description}</th>
+          <th>{labels.unitPrice}</th>
+          <th>{labels.quantity}</th>
+          <th>{labels.unit}</th>
+          <th>{labels.tax}</th>
+          <th>{labels.total}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {positionItems.map(({ index, position }) => {
+          const calculated = calculatePosition(position);
+
+          return (
+            <tr key={position.id}>
+              <td>{index + 1}</td>
+              <td>{position.description}</td>
+              <td>{formatCurrency(toNumber(position.unitPrice))}</td>
+              <td>{position.quantity}</td>
+              <td>{position.unit}</td>
+              <td>{formatPercent(calculated.taxRate)}%</td>
+              <td>{formatCurrency(calculated.net)}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+
+function InvoicePrintSummary({ labels, totals }) {
+  return (
+    <aside className="invoice-print-summary" aria-label="Rechnungssummen">
+      <div>
+        <span>{labels.net}</span>
+        <strong>{formatCurrency(totals.net)}</strong>
+      </div>
+      {totals.taxGroups.map((group) => (
+        <div key={group.taxRate}>
+          <span>
+            {labels.taxAmount} {formatPercent(group.taxRate)}%
+          </span>
+          <strong>{formatCurrency(group.tax)}</strong>
+        </div>
+      ))}
+      <div>
+        <span>{labels.grandTotal}</span>
+        <strong>{formatCurrency(totals.gross)}</strong>
+      </div>
+    </aside>
+  );
+}
+
+function InvoicePrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
+  return (
+    <footer className="invoice-print-footer">
+      <section>
+        {['companyName', 'companyStreet', 'companyCity', 'companyExtra']
+          .map((field) => footerLines[field])
+          .filter(Boolean)
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+      </section>
+      <section>
+        {visibleFooterMiddleDefinitions
+          .map((definition) => footerLines[definition.field])
+          .filter(Boolean)
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+      </section>
+      <section>
+        {['bankName', 'iban', 'bic', 'bankExtra']
+          .map((field) => footerLines[field])
+          .filter(Boolean)
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+      </section>
+    </footer>
   );
 }
