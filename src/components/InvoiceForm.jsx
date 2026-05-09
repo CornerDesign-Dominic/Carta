@@ -171,18 +171,35 @@ function resizeTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
+function getCompanyNameMaxHeight(textarea) {
+  const styles = window.getComputedStyle(textarea);
+  const fontSize = Number.parseFloat(styles.fontSize) || 24;
+  const lineHeight = Number.parseFloat(styles.lineHeight) || fontSize * 1.2;
+
+  return lineHeight * 2;
+}
+
 function resizeCompanyName(textarea) {
   if (!textarea) {
     return;
   }
 
-  const styles = window.getComputedStyle(textarea);
-  const fontSize = Number.parseFloat(styles.fontSize) || 24;
-  const lineHeight = Number.parseFloat(styles.lineHeight) || fontSize * 1.2;
-  const maxHeight = lineHeight * 2;
+  const maxHeight = getCompanyNameMaxHeight(textarea);
 
   textarea.style.height = 'auto';
   textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+}
+
+function doesCompanyNameFit(textarea) {
+  if (!textarea) {
+    return true;
+  }
+
+  const maxHeight = getCompanyNameMaxHeight(textarea);
+
+  textarea.style.height = 'auto';
+
+  return textarea.scrollHeight <= maxHeight + 1;
 }
 
 function getInlineLabelWidth(value) {
@@ -458,6 +475,20 @@ export default function InvoiceForm() {
 
   function updateDetail(field, value) {
     setDetails((current) => ({ ...current, [field]: value }));
+  }
+
+  function handleCompanyNameChange(event) {
+    const textarea = event.target;
+    const nextValue = textarea.value;
+
+    if (!doesCompanyNameFit(textarea)) {
+      textarea.value = sender.company;
+      resizeCompanyName(textarea);
+      return;
+    }
+
+    updateSender('company', nextValue);
+    resizeCompanyName(textarea);
   }
 
   function openDatePicker(field) {
@@ -948,10 +979,7 @@ export default function InvoiceForm() {
               aria-label="Absender Firmenname"
               rows={1}
               value={sender.company}
-              onChange={(event) => {
-                updateSender('company', event.target.value);
-                resizeCompanyName(event.target);
-              }}
+              onChange={handleCompanyNameChange}
             />
           </div>
 
