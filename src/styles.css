@@ -1835,6 +1835,10 @@ h1 {
   text-align: right;
 }
 
+.invoice-position-table th:nth-child(7) .document-label-input {
+  text-align: right;
+}
+
 .invoice-position-table th:nth-child(8),
 .invoice-position-table td:nth-child(8) {
   position: relative;
