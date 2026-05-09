@@ -716,8 +716,10 @@ export default function InvoiceForm() {
       >
         <header className="invoice-document-header">
           <div className="editable-group">
-            <input
+            <textarea
+              className="invoice-company-name"
               aria-label="Absender Firmenname"
+              rows={2}
               value={sender.company}
               onChange={(event) => updateSender('company', event.target.value)}
             />

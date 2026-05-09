@@ -373,12 +373,41 @@ h1 {
   max-width: 720px;
 }
 
+.document-usage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 900px;
+  margin-top: 30px;
+}
+
+.document-usage-card {
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(206, 200, 188, 0.62);
+  border-radius: 6px;
+  background: rgba(255, 254, 250, 0.58);
+}
+
+.document-usage-card h2 {
+  margin: 0 0 8px;
+  color: var(--accent-deep);
+  font-size: 0.94rem;
+  line-height: 1.3;
+}
+
+.document-usage-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.62;
+}
+
 .document-overview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   max-width: 760px;
-  margin-top: clamp(38px, 5vw, 58px);
+  margin-top: clamp(30px, 4vw, 44px);
 }
 
 .document-overview-card {
@@ -650,6 +679,22 @@ h1 {
   color: #232320;
   font-size: 1.55rem;
   font-weight: 760;
+}
+
+.offer-sheet .invoice-company-name {
+  display: -webkit-box;
+  height: 3.72rem;
+  max-height: 3.72rem;
+  color: #232320;
+  font-size: 1.55rem;
+  font-weight: 760;
+  line-height: 1.2;
+  overflow: hidden;
+  resize: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .offer-header textarea {
@@ -948,8 +993,8 @@ h1 {
 .invoice-form-panel-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
-  padding: 14px;
+  gap: 0;
+  padding: 2px 14px 14px;
   border: 1px solid var(--line-soft);
   border-radius: 6px;
   background: rgba(255, 254, 250, 0.72);
@@ -958,8 +1003,14 @@ h1 {
 .invoice-panel-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 18px;
   min-width: 0;
+  padding: 15px 0;
+  border-top: 1px solid rgba(206, 200, 188, 0.46);
+}
+
+.invoice-panel-row:first-child {
+  border-top: 0;
 }
 
 .invoice-panel-section {
@@ -969,8 +1020,15 @@ h1 {
   min-width: 0;
 }
 
+.invoice-panel-row > .invoice-panel-section + .invoice-panel-section {
+  padding-left: 18px;
+  border-left: 1px solid rgba(206, 200, 188, 0.42);
+}
+
 .invoice-panel-section-wide {
   grid-column: 1 / -1;
+  padding-top: 15px;
+  border-top: 1px solid rgba(206, 200, 188, 0.46);
 }
 
 .invoice-panel-section h3 {
@@ -2486,6 +2544,11 @@ h1 {
     grid-template-columns: 1fr;
   }
 
+  .invoice-panel-row > .invoice-panel-section + .invoice-panel-section {
+    padding-left: 0;
+    border-left: 0;
+  }
+
   .invoice-panel-position {
     grid-template-columns: 22px repeat(2, minmax(0, 1fr)) 28px;
   }
@@ -2628,6 +2691,7 @@ h1 {
 
   .feature-grid,
   .foundation-section,
+  .document-usage-grid,
   .document-overview-grid,
   .form-grid,
   .position-grid,

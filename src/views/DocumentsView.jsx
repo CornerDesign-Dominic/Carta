@@ -6,15 +6,49 @@ import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
 import { documentSections, findDocumentItem } from '../data/documents.js';
 
 function DocumentOverview({ onSelect }) {
+  const usageSections = [
+    {
+      title: 'Das Formular nutzen',
+      text:
+        'Im Formular erfassen Sie Absender, Empfänger, Dokumentdaten, Positionen, Texte und Fußdaten. Die Angaben werden automatisch in das Dokument übernommen. Getrennte Felder wie Straße, Hausnummer, PLZ und Ort helfen bei einer sauberen Eingabe und besseren Übersicht.',
+    },
+    {
+      title: 'Direkt im Dokument arbeiten',
+      text:
+        'Das Dokument zeigt die spätere Druckansicht. Viele Texte und Bezeichnungen können direkt im Dokument angepasst werden. So lässt sich prüfen, ob Inhalt, Aufbau und Darstellung zusammenpassen.',
+    },
+    {
+      title: 'Bearbeiten, Drucken und PDF erstellen',
+      text:
+        '„Bearbeiten“ blendet bearbeitbare Bereiche ein oder macht sie deutlicher sichtbar. „Drucken“ öffnet den normalen Druckdialog des Browsers. „PDF erstellen“ erzeugt eine saubere PDF-Datei zum Speichern, Versenden oder Archivieren.',
+    },
+    {
+      title: 'Hinweis zur Prüfung',
+      text:
+        'Vor dem Versand sollten Angaben wie Empfänger, Nummern, Beträge, Steuerdaten und Bankverbindung geprüft werden. Die Generatoren helfen beim Aufbau, ersetzen aber keine fachliche Prüfung im Einzelfall.',
+    },
+  ];
+
   return (
     <>
       <p className="eyebrow">DOKUMENTE</p>
       <h1 id="document-title">Dokumente einfach im Browser erstellen</h1>
       <p className="intro document-intro">
-        Belege24 hilft dabei, kaufmännische Dokumente direkt im Browser als
-        drucknahe A4-Dokumente vorzubereiten. Wähle einen Dokumenttyp aus und
-        bearbeite die Inhalte anschließend visuell im Generator.
+        Mit den Belege24-Generatoren erstellen Sie kaufmännische Dokumente
+        direkt im Browser. Sie füllen zunächst die wichtigsten Angaben im
+        Formular aus und sehen darunter sofort das fertige Dokument im
+        A4-Format. So können Sie Inhalte prüfen, anpassen und anschließend als
+        PDF speichern oder drucken.
       </p>
+
+      <div className="document-usage-grid" aria-label="Hinweise zur Nutzung der Generatoren">
+        {usageSections.map((section) => (
+          <section className="document-usage-card" key={section.title}>
+            <h2>{section.title}</h2>
+            <p>{section.text}</p>
+          </section>
+        ))}
+      </div>
 
       <div className="document-overview-grid" aria-label="Dokumentgeneratoren">
         {documentSections.map((section) => {
