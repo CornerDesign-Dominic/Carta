@@ -910,7 +910,7 @@ h1 {
 }
 
 .invoice-visual-editor .visual-toolbar {
-  width: auto;
+  width: 100%;
   max-width: 100%;
   margin: 0;
   background: #f8f7f2;
@@ -920,8 +920,9 @@ h1 {
 .invoice-form-panel {
   display: grid;
   gap: 10px;
-  width: min(100%, 794px);
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }
 
 .invoice-form-panel-toggle {
@@ -946,12 +947,19 @@ h1 {
 
 .invoice-form-panel-body {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
   padding: 14px;
   border: 1px solid var(--line-soft);
   border-radius: 6px;
   background: rgba(255, 254, 250, 0.72);
+}
+
+.invoice-panel-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
 }
 
 .invoice-panel-section {
@@ -974,11 +982,20 @@ h1 {
   text-transform: uppercase;
 }
 
+.invoice-panel-muted-heading {
+  visibility: hidden;
+}
+
 .invoice-panel-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px 10px;
   min-width: 0;
+}
+
+.invoice-panel-field-wide,
+.invoice-panel-field-street {
+  grid-column: 1 / -1;
 }
 
 .invoice-panel-grid-two {
@@ -2463,6 +2480,7 @@ h1 {
   }
 
   .invoice-form-panel-body,
+  .invoice-panel-row,
   .invoice-panel-grid,
   .invoice-panel-grid-two {
     grid-template-columns: 1fr;

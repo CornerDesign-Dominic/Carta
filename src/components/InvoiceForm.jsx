@@ -84,6 +84,13 @@ const defaultSender = {
   website: 'www.belege24.com',
 };
 
+const defaultSenderAddressParts = {
+  street: 'Musterstraße',
+  houseNumber: '12',
+  postalCode: '10115',
+  city: 'Berlin',
+};
+
 const defaultFooterLines = {
   companyName: 'Belege24 Muster GmbH',
   companyStreet: 'Musterstraße 12',
@@ -105,6 +112,13 @@ const defaultRecipient = {
   name: 'Buchhaltung',
   street: 'Kundenstraße 8',
   cityLine: '20095 Hamburg',
+};
+
+const defaultRecipientAddressParts = {
+  street: 'Kundenstraße',
+  houseNumber: '8',
+  postalCode: '20095',
+  city: 'Hamburg',
 };
 
 const defaultDetails = {
@@ -169,12 +183,35 @@ function getFormValue(value, placeholder) {
   return value === placeholder ? '' : value;
 }
 
-function InvoicePanelInput({ label, value, placeholder, onChange, type = 'text', inputMode }) {
+function joinAddressLine(...parts) {
+  return parts.map((part) => String(part || '').trim()).filter(Boolean).join(' ');
+}
+
+function buildSenderLine(company, address) {
+  return [company, joinAddressLine(address.street, address.houseNumber), joinAddressLine(address.postalCode, address.city)]
+    .map((part) => String(part || '').trim())
+    .filter(Boolean)
+    .join(' - ');
+}
+
+function InvoicePanelInput({
+  autoComplete,
+  className = '',
+  inputMode,
+  label,
+  name,
+  onChange,
+  placeholder,
+  type = 'text',
+  value,
+}) {
   return (
-    <label className="invoice-panel-field">
+    <label className={`invoice-panel-field${className ? ` ${className}` : ''}`}>
       <span>{label}</span>
       <input
+        autoComplete={autoComplete}
         inputMode={inputMode}
+        name={name}
         placeholder={placeholder}
         type={type}
         value={getFormValue(value, placeholder)}
@@ -184,11 +221,12 @@ function InvoicePanelInput({ label, value, placeholder, onChange, type = 'text',
   );
 }
 
-function InvoicePanelTextarea({ label, value, placeholder, onChange }) {
+function InvoicePanelTextarea({ label, name, value, placeholder, onChange }) {
   return (
     <label className="invoice-panel-field invoice-panel-field-wide">
       <span>{label}</span>
       <textarea
+        name={name}
         placeholder={placeholder}
         value={getFormValue(value, placeholder)}
         onChange={(event) => onChange(event.target.value)}
@@ -275,8 +313,10 @@ export default function InvoiceForm() {
   const dateInputRefs = useRef({});
   const [labels, setLabels] = useState(initialLabels);
   const [sender, setSender] = useState(defaultSender);
+  const [senderAddress, setSenderAddress] = useState(defaultSenderAddressParts);
   const [footerLines, setFooterLines] = useState(defaultFooterLines);
   const [recipient, setRecipient] = useState(defaultRecipient);
+  const [recipientAddress, setRecipientAddress] = useState(defaultRecipientAddressParts);
   const [details, setDetails] = useState(defaultDetails);
   const [introText, setIntroText] = useState(defaultIntroText);
   const [closingText, setClosingText] = useState(defaultClosingText);
@@ -350,8 +390,53 @@ export default function InvoiceForm() {
     setSender((current) => ({ ...current, [field]: value }));
   }
 
+  function updateSenderCompany(value) {
+    setSender((current) => ({
+      ...current,
+      company: value,
+      senderLine: buildSenderLine(value, senderAddress),
+    }));
+    setFooterLines((current) => ({ ...current, companyName: value }));
+  }
+
+  function updateSenderAddress(field, value) {
+    setSenderAddress((current) => {
+      const next = { ...current, [field]: value };
+      const streetLine = joinAddressLine(next.street, next.houseNumber);
+      const cityLine = joinAddressLine(next.postalCode, next.city);
+
+      setSender((senderCurrent) => ({
+        ...senderCurrent,
+        street: streetLine,
+        cityLine,
+        senderLine: buildSenderLine(senderCurrent.company, next),
+      }));
+      setFooterLines((footerCurrent) => ({
+        ...footerCurrent,
+        companyStreet: streetLine,
+        companyCity: cityLine,
+      }));
+
+      return next;
+    });
+  }
+
   function updateRecipient(field, value) {
     setRecipient((current) => ({ ...current, [field]: value }));
+  }
+
+  function updateRecipientAddress(field, value) {
+    setRecipientAddress((current) => {
+      const next = { ...current, [field]: value };
+
+      setRecipient((recipientCurrent) => ({
+        ...recipientCurrent,
+        street: joinAddressLine(next.street, next.houseNumber),
+        cityLine: joinAddressLine(next.postalCode, next.city),
+      }));
+
+      return next;
+    });
   }
 
   function updateFooterLine(field, value) {
@@ -476,129 +561,109 @@ export default function InvoiceForm() {
 
         {isFormPanelOpen && (
           <div className="invoice-form-panel-body">
-            <div className="invoice-panel-section">
-              <h3>Absender</h3>
-              <div className="invoice-panel-grid">
-                <InvoicePanelInput
-                  label="Firma"
-                  placeholder={defaultSender.company}
-                  value={sender.company}
-                  onChange={(value) => updateSender('company', value)}
-                />
-                <InvoicePanelInput
-                  label="Absenderzeile"
-                  placeholder={defaultSender.senderLine}
-                  value={sender.senderLine}
-                  onChange={(value) => updateSender('senderLine', value)}
-                />
+            <div className="invoice-panel-row">
+              <div className="invoice-panel-section">
+                <h3>Eigene Absenderdaten</h3>
+                <div className="invoice-panel-grid">
+                  <InvoicePanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="sender-company" placeholder={defaultSender.company} value={sender.company} onChange={updateSenderCompany} />
+                  <InvoicePanelInput autoComplete="address-line1" className="invoice-panel-field-street" label="Straße" name="sender-street" placeholder={defaultSenderAddressParts.street} value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
+                  <InvoicePanelInput autoComplete="address-line2" label="Hausnummer" name="sender-house-number" placeholder={defaultSenderAddressParts.houseNumber} value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
+                  <InvoicePanelInput autoComplete="postal-code" label="PLZ" name="sender-postal-code" placeholder={defaultSenderAddressParts.postalCode} value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
+                  <InvoicePanelInput autoComplete="address-level2" label="Ort" name="sender-city" placeholder={defaultSenderAddressParts.city} value={senderAddress.city} onChange={(value) => updateSenderAddress('city', value)} />
+                  <InvoicePanelInput autoComplete="off" className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" placeholder={defaultSender.senderLine} value={sender.senderLine} onChange={(value) => updateSender('senderLine', value)} />
+                </div>
+              </div>
+
+              <div className="invoice-panel-section">
+                <h3>Empfängerdaten</h3>
+                <div className="invoice-panel-grid">
+                  <InvoicePanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="recipient-company" placeholder={defaultRecipient.company} value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
+                  <InvoicePanelInput autoComplete="off" label="Zusatz / Ansprechpartner" name="recipient-attention" placeholder={defaultRecipient.attention} value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
+                  <InvoicePanelInput autoComplete="name" label="Name / Abteilung" name="recipient-name" placeholder={defaultRecipient.name} value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
+                  <InvoicePanelInput autoComplete="address-line1" className="invoice-panel-field-street" label="Straße" name="recipient-street" placeholder={defaultRecipientAddressParts.street} value={recipientAddress.street} onChange={(value) => updateRecipientAddress('street', value)} />
+                  <InvoicePanelInput autoComplete="address-line2" label="Hausnummer" name="recipient-house-number" placeholder={defaultRecipientAddressParts.houseNumber} value={recipientAddress.houseNumber} onChange={(value) => updateRecipientAddress('houseNumber', value)} />
+                  <InvoicePanelInput autoComplete="postal-code" label="PLZ" name="recipient-postal-code" placeholder={defaultRecipientAddressParts.postalCode} value={recipientAddress.postalCode} onChange={(value) => updateRecipientAddress('postalCode', value)} />
+                  <InvoicePanelInput autoComplete="address-level2" label="Ort" name="recipient-city" placeholder={defaultRecipientAddressParts.city} value={recipientAddress.city} onChange={(value) => updateRecipientAddress('city', value)} />
+                </div>
               </div>
             </div>
 
-            <div className="invoice-panel-section">
-              <h3>Kontakt</h3>
-              <div className="invoice-panel-grid">
-                <InvoicePanelInput
-                  label="E-Mail"
-                  placeholder={defaultSender.email}
-                  value={sender.email}
-                  onChange={(value) => updateSender('email', value)}
-                />
-                <InvoicePanelInput
-                  label="Telefon"
-                  placeholder={defaultSender.phone}
-                  value={sender.phone}
-                  onChange={(value) => updateSender('phone', value)}
-                />
-                <InvoicePanelInput
-                  label="Fax"
-                  placeholder={defaultSender.fax}
-                  value={sender.fax}
-                  onChange={(value) => updateSender('fax', value)}
-                />
-                <InvoicePanelInput
-                  label="Website"
-                  placeholder={defaultSender.website}
-                  value={sender.website}
-                  onChange={(value) => updateSender('website', value)}
-                />
+            <div className="invoice-panel-row">
+              <div className="invoice-panel-section">
+                <h3>Bankverbindung</h3>
+                <div className="invoice-panel-grid">
+                  {[
+                    ['bankName', 'Bankname', defaultFooterLines.bankName],
+                    ['iban', 'IBAN', defaultFooterLines.iban],
+                    ['bic', 'BIC', defaultFooterLines.bic],
+                  ].map(([field, label, placeholder]) => (
+                    <InvoicePanelInput key={field} autoComplete="off" className="invoice-panel-field-wide" label={label} name={`footer-${field}`} placeholder={placeholder} value={footerLines[field]} onChange={(value) => updateFooterLine(field, value)} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="invoice-panel-section">
+                <h3>Steuer- und Firmendaten</h3>
+                <div className="invoice-panel-grid">
+                  {[
+                    ['vatId', 'USt-IdNr.', defaultFooterLines.vatId],
+                    ['taxNumber', 'Steuernummer', defaultFooterLines.taxNumber],
+                    ['commercialRegister', 'Handelsregister', defaultFooterLines.commercialRegister],
+                    ['managingDirector', 'Geschäftsführer', defaultFooterLines.managingDirector],
+                  ].map(([field, label, placeholder]) => (
+                    <InvoicePanelInput key={field} autoComplete="off" className="invoice-panel-field-wide" label={label} name={`footer-${field}`} placeholder={placeholder} value={footerLines[field]} onChange={(value) => updateFooterLine(field, value)} />
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="invoice-panel-section">
-              <h3>Empfänger</h3>
-              <div className="invoice-panel-grid">
-                <InvoicePanelInput
-                  label="Firma"
-                  placeholder={defaultRecipient.company}
-                  value={recipient.company}
-                  onChange={(value) => updateRecipient('company', value)}
-                />
-                <InvoicePanelInput
-                  label="Zusatz"
-                  placeholder={defaultRecipient.attention}
-                  value={recipient.attention}
-                  onChange={(value) => updateRecipient('attention', value)}
-                />
-                <InvoicePanelInput
-                  label="Name"
-                  placeholder={defaultRecipient.name}
-                  value={recipient.name}
-                  onChange={(value) => updateRecipient('name', value)}
-                />
-                <InvoicePanelInput
-                  label="Straße"
-                  placeholder={defaultRecipient.street}
-                  value={recipient.street}
-                  onChange={(value) => updateRecipient('street', value)}
-                />
-                <InvoicePanelInput
-                  label="PLZ Ort"
-                  placeholder={defaultRecipient.cityLine}
-                  value={recipient.cityLine}
-                  onChange={(value) => updateRecipient('cityLine', value)}
-                />
+            <div className="invoice-panel-row">
+              <div className="invoice-panel-section">
+                <h3>Kontakt</h3>
+                <div className="invoice-panel-grid">
+                  <InvoicePanelInput autoComplete="email" className="invoice-panel-field-wide" label="E-Mail" name="sender-email" placeholder={defaultSender.email} value={sender.email} onChange={(value) => updateSender('email', value)} />
+                  <InvoicePanelInput autoComplete="url" className="invoice-panel-field-wide" label="Website" name="sender-website" placeholder={defaultSender.website} value={sender.website} onChange={(value) => updateSender('website', value)} />
+                </div>
+              </div>
+
+              <div className="invoice-panel-section">
+                <h3 className="invoice-panel-muted-heading">Kontakt</h3>
+                <div className="invoice-panel-grid">
+                  <InvoicePanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Telefon" name="sender-phone" placeholder={defaultSender.phone} value={sender.phone} onChange={(value) => updateSender('phone', value)} />
+                  <InvoicePanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Fax" name="sender-fax" placeholder={defaultSender.fax} value={sender.fax} onChange={(value) => updateSender('fax', value)} />
+                </div>
               </div>
             </div>
 
-            <div className="invoice-panel-section">
-              <h3>Rechnungsdaten</h3>
-              <div className="invoice-panel-grid">
-                <InvoicePanelInput
-                  label="Rechnungsnummer"
-                  placeholder={defaultDetails.invoiceNumber}
-                  value={details.invoiceNumber}
-                  onChange={(value) => updateDetail('invoiceNumber', value)}
-                />
-                <InvoicePanelInput
-                  label="Rechnungsdatum"
-                  placeholder={defaultDetails.invoiceDate}
-                  value={details.invoiceDate}
-                  onChange={(value) => updateDetail('invoiceDate', value)}
-                />
-                <InvoicePanelInput
-                  label="Leistungsdatum"
-                  placeholder={defaultDetails.serviceDate}
-                  value={details.serviceDate}
-                  onChange={(value) => updateDetail('serviceDate', value)}
-                />
-                <InvoicePanelInput
-                  label="Interne Nummer"
-                  placeholder={defaultDetails.internalNumber}
-                  value={details.internalNumber}
-                  onChange={(value) => updateDetail('internalNumber', value)}
-                />
-                <InvoicePanelInput
-                  label="Externe Nummer"
-                  placeholder={defaultDetails.externalNumber}
-                  value={details.externalNumber}
-                  onChange={(value) => updateDetail('externalNumber', value)}
-                />
-                <InvoicePanelInput
-                  label="Kundennummer"
-                  placeholder={defaultDetails.customerNumber}
-                  value={details.customerNumber}
-                  onChange={(value) => updateDetail('customerNumber', value)}
-                />
+            <div className="invoice-panel-row">
+              <div className="invoice-panel-section">
+                <h3>Rechnungsdaten</h3>
+                <div className="invoice-panel-grid">
+                  <InvoicePanelInput autoComplete="off" className="invoice-panel-field-wide" label="Rechnungsnummer" name="invoice-number" placeholder={defaultDetails.invoiceNumber} value={details.invoiceNumber} onChange={(value) => updateDetail('invoiceNumber', value)} />
+                  <InvoicePanelInput autoComplete="off" label="Rechnungsdatum" name="invoice-date" placeholder={defaultDetails.invoiceDate} type="date" value={details.invoiceDate} onChange={(value) => updateDetail('invoiceDate', value)} />
+                  <InvoicePanelInput autoComplete="off" label="Leistungsdatum" name="service-date" placeholder={defaultDetails.serviceDate} type="date" value={details.serviceDate} onChange={(value) => updateDetail('serviceDate', value)} />
+                </div>
+              </div>
+
+              <div className="invoice-panel-section">
+                <h3>Referenzen</h3>
+                <div className="invoice-panel-grid">
+                  <InvoicePanelInput autoComplete="off" label="Interne Nummer" name="internal-number" placeholder={defaultDetails.internalNumber} value={details.internalNumber} onChange={(value) => updateDetail('internalNumber', value)} />
+                  <InvoicePanelInput autoComplete="off" label="Externe Nummer" name="external-number" placeholder={defaultDetails.externalNumber} value={details.externalNumber} onChange={(value) => updateDetail('externalNumber', value)} />
+                  <InvoicePanelInput autoComplete="off" label="Kundennummer" name="customer-number" placeholder={defaultDetails.customerNumber} value={details.customerNumber} onChange={(value) => updateDetail('customerNumber', value)} />
+                </div>
+              </div>
+            </div>
+
+            <div className="invoice-panel-row">
+              <div className="invoice-panel-section">
+                <h3>Vorlauftext</h3>
+                <InvoicePanelTextarea label="Text oberhalb der Positionen" name="intro-text" placeholder={defaultIntroText} value={introText} onChange={setIntroText} />
+              </div>
+
+              <div className="invoice-panel-section">
+                <h3>Nachlauftext</h3>
+                <InvoicePanelTextarea label="Text unterhalb der Summen" name="closing-text" placeholder={defaultClosingText} value={closingText} onChange={setClosingText} />
               </div>
             </div>
 
@@ -608,45 +673,12 @@ export default function InvoiceForm() {
                 {positions.map((position, index) => (
                   <div className="invoice-panel-position" key={position.id}>
                     <span>{index + 1}</span>
-                    <InvoicePanelInput
-                      label="Leistung"
-                      placeholder={defaultPosition.description}
-                      value={position.description}
-                      onChange={(value) => updatePosition(position.id, 'description', value)}
-                    />
-                    <InvoicePanelInput
-                      inputMode="decimal"
-                      label="Einzelpreis"
-                      placeholder={defaultPosition.unitPrice}
-                      value={position.unitPrice}
-                      onChange={(value) => updatePosition(position.id, 'unitPrice', value)}
-                    />
-                    <InvoicePanelInput
-                      inputMode="decimal"
-                      label="Anzahl"
-                      placeholder={defaultPosition.quantity}
-                      value={position.quantity}
-                      onChange={(value) => updatePosition(position.id, 'quantity', value)}
-                    />
-                    <InvoicePanelInput
-                      label="Einheit"
-                      placeholder={defaultPosition.unit}
-                      value={position.unit}
-                      onChange={(value) => updatePosition(position.id, 'unit', value)}
-                    />
-                    <InvoicePanelInput
-                      inputMode="decimal"
-                      label="USt."
-                      placeholder={defaultPosition.taxRate}
-                      value={position.taxRate}
-                      onChange={(value) => updatePosition(position.id, 'taxRate', value)}
-                    />
-                    <button
-                      className="invoice-panel-remove"
-                      type="button"
-                      aria-label={`Position ${index + 1} löschen`}
-                      onClick={() => removePosition(position.id)}
-                    >
+                    <InvoicePanelInput autoComplete="off" label="Leistung" name={`position-${index + 1}-description`} placeholder={defaultPosition.description} value={position.description} onChange={(value) => updatePosition(position.id, 'description', value)} />
+                    <InvoicePanelInput autoComplete="off" inputMode="decimal" label="Einzelpreis" name={`position-${index + 1}-unit-price`} placeholder={defaultPosition.unitPrice} value={position.unitPrice} onChange={(value) => updatePosition(position.id, 'unitPrice', value)} />
+                    <InvoicePanelInput autoComplete="off" inputMode="decimal" label="Anzahl" name={`position-${index + 1}-quantity`} placeholder={defaultPosition.quantity} value={position.quantity} onChange={(value) => updatePosition(position.id, 'quantity', value)} />
+                    <InvoicePanelInput autoComplete="off" label="Einheit" name={`position-${index + 1}-unit`} placeholder={defaultPosition.unit} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
+                    <InvoicePanelInput autoComplete="off" inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} placeholder={defaultPosition.taxRate} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
+                    <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} onClick={() => removePosition(position.id)}>
                       ×
                     </button>
                   </div>
@@ -655,50 +687,6 @@ export default function InvoiceForm() {
               <button className="invoice-panel-add" type="button" onClick={addPosition}>
                 + Position hinzufügen
               </button>
-            </div>
-
-            <div className="invoice-panel-section invoice-panel-section-wide">
-              <h3>Texte</h3>
-              <div className="invoice-panel-grid invoice-panel-grid-two">
-                <InvoicePanelTextarea
-                  label="Vorlauftext"
-                  placeholder={defaultIntroText}
-                  value={introText}
-                  onChange={setIntroText}
-                />
-                <InvoicePanelTextarea
-                  label="Nachlauftext"
-                  placeholder={defaultClosingText}
-                  value={closingText}
-                  onChange={setClosingText}
-                />
-              </div>
-            </div>
-
-            <div className="invoice-panel-section invoice-panel-section-wide">
-              <h3>Fußdaten</h3>
-              <div className="invoice-panel-grid">
-                {[
-                  ['companyName', 'Firma', defaultFooterLines.companyName],
-                  ['companyStreet', 'Straße', defaultFooterLines.companyStreet],
-                  ['companyCity', 'PLZ Ort', defaultFooterLines.companyCity],
-                  ['vatId', 'USt-IdNr.', defaultFooterLines.vatId],
-                  ['taxNumber', 'Steuernummer', defaultFooterLines.taxNumber],
-                  ['commercialRegister', 'Handelsregister', defaultFooterLines.commercialRegister],
-                  ['managingDirector', 'Geschäftsführer', defaultFooterLines.managingDirector],
-                  ['bankName', 'Bankname', defaultFooterLines.bankName],
-                  ['iban', 'IBAN', defaultFooterLines.iban],
-                  ['bic', 'BIC', defaultFooterLines.bic],
-                ].map(([field, label, placeholder]) => (
-                  <InvoicePanelInput
-                    key={field}
-                    label={label}
-                    placeholder={placeholder}
-                    value={footerLines[field]}
-                    onChange={(value) => updateFooterLine(field, value)}
-                  />
-                ))}
-              </div>
             </div>
           </div>
         )}
