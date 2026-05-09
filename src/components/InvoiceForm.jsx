@@ -171,6 +171,20 @@ function resizeTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
+function resizeCompanyName(textarea) {
+  if (!textarea) {
+    return;
+  }
+
+  const styles = window.getComputedStyle(textarea);
+  const fontSize = Number.parseFloat(styles.fontSize) || 24;
+  const lineHeight = Number.parseFloat(styles.lineHeight) || fontSize * 1.2;
+  const maxHeight = lineHeight * 2;
+
+  textarea.style.height = 'auto';
+  textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+}
+
 function getInlineLabelWidth(value) {
   return `${Math.max(String(value).length, 2)}ch`;
 }
@@ -376,6 +390,7 @@ export default function InvoiceForm() {
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const sheetRef = useRef(null);
+  const companyNameRef = useRef(null);
   const introTextRef = useRef(null);
   const closingTextRef = useRef(null);
   const templateInputRef = useRef(null);
@@ -404,6 +419,10 @@ export default function InvoiceForm() {
     resizeTextarea(introTextRef.current);
     resizeTextarea(closingTextRef.current);
   }, [introText, closingText]);
+
+  useEffect(() => {
+    resizeCompanyName(companyNameRef.current);
+  }, [sender.company]);
 
   const totals = useMemo(() => {
     const summary = positions.reduce(
@@ -924,11 +943,15 @@ export default function InvoiceForm() {
         <header className="invoice-document-header">
           <div className="editable-group">
             <textarea
+              ref={companyNameRef}
               className="invoice-company-name"
               aria-label="Absender Firmenname"
-              rows={2}
+              rows={1}
               value={sender.company}
-              onChange={(event) => updateSender('company', event.target.value)}
+              onChange={(event) => {
+                updateSender('company', event.target.value);
+                resizeCompanyName(event.target);
+              }}
             />
           </div>
 
