@@ -1355,7 +1355,7 @@ h1 {
 }
 
 .invoice-sheet {
-  --invoice-right-safe-offset: 28px;
+  --invoice-right-safe-offset: 0px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -2909,7 +2909,7 @@ h1 {
   }
 
   body.document-print-mode .invoice-sheet {
-    --invoice-right-safe-offset: 28px;
+    --invoice-right-safe-offset: 0px;
   }
 
   .offer-sheet input,
