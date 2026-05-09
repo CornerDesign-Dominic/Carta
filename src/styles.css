@@ -538,6 +538,10 @@ h1 {
   color: #314a54;
 }
 
+.invoice-template-input {
+  display: none;
+}
+
 .offer-sheet {
   width: 794px;
   height: 1123px;
@@ -1051,13 +1055,16 @@ h1 {
   min-width: 0;
 }
 
-.invoice-panel-field-wide,
-.invoice-panel-field-street {
+.invoice-panel-field-wide {
   grid-column: 1 / -1;
 }
 
 .invoice-panel-grid-two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.invoice-panel-grid-stacked {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .invoice-panel-field {
@@ -1111,7 +1118,7 @@ h1 {
 
 .invoice-panel-position {
   display: grid;
-  grid-template-columns: 22px minmax(160px, 1.7fr) minmax(84px, 0.78fr) minmax(70px, 0.6fr) minmax(64px, 0.58fr) minmax(58px, 0.52fr) 28px;
+  grid-template-columns: 22px minmax(160px, 1.7fr) minmax(84px, 0.78fr) minmax(70px, 0.6fr) minmax(64px, 0.58fr) minmax(58px, 0.52fr) 88px;
   gap: 6px;
   align-items: end;
   min-width: 0;
@@ -1137,6 +1144,38 @@ h1 {
   font-size: 15px;
   font-weight: 780;
   line-height: 1;
+}
+
+.invoice-panel-position-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.invoice-panel-move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 26px;
+  border: 1px solid rgba(95, 94, 89, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 254, 250, 0.72);
+  color: #67645e;
+  font-size: 0.76rem;
+  font-weight: 760;
+  line-height: 1;
+}
+
+.invoice-panel-move:hover:not(:disabled) {
+  border-color: rgba(95, 94, 89, 0.32);
+  background: rgba(95, 94, 89, 0.08);
+  color: #3f3b35;
+}
+
+.invoice-panel-move:disabled {
+  cursor: default;
+  opacity: 0.35;
 }
 
 .invoice-panel-add {
@@ -2550,7 +2589,7 @@ h1 {
   }
 
   .invoice-panel-position {
-    grid-template-columns: 22px repeat(2, minmax(0, 1fr)) 28px;
+    grid-template-columns: 22px repeat(2, minmax(0, 1fr)) 88px;
   }
 
   .invoice-panel-position .invoice-panel-field:first-of-type {

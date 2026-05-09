@@ -303,6 +303,74 @@ function createPdfFileName(type, number) {
   return `${cleanType || 'rechnung'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
+function createTemplateFileName(number) {
+  const cleanNumber = String(number || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9Ã¤Ã¶Ã¼ÃŸ]+/gi, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return `rechnung-vorlage${cleanNumber ? `-${cleanNumber}` : ''}.json`;
+}
+
+function normalizeFieldConfig(config) {
+  const fallback = {
+    contact: createFieldConfig(contactFieldDefinitions),
+    details: createFieldConfig(detailFieldDefinitions),
+    footerMiddle: createFieldConfig(footerMiddleDefinitions),
+    texts: {
+      hidden: [],
+      order: ['introText', 'closingText'],
+    },
+  };
+
+  if (!config || typeof config !== 'object') {
+    return fallback;
+  }
+
+  return {
+    contact: {
+      ...fallback.contact,
+      ...config.contact,
+      hidden: Array.isArray(config.contact?.hidden) ? config.contact.hidden : fallback.contact.hidden,
+      order: Array.isArray(config.contact?.order) ? config.contact.order : fallback.contact.order,
+    },
+    details: {
+      ...fallback.details,
+      ...config.details,
+      hidden: Array.isArray(config.details?.hidden) ? config.details.hidden : fallback.details.hidden,
+      order: Array.isArray(config.details?.order) ? config.details.order : fallback.details.order,
+    },
+    footerMiddle: {
+      ...fallback.footerMiddle,
+      ...config.footerMiddle,
+      hidden: Array.isArray(config.footerMiddle?.hidden) ? config.footerMiddle.hidden : fallback.footerMiddle.hidden,
+      order: Array.isArray(config.footerMiddle?.order) ? config.footerMiddle.order : fallback.footerMiddle.order,
+    },
+    texts: {
+      ...fallback.texts,
+      ...config.texts,
+      hidden: Array.isArray(config.texts?.hidden) ? config.texts.hidden : fallback.texts.hidden,
+      order: Array.isArray(config.texts?.order) ? config.texts.order : fallback.texts.order,
+    },
+  };
+}
+
+function normalizePositions(templatePositions) {
+  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
+    return [createPosition()];
+  }
+
+  return templatePositions.map((position) => ({
+    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
+    description: String(position.description ?? defaultPosition.description),
+    unitPrice: String(position.unitPrice ?? defaultPosition.unitPrice),
+    quantity: String(position.quantity ?? defaultPosition.quantity),
+    unit: String(position.unit ?? defaultPosition.unit),
+    taxRate: String(position.taxRate ?? defaultPosition.taxRate),
+  }));
+}
+
 export default function InvoiceForm() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -310,6 +378,7 @@ export default function InvoiceForm() {
   const sheetRef = useRef(null);
   const introTextRef = useRef(null);
   const closingTextRef = useRef(null);
+  const templateInputRef = useRef(null);
   const dateInputRefs = useRef({});
   const [labels, setLabels] = useState(initialLabels);
   const [sender, setSender] = useState(defaultSender);
@@ -515,6 +584,88 @@ export default function InvoiceForm() {
     );
   }
 
+  function movePosition(positionId, direction) {
+    setPositions((current) => {
+      const index = current.findIndex((position) => position.id === positionId);
+      const nextIndex = index + direction;
+
+      if (index < 0 || nextIndex < 0 || nextIndex >= current.length) {
+        return current;
+      }
+
+      const next = [...current];
+      [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+
+      return next;
+    });
+  }
+
+  function handleDownloadTemplate() {
+    const template = {
+      schemaVersion: 1,
+      documentType: 'invoice',
+      createdAt: new Date().toISOString(),
+      labels,
+      sender,
+      senderAddress,
+      recipient,
+      recipientAddress,
+      details,
+      positions,
+      introText,
+      closingText,
+      footerLines,
+      fieldConfig,
+    };
+    const blob = new Blob([JSON.stringify(template, null, 2)], {
+      type: 'application/json;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = createTemplateFileName(details.invoiceNumber);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+
+  function handleLoadTemplateClick() {
+    templateInputRef.current?.click();
+  }
+
+  async function handleTemplateFileChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const template = JSON.parse(await file.text());
+
+      if (!template || template.documentType !== 'invoice') {
+        throw new Error('Invalid invoice template');
+      }
+
+      setLabels({ ...initialLabels, ...(template.labels ?? {}) });
+      setSender({ ...defaultSender, ...(template.sender ?? {}) });
+      setSenderAddress({ ...defaultSenderAddressParts, ...(template.senderAddress ?? {}) });
+      setRecipient({ ...defaultRecipient, ...(template.recipient ?? {}) });
+      setRecipientAddress({ ...defaultRecipientAddressParts, ...(template.recipientAddress ?? {}) });
+      setDetails({ ...defaultDetails, ...(template.details ?? {}) });
+      setFooterLines({ ...defaultFooterLines, ...(template.footerLines ?? {}) });
+      setIntroText(template.introText ?? defaultIntroText);
+      setClosingText(template.closingText ?? defaultClosingText);
+      setPositions(normalizePositions(template.positions));
+      setFieldConfig(normalizeFieldConfig(template.fieldConfig));
+    } catch {
+      window.alert('Die Vorlage konnte nicht geladen werden. Bitte prüfen Sie die Datei.');
+    }
+  }
+
   async function handleCreatePdf() {
     setIsExporting(true);
 
@@ -566,7 +717,7 @@ export default function InvoiceForm() {
                 <h3>Eigene Absenderdaten</h3>
                 <div className="invoice-panel-grid">
                   <InvoicePanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="sender-company" placeholder={defaultSender.company} value={sender.company} onChange={updateSenderCompany} />
-                  <InvoicePanelInput autoComplete="address-line1" className="invoice-panel-field-street" label="Straße" name="sender-street" placeholder={defaultSenderAddressParts.street} value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
+                  <InvoicePanelInput autoComplete="address-line1" label="Straße" name="sender-street" placeholder={defaultSenderAddressParts.street} value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
                   <InvoicePanelInput autoComplete="address-line2" label="Hausnummer" name="sender-house-number" placeholder={defaultSenderAddressParts.houseNumber} value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                   <InvoicePanelInput autoComplete="postal-code" label="PLZ" name="sender-postal-code" placeholder={defaultSenderAddressParts.postalCode} value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
                   <InvoicePanelInput autoComplete="address-level2" label="Ort" name="sender-city" placeholder={defaultSenderAddressParts.city} value={senderAddress.city} onChange={(value) => updateSenderAddress('city', value)} />
@@ -580,7 +731,7 @@ export default function InvoiceForm() {
                   <InvoicePanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="recipient-company" placeholder={defaultRecipient.company} value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
                   <InvoicePanelInput autoComplete="off" label="Zusatz / Ansprechpartner" name="recipient-attention" placeholder={defaultRecipient.attention} value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                   <InvoicePanelInput autoComplete="name" label="Name / Abteilung" name="recipient-name" placeholder={defaultRecipient.name} value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
-                  <InvoicePanelInput autoComplete="address-line1" className="invoice-panel-field-street" label="Straße" name="recipient-street" placeholder={defaultRecipientAddressParts.street} value={recipientAddress.street} onChange={(value) => updateRecipientAddress('street', value)} />
+                  <InvoicePanelInput autoComplete="address-line1" label="Straße" name="recipient-street" placeholder={defaultRecipientAddressParts.street} value={recipientAddress.street} onChange={(value) => updateRecipientAddress('street', value)} />
                   <InvoicePanelInput autoComplete="address-line2" label="Hausnummer" name="recipient-house-number" placeholder={defaultRecipientAddressParts.houseNumber} value={recipientAddress.houseNumber} onChange={(value) => updateRecipientAddress('houseNumber', value)} />
                   <InvoicePanelInput autoComplete="postal-code" label="PLZ" name="recipient-postal-code" placeholder={defaultRecipientAddressParts.postalCode} value={recipientAddress.postalCode} onChange={(value) => updateRecipientAddress('postalCode', value)} />
                   <InvoicePanelInput autoComplete="address-level2" label="Ort" name="recipient-city" placeholder={defaultRecipientAddressParts.city} value={recipientAddress.city} onChange={(value) => updateRecipientAddress('city', value)} />
@@ -638,8 +789,8 @@ export default function InvoiceForm() {
             <div className="invoice-panel-row">
               <div className="invoice-panel-section">
                 <h3>Rechnungsdaten</h3>
-                <div className="invoice-panel-grid">
-                  <InvoicePanelInput autoComplete="off" className="invoice-panel-field-wide" label="Rechnungsnummer" name="invoice-number" placeholder={defaultDetails.invoiceNumber} value={details.invoiceNumber} onChange={(value) => updateDetail('invoiceNumber', value)} />
+                <div className="invoice-panel-grid invoice-panel-grid-stacked">
+                  <InvoicePanelInput autoComplete="off" label="Rechnungsnummer" name="invoice-number" placeholder={defaultDetails.invoiceNumber} value={details.invoiceNumber} onChange={(value) => updateDetail('invoiceNumber', value)} />
                   <InvoicePanelInput autoComplete="off" label="Rechnungsdatum" name="invoice-date" placeholder={defaultDetails.invoiceDate} type="date" value={details.invoiceDate} onChange={(value) => updateDetail('invoiceDate', value)} />
                   <InvoicePanelInput autoComplete="off" label="Leistungsdatum" name="service-date" placeholder={defaultDetails.serviceDate} type="date" value={details.serviceDate} onChange={(value) => updateDetail('serviceDate', value)} />
                 </div>
@@ -647,7 +798,7 @@ export default function InvoiceForm() {
 
               <div className="invoice-panel-section">
                 <h3>Referenzen</h3>
-                <div className="invoice-panel-grid">
+                <div className="invoice-panel-grid invoice-panel-grid-stacked">
                   <InvoicePanelInput autoComplete="off" label="Interne Nummer" name="internal-number" placeholder={defaultDetails.internalNumber} value={details.internalNumber} onChange={(value) => updateDetail('internalNumber', value)} />
                   <InvoicePanelInput autoComplete="off" label="Externe Nummer" name="external-number" placeholder={defaultDetails.externalNumber} value={details.externalNumber} onChange={(value) => updateDetail('externalNumber', value)} />
                   <InvoicePanelInput autoComplete="off" label="Kundennummer" name="customer-number" placeholder={defaultDetails.customerNumber} value={details.customerNumber} onChange={(value) => updateDetail('customerNumber', value)} />
@@ -678,9 +829,29 @@ export default function InvoiceForm() {
                     <InvoicePanelInput autoComplete="off" inputMode="decimal" label="Anzahl" name={`position-${index + 1}-quantity`} placeholder={defaultPosition.quantity} value={position.quantity} onChange={(value) => updatePosition(position.id, 'quantity', value)} />
                     <InvoicePanelInput autoComplete="off" label="Einheit" name={`position-${index + 1}-unit`} placeholder={defaultPosition.unit} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
                     <InvoicePanelInput autoComplete="off" inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} placeholder={defaultPosition.taxRate} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
-                    <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} onClick={() => removePosition(position.id)}>
-                      ×
-                    </button>
+                    <div className="invoice-panel-position-actions">
+                      <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} onClick={() => removePosition(position.id)}>
+                        ×
+                      </button>
+                      <button
+                        className="invoice-panel-move"
+                        type="button"
+                        aria-label={`Position ${index + 1} nach oben verschieben`}
+                        disabled={index === 0}
+                        onClick={() => movePosition(position.id, -1)}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        className="invoice-panel-move"
+                        type="button"
+                        aria-label={`Position ${index + 1} nach unten verschieben`}
+                        disabled={index === positions.length - 1}
+                        onClick={() => movePosition(position.id, 1)}
+                      >
+                        ↓
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -701,12 +872,25 @@ export default function InvoiceForm() {
         >
           {highlightFields ? 'Vorschau' : 'Bearbeiten'}
         </button>
+        <button type="button" onClick={handleLoadTemplateClick}>
+          Vorlage laden
+        </button>
+        <button type="button" onClick={handleDownloadTemplate}>
+          Vorlage herunterladen
+        </button>
         <button type="button" onClick={handlePrint}>
           Drucken
         </button>
         <button type="button" onClick={handleCreatePdf} disabled={isExporting}>
           {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
         </button>
+        <input
+          ref={templateInputRef}
+          className="invoice-template-input"
+          type="file"
+          accept="application/json,.json"
+          onChange={handleTemplateFileChange}
+        />
       </div>
 
       <article
