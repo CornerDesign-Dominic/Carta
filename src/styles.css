@@ -1025,21 +1025,21 @@ h1 {
 .invoice-form-panel-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-  padding: 2px 14px 14px;
+  gap: 12px;
+  padding: 12px;
   border: 1px solid rgba(201, 196, 186, 0.62);
   border-radius: 6px;
-  background: rgba(255, 255, 253, 0.74);
-  box-shadow: 0 12px 30px rgba(36, 35, 31, 0.035);
+  background: rgba(250, 250, 247, 0.78);
+  box-shadow: 0 12px 30px rgba(36, 35, 31, 0.032);
 }
 
 .invoice-panel-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
   min-width: 0;
-  padding: 15px 0;
-  border-top: 1px solid rgba(201, 196, 186, 0.42);
+  padding: 0;
+  border-top: 0;
 }
 
 .invoice-panel-row:first-child {
@@ -1049,24 +1049,29 @@ h1 {
 .invoice-panel-section {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
+  padding: 13px;
+  border: 1px solid rgba(201, 196, 186, 0.5);
+  border-radius: 5px;
+  background: rgba(255, 255, 253, 0.66);
+  box-shadow: 0 7px 18px rgba(36, 35, 31, 0.022);
 }
 
 .invoice-panel-row > .invoice-panel-section + .invoice-panel-section {
-  padding-left: 18px;
-  border-left: 1px solid rgba(201, 196, 186, 0.38);
+  padding-left: 13px;
+  border-left-color: rgba(201, 196, 186, 0.5);
 }
 
 .invoice-panel-section-wide {
   grid-column: 1 / -1;
-  padding-top: 15px;
-  border-top: 1px solid rgba(201, 196, 186, 0.42);
 }
 
 .invoice-panel-section h3 {
   margin: 0;
-  color: #4a4741;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(201, 196, 186, 0.28);
+  color: #3f3d38;
   font-size: 0.76rem;
   font-weight: 760;
   letter-spacing: 0.08em;
@@ -1112,10 +1117,10 @@ h1 {
 .invoice-panel-field textarea {
   width: 100%;
   min-width: 0;
-  border: 1px solid rgba(201, 196, 186, 0.72);
+  border: 1px solid rgba(190, 185, 176, 0.68);
   border-radius: 4px;
   padding: 7px 8px;
-  background: rgba(255, 255, 253, 0.94);
+  background: rgba(255, 255, 253, 0.98);
   color: var(--ink);
   font: inherit;
   font-size: 0.84rem;
@@ -1143,7 +1148,7 @@ h1 {
 
 .invoice-panel-positions {
   display: grid;
-  gap: 6px;
+  gap: 7px;
 }
 
 .invoice-panel-position {
@@ -1152,6 +1157,10 @@ h1 {
   gap: 6px;
   align-items: end;
   min-width: 0;
+  padding: 7px;
+  border: 1px solid rgba(201, 196, 186, 0.36);
+  border-radius: 4px;
+  background: rgba(255, 255, 253, 0.56);
 }
 
 .invoice-panel-position > span {
@@ -2614,8 +2623,8 @@ h1 {
   }
 
   .invoice-panel-row > .invoice-panel-section + .invoice-panel-section {
-    padding-left: 0;
-    border-left: 0;
+    padding-left: 13px;
+    border-left: 1px solid rgba(201, 196, 186, 0.5);
   }
 
   .invoice-panel-position {
