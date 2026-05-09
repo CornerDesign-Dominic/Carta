@@ -1647,11 +1647,6 @@ h1 {
   display: none;
 }
 
-.invoice-sheet.is-export-mode .invoice-position-table th:nth-child(8),
-.invoice-sheet.is-export-mode .invoice-position-table td:nth-child(8) {
-  display: none;
-}
-
 .invoice-document-title {
   margin: 0 0 14px;
   color: #232320;
@@ -2782,11 +2777,6 @@ h1 {
   body.document-print-mode .offer-sheet .invoice-hidden-field-actions,
   body.document-print-mode .offer-sheet .offer-remove,
   body.document-print-mode .offer-sheet .offer-add-position {
-    display: none;
-  }
-
-  body.document-print-mode .invoice-sheet .invoice-position-table th:nth-child(8),
-  body.document-print-mode .invoice-sheet .invoice-position-table td:nth-child(8) {
     display: none;
   }
 
