@@ -1218,7 +1218,35 @@ export default function InvoiceForm() {
               return (
                 <tr key={position.id}>
                   <td>{index + 1}</td>
-                  <td>
+                  <td className="invoice-position-description-cell">
+                    <span className="invoice-position-actions">
+                      <button
+                        aria-label={`Position ${index + 1} löschen`}
+                        className="invoice-position-action invoice-position-delete"
+                        type="button"
+                        onClick={() => removePosition(position.id)}
+                      >
+                        &times;
+                      </button>
+                      <button
+                        aria-label={`Position ${index + 1} nach oben verschieben`}
+                        className="invoice-position-action"
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => movePosition(position.id, -1)}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        aria-label={`Position ${index + 1} nach unten verschieben`}
+                        className="invoice-position-action"
+                        type="button"
+                        disabled={index === positions.length - 1}
+                        onClick={() => movePosition(position.id, 1)}
+                      >
+                        ↓
+                      </button>
+                    </span>
                     <textarea
                       ref={resizeTextarea}
                       className="invoice-position-description"
@@ -1269,16 +1297,7 @@ export default function InvoiceForm() {
                     </span>
                   </td>
                   <td>{formatCurrency(calculated.net)}</td>
-                  <td>
-                    <button
-                      aria-label={`Position ${index + 1} löschen`}
-                      className="offer-remove"
-                      type="button"
-                      onClick={() => removePosition(position.id)}
-                    >
-                      &times;
-                    </button>
-                  </td>
+                  <td />
                 </tr>
               );
             })}
