@@ -787,12 +787,12 @@ h1 {
 
 .offer-sheet .invoice-company-name {
   display: block;
-  min-height: 1.86rem;
-  max-height: 3.72rem;
+  min-height: 1.98rem;
+  max-height: 3.96rem;
   color: #232320;
   font-size: 1.55rem;
   font-weight: 760;
-  line-height: 1.2;
+  line-height: 1.28;
   overflow: hidden;
   resize: none;
   white-space: normal;
@@ -1771,6 +1771,11 @@ h1 {
 .invoice-position-table td {
   padding-top: 4px;
   padding-bottom: 4px;
+  vertical-align: middle;
+}
+
+.invoice-position-table td:nth-child(2) {
+  vertical-align: top;
 }
 
 .invoice-sheet .invoice-position-table {
@@ -1781,10 +1786,19 @@ h1 {
 }
 
 .invoice-position-table input,
+.invoice-position-table textarea,
 .invoice-position-table .document-label-input {
   font-size: 0.8rem;
   min-height: 18px;
   line-height: 1.12;
+}
+
+.invoice-position-table textarea.invoice-position-description {
+  display: block;
+  min-height: 18px;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.24;
 }
 
 .invoice-tax-rate-cell {

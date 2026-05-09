@@ -1219,10 +1219,16 @@ export default function InvoiceForm() {
                 <tr key={position.id}>
                   <td>{index + 1}</td>
                   <td>
-                    <input
+                    <textarea
+                      ref={resizeTextarea}
+                      className="invoice-position-description"
                       aria-label={`Beschreibung Position ${index + 1}`}
+                      rows={1}
                       value={position.description}
-                      onChange={(event) => updatePosition(position.id, 'description', event.target.value)}
+                      onChange={(event) => {
+                        updatePosition(position.id, 'description', event.target.value);
+                        resizeTextarea(event.target);
+                      }}
                     />
                   </td>
                   <td>
