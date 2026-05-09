@@ -1812,6 +1812,19 @@ h1 {
   margin-top: 18px;
 }
 
+.invoice-sheet.is-export-mode {
+  --invoice-summary-axis-offset: 28px;
+}
+
+.invoice-sheet.is-export-mode .invoice-position-table {
+  width: calc(100% - var(--invoice-summary-axis-offset));
+  max-width: calc(100% - var(--invoice-summary-axis-offset));
+}
+
+.invoice-sheet.is-export-mode .invoice-document-summary {
+  margin-right: var(--invoice-summary-axis-offset);
+}
+
 .invoice-document-summary div:last-child {
   font-size: 0.92rem;
 }
@@ -2778,6 +2791,19 @@ h1 {
   body.document-print-mode .offer-sheet .offer-remove,
   body.document-print-mode .offer-sheet .offer-add-position {
     display: none;
+  }
+
+  body.document-print-mode .invoice-sheet {
+    --invoice-summary-axis-offset: 28px;
+  }
+
+  body.document-print-mode .invoice-sheet .invoice-position-table {
+    width: calc(100% - var(--invoice-summary-axis-offset));
+    max-width: calc(100% - var(--invoice-summary-axis-offset));
+  }
+
+  body.document-print-mode .invoice-sheet .invoice-document-summary {
+    margin-right: var(--invoice-summary-axis-offset);
   }
 
   .offer-sheet input,
