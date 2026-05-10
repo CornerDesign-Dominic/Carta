@@ -3284,6 +3284,15 @@ h1 {
     display: none;
   }
 
+  body.document-print-mode.offer-print-mode .invoice-sheet,
+  body.document-print-mode.offer-print-mode .invoice-sheet * {
+    visibility: visible;
+  }
+
+  body.document-print-mode.offer-print-mode .invoice-sheet {
+    display: block;
+  }
+
   body.document-print-mode .invoice-print-pages,
   body.document-print-mode .invoice-print-pages * {
     visibility: visible;

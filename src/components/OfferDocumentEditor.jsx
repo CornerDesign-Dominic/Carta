@@ -568,7 +568,7 @@ export default function OfferDocumentEditor() {
     }
   }
 
-  async function runWithCleanDocument(callback) {
+  function runWithCleanDocument(callback) {
     const sheet = sheetRef.current;
 
     if (!sheet) {
@@ -580,7 +580,7 @@ export default function OfferDocumentEditor() {
     sheet.classList.remove('is-highlight-mode');
 
     try {
-      await callback(sheet);
+      callback(sheet);
     } finally {
       sheet.classList.remove('is-export-mode');
 
@@ -610,13 +610,25 @@ export default function OfferDocumentEditor() {
 
   function handlePrint() {
     document.body.classList.add('document-print-mode');
+    document.body.classList.add('offer-print-mode');
 
-    void runWithCleanDocument(async () => {
-      window.print();
-    });
+    const sheet = sheetRef.current;
+    const hadHighlight = sheet?.classList.contains('is-highlight-mode') ?? false;
+
+    sheet?.classList.add('is-export-mode');
+    sheet?.classList.remove('is-highlight-mode');
+
+    window.print();
 
     const cleanup = () => {
       document.body.classList.remove('document-print-mode');
+      document.body.classList.remove('offer-print-mode');
+      sheet?.classList.remove('is-export-mode');
+
+      if (hadHighlight) {
+        sheet?.classList.add('is-highlight-mode');
+      }
+
       window.removeEventListener('afterprint', cleanup);
     };
 
