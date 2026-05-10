@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
@@ -875,76 +875,28 @@ export default function OfferDocumentEditor() {
 function MeasuredOfferPaginator({ items, labels, totals, onPagesChange }) {
   const measureRootRef = useRef(null);
 
-  useLayoutEffect(() => {
-    const measureRoot = measureRootRef.current;
+  useEffect(() => {
+    let frameId;
+    const timeoutId = window.setTimeout(() => {
+      frameId = window.requestAnimationFrame(() => {
+        const nextPages = measureOfferPages(measureRootRef.current, items);
 
-    if (!measureRoot) {
-      return;
-    }
+        if (!nextPages) {
+          return;
+        }
 
-    const firstContent = measureRoot.querySelector('[data-measure-first-content]');
-    const followContent = measureRoot.querySelector('[data-measure-follow-content]');
-    const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
-    const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
-    const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
-    const positionRows = new Map(
-      [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
-        row.dataset.measurePositionRow,
-        getOuterHeight(row),
-      ]),
-    );
+        onPagesChange((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
+      });
+    }, 40);
 
-    if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) {
-      return;
-    }
+    return () => {
+      window.clearTimeout(timeoutId);
 
-    const firstPageCapacity = firstContent.getBoundingClientRect().height - offerPrintLayout.smallSafetyBuffer;
-    const followPageCapacity = followContent.getBoundingClientRect().height - offerPrintLayout.smallSafetyBuffer;
-    const blockGap =
-      parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || offerPrintLayout.blockGap;
-    const positionHeaderHeight = getOuterHeight(positionHeader);
-
-    function measureTextHeight(text) {
-      textProbe.textContent = String(text || '').trim();
-      return getOuterHeight(textProbe);
-    }
-
-    function getItemHeight(item) {
-      if (item.type === 'text') {
-        return measureTextHeight(item.text);
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
       }
-
-      if (item.type === 'position') {
-        return positionRows.get(String(item.index)) || 0;
-      }
-
-      if (item.type === 'summary') {
-        return getOuterHeight(summaryProbe);
-      }
-
-      return 0;
-    }
-
-    function getItemGap(page, item) {
-      const previousItem = page.items[page.items.length - 1];
-      const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
-      const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
-
-      return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
-    }
-
-    const nextPages = paginateMeasuredItems({
-      items,
-      firstPageCapacity,
-      followPageCapacity,
-      getItemHeight,
-      getItemGap,
-      splitTextItem: (item, availableHeight) =>
-        takeMeasuredText(item.text, availableHeight, measureTextHeight),
-    });
-
-    onPagesChange(nextPages);
-  }, [items, labels, totals, onPagesChange]);
+    };
+  }, [items, labels, totals]);
 
   const positionItems = items.filter((item) => item.type === 'position');
 
@@ -994,6 +946,112 @@ function MeasuredOfferPaginator({ items, labels, totals, onPagesChange }) {
       </div>
     </div>
   );
+}
+
+function measureOfferPages(measureRoot, items) {
+  if (!measureRoot) {
+    return null;
+  }
+
+  const firstContent = measureRoot.querySelector('[data-measure-first-content]');
+  const followContent = measureRoot.querySelector('[data-measure-follow-content]');
+  const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
+  const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+  const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
+  const positionRows = new Map(
+    [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
+      row.dataset.measurePositionRow,
+      getOuterHeight(row),
+    ]),
+  );
+
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) {
+    return null;
+  }
+
+  const firstPageCapacity = firstContent.getBoundingClientRect().height - offerPrintLayout.smallSafetyBuffer;
+  const followPageCapacity = followContent.getBoundingClientRect().height - offerPrintLayout.smallSafetyBuffer;
+  const blockGap =
+    parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || offerPrintLayout.blockGap;
+  const positionHeaderHeight = getOuterHeight(positionHeader);
+
+  function measureTextHeight(text) {
+    textProbe.textContent = String(text || '').trim();
+    return getOuterHeight(textProbe);
+  }
+
+  function getItemHeight(item) {
+    if (item.type === 'text') {
+      return measureTextHeight(item.text);
+    }
+
+    if (item.type === 'position') {
+      return positionRows.get(String(item.index)) || 0;
+    }
+
+    if (item.type === 'summary') {
+      return getOuterHeight(summaryProbe);
+    }
+
+    return 0;
+  }
+
+  function getItemGap(page, item) {
+    const previousItem = page.items[page.items.length - 1];
+    const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
+    const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
+
+    return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
+  }
+
+  return paginateMeasuredItems({
+    items,
+    firstPageCapacity,
+    followPageCapacity,
+    getItemHeight,
+    getItemGap,
+    splitTextItem: (item, availableHeight) => takeMeasuredText(item.text, availableHeight, measureTextHeight),
+  });
+}
+
+function arePrintPagesEqual(currentPages, nextPages) {
+  if (currentPages.length !== nextPages.length) {
+    return false;
+  }
+
+  return currentPages.every((page, pageIndex) => {
+    const nextPage = nextPages[pageIndex];
+
+    if (page.items.length !== nextPage.items.length) {
+      return false;
+    }
+
+    return page.items.every((item, itemIndex) => arePrintItemsEqual(item, nextPage.items[itemIndex]));
+  });
+}
+
+function arePrintItemsEqual(first, second) {
+  if (first.type !== second.type) {
+    return false;
+  }
+
+  if (first.type === 'text') {
+    return first.id === second.id && first.text === second.text;
+  }
+
+  if (first.type === 'position') {
+    return (
+      first.index === second.index &&
+      first.position.id === second.position.id &&
+      first.position.description === second.position.description &&
+      first.position.unitPrice === second.position.unitPrice &&
+      first.position.quantity === second.position.quantity &&
+      first.position.unit === second.position.unit &&
+      first.position.taxRate === second.position.taxRate
+    );
+  }
+
+  return true;
 }
 
 function getOuterHeight(element) {
