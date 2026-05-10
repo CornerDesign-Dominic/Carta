@@ -4,21 +4,23 @@ export default function NotFoundView({ onNavigate }) {
       <article className="not-found-document">
         <header className="not-found-letterhead">
           <div>
-            <strong>Belege24 Muster GmbH</strong>
+            <strong>www.belege24.com</strong>
+            <span>Dokumente · Wissen · Werkzeuge</span>
           </div>
           <address>
-            E-Mail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kontakt@belege24.com
-            <br />
-            Website&nbsp;&nbsp;&nbsp;www.belege24.com
-            <br />
-            belege24.com
-            <br />
-            Dokumente · Wissen · Werkzeuge
+            <span>
+              <b>E-Mail</b>
+              kontakt@belege24.com
+            </span>
+            <span>
+              <b>Web</b>
+              www.belege24.com
+            </span>
           </address>
         </header>
 
         <p className="not-found-sender-line">
-          Belege24 Muster GmbH · Musterstraße 12 · 10115 Berlin
+          Belege24 · belege24.com · Dokumentgeneratoren im Browser
         </p>
 
         <section className="not-found-meta" aria-label="Dokumentangaben">
@@ -65,25 +67,23 @@ export default function NotFoundView({ onNavigate }) {
 
         <footer className="not-found-footer">
           <span>
-            Belege24 Muster GmbH
+            Belege24
             <br />
-            Musterstraße 12
-            <br />
-            10115 Berlin
+            belege24.com
           </span>
           <span>
-            USt-IdNr.: DE123456789
+            Dokumentgeneratoren
             <br />
-            Steuernummer: 12/345/67890
+            Rechnungen · Angebote · Mahnungen
             <br />
-            Geschäftsführer: Belege24
+            Fehlerhinweis 404
           </span>
           <span>
-            Website: belege24.com
+            Wissen · Werkzeuge
             <br />
-            E-Mail: kontakt@belege24.com
+            Kaufmännische Praxis im Browser
             <br />
-            Dokumente · Wissen · Werkzeuge
+            kontakt@belege24.com
           </span>
         </footer>
       </article>

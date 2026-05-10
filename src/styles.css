@@ -178,6 +178,7 @@ output {
 
 .not-found-document {
   display: grid;
+  grid-template-rows: auto auto auto auto auto 1fr;
   align-content: start;
   width: 794px;
   min-height: 1123px;
@@ -208,11 +209,35 @@ output {
   line-height: 1.28;
 }
 
+.not-found-letterhead span {
+  display: block;
+  margin-top: 5px;
+  color: #5f5e59;
+  font-size: 0.66rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
 .not-found-letterhead address {
+  display: grid;
+  gap: 2px;
+  align-content: start;
   margin: 0;
   color: #5f5e59;
   font-style: normal;
-  text-align: right;
+  text-align: left;
+}
+
+.not-found-letterhead address span {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 12px;
+  margin: 0;
+}
+
+.not-found-letterhead address b {
+  color: #5f5e59;
+  font-weight: 700;
 }
 
 .not-found-sender-line {
@@ -338,6 +363,7 @@ output {
 
 .not-found-footer {
   display: grid;
+  align-self: end;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-top: auto;
