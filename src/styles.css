@@ -3765,11 +3765,6 @@ h1 {
   gap: 12px;
 }
 
-.knowledge-article-section + .knowledge-article-section {
-  padding-top: 26px;
-  border-top: 1px solid rgba(232, 229, 222, 0.92);
-}
-
 .knowledge-article-section h2 {
   margin: 0;
   color: var(--accent-deep);
@@ -4056,10 +4051,6 @@ h1 {
     gap: 24px;
     margin-top: 28px;
     padding-top: 24px;
-  }
-
-  .knowledge-article-section + .knowledge-article-section {
-    padding-top: 22px;
   }
 
   .knowledge-cta-section {
