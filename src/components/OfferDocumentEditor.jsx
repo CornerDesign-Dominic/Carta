@@ -53,6 +53,8 @@ const offerMetaFields = [
   { field: 'customerNumber', ariaLabel: 'Kundennummer', type: 'text' },
 ];
 
+const offerRecipientOptionalFields = [{ field: 'attention', label: 'Zusatz / zu Händen' }];
+
 const offerFooterColumns = [
   [
     { field: 'companyName', label: 'Firma' },
@@ -114,6 +116,7 @@ function normalizeFieldConfig(config) {
   const fallback = {
     contact: createFieldConfig(offerContactFields),
     details: createFieldConfig(offerMetaFields),
+    recipient: createFieldConfig(offerRecipientOptionalFields),
     footerMiddle: createFieldConfig(offerFooterColumns[1]),
   };
 
@@ -124,6 +127,7 @@ function normalizeFieldConfig(config) {
   return {
     contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
     details: normalizeFieldConfigBlock(config.details, fallback.details),
+    recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
     footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
   };
 }
@@ -336,6 +340,7 @@ export default function OfferDocumentEditor() {
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(offerContactFields),
     details: createFieldConfig(offerMetaFields),
+    recipient: createFieldConfig(offerRecipientOptionalFields),
     footerMiddle: createFieldConfig(offerFooterColumns[1]),
   });
   const sheetRef = useRef(null);
@@ -787,10 +792,12 @@ export default function OfferDocumentEditor() {
 
         <section className="invoice-address-row">
           <RecipientBlock
+            hiddenFields={getHiddenFields('recipient', offerRecipientOptionalFields)}
             recipient={recipient}
             senderLine={sender.senderLine}
             onRecipientChange={updateRecipient}
             onSenderLineChange={(value) => updateSender('senderLine', value)}
+            onToggleField={(field) => toggleConfiguredField('recipient', field)}
           />
 
           <DocumentMetaBlock
@@ -883,6 +890,9 @@ export default function OfferDocumentEditor() {
             )}
             visibleDetailDefinitions={getOrderedDefinitions('details', offerMetaFields).filter(
               (definition) => !fieldConfig.details.hidden.includes(definition.field),
+            )}
+            visibleRecipientFields={offerRecipientOptionalFields.filter(
+              (definition) => !fieldConfig.recipient.hidden.includes(definition.field),
             )}
             visibleFooterMiddleDefinitions={getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
               (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
@@ -1090,6 +1100,7 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
     totals,
     visibleContactDefinitions,
     visibleDetailDefinitions,
+    visibleRecipientFields,
     visibleFooterMiddleDefinitions,
   },
   ref,
@@ -1113,6 +1124,7 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
               sender={sender}
               visibleContactDefinitions={visibleContactDefinitions}
               visibleDetailDefinitions={visibleDetailDefinitions}
+              visibleRecipientFields={visibleRecipientFields}
             />
           ) : (
             <OfferPrintContinuationHeader companyName={sender.company} />
@@ -1143,7 +1155,17 @@ function OfferPrintFirstPageHeader({
   sender,
   visibleContactDefinitions,
   visibleDetailDefinitions,
+  visibleRecipientFields,
 }) {
+  const showRecipientAttention = visibleRecipientFields.some((definition) => definition.field === 'attention');
+  const recipientLines = [
+    recipient.company,
+    showRecipientAttention ? recipient.attention : '',
+    recipient.name,
+    recipient.street,
+    recipient.cityLine,
+  ];
+
   return (
     <div className="offer-print-first-page-header">
       <header className="invoice-print-header">
@@ -1163,7 +1185,7 @@ function OfferPrintFirstPageHeader({
       <section className="invoice-print-address-row">
         <div className="invoice-print-recipient">
           <p className="invoice-print-sender-line">{sender.senderLine}</p>
-          {[recipient.company, recipient.attention, recipient.name, recipient.street, recipient.cityLine]
+          {recipientLines
             .filter(Boolean)
             .map((line) => (
               <p key={line}>{line}</p>

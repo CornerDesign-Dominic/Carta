@@ -235,6 +235,11 @@ output {
   margin: 0;
 }
 
+.not-found-letterhead address em {
+  font-style: normal;
+  text-align: right;
+}
+
 .not-found-letterhead address b {
   color: #5f5e59;
   font-weight: 700;
@@ -365,13 +370,26 @@ output {
   display: grid;
   align-self: end;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 0;
   margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid #dcd7cd;
   color: #5f5e59;
   font-size: 9px;
   line-height: 1.45;
+}
+
+.not-found-footer span {
+  min-width: 0;
+  padding: 0 14px;
+}
+
+.not-found-footer span:first-child {
+  padding-left: 0;
+}
+
+.not-found-footer span + span {
+  border-left: 1px solid #e4dfd6;
 }
 
 .site-main {
@@ -1377,8 +1395,49 @@ h1 {
   text-transform: uppercase;
 }
 
+.invoice-panel-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(201, 196, 186, 0.28);
+}
+
+.invoice-panel-heading-row h3 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.invoice-panel-inline-toggle {
+  flex: 0 0 auto;
+  border: 1px solid rgba(181, 176, 166, 0.7);
+  border-radius: 4px;
+  padding: 5px 9px;
+  background: rgba(255, 255, 253, 0.82);
+  color: #4f4a42;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.invoice-panel-inline-toggle:hover {
+  border-color: rgba(155, 148, 136, 0.78);
+  background: #ffffff;
+}
+
 .invoice-panel-muted-heading {
   visibility: hidden;
+}
+
+.offer-footer-form-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.offer-footer-form-column .invoice-panel-muted-heading {
+  visibility: visible;
 }
 
 .invoice-panel-grid {
@@ -1624,6 +1683,7 @@ h1 {
 }
 
 .invoice-recipient-fields > input,
+.invoice-recipient-fields .invoice-config-row input,
 .invoice-recipient-location input {
   min-height: 15px;
   padding: 0;
@@ -3476,7 +3536,8 @@ h1 {
   .invoice-form-panel-body,
   .invoice-panel-row,
   .invoice-panel-grid,
-  .invoice-panel-grid-two {
+  .invoice-panel-grid-two,
+  .offer-footer-form-columns {
     grid-template-columns: 1fr;
   }
 

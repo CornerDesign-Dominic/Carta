@@ -10,11 +10,11 @@ export default function NotFoundView({ onNavigate }) {
           <address>
             <span>
               <b>E-Mail</b>
-              kontakt@belege24.com
+              <em>kontakt@belege24.com</em>
             </span>
             <span>
               <b>Web</b>
-              www.belege24.com
+              <em>www.belege24.com</em>
             </span>
           </address>
         </header>
@@ -32,11 +32,11 @@ export default function NotFoundView({ onNavigate }) {
           <dl>
             <div>
               <dt>Hinweisnummer</dt>
-              <dd>404-2026-001</dd>
+              <dd>404</dd>
             </div>
             <div>
               <dt>Status</dt>
-              <dd>Seite nicht gefunden</dd>
+              <dd>Error</dd>
             </div>
             <div>
               <dt>Website</dt>

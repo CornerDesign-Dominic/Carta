@@ -32,14 +32,66 @@ function OfferPanelTextarea({ label, name, onChange, value }) {
   );
 }
 
+function splitStreetLine(value = '') {
+  const trimmed = value.trim();
+  const match = trimmed.match(/^(.*?)(?:\s+(\d+\s*[a-zA-Z]?))$/);
+
+  return {
+    street: match ? match[1].trim() : trimmed,
+    houseNumber: match ? match[2].trim() : '',
+  };
+}
+
+function splitCityLine(value = '') {
+  const trimmed = value.trim();
+  const match = trimmed.match(/^(\d{4,5})\s+(.+)$/);
+
+  return {
+    postalCode: match ? match[1].trim() : '',
+    city: match ? match[2].trim() : trimmed,
+  };
+}
+
+function splitSenderLine(value = '', company = '') {
+  const parts = value
+    .split(' - ')
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const addressPart = parts.length >= 3 ? parts[1] : parts[0] ?? '';
+  const cityPart = parts.length >= 3 ? parts[2] : parts[1] ?? '';
+
+  return {
+    company,
+    ...splitStreetLine(addressPart),
+    ...splitCityLine(cityPart),
+  };
+}
+
+function joinStreetLine(street, houseNumber) {
+  return [street, houseNumber].map((part) => part.trim()).filter(Boolean).join(' ');
+}
+
+function joinCityLine(postalCode, city) {
+  return [postalCode, city].map((part) => part.trim()).filter(Boolean).join(' ');
+}
+
+function joinSenderLine({ company, street, houseNumber, postalCode, city }) {
+  return [company, joinStreetLine(street, houseNumber), joinCityLine(postalCode, city)]
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(' - ');
+}
+
 function TextBlockFormSection({ block, onToggleVisible, onUpdate }) {
   return (
     <div className="invoice-panel-section">
-      <h3>{block.label}</h3>
-      <div className="invoice-panel-grid invoice-panel-grid-stacked">
-        <button className="invoice-panel-move" type="button" onClick={onToggleVisible}>
+      <div className="invoice-panel-heading-row">
+        <h3>{block.label}</h3>
+        <button className="invoice-panel-inline-toggle" type="button" onClick={onToggleVisible}>
           {block.visible ? 'Ausblenden' : 'Einblenden'}
         </button>
+      </div>
+      <div className="invoice-panel-grid invoice-panel-grid-stacked">
         <OfferPanelTextarea
           label="Text"
           name={`offer-text-${block.id}`}
@@ -76,6 +128,19 @@ export default function OfferDocumentForm({
 }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
+  const senderAddress = splitSenderLine(sender.senderLine, sender.company);
+  const recipientStreet = splitStreetLine(recipient.street);
+  const recipientCity = splitCityLine(recipient.cityLine);
+
+  function updateSenderAddress(field, value) {
+    const nextAddress = { ...senderAddress, [field]: value };
+
+    if (field === 'company') {
+      updateSender('company', value);
+    }
+
+    updateSender('senderLine', joinSenderLine(nextAddress));
+  }
 
   return (
     <section className="invoice-form-panel" aria-label="Angebotsformular">
@@ -92,25 +157,39 @@ export default function OfferDocumentForm({
         <div className="invoice-form-panel-body">
           <div className="invoice-panel-row">
             <div className="invoice-panel-section">
-              <h3>Absender und Kontakt</h3>
+              <h3>Absender</h3>
               <div className="invoice-panel-grid">
-                <OfferPanelInput className="invoice-panel-field-wide" label="Firma" name="sender-company" value={sender.company} onChange={(value) => updateSender('company', value)} />
-                <OfferPanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.senderLine} onChange={(value) => updateSender('senderLine', value)} />
-                <OfferPanelInput autoComplete="email" label="E-Mail" name="sender-email" value={sender.email} onChange={(value) => updateSender('email', value)} />
-                <OfferPanelInput autoComplete="tel" label="Telefon" name="sender-phone" value={sender.phone} onChange={(value) => updateSender('phone', value)} />
-                <OfferPanelInput autoComplete="tel" label="Fax" name="sender-fax" value={sender.fax} onChange={(value) => updateSender('fax', value)} />
-                <OfferPanelInput autoComplete="url" label="Website" name="sender-website" value={sender.website} onChange={(value) => updateSender('website', value)} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Firmenname" name="sender-company" value={senderAddress.company} onChange={(value) => updateSenderAddress('company', value)} />
+                <OfferPanelInput label="Straße" name="sender-street" value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
+                <OfferPanelInput label="Hausnummer" name="sender-house-number" value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
+                <OfferPanelInput label="PLZ" name="sender-postal-code" value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
+                <OfferPanelInput label="Stadt" name="sender-city" value={senderAddress.city} onChange={(value) => updateSenderAddress('city', value)} />
               </div>
             </div>
 
             <div className="invoice-panel-section">
               <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
-                <OfferPanelInput className="invoice-panel-field-wide" label="Firma" name="recipient-company" value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
-                <OfferPanelInput label="Zusatz / z. Hd." name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
-                <OfferPanelInput label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
-                <OfferPanelInput className="invoice-panel-field-wide" label="Straße und Hausnummer" name="recipient-street" value={recipient.street} onChange={(value) => updateRecipient('street', value)} />
-                <OfferPanelInput className="invoice-panel-field-wide" label="PLZ und Stadt" name="recipient-city" value={recipient.cityLine} onChange={(value) => updateRecipient('cityLine', value)} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
+                <OfferPanelInput label="Straße" name="recipient-street" value={recipientStreet.street} onChange={(value) => updateRecipient('street', joinStreetLine(value, recipientStreet.houseNumber))} />
+                <OfferPanelInput label="Hausnummer" name="recipient-house-number" value={recipientStreet.houseNumber} onChange={(value) => updateRecipient('street', joinStreetLine(recipientStreet.street, value))} />
+                <OfferPanelInput label="PLZ" name="recipient-postal-code" value={recipientCity.postalCode} onChange={(value) => updateRecipient('cityLine', joinCityLine(value, recipientCity.city))} />
+                <OfferPanelInput label="Stadt" name="recipient-city" value={recipientCity.city} onChange={(value) => updateRecipient('cityLine', joinCityLine(recipientCity.postalCode, value))} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
+              </div>
+            </div>
+          </div>
+
+          <div className="invoice-panel-section invoice-panel-section-wide">
+            <h3>Eigene Kontakt</h3>
+            <div className="invoice-panel-grid offer-contact-form-grid">
+              <div className="invoice-panel-grid invoice-panel-grid-stacked">
+                <OfferPanelInput autoComplete="email" className="invoice-panel-field-wide" label="E-Mail" name="sender-email" value={sender.email} onChange={(value) => updateSender('email', value)} />
+                <OfferPanelInput autoComplete="url" className="invoice-panel-field-wide" label="Website" name="sender-website" value={sender.website} onChange={(value) => updateSender('website', value)} />
+              </div>
+              <div className="invoice-panel-grid invoice-panel-grid-stacked">
+                <OfferPanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Telefon" name="sender-phone" value={sender.phone} onChange={(value) => updateSender('phone', value)} />
+                <OfferPanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Fax" name="sender-fax" value={sender.fax} onChange={(value) => updateSender('fax', value)} />
               </div>
             </div>
           </div>
@@ -182,54 +261,54 @@ export default function OfferDocumentForm({
             </button>
           </div>
 
-          <div className="invoice-panel-row">
-            <div className="invoice-panel-section">
-              <h3>Summen</h3>
-              <div className="invoice-summary">
-                <div className="summary-row">
-                  <span>Nettobetrag</span>
-                  <strong>{formatCurrency(totals.net)}</strong>
-                </div>
-                {totals.taxGroups.map((group) => (
-                  <div className="summary-row" key={group.taxRate}>
-                    <span>Umsatzsteuer {formatPercent(group.taxRate)}%</span>
-                    <strong>{formatCurrency(group.tax)}</strong>
+          <div className="invoice-panel-section invoice-panel-section-wide">
+            <h3>Fußdaten</h3>
+            <div className="offer-footer-form-columns">
+              {[
+                {
+                  title: 'Firmendaten/Adresse',
+                  fields: [
+                    ['companyName', 'Firma'],
+                    ['companyStreet', 'Straße und Hausnummer'],
+                    ['companyCity', 'PLZ und Stadt'],
+                    ['companyExtra', 'Zusatzzeile Firma'],
+                  ],
+                },
+                {
+                  title: 'Steuer- und Firmendaten',
+                  fields: [
+                    ['vatId', 'USt-IdNr.'],
+                    ['taxNumber', 'Steuernummer'],
+                    ['commercialRegister', 'Handelsregister'],
+                    ['managingDirector', 'Geschäftsführer'],
+                  ],
+                },
+                {
+                  title: 'Bankverbindung',
+                  fields: [
+                    ['bankName', 'Bankname'],
+                    ['iban', 'IBAN'],
+                    ['bic', 'BIC'],
+                    ['bankExtra', 'Zusatzzeile Bank'],
+                  ],
+                },
+              ].map((column) => (
+                <div className="invoice-panel-section offer-footer-form-column" key={column.title}>
+                  <h3 className="invoice-panel-muted-heading">{column.title}</h3>
+                  <div className="invoice-panel-grid invoice-panel-grid-stacked">
+                    {column.fields.map(([field, label]) => (
+                      <OfferPanelInput
+                        key={field}
+                        className="invoice-panel-field-wide"
+                        label={label}
+                        name={`footer-${field}`}
+                        value={footerLines[field]}
+                        onChange={(value) => updateFooterLine(field, value)}
+                      />
+                    ))}
                   </div>
-                ))}
-                <div className="summary-row summary-total">
-                  <span>Gesamtbetrag</span>
-                  <strong>{formatCurrency(totals.gross)}</strong>
                 </div>
-              </div>
-            </div>
-
-            <div className="invoice-panel-section">
-              <h3>Fußdaten</h3>
-              <div className="invoice-panel-grid">
-                {[
-                  ['companyName', 'Firma'],
-                  ['companyStreet', 'Straße und Hausnummer'],
-                  ['companyCity', 'PLZ und Stadt'],
-                  ['companyExtra', 'Zusatzzeile Firma'],
-                  ['vatId', 'USt-IdNr.'],
-                  ['taxNumber', 'Steuernummer'],
-                  ['commercialRegister', 'Handelsregister'],
-                  ['managingDirector', 'Geschäftsführer'],
-                  ['bankName', 'Bankname'],
-                  ['iban', 'IBAN'],
-                  ['bic', 'BIC'],
-                  ['bankExtra', 'Zusatzzeile Bank'],
-                ].map(([field, label]) => (
-                  <OfferPanelInput
-                    key={field}
-                    className="invoice-panel-field-wide"
-                    label={label}
-                    name={`footer-${field}`}
-                    value={footerLines[field]}
-                    onChange={(value) => updateFooterLine(field, value)}
-                  />
-                ))}
-              </div>
+              ))}
             </div>
           </div>
         </div>
