@@ -2420,7 +2420,7 @@ h1 {
   height: var(--offer-print-page-number-height);
   margin: 0;
   padding-top: 1mm;
-  transform: translateY(-20px);
+  transform: translateY(-25px);
 }
 
 .offer-print-page .invoice-print-page-number.is-empty {
