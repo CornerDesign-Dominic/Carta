@@ -1,29 +1,114 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import DocumentsView from './views/DocumentsView.jsx';
 import HomeView from './views/HomeView.jsx';
+import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 
+function routeFromLocation() {
+  const path = window.location.pathname;
+
+  if (path === '/wissen') {
+    return { view: 'knowledge', knowledgeSlug: null, documentId: 'overview' };
+  }
+
+  if (path.startsWith('/wissen/')) {
+    return {
+      view: 'knowledge',
+      knowledgeSlug: decodeURIComponent(path.replace('/wissen/', '')),
+      documentId: 'overview',
+    };
+  }
+
+  if (path === '/dokumente/rechnung') {
+    return { view: 'documents', knowledgeSlug: null, documentId: 'write-invoice' };
+  }
+
+  if (path.startsWith('/dokumente')) {
+    return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
+  }
+
+  return { view: 'home', knowledgeSlug: null, documentId: 'overview' };
+}
+
+function pathForNavigation(item) {
+  if (item.path) {
+    return item.path;
+  }
+
+  if (item.view === 'knowledge') {
+    return item.slug ? `/wissen/${item.slug}` : '/wissen';
+  }
+
+  if (item.view === 'documents') {
+    return item.documentId === 'write-invoice' ? '/dokumente/rechnung' : '/dokumente';
+  }
+
+  if (item.view === 'home') {
+    return '/';
+  }
+
+  return window.location.pathname;
+}
+
 export default function App() {
-  const [currentView, setCurrentView] = useState('home');
+  const initialRoute = routeFromLocation();
+  const [currentView, setCurrentView] = useState(initialRoute.view);
+  const [currentKnowledgeSlug, setCurrentKnowledgeSlug] = useState(initialRoute.knowledgeSlug);
+  const [currentDocumentId, setCurrentDocumentId] = useState(initialRoute.documentId);
   const [documentsViewKey, setDocumentsViewKey] = useState(0);
 
-  function handleNavigate(item) {
+  function applyRoute(route) {
+    setCurrentView(route.view);
+    setCurrentKnowledgeSlug(route.knowledgeSlug);
+    setCurrentDocumentId(route.documentId);
+  }
+
+  useEffect(() => {
+    function handlePopState() {
+      applyRoute(routeFromLocation());
+    }
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  function handleNavigate(item, options = {}) {
     if (item.view === 'documents') {
       setDocumentsViewKey((key) => key + 1);
     }
 
     setCurrentView(item.view);
+    setCurrentKnowledgeSlug(item.slug ?? null);
+    setCurrentDocumentId(item.documentId ?? 'overview');
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const nextPath = pathForNavigation(item);
+    if (!options.replace && window.location.pathname !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+    }
+
+    window.scrollTo({ top: 0, behavior: options.instant ? 'auto' : 'smooth' });
+  }
+
+  function handleKnowledgeSlugChange(slug) {
+    handleNavigate({ view: 'knowledge', slug });
   }
 
   return (
     <div className="site-shell">
       <Header currentView={currentView} onNavigate={handleNavigate} />
       <div className="site-main">
-        {currentView === 'documents' && <DocumentsView key={documentsViewKey} />}
+        {currentView === 'documents' && (
+          <DocumentsView key={documentsViewKey} initialDocumentId={currentDocumentId} />
+        )}
+        {currentView === 'knowledge' && (
+          <KnowledgeView
+            activeSlug={currentKnowledgeSlug}
+            onNavigate={handleNavigate}
+            onSelectSlug={handleKnowledgeSlugChange}
+          />
+        )}
         {currentView === 'home' && <HomeView />}
         {currentView.startsWith('legal:') && (
           <LegalPage pageId={currentView.replace('legal:', '')} />

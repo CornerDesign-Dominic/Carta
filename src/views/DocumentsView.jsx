@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
 import InvoiceForm from '../components/InvoiceForm.jsx';
 import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
@@ -110,12 +110,16 @@ function DocumentOverview({ onSelect }) {
   );
 }
 
-export default function DocumentsView() {
-  const [activeDocumentId, setActiveDocumentId] = useState('overview');
+export default function DocumentsView({ initialDocumentId = 'overview' }) {
+  const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
   const showDocumentDescription = !['write-invoice', 'write-offer'].includes(activeDocumentId)
     && activeDocument?.description;
+
+  useEffect(() => {
+    setActiveDocumentId(initialDocumentId);
+  }, [initialDocumentId]);
 
   return (
     <main className="documents-layout">

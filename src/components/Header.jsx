@@ -1,5 +1,6 @@
 const navigationItems = [
   { label: 'Dokumente', view: 'documents' },
+  { label: 'Wissen', view: 'knowledge' },
 ];
 
 export default function Header({ currentView, onNavigate }) {
