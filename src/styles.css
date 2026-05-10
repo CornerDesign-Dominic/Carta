@@ -2360,23 +2360,24 @@ h1 {
 }
 
 .offer-print-page {
-  --offer-print-content-max-height: 600px;
-  --offer-print-safe-buffer: 60px;
+  --offer-print-content-max-height: 788px;
+  --offer-print-small-safety-buffer: 16px;
+  --offer-print-page-number-height: 6mm;
   display: grid;
   grid-template-rows: auto minmax(0, var(--offer-print-content-max-height)) minmax(
-      var(--offer-print-safe-buffer),
+      var(--offer-print-small-safety-buffer),
       1fr
-    ) 6mm auto;
+    ) var(--offer-print-page-number-height) auto;
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .offer-print-page.is-first-page {
-  --offer-print-content-max-height: 390px;
+  --offer-print-content-max-height: 558px;
 }
 
 .offer-print-page.is-follow-page {
-  --offer-print-content-max-height: 600px;
+  --offer-print-content-max-height: 788px;
 }
 
 .offer-print-page .invoice-print-page-content {
@@ -2394,7 +2395,7 @@ h1 {
   align-self: end;
   justify-self: center;
   width: 100%;
-  height: 6mm;
+  height: var(--offer-print-page-number-height);
   margin: 0;
   padding-bottom: 1.5mm;
 }
@@ -3409,9 +3410,9 @@ h1 {
   body.document-print-mode .offer-print-page {
     display: grid;
     grid-template-rows: auto minmax(0, var(--offer-print-content-max-height)) minmax(
-        var(--offer-print-safe-buffer),
+        var(--offer-print-small-safety-buffer),
         1fr
-      ) 6mm auto;
+      ) var(--offer-print-page-number-height) auto;
     box-sizing: border-box;
     overflow: hidden;
   }

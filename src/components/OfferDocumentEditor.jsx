@@ -269,14 +269,32 @@ function normalizePositions(templatePositions) {
 }
 
 const offerPrintLayout = {
-  firstPageContentHeight: 390,
-  followPageContentHeight: 600,
-  safetyBuffer: 60,
+  pageHeight: 1123,
+  verticalPadding: 132,
+  firstHeaderHeight: 332,
+  followHeaderHeight: 102,
+  footerHeight: 58,
+  pageNumberHeight: 23,
+  contentGap: 20,
+  smallSafetyBuffer: 16,
 };
 
+function getOfferPrintContentHeight(isFirstPage) {
+  const headerHeight = isFirstPage ? offerPrintLayout.firstHeaderHeight : offerPrintLayout.followHeaderHeight;
+
+  return (
+    offerPrintLayout.pageHeight -
+    offerPrintLayout.verticalPadding -
+    headerHeight -
+    offerPrintLayout.footerHeight -
+    offerPrintLayout.pageNumberHeight -
+    offerPrintLayout.contentGap
+  );
+}
+
 const offerPrintCapacity = {
-  firstPage: offerPrintLayout.firstPageContentHeight - offerPrintLayout.safetyBuffer,
-  followPage: offerPrintLayout.followPageContentHeight - offerPrintLayout.safetyBuffer,
+  firstPage: getOfferPrintContentHeight(true) - offerPrintLayout.smallSafetyBuffer,
+  followPage: getOfferPrintContentHeight(false) - offerPrintLayout.smallSafetyBuffer,
 };
 
 function estimateTextBlockHeight(text) {
@@ -287,9 +305,9 @@ function estimateTextBlockHeight(text) {
   }
 
   const hardLines = content.split('\n');
-  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 66)), 0);
+  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 80)), 0);
 
-  return 22 + visualLines * 20;
+  return 12 + visualLines * 22;
 }
 
 function splitTextIntoPrintItems(id, text) {
@@ -305,7 +323,7 @@ function splitTextIntoPrintItems(id, text) {
   words.forEach((word) => {
     const next = current ? `${current} ${word}` : word;
 
-    if (next.length > 300 && current) {
+    if (next.length > 520 && current) {
       items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
       current = word;
       return;
