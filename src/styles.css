@@ -2361,17 +2361,27 @@ h1 {
 
 .offer-print-page {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) 12px auto;
+  grid-template-rows: auto minmax(0, 1fr) 6mm auto;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .offer-print-page .invoice-print-page-content {
+  align-self: stretch;
+  min-height: 0;
   overflow: hidden;
 }
 
 .offer-print-page .invoice-print-page-number {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   align-self: end;
   justify-self: center;
-  margin: 0 0 5px;
+  width: 100%;
+  height: 6mm;
+  margin: 0;
+  padding-bottom: 1.5mm;
 }
 
 .offer-print-page .invoice-print-page-number.is-empty {
@@ -2379,6 +2389,7 @@ h1 {
 }
 
 .offer-print-page .invoice-print-footer {
+  align-self: end;
   margin-top: 0;
 }
 
@@ -3362,6 +3373,12 @@ h1 {
     padding: 0;
   }
 
+  body.document-print-mode .offer-print-pages {
+    display: block;
+    width: 210mm;
+    height: auto;
+  }
+
   body.document-print-mode .invoice-print-page {
     width: 210mm;
     min-width: 210mm;
@@ -3372,6 +3389,18 @@ h1 {
     margin: 0;
     border: 0;
     box-shadow: none;
+  }
+
+  body.document-print-mode .offer-print-page {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) 6mm auto;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  body.document-print-mode .offer-print-page .invoice-print-page-content {
+    min-height: 0;
+    overflow: hidden;
   }
 
   body.document-print-mode .offer-sheet {

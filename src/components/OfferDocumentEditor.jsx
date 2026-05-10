@@ -269,8 +269,8 @@ function normalizePositions(templatePositions) {
 }
 
 const offerPrintLayout = {
-  firstPageCapacity: 390,
-  followPageCapacity: 610,
+  firstPageCapacity: 330,
+  followPageCapacity: 540,
 };
 
 function estimateTextBlockHeight(text) {
@@ -281,9 +281,9 @@ function estimateTextBlockHeight(text) {
   }
 
   const hardLines = content.split('\n');
-  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 78)), 0);
+  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 66)), 0);
 
-  return 20 + visualLines * 18;
+  return 22 + visualLines * 20;
 }
 
 function splitTextIntoPrintItems(id, text) {
@@ -299,7 +299,7 @@ function splitTextIntoPrintItems(id, text) {
   words.forEach((word) => {
     const next = current ? `${current} ${word}` : word;
 
-    if (next.length > 420 && current) {
+    if (next.length > 300 && current) {
       items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
       current = word;
       return;
@@ -323,7 +323,7 @@ function estimatePositionHeight(position) {
     0,
   );
 
-  return Math.max(38, 20 + descriptionLines * 18);
+  return Math.max(44, 24 + descriptionLines * 20);
 }
 
 function createOfferPrintPages({ positions, textBlocks, totals }) {
@@ -339,7 +339,7 @@ function createOfferPrintPages({ positions, textBlocks, totals }) {
     })),
     {
       type: 'summary',
-      height: 104 + totals.taxGroups.length * 20,
+      height: 124 + totals.taxGroups.length * 22,
     },
     ...(closingBlock?.visible ? splitTextIntoPrintItems('closing', closingBlock.value) : []),
   ];
