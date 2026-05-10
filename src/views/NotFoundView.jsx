@@ -4,10 +4,13 @@ export default function NotFoundView({ onNavigate }) {
       <article className="not-found-document">
         <header className="not-found-letterhead">
           <div>
-            <strong>Belege24</strong>
-            <span>Digitale Dokumentgeneratoren</span>
+            <strong>Belege24 Muster GmbH</strong>
           </div>
           <address>
+            E-Mail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kontakt@belege24.com
+            <br />
+            Website&nbsp;&nbsp;&nbsp;www.belege24.com
+            <br />
             belege24.com
             <br />
             Dokumente · Wissen · Werkzeuge
@@ -15,7 +18,7 @@ export default function NotFoundView({ onNavigate }) {
         </header>
 
         <p className="not-found-sender-line">
-          Belege24 · belege24.com · Dokumentgeneratoren im Browser
+          Belege24 Muster GmbH · Musterstraße 12 · 10115 Berlin
         </p>
 
         <section className="not-found-meta" aria-label="Dokumentangaben">
@@ -26,12 +29,12 @@ export default function NotFoundView({ onNavigate }) {
           </div>
           <dl>
             <div>
-              <dt>Dokumenttyp</dt>
-              <dd>Hinweis</dd>
+              <dt>Hinweisnummer</dt>
+              <dd>404-2026-001</dd>
             </div>
             <div>
               <dt>Status</dt>
-              <dd>Error 404</dd>
+              <dd>Seite nicht gefunden</dd>
             </div>
             <div>
               <dt>Website</dt>
@@ -41,9 +44,8 @@ export default function NotFoundView({ onNavigate }) {
         </section>
 
         <section className="not-found-body">
-          <p className="eyebrow">HINWEIS</p>
           <h1 id="not-found-title">Error 404</h1>
-          <p className="not-found-subject">Betreff: Die Seite konnte nicht gefunden werden.</p>
+          <p className="not-found-subject">Die Seite konnte nicht gefunden werden.</p>
           <p>
             Die eingegebene Adresse ist eventuell falsch, die Seite wurde
             verschoben oder sie existiert nicht mehr. Bitte prüfen Sie die
@@ -63,19 +65,25 @@ export default function NotFoundView({ onNavigate }) {
 
         <footer className="not-found-footer">
           <span>
-            Belege24
+            Belege24 Muster GmbH
             <br />
-            belege24.com
+            Musterstraße 12
+            <br />
+            10115 Berlin
           </span>
           <span>
-            Dokumentgeneratoren
+            USt-IdNr.: DE123456789
             <br />
-            Rechnungen · Angebote · Mahnungen
+            Steuernummer: 12/345/67890
+            <br />
+            Geschäftsführer: Belege24
           </span>
           <span>
-            Wissen · Werkzeuge
+            Website: belege24.com
             <br />
-            Kaufmännische Praxis im Browser
+            E-Mail: kontakt@belege24.com
+            <br />
+            Dokumente · Wissen · Werkzeuge
           </span>
         </footer>
       </article>
