@@ -1824,6 +1824,28 @@ h1 {
   line-height: 1;
 }
 
+.document-position-table-offer td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  vertical-align: middle;
+}
+
+.document-position-table-offer tbody input {
+  min-height: 22px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 22px;
+}
+
+.document-position-table-offer .invoice-tax-rate-cell {
+  align-items: center;
+}
+
+.document-position-table-offer .invoice-tax-rate-cell span {
+  align-self: center;
+  line-height: 22px;
+}
+
 .invoice-position-table th:nth-child(1),
 .invoice-position-table td:nth-child(1) {
   position: relative;
@@ -2330,11 +2352,15 @@ h1 {
 }
 
 .invoice-print-page-number {
-  margin: auto 0 8px;
+  position: absolute;
+  left: 50%;
+  bottom: 27mm;
+  transform: translateX(-50%);
+  margin: 0;
   color: #77736b;
   font-size: 9px;
   line-height: 1;
-  text-align: right;
+  text-align: center;
 }
 
 .invoice-print-footer {
