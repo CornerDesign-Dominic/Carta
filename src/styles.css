@@ -1557,11 +1557,11 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   border: 1px solid rgba(95, 94, 89, 0.2);
   border-radius: 999px;
-  background: rgba(95, 94, 89, 0.04);
+  background: rgba(255, 254, 250, 0.92);
   color: #67645e;
   opacity: 0;
   transition:
@@ -1588,30 +1588,30 @@ h1 {
 
 .invoice-date-picker span {
   position: relative;
-  width: 14px;
-  height: 14px;
-  border: 1.7px solid currentColor;
-  border-radius: 3px;
+  width: 11px;
+  height: 11px;
+  border: 1.3px solid currentColor;
+  border-radius: 2px;
 }
 
 .invoice-date-picker span::before {
   content: '';
   position: absolute;
   top: 3px;
-  left: -1.7px;
-  right: -1.7px;
-  border-top: 1.7px solid currentColor;
+  left: -1.3px;
+  right: -1.3px;
+  border-top: 1.3px solid currentColor;
 }
 
 .invoice-date-picker span::after {
   content: '';
   position: absolute;
-  top: -3px;
+  top: -2px;
   left: 2px;
-  width: 7px;
-  height: 4px;
-  border-left: 1.7px solid currentColor;
-  border-right: 1.7px solid currentColor;
+  width: 5px;
+  height: 3px;
+  border-left: 1.3px solid currentColor;
+  border-right: 1.3px solid currentColor;
 }
 
 .invoice-sheet:hover .invoice-icon-action,
@@ -1884,8 +1884,8 @@ h1 {
   z-index: 3;
   display: inline-flex;
   gap: 2px;
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 160ms ease;
 }
 
@@ -1928,11 +1928,36 @@ h1 {
   opacity: 0.36;
 }
 
+.invoice-sheet:hover .invoice-position-actions,
+.invoice-sheet:focus-within .invoice-position-actions,
+.invoice-sheet.is-highlight-mode .invoice-position-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .invoice-position-table td:nth-child(8) .offer-remove {
   position: absolute;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
+}
+
+.invoice-sheet .offer-add-position {
+  min-height: 18px;
+  border-color: rgba(95, 94, 89, 0.2);
+  padding: 3px 7px;
+  background: rgba(255, 254, 250, 0.92);
+  color: #67645e;
+  font-size: 0.72rem;
+  font-weight: 760;
+  line-height: 1;
+}
+
+.invoice-sheet .offer-add-position:hover,
+.invoice-sheet .offer-add-position:focus-visible {
+  border-color: rgba(95, 94, 89, 0.36);
+  background: rgba(95, 94, 89, 0.1);
+  color: #3f3b35;
 }
 
 .reminder-invoice-table th:nth-child(1),
