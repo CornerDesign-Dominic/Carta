@@ -763,14 +763,26 @@ h1 {
 }
 
 .visual-toolbar {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 9px;
   border: 1px solid rgba(201, 196, 186, 0.66);
   border-radius: 6px;
   background: rgba(248, 248, 245, 0.92);
   box-shadow: 0 10px 26px rgba(36, 35, 31, 0.035);
+}
+
+.visual-toolbar-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+.visual-toolbar-group + .visual-toolbar-group {
+  border-left: 1px solid rgba(201, 196, 186, 0.7);
 }
 
 .visual-toolbar button {
@@ -797,29 +809,6 @@ h1 {
   border-color: rgba(169, 163, 152, 0.72);
   background: #ffffff;
   color: var(--ink);
-}
-
-.visual-toolbar button.is-active {
-  border-color: rgba(74, 103, 119, 0.32);
-  background: #eef3f4;
-  color: #314a54;
-}
-
-.visual-toolbar button:last-of-type {
-  border-color: rgba(79, 111, 104, 0.44);
-  background: #486a63;
-  color: #fffefd;
-  box-shadow: 0 8px 18px rgba(55, 78, 73, 0.12);
-}
-
-.visual-toolbar button:last-of-type:hover {
-  border-color: rgba(63, 91, 85, 0.56);
-  background: #3f5f59;
-  color: #fffefd;
-}
-
-.visual-toolbar button:nth-last-of-type(2) {
-  background: rgba(255, 255, 253, 0.58);
 }
 
 .invoice-template-input {
@@ -3472,7 +3461,16 @@ h1 {
   }
 
   .visual-toolbar {
-    flex-wrap: wrap;
+    grid-template-columns: 1fr;
+  }
+
+  .visual-toolbar-group {
+    padding: 8px 0;
+  }
+
+  .visual-toolbar-group + .visual-toolbar-group {
+    border-left: 0;
+    border-top: 1px solid rgba(201, 196, 186, 0.7);
   }
 
   .invoice-form-panel-body,

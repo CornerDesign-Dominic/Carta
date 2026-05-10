@@ -14,58 +14,64 @@ export default function DocumentToolbar({
 }) {
   return (
     <div className="visual-toolbar" aria-label={ariaLabel}>
-      <button
-        className={isEditable ? 'is-active' : undefined}
-        type="button"
-        title="Bearbeitbare Felder im Dokument anzeigen"
-        aria-label="Bearbeitbare Felder im Dokument anzeigen"
-        aria-pressed={isEditable}
-        onClick={onToggleEditable}
-      >
-        {isEditable ? previewLabel : editLabel}
-      </button>
-      <button type="button" title="Druckdialog öffnen" aria-label="Druckdialog öffnen" onClick={onPrint}>
-        Drucken
-      </button>
-      {onSaveJson && (
+      <div className="visual-toolbar-group">
+        <button
+          className={isEditable ? 'is-active' : undefined}
+          type="button"
+          title="Bearbeitbare Felder im Dokument anzeigen"
+          aria-label="Bearbeitbare Felder im Dokument anzeigen"
+          aria-pressed={isEditable}
+          onClick={onToggleEditable}
+        >
+          {isEditable ? previewLabel : editLabel}
+        </button>
+      </div>
+      <div className="visual-toolbar-group">
+        <button type="button" title="Druckdialog oeffnen" aria-label="Druckdialog oeffnen" onClick={onPrint}>
+          Drucken
+        </button>
         <button
           type="button"
-          title="Dokument als JSON speichern"
-          aria-label="Dokument als JSON speichern"
-          onClick={onSaveJson}
+          title="PDF-Datei erstellen"
+          aria-label="PDF-Datei erstellen"
+          onClick={onCreatePdf}
+          disabled={isExporting}
         >
-          JSON speichern
+          {isExporting ? exportingLabel : 'PDF erstellen'}
         </button>
-      )}
-      {onLoadJson && (
-        <>
+      </div>
+      <div className="visual-toolbar-group">
+        {onSaveJson && (
           <button
             type="button"
-            title="Dokument aus JSON laden"
-            aria-label="Dokument aus JSON laden"
-            onClick={() => jsonInputRef?.current?.click()}
+            title="Dokument als Vorlage speichern"
+            aria-label="Dokument als Vorlage speichern"
+            onClick={onSaveJson}
           >
-            JSON laden
+            Vorlage erstellen
           </button>
-          <input
-            ref={jsonInputRef}
-            className="invoice-template-input"
-            type="file"
-            accept="application/json,.json"
-            aria-label="JSON-Datei laden"
-            onChange={onLoadJson}
-          />
-        </>
-      )}
-      <button
-        type="button"
-        title="PDF-Datei erstellen"
-        aria-label="PDF-Datei erstellen"
-        onClick={onCreatePdf}
-        disabled={isExporting}
-      >
-        {isExporting ? exportingLabel : 'PDF erstellen'}
-      </button>
+        )}
+        {onLoadJson && (
+          <>
+            <button
+              type="button"
+              title="Dokument aus Vorlage laden"
+              aria-label="Dokument aus Vorlage laden"
+              onClick={() => jsonInputRef?.current?.click()}
+            >
+              Vorlage laden
+            </button>
+            <input
+              ref={jsonInputRef}
+              className="invoice-template-input"
+              type="file"
+              accept="application/json,.json"
+              aria-label="Vorlage laden"
+              onChange={onLoadJson}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }

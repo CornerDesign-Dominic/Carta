@@ -1031,56 +1031,62 @@ export default function InvoiceForm() {
       </section>
 
       <div className="visual-toolbar" aria-label="Rechnung Werkzeuge">
-        <button
-          className={highlightFields ? 'is-active' : undefined}
-          type="button"
-          title="Bearbeitbare Felder im Dokument anzeigen"
-          aria-label="Bearbeitbare Felder im Dokument anzeigen"
-          aria-pressed={highlightFields}
-          onClick={() => setHighlightFields((current) => !current)}
-        >
-          {highlightFields ? 'Vorschau' : 'Bearbeiten'}
-        </button>
-        <button
-          type="button"
-          title="Gespeicherte JSON Vorlage laden"
-          aria-label="Gespeicherte JSON Vorlage laden"
-          onClick={handleLoadTemplateClick}
-        >
-          Vorlage laden
-        </button>
-        <button
-          type="button"
-          title="Aktuelle Daten als JSON Vorlage speichern"
-          aria-label="Aktuelle Daten als JSON Vorlage speichern"
-          onClick={handleDownloadTemplate}
-        >
-          Vorlage erstellen
-        </button>
-        <button
-          type="button"
-          title="Druckdialog öffnen"
-          aria-label="Druckdialog öffnen"
-          onClick={handlePrint}
-        >
-          Drucken
-        </button>
-        <button
-          type="button"
-          title="PDF-Datei erstellen"
-          aria-label="PDF-Datei erstellen"
-          onClick={handleCreatePdf}
-          disabled={isExporting}
-        >
-          {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
-        </button>
-        <input
-          ref={templateInputRef}
-          className="invoice-template-input"
-          type="file"
-          accept="application/json,.json"
-          onChange={handleTemplateFileChange}
-        />
+        <div className="visual-toolbar-group">
+          <button
+            className={highlightFields ? 'is-active' : undefined}
+            type="button"
+            title="Bearbeitbare Felder im Dokument anzeigen"
+            aria-label="Bearbeitbare Felder im Dokument anzeigen"
+            aria-pressed={highlightFields}
+            onClick={() => setHighlightFields((current) => !current)}
+          >
+            {highlightFields ? 'Vorschau' : 'Bearbeiten'}
+          </button>
+        </div>
+        <div className="visual-toolbar-group">
+          <button
+            type="button"
+            title="Druckdialog öffnen"
+            aria-label="Druckdialog öffnen"
+            onClick={handlePrint}
+          >
+            Drucken
+          </button>
+          <button
+            type="button"
+            title="PDF-Datei erstellen"
+            aria-label="PDF-Datei erstellen"
+            onClick={handleCreatePdf}
+            disabled={isExporting}
+          >
+            {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
+          </button>
+        </div>
+        <div className="visual-toolbar-group">
+          <button
+            type="button"
+            title="Aktuelle Daten als JSON Vorlage speichern"
+            aria-label="Aktuelle Daten als JSON Vorlage speichern"
+            onClick={handleDownloadTemplate}
+          >
+            Vorlage erstellen
+          </button>
+          <button
+            type="button"
+            title="Gespeicherte JSON Vorlage laden"
+            aria-label="Gespeicherte JSON Vorlage laden"
+            onClick={handleLoadTemplateClick}
+          >
+            Vorlage laden
+          </button>
+          <input
+            ref={templateInputRef}
+            className="invoice-template-input"
+            type="file"
+            accept="application/json,.json"
+            onChange={handleTemplateFileChange}
+          />
+        </div>
       </div>
 
       <article
