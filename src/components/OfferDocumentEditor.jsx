@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
@@ -272,6 +272,7 @@ function normalizePositions(templatePositions) {
 const offerPrintLayout = {
   blockGap: 12,
   smallSafetyBuffer: 8,
+  measureDebounceMs: 400,
 };
 
 function createOfferPrintItems({ positions, textBlocks }) {
@@ -340,6 +341,7 @@ export default function OfferDocumentEditor() {
   });
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
+  const paginatorRef = useRef(null);
   const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
@@ -424,6 +426,14 @@ export default function OfferDocumentEditor() {
     [positions, textBlocks],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
+
+  async function refreshPrintPages() {
+    const nextPages = paginatorRef.current?.measureNow();
+
+    if (nextPages) {
+      await waitForNextFrame();
+    }
+  }
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
@@ -641,6 +651,7 @@ export default function OfferDocumentEditor() {
     setIsExporting(true);
 
     try {
+      await refreshPrintPages();
       await requestPdfDownload({
         sheet: sheetRef.current,
         exportRoot: printPagesRef.current,
@@ -656,7 +667,8 @@ export default function OfferDocumentEditor() {
     }
   }
 
-  function handlePrint() {
+  async function handlePrint() {
+    await refreshPrintPages();
     document.body.classList.add('document-print-mode');
     window.print();
 
@@ -843,6 +855,7 @@ export default function OfferDocumentEditor() {
       </A4Page>
 
       <MeasuredOfferPaginator
+        ref={paginatorRef}
         items={printItems}
         labels={labels}
         totals={totals}
@@ -872,13 +885,46 @@ export default function OfferDocumentEditor() {
   );
 }
 
-function MeasuredOfferPaginator({ items, labels, totals, onPagesChange }) {
+const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator(
+  { items, labels, totals, onPagesChange },
+  ref,
+) {
   const measureRootRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const frameRef = useRef(null);
+
+  function cancelScheduledMeasure() {
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    if (frameRef.current) {
+      window.cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+  }
+
+  function measureNow() {
+    cancelScheduledMeasure();
+    const nextPages = measureOfferPages(measureRootRef.current, items);
+
+    if (nextPages) {
+      onPagesChange((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
+    }
+
+    return nextPages;
+  }
+
+  useImperativeHandle(ref, () => ({ measureNow }), [items, onPagesChange]);
 
   useEffect(() => {
-    let frameId;
-    const timeoutId = window.setTimeout(() => {
-      frameId = window.requestAnimationFrame(() => {
+    cancelScheduledMeasure();
+
+    timeoutRef.current = window.setTimeout(() => {
+      frameRef.current = window.requestAnimationFrame(() => {
+        timeoutRef.current = null;
+        frameRef.current = null;
         const nextPages = measureOfferPages(measureRootRef.current, items);
 
         if (!nextPages) {
@@ -887,15 +933,9 @@ function MeasuredOfferPaginator({ items, labels, totals, onPagesChange }) {
 
         onPagesChange((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
       });
-    }, 40);
+    }, offerPrintLayout.measureDebounceMs);
 
-    return () => {
-      window.clearTimeout(timeoutId);
-
-      if (frameId) {
-        window.cancelAnimationFrame(frameId);
-      }
-    };
+    return cancelScheduledMeasure;
   }, [items, labels, totals]);
 
   const positionItems = items.filter((item) => item.type === 'position');
@@ -946,7 +986,7 @@ function MeasuredOfferPaginator({ items, labels, totals, onPagesChange }) {
       </div>
     </div>
   );
-}
+});
 
 function measureOfferPages(measureRoot, items) {
   if (!measureRoot) {
@@ -1064,6 +1104,14 @@ function getOuterHeight(element) {
   const marginBottom = parseFloat(styles.marginBottom) || 0;
 
   return element.getBoundingClientRect().height + marginTop + marginBottom;
+}
+
+function waitForNextFrame() {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(resolve);
+    });
+  });
 }
 
 const OfferPrintPages = forwardRef(function OfferPrintPages(

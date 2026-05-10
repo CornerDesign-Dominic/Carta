@@ -1,8 +1,15 @@
+const maxTextSplitIterations = 200;
+const maxPages = 120;
+
 export function takeMeasuredText(text, maxHeight, measureHeight) {
   const source = String(text || '').trim();
 
   if (!source) {
     return { fit: '', rest: '' };
+  }
+
+  if (maxHeight <= 0) {
+    return { fit: '', rest: source };
   }
 
   if (measureHeight(source) <= maxHeight) {
@@ -21,7 +28,18 @@ export function takeMeasuredText(text, maxHeight, measureHeight) {
     return sentenceResult;
   }
 
-  return takeMeasuredUnit(source, maxHeight, measureHeight, splitWords);
+  const wordResult = takeMeasuredUnit(source, maxHeight, measureHeight, splitWords);
+
+  if (wordResult.fit) {
+    return wordResult;
+  }
+
+  const [firstWord = source] = splitWords(source);
+
+  return {
+    fit: firstWord.trim(),
+    rest: source.slice(firstWord.length).trim(),
+  };
 }
 
 export function paginateMeasuredItems({
@@ -43,6 +61,10 @@ export function paginateMeasuredItems({
   }
 
   function addPage() {
+    if (pages.length >= maxPages) {
+      return getCurrentPage();
+    }
+
     const page = { items: [], used: 0 };
     pages.push(page);
     return page;
@@ -71,7 +93,10 @@ export function paginateMeasuredItems({
 
     let rest = item.text;
 
-    while (String(rest || '').trim()) {
+    let iterations = 0;
+
+    while (String(rest || '').trim() && iterations < maxTextSplitIterations) {
+      iterations += 1;
       let page = getCurrentPage();
       let gap = getItemGap(page, item);
       let available = getCapacity() - page.used - gap;
@@ -85,6 +110,10 @@ export function paginateMeasuredItems({
       const chunk = splitTextItem(item, available);
 
       if (!chunk.fit && page.items.length > 0) {
+        if (pages.length >= maxPages) {
+          break;
+        }
+
         addPage();
         continue;
       }
@@ -92,7 +121,17 @@ export function paginateMeasuredItems({
       const text = chunk.fit || String(rest || '').trim();
       const measuredItem = { ...item, text };
       appendItem(measuredItem, getItemHeight(measuredItem));
-      rest = chunk.fit ? chunk.rest : '';
+      const nextRest = chunk.fit ? chunk.rest : '';
+
+      if (nextRest === rest) {
+        break;
+      }
+
+      rest = nextRest;
+    }
+
+    if (String(rest || '').trim()) {
+      appendItem({ ...item, text: rest });
     }
   });
 
@@ -112,8 +151,10 @@ function takeMeasuredUnit(text, maxHeight, measureHeight, splitUnits) {
   let low = 0;
   let high = units.length;
   let best = 0;
+  let iterations = 0;
 
-  while (low <= high) {
+  while (low <= high && iterations < maxTextSplitIterations) {
+    iterations += 1;
     const mid = Math.floor((low + high) / 2);
     const candidate = units.slice(0, mid).join('').trim();
 
