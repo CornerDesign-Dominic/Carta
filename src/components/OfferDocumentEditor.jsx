@@ -276,6 +276,8 @@ const offerPrintLayout = {
   footerHeight: 58,
   pageNumberHeight: 23,
   contentGap: 20,
+  blockGap: 12,
+  positionTableHeaderHeight: 28,
   smallSafetyBuffer: 16,
 };
 
@@ -350,6 +352,16 @@ function estimatePositionHeight(position) {
   return Math.max(44, 24 + descriptionLines * 20);
 }
 
+function getOfferPrintItemAddition(currentPage, item) {
+  const previousItem = currentPage.items[currentPage.items.length - 1];
+  const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
+  const startsNewBlock = currentPage.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
+  const tableHeaderHeight = startsPositionTable ? offerPrintLayout.positionTableHeaderHeight : 0;
+  const blockGap = startsNewBlock ? offerPrintLayout.blockGap : 0;
+
+  return item.height + tableHeaderHeight + blockGap;
+}
+
 function createOfferPrintPages({ positions, textBlocks, totals }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
@@ -371,15 +383,18 @@ function createOfferPrintPages({ positions, textBlocks, totals }) {
 
   items.forEach((item) => {
     let currentPage = pages[pages.length - 1];
-    const capacity = pages.length === 1 ? offerPrintCapacity.firstPage : offerPrintCapacity.followPage;
+    let capacity = pages.length === 1 ? offerPrintCapacity.firstPage : offerPrintCapacity.followPage;
+    let itemAddition = getOfferPrintItemAddition(currentPage, item);
 
-    if (currentPage.items.length > 0 && currentPage.used + item.height > capacity) {
+    if (currentPage.items.length > 0 && currentPage.used + itemAddition > capacity) {
       currentPage = { items: [], used: 0 };
       pages.push(currentPage);
+      capacity = offerPrintCapacity.followPage;
+      itemAddition = getOfferPrintItemAddition(currentPage, item);
     }
 
     currentPage.items.push(item);
-    currentPage.used += item.height;
+    currentPage.used += itemAddition;
   });
 
   return pages.map((page, index) => ({
