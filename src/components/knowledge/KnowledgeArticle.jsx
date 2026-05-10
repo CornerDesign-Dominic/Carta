@@ -1,30 +1,17 @@
 import {
-  findKnowledgeNavigationItem,
   findKnowledgePage,
   getKnowledgeTitle,
 } from '../../data/knowledgePages.js';
 import KnowledgeFaqCard from './KnowledgeFaqCard.jsx';
 
-function PlaceholderArticle({ slug }) {
-  const { category, page } = findKnowledgeNavigationItem(slug);
-  const title = page?.title ?? 'Wissensseite';
-
+function MissingArticle() {
   return (
     <>
-      <p className="eyebrow">WISSEN{category ? ` / ${category.title}` : ''}</p>
-      <h1 id="knowledge-title">{title}</h1>
+      <p className="eyebrow">WISSEN</p>
+      <h1 id="knowledge-title">Wissensseite nicht gefunden</h1>
       <p className="intro document-intro">
-        Diese Wissensseite ist als Platzhalter vorbereitet. Inhalt, FAQ-Fragen,
-        verwandte Themen und passende Werkzeuge koennen spaeter in der zentralen
-        Datenstruktur ergaenzt werden.
+        Diese Seite ist aktuell nicht Teil des aktiven Wissensbereichs.
       </p>
-      <section className="knowledge-empty-state">
-        <h2>Inhalt folgt</h2>
-        <p>
-          Der Navigationspunkt ist bereits angelegt, damit Kategorie, Route und
-          Layout frueh getestet werden koennen.
-        </p>
-      </section>
     </>
   );
 }
@@ -33,7 +20,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
   const article = findKnowledgePage(slug);
 
   if (!article) {
-    return <PlaceholderArticle slug={slug} />;
+    return <MissingArticle />;
   }
 
   return (

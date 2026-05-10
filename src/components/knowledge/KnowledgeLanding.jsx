@@ -8,17 +8,18 @@ export default function KnowledgeLanding({ onSelect }) {
       <p className="eyebrow">WISSEN</p>
       <h1 id="knowledge-title">Geschaeftliche Dokumente besser verstehen</h1>
       <p className="intro document-intro">
-        Der Wissensbereich erklaert zentrale Dokumente, kaufmaennische Grundlagen
-        und spaeter auch BWL-Werkzeuge. Die Inhalte sind praktisch aufgebaut und
-        fuehren bei Bedarf direkt zum passenden Generator oder Tool.
+        Der Wissensbereich erklaert zentrale Belege und Mahntexte. Die Inhalte
+        sind praktisch aufgebaut und fuehren bei Bedarf direkt zum passenden
+        Generator oder Tool.
       </p>
 
       <div className="knowledge-highlight-grid" aria-label="Wichtige Wissensseiten">
         {highlightedPages.map((slug) => {
           const page = knowledgePages[slug];
-          const fallback = knowledgeCategories
-            .flatMap((category) => category.pages)
-            .find((item) => item.slug === slug);
+
+          if (!page) {
+            return null;
+          }
 
           return (
             <button
@@ -27,11 +28,8 @@ export default function KnowledgeLanding({ onSelect }) {
               onClick={() => onSelect(slug)}
               key={slug}
             >
-              <span>{page?.title ?? fallback?.title}</span>
-              <p>
-                {page?.description
-                  ?? 'Diese Wissensseite ist als Thema vorbereitet und wird spaeter inhaltlich ausgearbeitet.'}
-              </p>
+              <span>{page.title}</span>
+              <p>{page.description}</p>
             </button>
           );
         })}
@@ -57,9 +55,9 @@ export default function KnowledgeLanding({ onSelect }) {
       </section>
 
       <p className="document-note">
-        Die Wissensseiten sind datengetrieben vorbereitet. Neue Themen koennen
-        spaeter ueber Kategorien, Slugs, FAQ-Fragen und verwandte Seiten ergaenzt
-        werden, ohne das Layout neu aufzubauen.
+        Die Wissensseiten sind datengetrieben aufgebaut. Neue aktive Themen koennen
+        spaeter gezielt ueber Kategorien, Slugs, FAQ-Fragen und verwandte Seiten
+        ergaenzt werden.
       </p>
     </>
   );
