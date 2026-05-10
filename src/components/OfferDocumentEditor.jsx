@@ -269,8 +269,14 @@ function normalizePositions(templatePositions) {
 }
 
 const offerPrintLayout = {
-  firstPageCapacity: 330,
-  followPageCapacity: 540,
+  firstPageContentHeight: 390,
+  followPageContentHeight: 600,
+  safetyBuffer: 60,
+};
+
+const offerPrintCapacity = {
+  firstPage: offerPrintLayout.firstPageContentHeight - offerPrintLayout.safetyBuffer,
+  followPage: offerPrintLayout.followPageContentHeight - offerPrintLayout.safetyBuffer,
 };
 
 function estimateTextBlockHeight(text) {
@@ -347,7 +353,7 @@ function createOfferPrintPages({ positions, textBlocks, totals }) {
 
   items.forEach((item) => {
     let currentPage = pages[pages.length - 1];
-    const capacity = pages.length === 1 ? offerPrintLayout.firstPageCapacity : offerPrintLayout.followPageCapacity;
+    const capacity = pages.length === 1 ? offerPrintCapacity.firstPage : offerPrintCapacity.followPage;
 
     if (currentPage.items.length > 0 && currentPage.used + item.height > capacity) {
       currentPage = { items: [], used: 0 };
@@ -940,7 +946,12 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
   return (
     <div className="invoice-print-pages offer-print-pages" ref={ref} aria-hidden="true">
       {pages.map((page) => (
-        <article className="invoice-print-page offer-print-page" key={page.pageNumber}>
+        <article
+          className={`invoice-print-page offer-print-page${
+            page.pageNumber === 1 ? ' is-first-page' : ' is-follow-page'
+          }`}
+          key={page.pageNumber}
+        >
           {page.pageNumber === 1 ? (
             <OfferPrintFirstPageHeader
               details={details}
