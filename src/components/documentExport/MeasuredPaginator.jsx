@@ -97,6 +97,7 @@ export function paginateMeasuredItems({
 
     while (String(rest || '').trim() && iterations < maxTextSplitIterations) {
       iterations += 1;
+      const currentRest = String(rest || '').trim();
       let page = getCurrentPage();
       let gap = getItemGap(page, item);
       let available = getCapacity() - page.used - gap;
@@ -107,7 +108,7 @@ export function paginateMeasuredItems({
         available = getCapacity() - page.used - gap;
       }
 
-      const chunk = splitTextItem(item, available);
+      const chunk = splitTextItem({ ...item, text: currentRest }, available);
 
       if (!chunk.fit && page.items.length > 0) {
         if (pages.length >= maxPages) {
@@ -118,12 +119,13 @@ export function paginateMeasuredItems({
         continue;
       }
 
-      const text = chunk.fit || String(rest || '').trim();
+      const text = chunk.fit || currentRest;
       const measuredItem = { ...item, text };
       appendItem(measuredItem, getItemHeight(measuredItem));
-      const nextRest = chunk.fit ? chunk.rest : '';
+      const nextRest = chunk.fit ? String(chunk.rest || '').trim() : '';
 
-      if (nextRest === rest) {
+      if (!chunk.fit || nextRest === currentRest || nextRest.length >= currentRest.length) {
+        rest = '';
         break;
       }
 

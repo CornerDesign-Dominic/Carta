@@ -2412,14 +2412,14 @@ h1 {
 
 .offer-print-page .invoice-print-page-number {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: center;
   align-self: end;
   justify-self: center;
   width: 100%;
   height: var(--offer-print-page-number-height);
   margin: 0;
-  padding-bottom: 1.5mm;
+  padding-top: 1mm;
 }
 
 .offer-print-page .invoice-print-page-number.is-empty {
