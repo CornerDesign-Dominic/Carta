@@ -3394,6 +3394,10 @@ h1 {
     padding: 0;
   }
 
+  body.document-print-mode .offer-measure-root {
+    display: none;
+  }
+
   body.document-print-mode .offer-print-pages {
     display: block;
     width: 210mm;
