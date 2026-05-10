@@ -54,7 +54,10 @@ export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }
                 aria-expanded={isOpen}
               >
                 <span>{category.title}</span>
-                <span aria-hidden="true">{isOpen ? '−' : '+'}</span>
+                <span
+                  className={isOpen ? 'knowledge-chevron is-open' : 'knowledge-chevron'}
+                  aria-hidden="true"
+                />
               </button>
 
               {isOpen && (

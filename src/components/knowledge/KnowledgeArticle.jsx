@@ -1,7 +1,4 @@
-import {
-  findKnowledgePage,
-  getKnowledgeTitle,
-} from '../../data/knowledgePages.js';
+import { findKnowledgePage } from '../../data/knowledgePages.js';
 import KnowledgeFaqCard from './KnowledgeFaqCard.jsx';
 
 function MissingArticle() {
@@ -23,73 +20,77 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
     return <MissingArticle />;
   }
 
+  const articleSections = article.articleSections ?? [
+    {
+      heading: `Was ist ${article.title}?`,
+      paragraphs: [article.intro],
+    },
+    {
+      heading: 'Wichtige Punkte',
+      paragraphs: ['Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.'],
+      list: article.keyPoints,
+    },
+    {
+      heading: 'Praxis',
+      paragraphs: [article.typicalUse],
+    },
+    {
+      heading: 'Worauf sollte man achten?',
+      paragraphs: ['Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.'],
+      list: article.commonMistakes,
+    },
+  ].filter((section) => section.paragraphs?.length || section.list?.length);
+
   return (
     <>
       <p className="eyebrow">WISSEN / {article.category}</p>
       <h1 id="knowledge-title">{article.title}</h1>
       <p className="intro document-intro">{article.description}</p>
-      <p className="knowledge-intro">{article.intro}</p>
 
-      <div className="knowledge-article-grid">
-        <section className="knowledge-panel">
-          <h2>Wichtigste Punkte</h2>
-          <ul className="knowledge-check-list">
-            {article.keyPoints.map((point) => (
-              <li key={point}>{point}</li>
+      <article className="knowledge-article-body">
+        {articleSections.map((section) => (
+          <section className="knowledge-article-section" key={section.heading}>
+            <h2>{section.heading}</h2>
+            {section.paragraphs?.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
             ))}
-          </ul>
-        </section>
-
-        <section className="knowledge-panel">
-          <h2>Typische Nutzung</h2>
-          <p>{article.typicalUse}</p>
-        </section>
-
-        <section className="knowledge-panel">
-          <h2>Typische Fehler</h2>
-          <ul className="knowledge-mistake-list">
-            {article.commonMistakes.map((mistake) => (
-              <li key={mistake}>{mistake}</li>
-            ))}
-          </ul>
-        </section>
-
-        {article.toolLabel && (
-          <section className="knowledge-tool-card">
-            <div>
-              <h2>Passendes Werkzeug</h2>
-              <p>Erstelle das passende Dokument direkt mit dem Carta-Generator.</p>
-            </div>
-            <button type="button" onClick={() => onOpenTool(article.toolLink)}>
-              {article.toolLabel}
-            </button>
+            {section.list?.length > 0 && (
+              <ul>
+                {section.list.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            )}
           </section>
-        )}
-      </div>
+        ))}
+      </article>
+
+      {article.toolLabel && (
+        <section className="knowledge-cta-section" aria-label="Passender Generator">
+          <div>
+            <h2>Passenden Generator nutzen</h2>
+            <p>
+              {article.ctaText
+                ?? 'Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.'}
+            </p>
+          </div>
+          <button type="button" onClick={() => onOpenTool(article.toolLink)}>
+            {article.toolLabel}
+          </button>
+        </section>
+      )}
 
       <section className="knowledge-faq-section" aria-label="Haeufige Fragen">
-        <h2>Haeufige Fragen</h2>
         <div className="knowledge-faq-list">
           {article.faqs.map((faq) => (
             <KnowledgeFaqCard faq={faq} key={faq.question} />
           ))}
         </div>
+        <p className="knowledge-disclaimer">
+          {article.disclaimer
+            ?? 'Diese Inhalte dienen der allgemeinen Orientierung und ersetzen keine rechtliche oder steuerliche Beratung.'}
+        </p>
       </section>
-
-      {article.related?.length > 0 && (
-        <section className="knowledge-related-section" aria-label="Aehnliche Themen">
-          <h2>Aehnliche Themen</h2>
-          <div className="knowledge-related-list">
-            {article.related.map((relatedSlug) => (
-              <button type="button" onClick={() => onSelectRelated(relatedSlug)} key={relatedSlug}>
-                {getKnowledgeTitle(relatedSlug)}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {article.disclaimer && <p className="knowledge-disclaimer">{article.disclaimer}</p>}
     </>
   );
 }
