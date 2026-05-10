@@ -269,8 +269,8 @@ function normalizePositions(templatePositions) {
 }
 
 const offerPrintLayout = {
-  firstPageCapacity: 500,
-  followPageCapacity: 790,
+  firstPageCapacity: 390,
+  followPageCapacity: 610,
 };
 
 function estimateTextBlockHeight(text) {
@@ -281,9 +281,9 @@ function estimateTextBlockHeight(text) {
   }
 
   const hardLines = content.split('\n');
-  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 88)), 0);
+  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 78)), 0);
 
-  return 18 + visualLines * 16;
+  return 20 + visualLines * 18;
 }
 
 function splitTextIntoPrintItems(id, text) {
@@ -299,7 +299,7 @@ function splitTextIntoPrintItems(id, text) {
   words.forEach((word) => {
     const next = current ? `${current} ${word}` : word;
 
-    if (next.length > 520 && current) {
+    if (next.length > 420 && current) {
       items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
       current = word;
       return;
@@ -323,7 +323,7 @@ function estimatePositionHeight(position) {
     0,
   );
 
-  return Math.max(34, 18 + descriptionLines * 17);
+  return Math.max(38, 20 + descriptionLines * 18);
 }
 
 function createOfferPrintPages({ positions, textBlocks, totals }) {
@@ -339,7 +339,7 @@ function createOfferPrintPages({ positions, textBlocks, totals }) {
     })),
     {
       type: 'summary',
-      height: 88 + totals.taxGroups.length * 18,
+      height: 104 + totals.taxGroups.length * 20,
     },
     ...(closingBlock?.visible ? splitTextIntoPrintItems('closing', closingBlock.value) : []),
   ];
@@ -958,11 +958,9 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
             <OfferPrintPageItems items={page.items} labels={labels} totals={totals} />
           </div>
 
-          {totalPages > 1 && (
-            <p className="invoice-print-page-number">
-              {page.pageNumber}/{totalPages}
-            </p>
-          )}
+          <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
+            {totalPages > 1 ? `${page.pageNumber}/${totalPages}` : ''}
+          </p>
 
           <OfferPrintFooter
             footerLines={footerLines}

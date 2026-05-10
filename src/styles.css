@@ -2352,15 +2352,34 @@ h1 {
 }
 
 .invoice-print-page-number {
-  position: absolute;
-  left: 50%;
-  bottom: 27mm;
-  transform: translateX(-50%);
   margin: 0;
   color: #77736b;
   font-size: 9px;
   line-height: 1;
   text-align: center;
+}
+
+.offer-print-page {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) 12px auto;
+}
+
+.offer-print-page .invoice-print-page-content {
+  overflow: hidden;
+}
+
+.offer-print-page .invoice-print-page-number {
+  align-self: end;
+  justify-self: center;
+  margin: 0 0 5px;
+}
+
+.offer-print-page .invoice-print-page-number.is-empty {
+  visibility: hidden;
+}
+
+.offer-print-page .invoice-print-footer {
+  margin-top: 0;
 }
 
 .invoice-print-footer {
