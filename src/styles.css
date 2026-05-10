@@ -2376,6 +2376,11 @@ h1 {
   text-align: center;
 }
 
+.offer-print-first-page-header {
+  display: block;
+  min-height: 0;
+}
+
 .offer-print-page {
   --offer-print-content-max-height: 788px;
   --offer-print-small-safety-buffer: 16px;

@@ -1145,7 +1145,7 @@ function OfferPrintFirstPageHeader({
   visibleDetailDefinitions,
 }) {
   return (
-    <>
+    <div className="offer-print-first-page-header">
       <header className="invoice-print-header">
         <div>
           <p className="invoice-print-company-name">{sender.company}</p>
@@ -1183,7 +1183,7 @@ function OfferPrintFirstPageHeader({
       </section>
 
       <h2 className="invoice-print-title">{labels.title}</h2>
-    </>
+    </div>
   );
 }
 
