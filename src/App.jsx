@@ -5,9 +5,14 @@ import DocumentsView from './views/DocumentsView.jsx';
 import HomeView from './views/HomeView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
+import NotFoundView from './views/NotFoundView.jsx';
 
 function routeFromLocation() {
   const path = window.location.pathname;
+
+  if (path === '/') {
+    return { view: 'home', knowledgeSlug: null, documentId: 'overview' };
+  }
 
   if (path === '/wissen') {
     return { view: 'knowledge', knowledgeSlug: null, documentId: 'overview' };
@@ -29,7 +34,19 @@ function routeFromLocation() {
     return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
   }
 
-  return { view: 'home', knowledgeSlug: null, documentId: 'overview' };
+  if (path === '/impressum') {
+    return { view: 'legal:impressum', knowledgeSlug: null, documentId: 'overview' };
+  }
+
+  if (path === '/datenschutz') {
+    return { view: 'legal:datenschutz', knowledgeSlug: null, documentId: 'overview' };
+  }
+
+  if (path === '/agb') {
+    return { view: 'legal:agb', knowledgeSlug: null, documentId: 'overview' };
+  }
+
+  return { view: 'not-found', knowledgeSlug: null, documentId: 'overview' };
 }
 
 function pathForNavigation(item) {
@@ -47,6 +64,18 @@ function pathForNavigation(item) {
 
   if (item.view === 'home') {
     return '/';
+  }
+
+  if (item.view === 'legal:impressum') {
+    return '/impressum';
+  }
+
+  if (item.view === 'legal:datenschutz') {
+    return '/datenschutz';
+  }
+
+  if (item.view === 'legal:agb') {
+    return '/agb';
   }
 
   return window.location.pathname;
@@ -113,6 +142,7 @@ export default function App() {
         {currentView.startsWith('legal:') && (
           <LegalPage pageId={currentView.replace('legal:', '')} />
         )}
+        {currentView === 'not-found' && <NotFoundView onNavigate={handleNavigate} />}
       </div>
       <Footer onNavigate={handleNavigate} />
     </div>
