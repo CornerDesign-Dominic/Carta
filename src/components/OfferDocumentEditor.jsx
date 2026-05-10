@@ -272,7 +272,6 @@ function normalizePositions(templatePositions) {
 const offerPrintLayout = {
   blockGap: 12,
   smallSafetyBuffer: 8,
-  measureDebounceMs: 400,
 };
 
 function createOfferPrintItems({ positions, textBlocks }) {
@@ -426,11 +425,16 @@ export default function OfferDocumentEditor() {
     [positions, textBlocks],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
+  const [isExportRenderActive, setIsExportRenderActive] = useState(false);
 
   async function refreshPrintPages() {
+    setIsExportRenderActive(true);
+    await waitForNextFrame();
+
     const nextPages = paginatorRef.current?.measureNow();
 
     if (nextPages) {
+      setPrintPages((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
       await waitForNextFrame();
     }
   }
@@ -663,6 +667,7 @@ export default function OfferDocumentEditor() {
         `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
       );
     } finally {
+      setIsExportRenderActive(false);
       setIsExporting(false);
     }
   }
@@ -674,6 +679,7 @@ export default function OfferDocumentEditor() {
 
     const cleanup = () => {
       document.body.classList.remove('document-print-mode');
+      setIsExportRenderActive(false);
       window.removeEventListener('afterprint', cleanup);
     };
 
@@ -854,89 +860,48 @@ export default function OfferDocumentEditor() {
         />
       </A4Page>
 
-      <MeasuredOfferPaginator
-        ref={paginatorRef}
-        items={printItems}
-        labels={labels}
-        totals={totals}
-        onPagesChange={setPrintPages}
-      />
+      {isExportRenderActive ? (
+        <>
+          <MeasuredOfferPaginator
+            ref={paginatorRef}
+            items={printItems}
+            labels={labels}
+            totals={totals}
+          />
 
-      <OfferPrintPages
-        ref={printPagesRef}
-        details={details}
-        footerLines={footerLines}
-        labels={labels}
-        pages={printPages}
-        recipient={recipient}
-        sender={sender}
-        totals={totals}
-        visibleContactDefinitions={getOrderedDefinitions('contact', offerContactFields).filter(
-          (definition) => !fieldConfig.contact.hidden.includes(definition.field),
-        )}
-        visibleDetailDefinitions={getOrderedDefinitions('details', offerMetaFields).filter(
-          (definition) => !fieldConfig.details.hidden.includes(definition.field),
-        )}
-        visibleFooterMiddleDefinitions={getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
-          (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
-        )}
-      />
+          <OfferPrintPages
+            ref={printPagesRef}
+            details={details}
+            footerLines={footerLines}
+            labels={labels}
+            pages={printPages}
+            recipient={recipient}
+            sender={sender}
+            totals={totals}
+            visibleContactDefinitions={getOrderedDefinitions('contact', offerContactFields).filter(
+              (definition) => !fieldConfig.contact.hidden.includes(definition.field),
+            )}
+            visibleDetailDefinitions={getOrderedDefinitions('details', offerMetaFields).filter(
+              (definition) => !fieldConfig.details.hidden.includes(definition.field),
+            )}
+            visibleFooterMiddleDefinitions={getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
+              (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
+            )}
+          />
+        </>
+      ) : null}
     </div>
   );
 }
 
-const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator(
-  { items, labels, totals, onPagesChange },
-  ref,
-) {
+const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator({ items, labels, totals }, ref) {
   const measureRootRef = useRef(null);
-  const timeoutRef = useRef(null);
-  const frameRef = useRef(null);
-
-  function cancelScheduledMeasure() {
-    if (timeoutRef.current) {
-      window.clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
-    if (frameRef.current) {
-      window.cancelAnimationFrame(frameRef.current);
-      frameRef.current = null;
-    }
-  }
 
   function measureNow() {
-    cancelScheduledMeasure();
-    const nextPages = measureOfferPages(measureRootRef.current, items);
-
-    if (nextPages) {
-      onPagesChange((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
-    }
-
-    return nextPages;
+    return measureOfferPages(measureRootRef.current, items);
   }
 
-  useImperativeHandle(ref, () => ({ measureNow }), [items, onPagesChange]);
-
-  useEffect(() => {
-    cancelScheduledMeasure();
-
-    timeoutRef.current = window.setTimeout(() => {
-      frameRef.current = window.requestAnimationFrame(() => {
-        timeoutRef.current = null;
-        frameRef.current = null;
-        const nextPages = measureOfferPages(measureRootRef.current, items);
-
-        if (!nextPages) {
-          return;
-        }
-
-        onPagesChange((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
-      });
-    }, offerPrintLayout.measureDebounceMs);
-
-    return cancelScheduledMeasure;
-  }, [items, labels, totals]);
+  useImperativeHandle(ref, () => ({ measureNow }), [items]);
 
   const positionItems = items.filter((item) => item.type === 'position');
 
