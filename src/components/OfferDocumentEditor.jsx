@@ -1,4 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import A4Page from './documentBlocks/A4Page.jsx';
+import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
+import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
+import FooterBlock from './documentBlocks/FooterBlock.jsx';
+import PositionTable from './documentBlocks/PositionTable.jsx';
+import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
+import SenderBlock from './documentBlocks/SenderBlock.jsx';
+import TextBlock from './documentBlocks/TextBlock.jsx';
+import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialOfferLabels = {
@@ -24,6 +33,43 @@ const initialOfferLabels = {
   contactFax: 'Fax',
   contactWebsite: 'Website',
 };
+
+const offerContactFields = [
+  { field: 'email', labelField: 'contactEmail', label: 'E-Mail' },
+  { field: 'phone', labelField: 'contactPhone', label: 'Telefon' },
+  { field: 'fax', labelField: 'contactFax', label: 'Fax' },
+  { field: 'website', labelField: 'contactWebsite', label: 'Website' },
+];
+
+const offerMetaFields = [
+  { field: 'offerNumber', ariaLabel: 'Angebotsnummer', type: 'text' },
+  { field: 'offerDate', ariaLabel: 'Angebotsdatum', type: 'date' },
+  { field: 'validUntil', ariaLabel: 'Gültig bis', type: 'date' },
+  { field: 'internalNumber', ariaLabel: 'Interne Nummer', type: 'text' },
+  { field: 'externalNumber', ariaLabel: 'Externe Nummer', type: 'text' },
+  { field: 'customerNumber', ariaLabel: 'Kundennummer', type: 'text' },
+];
+
+const offerFooterColumns = [
+  [
+    { field: 'companyName', label: 'Firma' },
+    { field: 'companyStreet', label: 'Straße und Hausnummer' },
+    { field: 'companyCity', label: 'PLZ und Stadt' },
+    { field: 'companyExtra', label: 'Zusatzzeile Firma' },
+  ],
+  [
+    { field: 'vatId', label: 'USt-IdNr.' },
+    { field: 'taxNumber', label: 'Steuernummer' },
+    { field: 'commercialRegister', label: 'Handelsregister' },
+    { field: 'managingDirector', label: 'Geschäftsführer' },
+  ],
+  [
+    { field: 'bankName', label: 'Bankname' },
+    { field: 'iban', label: 'IBAN' },
+    { field: 'bic', label: 'BIC' },
+    { field: 'bankExtra', label: 'Zusatzzeile Bank' },
+  ],
+];
 
 function createOfferPosition() {
   return {
@@ -282,157 +328,42 @@ export default function OfferDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      <div className="visual-toolbar" aria-label="Angebot Werkzeuge">
-        <button
-          className={highlightFields ? 'is-active' : undefined}
-          type="button"
-          title="Bearbeitbare Felder im Dokument anzeigen"
-          aria-label="Bearbeitbare Felder im Dokument anzeigen"
-          aria-pressed={highlightFields}
-          onClick={() => setHighlightFields((current) => !current)}
-        >
-          {highlightFields ? 'Vorschau' : 'Bearbeiten'}
-        </button>
-        <button
-          type="button"
-          title="Druckdialog öffnen"
-          aria-label="Druckdialog öffnen"
-          onClick={handlePrint}
-        >
-          Drucken
-        </button>
-        <button
-          type="button"
-          title="PDF-Datei erstellen"
-          aria-label="PDF-Datei erstellen"
-          onClick={handleCreatePdf}
-          disabled={isExporting}
-        >
-          {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
-        </button>
-      </div>
+      <DocumentToolbar
+        ariaLabel="Angebot Werkzeuge"
+        isEditable={highlightFields}
+        isExporting={isExporting}
+        onCreatePdf={handleCreatePdf}
+        onPrint={handlePrint}
+        onToggleEditable={() => setHighlightFields((current) => !current)}
+      />
 
-      <article
-        ref={sheetRef}
-        className={`offer-sheet invoice-sheet${highlightFields ? ' is-highlight-mode' : ''}`}
-        aria-label="Editierbares Angebot"
-      >
-        <header className="invoice-document-header">
-          <div className="editable-group">
-            <input
-              aria-label="Absender Firmenname"
-              value={sender.company}
-              onChange={(event) => updateSender('company', event.target.value)}
-            />
-          </div>
-
-          <div className="invoice-sender-side">
-            {[
-              ['email', 'contactEmail', 'E-Mail'],
-              ['phone', 'contactPhone', 'Telefon'],
-              ['fax', 'contactFax', 'Fax'],
-              ['website', 'contactWebsite', 'Website'],
-            ].map(([field, labelField, label]) => (
-              <label key={field}>
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${label}`}
-                  value={labels[labelField]}
-                  onChange={(event) => updateLabel(labelField, event.target.value)}
-                />
-                <input
-                  aria-label={label}
-                  value={sender[field]}
-                  onChange={(event) => updateSender(field, event.target.value)}
-                />
-              </label>
-            ))}
-          </div>
-        </header>
+      <A4Page ref={sheetRef} ariaLabel="Editierbares Angebot" editable={highlightFields}>
+        <SenderBlock
+          contactFields={offerContactFields}
+          labels={labels}
+          sender={sender}
+          onLabelChange={updateLabel}
+          onSenderChange={updateSender}
+        />
 
         <section className="invoice-address-row">
-          <div className="invoice-recipient-fields">
-            <input
-              className="invoice-sender-line"
-              aria-label="Absenderzeile über Empfängeradresse"
-              value={sender.senderLine}
-              onChange={(event) => updateSender('senderLine', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger Firma"
-              value={recipient.company}
-              onChange={(event) => updateRecipient('company', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger Zusatz oder z. Hd."
-              value={recipient.attention}
-              onChange={(event) => updateRecipient('attention', event.target.value)}
-            />
-            <input
-              aria-label="Ansprechpartner oder Name"
-              value={recipient.name}
-              onChange={(event) => updateRecipient('name', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger Straße und Hausnummer"
-              value={recipient.street}
-              onChange={(event) => updateRecipient('street', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger PLZ und Stadt"
-              value={recipient.cityLine}
-              onChange={(event) => updateRecipient('cityLine', event.target.value)}
-            />
-          </div>
+          <RecipientBlock
+            recipient={recipient}
+            senderLine={sender.senderLine}
+            onRecipientChange={updateRecipient}
+            onSenderLineChange={(value) => updateSender('senderLine', value)}
+          />
 
-          <div className="invoice-details">
-            {[
-              ['offerNumber', 'Angebotsnummer', 'text'],
-              ['offerDate', 'Angebotsdatum', 'date'],
-              ['validUntil', 'Gültig bis', 'date'],
-              ['internalNumber', 'Interne Nummer', 'text'],
-              ['externalNumber', 'Externe Nummer', 'text'],
-              ['customerNumber', 'Kundennummer', 'text'],
-            ].map(([field, ariaLabel, type]) => (
-              <label className={field === 'offerNumber' ? 'is-emphasized' : undefined} key={field}>
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${ariaLabel}`}
-                  value={labels[field]}
-                  onChange={(event) => updateLabel(field, event.target.value)}
-                />
-                {type === 'date' ? (
-                  <span className="invoice-date-field">
-                    <input
-                      ref={(element) => {
-                        dateInputRefs.current[field] = element;
-                      }}
-                      className="invoice-date-input"
-                      aria-label={ariaLabel}
-                      type="date"
-                      value={details[field]}
-                      onChange={(event) => updateDetail(field, event.target.value)}
-                    />
-                    <button
-                      className="invoice-icon-action invoice-date-picker"
-                      type="button"
-                      aria-label={`${ariaLabel} auswählen`}
-                      onClick={() => openDatePicker(field)}
-                    >
-                      <span aria-hidden="true" />
-                    </button>
-                  </span>
-                ) : (
-                  <input
-                    aria-label={ariaLabel}
-                    type="text"
-                    value={details[field]}
-                    onChange={(event) => updateDetail(field, event.target.value)}
-                  />
-                )}
-              </label>
-            ))}
-          </div>
+          <DocumentMetaBlock
+            dateInputRefs={dateInputRefs}
+            details={details}
+            emphasizedField="offerNumber"
+            fields={offerMetaFields}
+            labels={labels}
+            onDatePicker={openDatePicker}
+            onDetailChange={updateDetail}
+            onLabelChange={updateLabel}
+          />
         </section>
 
         <h2 className="invoice-document-title">
@@ -444,209 +375,56 @@ export default function OfferDocumentEditor() {
           />
         </h2>
 
-        <textarea
+        <TextBlock
           ref={introTextRef}
-          className="offer-flow-text invoice-flow-text"
-          aria-label="Vorlauftext"
+          ariaLabel="Vorlauftext"
           value={introText}
-          onChange={(event) => {
-            setIntroText(event.target.value);
+          onChange={(value, event) => {
+            setIntroText(value);
             resizeTextarea(event.target);
           }}
         />
 
-        <table className="offer-position-table invoice-position-table">
-          <thead>
-            <tr>
-              {[
-                ['position', 'Tabellenkopf Position'],
-                ['description', 'Tabellenkopf Beschreibung'],
-                ['unitPrice', 'Tabellenkopf Einzelpreis'],
-                ['quantity', 'Tabellenkopf Anzahl'],
-                ['unit', 'Tabellenkopf Einheit'],
-                ['tax', 'Tabellenkopf Umsatzsteuer'],
-                ['total', 'Tabellenkopf Gesamt'],
-              ].map(([field, ariaLabel]) => (
-                <th key={field}>
-                  <input
-                    className="document-label-input"
-                    aria-label={ariaLabel}
-                    value={labels[field]}
-                    onChange={(event) => updateLabel(field, event.target.value)}
-                  />
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {positions.map((position, index) => {
-              const calculated = calculatePosition(position);
-
-              return (
-                <tr key={position.id}>
-                  <td>{index + 1}</td>
-                  <td>
-                    <input
-                      aria-label={`Beschreibung Position ${index + 1}`}
-                      value={position.description}
-                      onChange={(event) => updatePosition(position.id, 'description', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      aria-label={`Einzelpreis Position ${index + 1}`}
-                      inputMode="decimal"
-                      type="text"
-                      value={position.unitPrice}
-                      onChange={(event) => updatePosition(position.id, 'unitPrice', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      aria-label={`Anzahl Position ${index + 1}`}
-                      inputMode="decimal"
-                      type="text"
-                      value={position.quantity}
-                      onChange={(event) => updatePosition(position.id, 'quantity', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      aria-label={`Einheit Position ${index + 1}`}
-                      value={position.unit}
-                      onChange={(event) => updatePosition(position.id, 'unit', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <span className="invoice-tax-rate-cell">
-                      <input
-                        aria-label={`Umsatzsteuer Position ${index + 1}`}
-                        inputMode="decimal"
-                        type="text"
-                        value={position.taxRate}
-                        onChange={(event) => updatePosition(position.id, 'taxRate', event.target.value)}
-                      />
-                      <span>%</span>
-                    </span>
-                  </td>
-                  <td>{formatCurrency(calculated.net)}</td>
-                  <td>
-                    <button
-                      aria-label={`Position ${index + 1} löschen`}
-                      className="offer-remove"
-                      type="button"
-                      onClick={() => removePosition(position.id)}
-                    >
-                      &times;
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <PositionTable
+          calculatePosition={calculatePosition}
+          formatCurrency={formatCurrency}
+          labels={labels}
+          positions={positions}
+          variant="offer"
+          onLabelChange={updateLabel}
+          onPositionChange={updatePosition}
+          onRemovePosition={removePosition}
+        />
 
         <button className="offer-add-position" type="button" onClick={addPosition}>
           + Position hinzufügen
         </button>
 
-        <aside className="offer-summary invoice-document-summary" aria-label="Angebotssummen">
-          <div>
-            <input
-              className="document-label-input"
-              aria-label="Beschriftung Nettobetrag"
-              value={labels.net}
-              onChange={(event) => updateLabel('net', event.target.value)}
-            />
-            <strong>{formatCurrency(totals.net)}</strong>
-          </div>
-          {totals.taxGroups.map((group) => (
-            <div key={group.taxRate}>
-              <span className="document-summary-label">
-                <input
-                  className="document-label-input"
-                  aria-label="Beschriftung Umsatzsteuer"
-                  value={labels.taxAmount}
-                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
-                />
-                <span>{formatPercent(group.taxRate)}%</span>
-              </span>
-              <strong>{formatCurrency(group.tax)}</strong>
-            </div>
-          ))}
-          <div>
-            <input
-              className="document-label-input"
-              aria-label="Beschriftung Gesamtbetrag"
-              value={labels.grandTotal}
-              onChange={(event) => updateLabel('grandTotal', event.target.value)}
-            />
-            <strong>{formatCurrency(totals.gross)}</strong>
-          </div>
-        </aside>
+        <TotalsBox
+          ariaLabel="Angebotssummen"
+          formatCurrency={formatCurrency}
+          formatPercent={formatPercent}
+          labels={labels}
+          totals={totals}
+          onLabelChange={updateLabel}
+        />
 
-        <textarea
+        <TextBlock
           ref={closingTextRef}
-          className="offer-flow-text invoice-flow-text"
-          aria-label="Nachlauftext"
+          ariaLabel="Nachlauftext"
           value={closingText}
-          onChange={(event) => {
-            setClosingText(event.target.value);
+          onChange={(value, event) => {
+            setClosingText(value);
             resizeTextarea(event.target);
           }}
         />
 
-        <footer className="invoice-footer-data" aria-label="Fußbereich">
-          <section>
-            {[
-              ['companyName', 'Firma'],
-              ['companyStreet', 'Straße und Hausnummer'],
-              ['companyCity', 'PLZ und Stadt'],
-              ['companyExtra', 'Zusatzzeile Firma'],
-            ].map(([field, label]) => (
-              <input
-                key={field}
-                aria-label={label}
-                value={footerLines[field]}
-                onChange={(event) => updateFooterLine(field, event.target.value)}
-              />
-            ))}
-          </section>
-
-          <section>
-            {[
-              ['vatId', 'USt-IdNr.'],
-              ['taxNumber', 'Steuernummer'],
-              ['commercialRegister', 'Handelsregister'],
-              ['managingDirector', 'Geschäftsführer'],
-            ].map(([field, label]) => (
-              <input
-                key={field}
-                aria-label={label}
-                value={footerLines[field]}
-                onChange={(event) => updateFooterLine(field, event.target.value)}
-              />
-            ))}
-          </section>
-
-          <section>
-            {[
-              ['bankName', 'Bankname'],
-              ['iban', 'IBAN'],
-              ['bic', 'BIC'],
-              ['bankExtra', 'Zusatzzeile Bank'],
-            ].map(([field, label]) => (
-              <input
-                key={field}
-                aria-label={label}
-                value={footerLines[field]}
-                onChange={(event) => updateFooterLine(field, event.target.value)}
-              />
-            ))}
-          </section>
-        </footer>
-      </article>
+        <FooterBlock
+          columns={offerFooterColumns}
+          footerLines={footerLines}
+          onFooterLineChange={updateFooterLine}
+        />
+      </A4Page>
     </div>
   );
 }
