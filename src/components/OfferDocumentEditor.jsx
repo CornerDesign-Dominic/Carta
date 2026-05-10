@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
@@ -10,6 +10,7 @@ import TextBlock from './documentBlocks/TextBlock.jsx';
 import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import OfferDocumentForm from './OfferDocumentForm.jsx';
+import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialOfferLabels = {
@@ -269,138 +270,42 @@ function normalizePositions(templatePositions) {
 }
 
 const offerPrintLayout = {
-  pageHeight: 1123,
-  verticalPadding: 132,
-  firstHeaderHeight: 332,
-  followHeaderHeight: 102,
-  footerHeight: 58,
-  pageNumberHeight: 23,
-  contentGap: 20,
   blockGap: 12,
-  positionTableHeaderHeight: 28,
-  smallSafetyBuffer: 16,
+  smallSafetyBuffer: 8,
 };
 
-function getOfferPrintContentHeight(isFirstPage) {
-  const headerHeight = isFirstPage ? offerPrintLayout.firstHeaderHeight : offerPrintLayout.followHeaderHeight;
-
-  return (
-    offerPrintLayout.pageHeight -
-    offerPrintLayout.verticalPadding -
-    headerHeight -
-    offerPrintLayout.footerHeight -
-    offerPrintLayout.pageNumberHeight -
-    offerPrintLayout.contentGap
-  );
-}
-
-const offerPrintCapacity = {
-  firstPage: getOfferPrintContentHeight(true) - offerPrintLayout.smallSafetyBuffer,
-  followPage: getOfferPrintContentHeight(false) - offerPrintLayout.smallSafetyBuffer,
-};
-
-function estimateTextBlockHeight(text) {
-  const content = String(text || '').trim();
-
-  if (!content) {
-    return 0;
-  }
-
-  const hardLines = content.split('\n');
-  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 80)), 0);
-
-  return 12 + visualLines * 22;
-}
-
-function splitTextIntoPrintItems(id, text) {
-  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
-
-  if (words.length === 0) {
-    return [];
-  }
-
-  const items = [];
-  let current = '';
-
-  words.forEach((word) => {
-    const next = current ? `${current} ${word}` : word;
-
-    if (next.length > 520 && current) {
-      items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
-      current = word;
-      return;
-    }
-
-    current = next;
-  });
-
-  if (current) {
-    items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
-  }
-
-  return items;
-}
-
-function estimatePositionHeight(position) {
-  const description = String(position.description || '');
-  const hardLines = description.split('\n');
-  const descriptionLines = hardLines.reduce(
-    (total, line) => total + Math.max(1, Math.ceil(line.length / 32)),
-    0,
-  );
-
-  return Math.max(44, 24 + descriptionLines * 20);
-}
-
-function getOfferPrintItemAddition(currentPage, item) {
-  const previousItem = currentPage.items[currentPage.items.length - 1];
-  const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
-  const startsNewBlock = currentPage.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
-  const tableHeaderHeight = startsPositionTable ? offerPrintLayout.positionTableHeaderHeight : 0;
-  const blockGap = startsNewBlock ? offerPrintLayout.blockGap : 0;
-
-  return item.height + tableHeaderHeight + blockGap;
-}
-
-function createOfferPrintPages({ positions, textBlocks, totals }) {
+function createOfferPrintItems({ positions, textBlocks }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
-  const items = [
-    ...(introBlock?.visible ? splitTextIntoPrintItems('intro', introBlock.value) : []),
+
+  return [
+    ...(introBlock?.visible
+      ? [
+          {
+            type: 'text',
+            id: 'intro',
+            text: introBlock.value,
+          },
+        ]
+      : []),
     ...positions.map((position, index) => ({
       type: 'position',
       index,
       position,
-      height: estimatePositionHeight(position),
     })),
     {
       type: 'summary',
-      height: 124 + totals.taxGroups.length * 22,
     },
-    ...(closingBlock?.visible ? splitTextIntoPrintItems('closing', closingBlock.value) : []),
+    ...(closingBlock?.visible
+      ? [
+          {
+            type: 'text',
+            id: 'closing',
+            text: closingBlock.value,
+          },
+        ]
+      : []),
   ];
-  const pages = [{ items: [], used: 0 }];
-
-  items.forEach((item) => {
-    let currentPage = pages[pages.length - 1];
-    let capacity = pages.length === 1 ? offerPrintCapacity.firstPage : offerPrintCapacity.followPage;
-    let itemAddition = getOfferPrintItemAddition(currentPage, item);
-
-    if (currentPage.items.length > 0 && currentPage.used + itemAddition > capacity) {
-      currentPage = { items: [], used: 0 };
-      pages.push(currentPage);
-      capacity = offerPrintCapacity.followPage;
-      itemAddition = getOfferPrintItemAddition(currentPage, item);
-    }
-
-    currentPage.items.push(item);
-    currentPage.used += itemAddition;
-  });
-
-  return pages.map((page, index) => ({
-    ...page,
-    pageNumber: index + 1,
-  }));
 }
 
 function validateOfferTemplate(template) {
@@ -514,10 +419,11 @@ export default function OfferDocumentEditor() {
     };
   }, [positions]);
 
-  const printPages = useMemo(
-    () => createOfferPrintPages({ positions, textBlocks, totals }),
-    [positions, textBlocks, totals],
+  const printItems = useMemo(
+    () => createOfferPrintItems({ positions, textBlocks }),
+    [positions, textBlocks],
   );
+  const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
@@ -936,6 +842,13 @@ export default function OfferDocumentEditor() {
         />
       </A4Page>
 
+      <MeasuredOfferPaginator
+        items={printItems}
+        labels={labels}
+        totals={totals}
+        onPagesChange={setPrintPages}
+      />
+
       <OfferPrintPages
         ref={printPagesRef}
         details={details}
@@ -957,6 +870,142 @@ export default function OfferDocumentEditor() {
       />
     </div>
   );
+}
+
+function MeasuredOfferPaginator({ items, labels, totals, onPagesChange }) {
+  const measureRootRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const measureRoot = measureRootRef.current;
+
+    if (!measureRoot) {
+      return;
+    }
+
+    const firstContent = measureRoot.querySelector('[data-measure-first-content]');
+    const followContent = measureRoot.querySelector('[data-measure-follow-content]');
+    const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
+    const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+    const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
+    const positionRows = new Map(
+      [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
+        row.dataset.measurePositionRow,
+        getOuterHeight(row),
+      ]),
+    );
+
+    if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) {
+      return;
+    }
+
+    const firstPageCapacity = firstContent.getBoundingClientRect().height - offerPrintLayout.smallSafetyBuffer;
+    const followPageCapacity = followContent.getBoundingClientRect().height - offerPrintLayout.smallSafetyBuffer;
+    const blockGap =
+      parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || offerPrintLayout.blockGap;
+    const positionHeaderHeight = getOuterHeight(positionHeader);
+
+    function measureTextHeight(text) {
+      textProbe.textContent = String(text || '').trim();
+      return getOuterHeight(textProbe);
+    }
+
+    function getItemHeight(item) {
+      if (item.type === 'text') {
+        return measureTextHeight(item.text);
+      }
+
+      if (item.type === 'position') {
+        return positionRows.get(String(item.index)) || 0;
+      }
+
+      if (item.type === 'summary') {
+        return getOuterHeight(summaryProbe);
+      }
+
+      return 0;
+    }
+
+    function getItemGap(page, item) {
+      const previousItem = page.items[page.items.length - 1];
+      const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
+      const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
+
+      return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
+    }
+
+    const nextPages = paginateMeasuredItems({
+      items,
+      firstPageCapacity,
+      followPageCapacity,
+      getItemHeight,
+      getItemGap,
+      splitTextItem: (item, availableHeight) =>
+        takeMeasuredText(item.text, availableHeight, measureTextHeight),
+    });
+
+    onPagesChange(nextPages);
+  }, [items, labels, totals, onPagesChange]);
+
+  const positionItems = items.filter((item) => item.type === 'position');
+
+  return (
+    <div className="offer-measure-root" ref={measureRootRef} aria-hidden="true">
+      <div className="invoice-print-page offer-print-page is-first-page">
+        <div className="invoice-print-page-content" data-measure-first-content />
+      </div>
+      <div className="invoice-print-page offer-print-page is-follow-page">
+        <div className="invoice-print-page-content" data-measure-follow-content />
+      </div>
+      <div className="offer-measure-content">
+        <p className="invoice-print-flow-text" data-measure-text-probe />
+        <table className="invoice-print-position-table">
+          <thead>
+            <tr data-measure-position-header>
+              <th>{labels.position}</th>
+              <th>{labels.description}</th>
+              <th>{labels.unitPrice}</th>
+              <th>{labels.quantity}</th>
+              <th>{labels.unit}</th>
+              <th>{labels.tax}</th>
+              <th>{labels.total}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {positionItems.map(({ index, position }) => {
+              const calculated = calculatePosition(position);
+
+              return (
+                <tr data-measure-position-row={String(index)} key={position.id}>
+                  <td>{index + 1}</td>
+                  <td>{position.description}</td>
+                  <td>{formatCurrency(toNumber(position.unitPrice))}</td>
+                  <td>{position.quantity}</td>
+                  <td>{position.unit}</td>
+                  <td>{formatPercent(calculated.taxRate)}%</td>
+                  <td>{formatCurrency(calculated.net)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div data-measure-summary>
+          <OfferPrintSummary labels={labels} totals={totals} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function getOuterHeight(element) {
+  if (!element) {
+    return 0;
+  }
+
+  const styles = window.getComputedStyle(element);
+  const marginTop = parseFloat(styles.marginTop) || 0;
+  const marginBottom = parseFloat(styles.marginBottom) || 0;
+
+  return element.getBoundingClientRect().height + marginTop + marginBottom;
 }
 
 const OfferPrintPages = forwardRef(function OfferPrintPages(
