@@ -9,6 +9,7 @@ import SenderBlock from './documentBlocks/SenderBlock.jsx';
 import TextBlock from './documentBlocks/TextBlock.jsx';
 import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import TotalsBox from './documentBlocks/TotalsBox.jsx';
+import OfferDocumentForm from './OfferDocumentForm.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialOfferLabels = {
@@ -72,7 +73,7 @@ const offerFooterColumns = [
   ],
 ];
 
-const offerSchemaVersion = 1;
+const offerSchemaVersion = 2;
 
 const defaultOfferTextBlocks = [
   {
@@ -98,6 +99,49 @@ function createOfferPosition() {
     quantity: '1',
     unit: 'Stk.',
     taxRate: '19',
+  };
+}
+
+function createFieldConfig(fields) {
+  return {
+    hidden: [],
+    order: fields.map((field) => field.field),
+  };
+}
+
+function normalizeFieldConfig(config) {
+  const fallback = {
+    contact: createFieldConfig(offerContactFields),
+    details: createFieldConfig(offerMetaFields),
+    footerMiddle: createFieldConfig(offerFooterColumns[1]),
+  };
+
+  if (!config || typeof config !== 'object') {
+    return fallback;
+  }
+
+  return {
+    contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
+    details: normalizeFieldConfigBlock(config.details, fallback.details),
+    footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
+  };
+}
+
+function normalizeFieldConfigBlock(config, fallback) {
+  const knownFields = new Set(fallback.order);
+  const configuredOrder = Array.isArray(config?.order)
+    ? config.order.filter((field) => knownFields.has(field))
+    : [];
+  const order = [
+    ...configuredOrder,
+    ...fallback.order.filter((field) => !configuredOrder.includes(field)),
+  ];
+
+  return {
+    hidden: Array.isArray(config?.hidden)
+      ? config.hidden.filter((field) => knownFields.has(field))
+      : fallback.hidden,
+    order,
   };
 }
 
@@ -233,7 +277,7 @@ function validateOfferTemplate(template) {
     throw new Error('Diese JSON-Datei ist kein Angebot.');
   }
 
-  if (template.schemaVersion !== offerSchemaVersion) {
+  if (![1, offerSchemaVersion].includes(template.schemaVersion)) {
     throw new Error('Diese Angebotsversion wird nicht unterstützt.');
   }
 
@@ -247,7 +291,13 @@ function validateOfferTemplate(template) {
 export default function OfferDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialOfferLabels);
+  const [fieldConfig, setFieldConfig] = useState({
+    contact: createFieldConfig(offerContactFields),
+    details: createFieldConfig(offerMetaFields),
+    footerMiddle: createFieldConfig(offerFooterColumns[1]),
+  });
   const sheetRef = useRef(null);
   const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
@@ -356,6 +406,76 @@ export default function OfferDocumentEditor() {
     );
   }
 
+  function movePosition(positionId, direction) {
+    setPositions((current) => {
+      const index = current.findIndex((position) => position.id === positionId);
+      const targetIndex = index + direction;
+
+      if (index < 0 || targetIndex < 0 || targetIndex >= current.length) {
+        return current;
+      }
+
+      const next = [...current];
+      const [position] = next.splice(index, 1);
+      next.splice(targetIndex, 0, position);
+
+      return next;
+    });
+  }
+
+  function getOrderedDefinitions(block, definitions) {
+    const order = fieldConfig[block].order;
+
+    return order
+      .map((field) => definitions.find((definition) => definition.field === field))
+      .filter(Boolean);
+  }
+
+  function getHiddenFields(block, definitions) {
+    const knownFields = new Set(definitions.map((definition) => definition.field));
+
+    return fieldConfig[block].hidden.filter((field) => knownFields.has(field));
+  }
+
+  function toggleConfiguredField(block, field) {
+    setFieldConfig((current) => {
+      const hidden = current[block].hidden.includes(field)
+        ? current[block].hidden.filter((entry) => entry !== field)
+        : [...current[block].hidden, field];
+
+      return {
+        ...current,
+        [block]: {
+          ...current[block],
+          hidden,
+        },
+      };
+    });
+  }
+
+  function moveConfiguredField(block, field, direction) {
+    setFieldConfig((current) => {
+      const order = [...current[block].order];
+      const index = order.indexOf(field);
+      const targetIndex = index + direction;
+
+      if (index < 0 || targetIndex < 0 || targetIndex >= order.length) {
+        return current;
+      }
+
+      const [entry] = order.splice(index, 1);
+      order.splice(targetIndex, 0, entry);
+
+      return {
+        ...current,
+        [block]: {
+          ...current[block],
+          order,
+        },
+      };
+    });
+  }
+
   function openDatePicker(field) {
     const dateInput = dateInputRefs.current[field];
 
@@ -386,23 +506,6 @@ export default function OfferDocumentEditor() {
     );
   }
 
-  function moveTextBlock(blockId, direction) {
-    setTextBlocks((current) => {
-      const next = [...current];
-      const index = next.findIndex((block) => block.id === blockId);
-      const targetIndex = index + direction;
-
-      if (index < 0 || targetIndex < 0 || targetIndex >= next.length) {
-        return current;
-      }
-
-      const [block] = next.splice(index, 1);
-      next.splice(targetIndex, 0, block);
-
-      return next;
-    });
-  }
-
   function toggleTextBlockVisibility(blockId) {
     setTextBlocks((current) =>
       current.map((block) =>
@@ -423,6 +526,7 @@ export default function OfferDocumentEditor() {
         details,
         positions,
         textBlocks,
+        fieldConfig,
         introText: textBlocks.find((block) => block.id === 'intro')?.value ?? '',
         closingText: textBlocks.find((block) => block.id === 'closing')?.value ?? '',
         footerLines,
@@ -458,6 +562,7 @@ export default function OfferDocumentEditor() {
       setFooterLines((current) => ({ ...current, ...(data.footerLines ?? {}) }));
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks, data.introText, data.closingText));
+      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
@@ -520,6 +625,10 @@ export default function OfferDocumentEditor() {
   }
 
   function renderTextBlock(block, index) {
+    if (!block) {
+      return null;
+    }
+
     if (!block.visible) {
       return (
         <div className="invoice-flow-config-row invoice-flow-hidden-row" key={block.id}>
@@ -528,8 +637,6 @@ export default function OfferDocumentEditor() {
             isLast={index === textBlocks.length - 1}
             label={block.label}
             visible={block.visible}
-            onMoveDown={() => moveTextBlock(block.id, 1)}
-            onMoveUp={() => moveTextBlock(block.id, -1)}
             onToggle={() => toggleTextBlockVisibility(block.id)}
           />
         </div>
@@ -554,8 +661,6 @@ export default function OfferDocumentEditor() {
           isLast={index === textBlocks.length - 1}
           label={block.label}
           visible={block.visible}
-          onMoveDown={() => moveTextBlock(block.id, 1)}
-          onMoveUp={() => moveTextBlock(block.id, -1)}
           onToggle={() => toggleTextBlockVisibility(block.id)}
         />
       </div>
@@ -564,6 +669,30 @@ export default function OfferDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
+      <OfferDocumentForm
+        addPosition={addPosition}
+        details={details}
+        footerLines={footerLines}
+        formatCurrency={formatCurrency}
+        formatPercent={formatPercent}
+        isOpen={isFormPanelOpen}
+        movePosition={movePosition}
+        onToggle={() => setIsFormPanelOpen((current) => !current)}
+        positions={positions}
+        recipient={recipient}
+        removePosition={removePosition}
+        sender={sender}
+        textBlocks={textBlocks}
+        toggleTextBlockVisibility={toggleTextBlockVisibility}
+        totals={totals}
+        updateDetail={updateDetail}
+        updateFooterLine={updateFooterLine}
+        updatePosition={updatePosition}
+        updateRecipient={updateRecipient}
+        updateSender={updateSender}
+        updateTextBlock={updateTextBlock}
+      />
+
       <DocumentToolbar
         ariaLabel="Angebot Werkzeuge"
         isEditable={highlightFields}
@@ -583,11 +712,14 @@ export default function OfferDocumentEditor() {
         editable={highlightFields}
       >
         <SenderBlock
-          contactFields={offerContactFields}
+          contactFields={getOrderedDefinitions('contact', offerContactFields)}
+          hiddenFields={getHiddenFields('contact', offerContactFields)}
           labels={labels}
           sender={sender}
           onLabelChange={updateLabel}
+          onMoveField={(field, direction) => moveConfiguredField('contact', field, direction)}
           onSenderChange={updateSender}
+          onToggleField={(field) => toggleConfiguredField('contact', field)}
         />
 
         <section className="invoice-address-row">
@@ -602,11 +734,14 @@ export default function OfferDocumentEditor() {
             dateInputRefs={dateInputRefs}
             details={details}
             emphasizedField="offerNumber"
-            fields={offerMetaFields}
+            fields={getOrderedDefinitions('details', offerMetaFields)}
+            hiddenFields={getHiddenFields('details', offerMetaFields)}
             labels={labels}
             onDatePicker={openDatePicker}
             onDetailChange={updateDetail}
             onLabelChange={updateLabel}
+            onMoveField={(field, direction) => moveConfiguredField('details', field, direction)}
+            onToggleField={(field) => toggleConfiguredField('details', field)}
           />
         </section>
 
@@ -619,7 +754,7 @@ export default function OfferDocumentEditor() {
           />
         </h2>
 
-        {textBlocks[0] && renderTextBlock(textBlocks[0], 0)}
+        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <PositionTable
           calculatePosition={calculatePosition}
@@ -628,6 +763,7 @@ export default function OfferDocumentEditor() {
           positions={positions}
           variant="offer"
           onLabelChange={updateLabel}
+          onMovePosition={movePosition}
           onPositionChange={updatePosition}
           onRemovePosition={removePosition}
         />
@@ -645,12 +781,19 @@ export default function OfferDocumentEditor() {
           onLabelChange={updateLabel}
         />
 
-        {textBlocks.slice(1).map((block, offset) => renderTextBlock(block, offset + 1))}
+        {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}
 
         <FooterBlock
-          columns={offerFooterColumns}
+          columns={[
+            offerFooterColumns[0],
+            getOrderedDefinitions('footerMiddle', offerFooterColumns[1]),
+            offerFooterColumns[2],
+          ]}
           footerLines={footerLines}
+          hiddenFields={getHiddenFields('footerMiddle', offerFooterColumns[1])}
           onFooterLineChange={updateFooterLine}
+          onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)}
+          onToggleField={(field) => toggleConfiguredField('footerMiddle', field)}
         />
       </A4Page>
     </div>

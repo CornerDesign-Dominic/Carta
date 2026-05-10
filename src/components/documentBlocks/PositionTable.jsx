@@ -3,6 +3,7 @@ export default function PositionTable({
   formatCurrency,
   labels,
   onLabelChange,
+  onMovePosition,
   onPositionChange,
   onRemovePosition,
   positions,
@@ -41,7 +42,38 @@ export default function PositionTable({
 
           return (
             <tr key={position.id}>
-              <td>{index + 1}</td>
+              <td className="invoice-position-index-cell">
+                <span className="invoice-position-actions">
+                  <button
+                    aria-label={`Position ${index + 1} löschen`}
+                    className="invoice-position-action invoice-position-delete"
+                    type="button"
+                    disabled={positions.length === 1}
+                    onClick={() => onRemovePosition(position.id)}
+                  >
+                    &times;
+                  </button>
+                  <button
+                    aria-label={`Position ${index + 1} nach oben verschieben`}
+                    className="invoice-position-action"
+                    type="button"
+                    disabled={index === 0}
+                    onClick={() => onMovePosition(position.id, -1)}
+                  >
+                    &uarr;
+                  </button>
+                  <button
+                    aria-label={`Position ${index + 1} nach unten verschieben`}
+                    className="invoice-position-action"
+                    type="button"
+                    disabled={index === positions.length - 1}
+                    onClick={() => onMovePosition(position.id, 1)}
+                  >
+                    &darr;
+                  </button>
+                </span>
+                {index + 1}
+              </td>
               <td>
                 <input
                   aria-label={`Beschreibung Position ${index + 1}`}
@@ -87,16 +119,7 @@ export default function PositionTable({
                 </span>
               </td>
               <td>{formatCurrency(calculated.net)}</td>
-              <td>
-                <button
-                  aria-label={`Position ${index + 1} löschen`}
-                  className="offer-remove"
-                  type="button"
-                  onClick={() => onRemovePosition(position.id)}
-                >
-                  &times;
-                </button>
-              </td>
+              <td />
             </tr>
           );
         })}

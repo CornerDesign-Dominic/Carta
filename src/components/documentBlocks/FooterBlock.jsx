@@ -1,18 +1,50 @@
-export default function FooterBlock({ columns, footerLines, onFooterLineChange }) {
+import { FieldActions, HiddenFieldActions } from './FieldActions.jsx';
+
+export default function FooterBlock({
+  configurableColumnIndex = 1,
+  footerLines,
+  hiddenFields = [],
+  columns,
+  onFooterLineChange,
+  onMoveField,
+  onToggleField,
+}) {
   return (
     <footer className="invoice-footer-data" aria-label="Fußbereich">
-      {columns.map((column) => (
-        <section key={column.map(({ field }) => field).join('-')}>
-          {column.map(({ field, label }) => (
-            <input
-              key={field}
-              aria-label={label}
-              value={footerLines[field]}
-              onChange={(event) => onFooterLineChange(field, event.target.value)}
-            />
-          ))}
-        </section>
-      ))}
+      {columns.map((column, columnIndex) => {
+        const isConfigurable = columnIndex === configurableColumnIndex;
+        const visibleColumn = isConfigurable
+          ? column.filter(({ field }) => !hiddenFields.includes(field))
+          : column;
+
+        return (
+          <section key={column.map(({ field }) => field).join('-')}>
+            {visibleColumn.map(({ field, label }, index) => (
+              <div className={isConfigurable ? 'invoice-config-row' : undefined} key={field}>
+                <input
+                  aria-label={label}
+                  value={footerLines[field]}
+                  onChange={(event) => onFooterLineChange(field, event.target.value)}
+                />
+                {isConfigurable && (
+                  <FieldActions
+                    canMove
+                    isFirst={index === 0}
+                    isLast={index === visibleColumn.length - 1}
+                    label={label}
+                    onMoveDown={() => onMoveField(field, 1)}
+                    onMoveUp={() => onMoveField(field, -1)}
+                    onToggle={() => onToggleField(field)}
+                  />
+                )}
+              </div>
+            ))}
+            {isConfigurable && (
+              <HiddenFieldActions definitions={column} hiddenFields={hiddenFields} onToggle={onToggleField} />
+            )}
+          </section>
+        );
+      })}
     </footer>
   );
 }
