@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
@@ -268,6 +268,102 @@ function normalizePositions(templatePositions) {
   }));
 }
 
+const offerPrintLayout = {
+  firstPageCapacity: 500,
+  followPageCapacity: 790,
+};
+
+function estimateTextBlockHeight(text) {
+  const content = String(text || '').trim();
+
+  if (!content) {
+    return 0;
+  }
+
+  const hardLines = content.split('\n');
+  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 88)), 0);
+
+  return 18 + visualLines * 16;
+}
+
+function splitTextIntoPrintItems(id, text) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+
+  if (words.length === 0) {
+    return [];
+  }
+
+  const items = [];
+  let current = '';
+
+  words.forEach((word) => {
+    const next = current ? `${current} ${word}` : word;
+
+    if (next.length > 520 && current) {
+      items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
+      current = word;
+      return;
+    }
+
+    current = next;
+  });
+
+  if (current) {
+    items.push({ type: 'text', id, text: current, height: estimateTextBlockHeight(current) });
+  }
+
+  return items;
+}
+
+function estimatePositionHeight(position) {
+  const description = String(position.description || '');
+  const hardLines = description.split('\n');
+  const descriptionLines = hardLines.reduce(
+    (total, line) => total + Math.max(1, Math.ceil(line.length / 32)),
+    0,
+  );
+
+  return Math.max(34, 18 + descriptionLines * 17);
+}
+
+function createOfferPrintPages({ positions, textBlocks, totals }) {
+  const introBlock = textBlocks.find((block) => block.id === 'intro');
+  const closingBlock = textBlocks.find((block) => block.id === 'closing');
+  const items = [
+    ...(introBlock?.visible ? splitTextIntoPrintItems('intro', introBlock.value) : []),
+    ...positions.map((position, index) => ({
+      type: 'position',
+      index,
+      position,
+      height: estimatePositionHeight(position),
+    })),
+    {
+      type: 'summary',
+      height: 88 + totals.taxGroups.length * 18,
+    },
+    ...(closingBlock?.visible ? splitTextIntoPrintItems('closing', closingBlock.value) : []),
+  ];
+  const pages = [{ items: [], used: 0 }];
+
+  items.forEach((item) => {
+    let currentPage = pages[pages.length - 1];
+    const capacity = pages.length === 1 ? offerPrintLayout.firstPageCapacity : offerPrintLayout.followPageCapacity;
+
+    if (currentPage.items.length > 0 && currentPage.used + item.height > capacity) {
+      currentPage = { items: [], used: 0 };
+      pages.push(currentPage);
+    }
+
+    currentPage.items.push(item);
+    currentPage.used += item.height;
+  });
+
+  return pages.map((page, index) => ({
+    ...page,
+    pageNumber: index + 1,
+  }));
+}
+
 function validateOfferTemplate(template) {
   if (!template || typeof template !== 'object') {
     throw new Error('Die JSON-Datei ist kein gültiges Angebotsdokument.');
@@ -299,6 +395,7 @@ export default function OfferDocumentEditor() {
     footerMiddle: createFieldConfig(offerFooterColumns[1]),
   });
   const sheetRef = useRef(null);
+  const printPagesRef = useRef(null);
   const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
@@ -377,6 +474,11 @@ export default function OfferDocumentEditor() {
       taxGroups: [...summary.taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate),
     };
   }, [positions]);
+
+  const printPages = useMemo(
+    () => createOfferPrintPages({ positions, textBlocks, totals }),
+    [positions, textBlocks, totals],
+  );
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
@@ -596,6 +698,7 @@ export default function OfferDocumentEditor() {
     try {
       await requestPdfDownload({
         sheet: sheetRef.current,
+        exportRoot: printPagesRef.current,
         documentType: 'offer',
         filename: createPdfFileName(labels.title, details.offerNumber),
       });
@@ -610,25 +713,10 @@ export default function OfferDocumentEditor() {
 
   function handlePrint() {
     document.body.classList.add('document-print-mode');
-    document.body.classList.add('offer-print-mode');
-
-    const sheet = sheetRef.current;
-    const hadHighlight = sheet?.classList.contains('is-highlight-mode') ?? false;
-
-    sheet?.classList.add('is-export-mode');
-    sheet?.classList.remove('is-highlight-mode');
-
     window.print();
 
     const cleanup = () => {
       document.body.classList.remove('document-print-mode');
-      document.body.classList.remove('offer-print-mode');
-      sheet?.classList.remove('is-export-mode');
-
-      if (hadHighlight) {
-        sheet?.classList.add('is-highlight-mode');
-      }
-
       window.removeEventListener('afterprint', cleanup);
     };
 
@@ -808,6 +896,280 @@ export default function OfferDocumentEditor() {
           onToggleField={(field) => toggleConfiguredField('footerMiddle', field)}
         />
       </A4Page>
+
+      <OfferPrintPages
+        ref={printPagesRef}
+        details={details}
+        footerLines={footerLines}
+        labels={labels}
+        pages={printPages}
+        recipient={recipient}
+        sender={sender}
+        totals={totals}
+        visibleContactDefinitions={getOrderedDefinitions('contact', offerContactFields).filter(
+          (definition) => !fieldConfig.contact.hidden.includes(definition.field),
+        )}
+        visibleDetailDefinitions={getOrderedDefinitions('details', offerMetaFields).filter(
+          (definition) => !fieldConfig.details.hidden.includes(definition.field),
+        )}
+        visibleFooterMiddleDefinitions={getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
+          (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
+        )}
+      />
     </div>
+  );
+}
+
+const OfferPrintPages = forwardRef(function OfferPrintPages(
+  {
+    details,
+    footerLines,
+    labels,
+    pages,
+    recipient,
+    sender,
+    totals,
+    visibleContactDefinitions,
+    visibleDetailDefinitions,
+    visibleFooterMiddleDefinitions,
+  },
+  ref,
+) {
+  const totalPages = pages.length;
+
+  return (
+    <div className="invoice-print-pages offer-print-pages" ref={ref} aria-hidden="true">
+      {pages.map((page) => (
+        <article className="invoice-print-page offer-print-page" key={page.pageNumber}>
+          {page.pageNumber === 1 ? (
+            <OfferPrintFirstPageHeader
+              details={details}
+              labels={labels}
+              recipient={recipient}
+              sender={sender}
+              visibleContactDefinitions={visibleContactDefinitions}
+              visibleDetailDefinitions={visibleDetailDefinitions}
+            />
+          ) : (
+            <OfferPrintContinuationHeader companyName={sender.company} />
+          )}
+
+          <div className="invoice-print-page-content">
+            <OfferPrintPageItems items={page.items} labels={labels} totals={totals} />
+          </div>
+
+          {totalPages > 1 && (
+            <p className="invoice-print-page-number">
+              {page.pageNumber}/{totalPages}
+            </p>
+          )}
+
+          <OfferPrintFooter
+            footerLines={footerLines}
+            visibleFooterMiddleDefinitions={visibleFooterMiddleDefinitions}
+          />
+        </article>
+      ))}
+    </div>
+  );
+});
+
+function OfferPrintFirstPageHeader({
+  details,
+  labels,
+  recipient,
+  sender,
+  visibleContactDefinitions,
+  visibleDetailDefinitions,
+}) {
+  return (
+    <>
+      <header className="invoice-print-header">
+        <div>
+          <p className="invoice-print-company-name">{sender.company}</p>
+        </div>
+        <div className="invoice-print-contact">
+          {visibleContactDefinitions.map((definition) => (
+            <p key={definition.field}>
+              <span>{labels[definition.labelField]}</span>
+              {sender[definition.field]}
+            </p>
+          ))}
+        </div>
+      </header>
+
+      <section className="invoice-print-address-row">
+        <div className="invoice-print-recipient">
+          <p className="invoice-print-sender-line">{sender.senderLine}</p>
+          {[recipient.company, recipient.attention, recipient.name, recipient.street, recipient.cityLine]
+            .filter(Boolean)
+            .map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+        </div>
+
+        <div className="invoice-print-details">
+          {visibleDetailDefinitions.map((definition) => (
+            <OfferPrintDetailRow
+              key={definition.field}
+              emphasized={definition.field === 'offerNumber'}
+              label={labels[definition.field]}
+              value={details[definition.field]}
+            />
+          ))}
+        </div>
+      </section>
+
+      <h2 className="invoice-print-title">{labels.title}</h2>
+    </>
+  );
+}
+
+function OfferPrintContinuationHeader({ companyName }) {
+  return (
+    <header className="invoice-print-header invoice-print-continuation-header">
+      <p className="invoice-print-company-name">{companyName}</p>
+    </header>
+  );
+}
+
+function OfferPrintDetailRow({ emphasized = false, label, value }) {
+  return (
+    <p className={emphasized ? 'is-emphasized' : undefined}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </p>
+  );
+}
+
+function OfferPrintPageItems({ items, labels, totals }) {
+  const renderedItems = [];
+  let index = 0;
+
+  while (index < items.length) {
+    const item = items[index];
+
+    if (item.type === 'position') {
+      const positionItems = [];
+
+      while (items[index]?.type === 'position') {
+        positionItems.push(items[index]);
+        index += 1;
+      }
+
+      renderedItems.push(
+        <OfferPrintPositionTable
+          key={`positions-${positionItems[0].index}`}
+          labels={labels}
+          positionItems={positionItems}
+        />,
+      );
+      continue;
+    }
+
+    if (item.type === 'summary') {
+      renderedItems.push(<OfferPrintSummary key="summary" labels={labels} totals={totals} />);
+    }
+
+    if (item.type === 'text') {
+      renderedItems.push(
+        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
+          {item.text}
+        </p>,
+      );
+    }
+
+    index += 1;
+  }
+
+  return renderedItems;
+}
+
+function OfferPrintPositionTable({ labels, positionItems }) {
+  return (
+    <table className="invoice-print-position-table">
+      <thead>
+        <tr>
+          <th>{labels.position}</th>
+          <th>{labels.description}</th>
+          <th>{labels.unitPrice}</th>
+          <th>{labels.quantity}</th>
+          <th>{labels.unit}</th>
+          <th>{labels.tax}</th>
+          <th>{labels.total}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {positionItems.map(({ index, position }) => {
+          const calculated = calculatePosition(position);
+
+          return (
+            <tr key={position.id}>
+              <td>{index + 1}</td>
+              <td>{position.description}</td>
+              <td>{formatCurrency(toNumber(position.unitPrice))}</td>
+              <td>{position.quantity}</td>
+              <td>{position.unit}</td>
+              <td>{formatPercent(calculated.taxRate)}%</td>
+              <td>{formatCurrency(calculated.net)}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+
+function OfferPrintSummary({ labels, totals }) {
+  return (
+    <aside className="invoice-print-summary" aria-label="Angebotssummen">
+      <div>
+        <span>{labels.net}</span>
+        <strong>{formatCurrency(totals.net)}</strong>
+      </div>
+      {totals.taxGroups.map((group) => (
+        <div key={group.taxRate}>
+          <span>
+            {labels.taxAmount} {formatPercent(group.taxRate)}%
+          </span>
+          <strong>{formatCurrency(group.tax)}</strong>
+        </div>
+      ))}
+      <div>
+        <span>{labels.grandTotal}</span>
+        <strong>{formatCurrency(totals.gross)}</strong>
+      </div>
+    </aside>
+  );
+}
+
+function OfferPrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
+  return (
+    <footer className="invoice-print-footer">
+      <section>
+        {['companyName', 'companyStreet', 'companyCity', 'companyExtra']
+          .map((field) => footerLines[field])
+          .filter(Boolean)
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+      </section>
+      <section>
+        {visibleFooterMiddleDefinitions
+          .map((definition) => footerLines[definition.field])
+          .filter(Boolean)
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+      </section>
+      <section>
+        {['bankName', 'iban', 'bic', 'bankExtra']
+          .map((field) => footerLines[field])
+          .filter(Boolean)
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+      </section>
+    </footer>
   );
 }

@@ -2329,6 +2329,14 @@ h1 {
   white-space: nowrap;
 }
 
+.invoice-print-page-number {
+  margin: auto 0 8px;
+  color: #77736b;
+  font-size: 9px;
+  line-height: 1;
+  text-align: right;
+}
+
 .invoice-print-footer {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3290,7 +3298,8 @@ h1 {
   }
 
   body.document-print-mode.offer-print-mode .invoice-sheet {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
   body.document-print-mode .invoice-print-pages,
@@ -3324,6 +3333,8 @@ h1 {
     position: absolute;
     top: 0;
     left: 0;
+    display: flex;
+    flex-direction: column;
     width: 210mm;
     min-width: 210mm;
     max-width: 210mm;
