@@ -154,6 +154,7 @@ function getOfferInputPlaceholder(name) {
     'sender-house-number': defaultSenderAddress.houseNumber,
     'sender-postal-code': defaultSenderAddress.postalCode,
     'sender-city': defaultSenderAddress.city,
+    'sender-line': offerFormDefaults.sender.senderLine,
     'sender-email': offerFormDefaults.sender.email,
     'sender-website': offerFormDefaults.sender.website,
     'sender-phone': offerFormDefaults.sender.phone,
@@ -362,6 +363,7 @@ export default function OfferDocumentForm({
               <h3>Absender</h3>
               <div className="invoice-panel-grid">
                 <OfferPanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firmenname" name="sender-company" placeholder={defaultSenderAddress.company} value={senderAddress.company} onChange={(value) => updateSenderAddress('company', value)} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.senderLine} onChange={(value) => updateSender('senderLine', value)} />
                 <OfferPanelInput label="Straße" name="sender-street" value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <OfferPanelInput label="Hausnummer" name="sender-house-number" value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <OfferPanelInput label="PLZ" name="sender-postal-code" value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
@@ -373,12 +375,12 @@ export default function OfferDocumentForm({
               <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <OfferPanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <OfferPanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
                 <OfferPanelInput label="Straße" name="recipient-street" value={recipientStreet.street} onChange={(value) => updateRecipient('street', joinStreetLine(value, recipientStreet.houseNumber))} />
                 <OfferPanelInput label="Hausnummer" name="recipient-house-number" value={recipientStreet.houseNumber} onChange={(value) => updateRecipient('street', joinStreetLine(recipientStreet.street, value))} />
                 <OfferPanelInput label="PLZ" name="recipient-postal-code" value={recipientCity.postalCode} onChange={(value) => updateRecipient('cityLine', joinCityLine(value, recipientCity.city))} />
                 <OfferPanelInput label="Stadt" name="recipient-city" value={recipientCity.city} onChange={(value) => updateRecipient('cityLine', joinCityLine(recipientCity.postalCode, value))} />
-                <OfferPanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
               </div>
             </div>
           </div>
