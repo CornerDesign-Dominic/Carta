@@ -1,7 +1,21 @@
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import A4Page from './documentBlocks/A4Page.jsx';
+import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
+import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
+import FooterBlock from './documentBlocks/FooterBlock.jsx';
+import PositionTable from './documentBlocks/PositionTable.jsx';
+import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
+import SenderBlock from './documentBlocks/SenderBlock.jsx';
+import TextBlock from './documentBlocks/TextBlock.jsx';
+import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
+import TotalsBox from './documentBlocks/TotalsBox.jsx';
+import InvoiceDocumentForm from './InvoiceDocumentForm.jsx';
+import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
-const initialLabels = {
+const invoiceSchemaVersion = '1.0';
+
+const initialInvoiceLabels = {
   title: 'Rechnung',
   invoiceNumber: 'Rechnungsnummer',
   invoiceDate: 'Rechnungsdatum',
@@ -25,36 +39,217 @@ const initialLabels = {
   contactWebsite: 'Website',
 };
 
-const contactFieldDefinitions = [
+const invoiceContactFields = [
   { field: 'email', labelField: 'contactEmail', label: 'E-Mail' },
   { field: 'phone', labelField: 'contactPhone', label: 'Telefon' },
   { field: 'fax', labelField: 'contactFax', label: 'Fax' },
   { field: 'website', labelField: 'contactWebsite', label: 'Website' },
 ];
 
-const detailFieldDefinitions = [
-  { field: 'invoiceDate', label: 'Rechnungsdatum', type: 'date' },
-  { field: 'serviceDate', label: 'Leistungsdatum', type: 'date' },
-  { field: 'internalNumber', label: 'Interne Nummer', type: 'text' },
-  { field: 'externalNumber', label: 'Externe Nummer', type: 'text' },
-  { field: 'customerNumber', label: 'Kundennummer', type: 'text' },
+const invoiceMetaFields = [
+  { autoComplete: 'new-password', field: 'invoiceNumber', ariaLabel: 'Rechnungskennung', name: 'carta-invoice-code', type: 'text' },
+  { field: 'invoiceDate', ariaLabel: 'Rechnungsdatum', type: 'date' },
+  { field: 'serviceDate', ariaLabel: 'Leistungsdatum', type: 'date' },
+  { autoComplete: 'new-password', field: 'internalNumber', ariaLabel: 'Interne Referenz', name: 'carta-invoice-internal-code', type: 'text' },
+  { autoComplete: 'new-password', field: 'externalNumber', ariaLabel: 'Externe Referenz', name: 'carta-invoice-external-code', type: 'text' },
+  { field: 'customerNumber', ariaLabel: 'Kundenreferenz', name: 'carta-invoice-customer-reference', type: 'text' },
 ];
 
-const footerMiddleDefinitions = [
-  { field: 'vatId', label: 'USt-IdNr.' },
-  { field: 'taxNumber', label: 'Steuernummer' },
-  { field: 'commercialRegister', label: 'Handelsregister' },
-  { field: 'managingDirector', label: 'Geschäftsführer' },
+const invoiceRecipientOptionalFields = [
+  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'name', label: 'Name / Abteilung' },
 ];
 
-function createFieldConfig(fields) {
+const invoiceFooterColumns = [
+  [
+    { field: 'companyName', label: 'Firma' },
+    { field: 'companyStreet', label: 'Strasse und Hausnummer' },
+    { field: 'companyCity', label: 'PLZ und Stadt' },
+    { field: 'companyExtra', label: 'Zusatzzeile Firma' },
+  ],
+  [
+    { field: 'vatId', label: 'USt-IdNr.' },
+    { field: 'taxNumber', label: 'Steuernummer' },
+    { field: 'commercialRegister', label: 'Handelsregister' },
+    { field: 'managingDirector', label: 'Geschaeftsfuehrer' },
+  ],
+  [
+    { field: 'bankName', label: 'Bankname' },
+    { field: 'iban', label: 'IBAN' },
+    { field: 'bic', label: 'BIC' },
+    { field: 'bankExtra', label: 'Zusatzzeile Bank' },
+  ],
+];
+
+const invoiceFooterLabeledFields = {
+  vatId: 'vatIdLabel',
+  taxNumber: 'taxNumberLabel',
+  iban: 'ibanLabel',
+  bic: 'bicLabel',
+};
+
+const invoiceFooterDefaultLabels = {
+  vatId: 'USt-IdNr.:',
+  taxNumber: 'Steuernummer:',
+  iban: 'IBAN:',
+  bic: 'BIC:',
+};
+
+const invoiceFooterLabelPrefixes = {
+  vatId: ['USt-IdNr.:', 'USt-IdNr.', 'USt-ID:', 'USt-ID'],
+  taxNumber: ['Steuernummer:', 'Steuernummer'],
+  iban: ['IBAN:', 'IBAN'],
+  bic: ['BIC:', 'BIC'],
+};
+
+const defaultInvoiceData = {
+  sender: {
+    companyName: 'Belege24 Muster GmbH',
+    address: {
+      street: 'Musterstrasse',
+      houseNumber: '12',
+      postalCode: '10115',
+      city: 'Berlin',
+    },
+    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    contact: {
+      email: 'kontakt@belege24.com',
+      phone: '+49 30 123456',
+      fax: '+49 30 123457',
+      website: 'www.belege24.com',
+    },
+  },
+  recipient: {
+    companyName: 'Beispielkunde GmbH',
+    attention: 'z. Hd. Frau Beispiel',
+    name: 'Buchhaltung',
+    address: {
+      street: 'Kundenstrasse',
+      houseNumber: '8',
+      postalCode: '20095',
+      city: 'Hamburg',
+    },
+  },
+  details: {
+    invoiceNumber: 'RE-2026-001',
+    invoiceDate: '2026-05-07',
+    serviceDate: '2026-05-07',
+  },
+  references: {
+    internalNumber: 'INT-1001',
+    externalNumber: 'EXT-4711',
+    customerNumber: 'K-2048',
+  },
+  footer: {
+    company: {
+      companyName: 'Belege24 Muster GmbH',
+      street: 'Musterstrasse',
+      houseNumber: '12',
+      postalCode: '10115',
+      city: 'Berlin',
+      extra: '',
+    },
+    tax: {
+      vatIdLabel: 'USt-IdNr.:',
+      vatId: 'DE123456789',
+      taxNumberLabel: 'Steuernummer:',
+      taxNumber: '12/345/67890',
+      commercialRegister: 'HRB 123456',
+      representation: 'Geschaeftsfuehrer: Max Mustermann',
+    },
+    bank: {
+      bankName: 'Musterbank',
+      ibanLabel: 'IBAN:',
+      iban: 'DE00 0000 0000 0000 0000 00',
+      bicLabel: 'BIC:',
+      bic: 'COBADEFFXXX',
+      bankExtra: '',
+    },
+  },
+};
+
+const defaultInvoiceTextBlocks = [
+  {
+    id: 'intro',
+    label: 'Vorlauftext',
+    value: 'vielen Dank fuer Ihren Auftrag. Fuer unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
+    visible: true,
+  },
+  {
+    id: 'closing',
+    label: 'Nachlauftext',
+    value:
+      'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank fuer die angenehme Zusammenarbeit.',
+    visible: true,
+  },
+];
+
+const invoicePrintLayout = {
+  blockGap: 12,
+  smallSafetyBuffer: 8,
+};
+
+function joinLine(...parts) {
+  return parts.map((part) => String(part ?? '').trim()).filter(Boolean).join(' ');
+}
+
+function createReturnAddress(sender) {
+  return [
+    sender.companyName,
+    joinLine(sender.address.street, sender.address.houseNumber),
+    joinLine(sender.address.postalCode, sender.address.city),
+  ]
+    .filter(Boolean)
+    .join(' - ');
+}
+
+function createInvoiceViewData({ sender, recipient, details, references, footer }) {
   return {
-    hidden: [],
-    order: fields.map((field) => field.field),
+    sender: {
+      company: sender.companyName,
+      senderLine: sender.returnAddress,
+      email: sender.contact.email,
+      phone: sender.contact.phone,
+      fax: sender.contact.fax,
+      website: sender.contact.website,
+    },
+    recipient: {
+      company: recipient.companyName,
+      attention: recipient.attention,
+      name: recipient.name,
+      street: joinLine(recipient.address.street, recipient.address.houseNumber),
+      cityLine: joinLine(recipient.address.postalCode, recipient.address.city),
+    },
+    details: {
+      ...details,
+      ...references,
+    },
+    footerLines: {
+      companyName: footer.company.companyName,
+      companyStreetName: footer.company.street,
+      companyHouseNumber: footer.company.houseNumber,
+      companyStreet: joinLine(footer.company.street, footer.company.houseNumber),
+      companyPostalCode: footer.company.postalCode,
+      companyCityName: footer.company.city,
+      companyCity: joinLine(footer.company.postalCode, footer.company.city),
+      companyExtra: footer.company.extra,
+      vatIdLabel: footer.tax.vatIdLabel,
+      vatId: footer.tax.vatId,
+      taxNumberLabel: footer.tax.taxNumberLabel,
+      taxNumber: footer.tax.taxNumber,
+      commercialRegister: footer.tax.commercialRegister,
+      managingDirector: footer.tax.representation,
+      bankName: footer.bank.bankName,
+      ibanLabel: footer.bank.ibanLabel,
+      iban: footer.bank.iban,
+      bicLabel: footer.bank.bicLabel,
+      bic: footer.bank.bic,
+      bankExtra: footer.bank.bankExtra,
+    },
   };
 }
 
-function createPosition() {
+function createInvoicePosition() {
   return {
     id: crypto.randomUUID(),
     description: 'Leistung beschreiben',
@@ -65,76 +260,147 @@ function createPosition() {
   };
 }
 
-const defaultPosition = {
-  description: 'Leistung beschreiben',
-  unitPrice: '0',
-  quantity: '1',
-  unit: 'Stk.',
-  taxRate: '19',
-};
+function createFieldConfig(fields) {
+  return {
+    hidden: [],
+    order: fields.map((field) => field.field),
+  };
+}
 
-const defaultSender = {
-  company: 'Belege24 Muster GmbH',
-  senderLine: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
-  street: 'Musterstraße 12',
-  cityLine: '10115 Berlin',
-  email: 'kontakt@belege24.com',
-  phone: '+49 30 123456',
-  fax: '+49 30 123457',
-  website: 'www.belege24.com',
-};
+function normalizeFieldConfig(config) {
+  const fallback = {
+    contact: createFieldConfig(invoiceContactFields),
+    details: createFieldConfig(invoiceMetaFields),
+    recipient: createFieldConfig(invoiceRecipientOptionalFields),
+    footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
+  };
 
-const defaultSenderAddressParts = {
-  street: 'Musterstraße',
-  houseNumber: '12',
-  postalCode: '10115',
-  city: 'Berlin',
-};
+  if (!config || typeof config !== 'object') {
+    return fallback;
+  }
 
-const defaultFooterLines = {
-  companyName: 'Belege24 Muster GmbH',
-  companyStreet: 'Musterstraße 12',
-  companyCity: '10115 Berlin',
-  companyExtra: '',
-  vatId: 'USt-IdNr.: DE123456789',
-  taxNumber: 'Steuernummer: 12/345/67890',
-  commercialRegister: 'HRB 123456',
-  managingDirector: 'Geschäftsführer: Max Mustermann',
-  bankName: 'Bankname: Musterbank',
-  iban: 'IBAN: DE00 0000 0000 0000 0000 00',
-  bic: 'BIC: COBADEFFXXX',
-  bankExtra: '',
-};
+  return {
+    contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
+    details: normalizeFieldConfigBlock(config.details, fallback.details),
+    recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
+    footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
+  };
+}
 
-const defaultRecipient = {
-  company: 'Beispielkunde GmbH',
-  attention: 'z. Hd. Frau Beispiel',
-  name: 'Buchhaltung',
-  street: 'Kundenstraße 8',
-  cityLine: '20095 Hamburg',
-};
+function normalizeFieldConfigBlock(config, fallback) {
+  const knownFields = new Set(fallback.order);
+  const configuredOrder = Array.isArray(config?.order)
+    ? config.order.filter((field) => knownFields.has(field))
+    : [];
 
-const defaultRecipientAddressParts = {
-  street: 'Kundenstraße',
-  houseNumber: '8',
-  postalCode: '20095',
-  city: 'Hamburg',
-};
+  return {
+    hidden: Array.isArray(config?.hidden)
+      ? config.hidden.filter((field) => knownFields.has(field))
+      : fallback.hidden,
+    order: [...configuredOrder, ...fallback.order.filter((field) => !configuredOrder.includes(field))],
+  };
+}
 
-const defaultDetails = {
-  invoiceNumber: 'RE-2026-001',
-  invoiceDate: '2026-05-07',
-  serviceDate: '2026-05-07',
-  internalNumber: 'INT-1001',
-  externalNumber: 'EXT-4711',
-  customerNumber: 'K-2048',
-};
+function normalizeInvoiceData(data = {}) {
+  return {
+    sender: {
+      ...defaultInvoiceData.sender,
+      ...(data.sender ?? {}),
+      address: { ...defaultInvoiceData.sender.address, ...(data.sender?.address ?? {}) },
+      contact: { ...defaultInvoiceData.sender.contact, ...(data.sender?.contact ?? {}) },
+    },
+    recipient: {
+      ...defaultInvoiceData.recipient,
+      ...(data.recipient ?? {}),
+      address: { ...defaultInvoiceData.recipient.address, ...(data.recipient?.address ?? {}) },
+    },
+    details: { ...defaultInvoiceData.details, ...(data.details ?? {}) },
+    references: { ...defaultInvoiceData.references, ...(data.references ?? {}) },
+    footer: {
+      company: { ...defaultInvoiceData.footer.company, ...(data.footer?.company ?? {}) },
+      tax: { ...defaultInvoiceData.footer.tax, ...(data.footer?.tax ?? {}) },
+      bank: { ...defaultInvoiceData.footer.bank, ...(data.footer?.bank ?? {}) },
+    },
+  };
+}
 
-const defaultIntroText =
-  'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:';
+function normalizeTextBlocks(templateTextBlocks) {
+  const defaults = defaultInvoiceTextBlocks.map((block) => ({ ...block }));
 
-const defaultClosingText =
-  'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.';
+  if (!Array.isArray(templateTextBlocks)) {
+    return defaults;
+  }
+
+  const knownBlocks = new Map(defaults.map((block) => [block.id, block]));
+  const normalized = templateTextBlocks
+    .filter((block) => knownBlocks.has(block?.id))
+    .map((block) => ({
+      ...knownBlocks.get(block.id),
+      label: typeof block.label === 'string' && block.label ? block.label : knownBlocks.get(block.id).label,
+      value: typeof block.value === 'string' ? block.value : knownBlocks.get(block.id).value,
+      visible: typeof block.visible === 'boolean' ? block.visible : true,
+    }));
+
+  defaults.forEach((block) => {
+    if (!normalized.some((entry) => entry.id === block.id)) {
+      normalized.push(block);
+    }
+  });
+
+  return normalized;
+}
+
+function normalizePositions(templatePositions) {
+  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
+    return [createInvoicePosition()];
+  }
+
+  return templatePositions.map((position) => ({
+    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
+    description: String(position.description ?? 'Leistung beschreiben'),
+    unitPrice: String(position.unitPrice ?? '0'),
+    quantity: String(position.quantity ?? '1'),
+    unit: String(position.unit ?? 'Stk.'),
+    taxRate: String(position.taxRate ?? '19'),
+  }));
+}
+
+function formatInvoiceFooterLine(field, value = '', footerLines = {}) {
+  const normalized = String(value ?? '').trim();
+  const labelField = invoiceFooterLabeledFields[field];
+  const label = labelField ? String(footerLines[labelField] ?? '').trim() : '';
+
+  if (!labelField) {
+    return normalized;
+  }
+
+  return [label, normalized].filter(Boolean).join(' ');
+}
+
+function parseInvoiceFooterLine(field, value = '') {
+  const labelField = invoiceFooterLabeledFields[field];
+
+  if (!labelField) {
+    return String(value ?? '').trim();
+  }
+
+  const source = String(value ?? '').trim();
+  const prefixes = invoiceFooterLabelPrefixes[field] ?? [];
+
+  for (const prefix of prefixes) {
+    if (source.toLowerCase().startsWith(prefix.toLowerCase())) {
+      return {
+        [labelField]: prefix.endsWith(':') ? prefix : `${prefix}:`,
+        [field]: source.slice(prefix.length).replace(/^[:\s]+/, '').trim(),
+      };
+    }
+  }
+
+  return {
+    [labelField]: invoiceFooterDefaultLabels[field],
+    [field]: source,
+  };
+}
 
 function toNumber(value) {
   const parsed = Number.parseFloat(String(value).replace(',', '.'));
@@ -154,6 +420,12 @@ function formatPercent(value) {
   }).format(value);
 }
 
+function formatGermanDate(value) {
+  const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+}
+
 function calculatePosition(position) {
   const net = toNumber(position.unitPrice) * toNumber(position.quantity);
   const taxRate = Math.max(0, toNumber(position.taxRate));
@@ -162,393 +434,119 @@ function calculatePosition(position) {
   return { net, tax, gross: net + tax, taxRate };
 }
 
-function resizeTextarea(textarea, extraHeight = 0) {
+function resizeTextarea(textarea) {
   if (!textarea) {
     return;
   }
 
   textarea.style.height = 'auto';
-  textarea.style.height = `${textarea.scrollHeight + extraHeight}px`;
+  textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
-function resizePositionDescription(textarea) {
-  resizeTextarea(textarea, 6);
+function createPdfFileName(title, number) {
+  const cleanTitle = createSlug(title || 'rechnung');
+  const cleanNumber = createSlug(number || new Date().toISOString().slice(0, 10));
+
+  return `${cleanTitle || 'rechnung'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-function getCompanyNameMaxHeight(textarea) {
-  const styles = window.getComputedStyle(textarea);
-  const fontSize = Number.parseFloat(styles.fontSize) || 24;
-  const lineHeight = Number.parseFloat(styles.lineHeight) || fontSize * 1.2;
+function createJsonFileName(number) {
+  const cleanNumber = createSlug(number || '');
 
-  return lineHeight * 2;
+  return cleanNumber ? `rechnung-${cleanNumber}.json` : 'rechnung-vorlage.json';
 }
 
-function resizeCompanyName(textarea) {
-  if (!textarea) {
-    return;
-  }
-
-  const maxHeight = getCompanyNameMaxHeight(textarea);
-
-  textarea.style.height = 'auto';
-  textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
-}
-
-function doesCompanyNameFit(textarea) {
-  if (!textarea) {
-    return true;
-  }
-
-  const maxHeight = getCompanyNameMaxHeight(textarea);
-
-  textarea.style.height = 'auto';
-
-  return textarea.scrollHeight <= maxHeight + 1;
-}
-
-function getInlineLabelWidth(value) {
-  return `${Math.max(String(value).length, 2)}ch`;
-}
-
-function getInlineValueWidth(value) {
-  return `${Math.max(String(value).length, 4)}ch`;
-}
-
-function getFormValue(value, placeholder) {
-  return value === placeholder ? '' : value;
-}
-
-function joinAddressLine(...parts) {
-  return parts.map((part) => String(part || '').trim()).filter(Boolean).join(' ');
-}
-
-function buildSenderLine(company, address) {
-  return [company, joinAddressLine(address.street, address.houseNumber), joinAddressLine(address.postalCode, address.city)]
-    .map((part) => String(part || '').trim())
-    .filter(Boolean)
-    .join(' - ');
-}
-
-function InvoicePanelInput({
-  autoComplete,
-  className = '',
-  inputMode,
-  label,
-  name,
-  onChange,
-  placeholder,
-  type = 'text',
-  value,
-}) {
-  return (
-    <label className={`invoice-panel-field${className ? ` ${className}` : ''}`}>
-      <span>{label}</span>
-      <input
-        autoComplete={autoComplete}
-        inputMode={inputMode}
-        name={name}
-        placeholder={placeholder}
-        type={type}
-        value={getFormValue(value, placeholder)}
-        onChange={(event) => onChange(event.target.value)}
-      />
-    </label>
-  );
-}
-
-function InvoicePanelTextarea({ label, name, value, placeholder, onChange }) {
-  return (
-    <label className="invoice-panel-field invoice-panel-field-wide">
-      <span>{label}</span>
-      <textarea
-        name={name}
-        placeholder={placeholder}
-        value={getFormValue(value, placeholder)}
-        onChange={(event) => onChange(event.target.value)}
-      />
-    </label>
-  );
-}
-
-function FieldActions({ canMove = false, isHidden, isFirst, isLast, label, onMoveDown, onMoveUp, onToggle }) {
-  return (
-    <span className="invoice-field-actions" aria-label={`${label} konfigurieren`}>
-      <button
-        type="button"
-        aria-label={isHidden ? `${label} einblenden` : `${label} ausblenden`}
-        onClick={onToggle}
-      >
-        <span className={isHidden ? 'invoice-icon-eye-off' : 'invoice-icon-eye'} aria-hidden="true" />
-      </button>
-      {canMove && (
-        <>
-          <button type="button" aria-label={`${label} nach oben`} disabled={isFirst} onClick={onMoveUp}>
-            ↑
-          </button>
-          <button type="button" aria-label={`${label} nach unten`} disabled={isLast} onClick={onMoveDown}>
-            ↓
-          </button>
-        </>
-      )}
-    </span>
-  );
-}
-
-function HiddenFieldActions({ block, className = '', definitions, hiddenFields, onToggle }) {
-  if (hiddenFields.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className={`invoice-hidden-field-row${className ? ` ${className}` : ''}`}>
-      <span className="invoice-hidden-field-actions" aria-label="Ausgeblendete Felder">
-        {hiddenFields.map((field) => {
-          const definition = definitions.find((entry) => entry.field === field);
-          const label = definition?.label ?? field;
-
-          return (
-            <button
-              key={`${block}-${field}`}
-              type="button"
-              aria-label={`${label} einblenden`}
-              title={`${label} einblenden`}
-              onClick={() => onToggle(block, field)}
-            >
-              <span className="invoice-icon-eye-off" aria-hidden="true" />
-            </button>
-          );
-        })}
-      </span>
-    </div>
-  );
-}
-
-function createPdfFileName(type, number) {
-  const cleanType = String(type || 'rechnung')
+function createSlug(value) {
+  return String(value || '')
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9äöüß]+/gi, '-')
+    .replace(/[^a-z0-9aouess]+/gi, '-')
     .replace(/^-+|-+$/g, '');
-  const cleanNumber = String(number || new Date().toISOString().slice(0, 10))
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9äöüß]+/gi, '-')
-    .replace(/^-+|-+$/g, '');
-
-  return `${cleanType || 'rechnung'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-function createTemplateFileName(number) {
-  const cleanNumber = String(number || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9Ã¤Ã¶Ã¼ÃŸ]+/gi, '-')
-    .replace(/^-+|-+$/g, '');
-
-  return `rechnung-vorlage${cleanNumber ? `-${cleanNumber}` : ''}.json`;
+function downloadJson(data, filename) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
-function normalizeFieldConfig(config) {
-  const fallback = {
-    contact: createFieldConfig(contactFieldDefinitions),
-    details: createFieldConfig(detailFieldDefinitions),
-    footerMiddle: createFieldConfig(footerMiddleDefinitions),
-    texts: {
-      hidden: [],
-      order: ['introText', 'closingText'],
-    },
-  };
-
-  if (!config || typeof config !== 'object') {
-    return fallback;
+function validateInvoiceTemplate(template) {
+  if (!template || typeof template !== 'object') {
+    throw new Error('Die JSON-Datei ist kein gueltiges Rechnungsdokument.');
   }
 
-  return {
-    contact: {
-      ...fallback.contact,
-      ...config.contact,
-      hidden: Array.isArray(config.contact?.hidden) ? config.contact.hidden : fallback.contact.hidden,
-      order: Array.isArray(config.contact?.order) ? config.contact.order : fallback.contact.order,
-    },
-    details: {
-      ...fallback.details,
-      ...config.details,
-      hidden: Array.isArray(config.details?.hidden) ? config.details.hidden : fallback.details.hidden,
-      order: Array.isArray(config.details?.order) ? config.details.order : fallback.details.order,
-    },
-    footerMiddle: {
-      ...fallback.footerMiddle,
-      ...config.footerMiddle,
-      hidden: Array.isArray(config.footerMiddle?.hidden) ? config.footerMiddle.hidden : fallback.footerMiddle.hidden,
-      order: Array.isArray(config.footerMiddle?.order) ? config.footerMiddle.order : fallback.footerMiddle.order,
-    },
-    texts: {
-      ...fallback.texts,
-      ...config.texts,
-      hidden: Array.isArray(config.texts?.hidden) ? config.texts.hidden : fallback.texts.hidden,
-      order: Array.isArray(config.texts?.order) ? config.texts.order : fallback.texts.order,
-    },
-  };
-}
-
-function normalizePositions(templatePositions) {
-  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
-    return [createPosition()];
+  if (template.documentType !== 'invoice') {
+    throw new Error('Diese JSON-Datei ist keine Rechnung.');
   }
 
-  return templatePositions.map((position) => ({
-    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
-    description: String(position.description ?? defaultPosition.description),
-    unitPrice: String(position.unitPrice ?? defaultPosition.unitPrice),
-    quantity: String(position.quantity ?? defaultPosition.quantity),
-    unit: String(position.unit ?? defaultPosition.unit),
-    taxRate: String(position.taxRate ?? defaultPosition.taxRate),
-  }));
-}
-
-const invoicePrintLayout = {
-  firstPageCapacity: 500,
-  followPageCapacity: 790,
-};
-
-function estimateTextBlockHeight(text) {
-  const content = String(text || '').trim();
-
-  if (!content) {
-    return 0;
+  if (template.schemaVersion !== invoiceSchemaVersion) {
+    throw new Error('Diese Rechnungsversion wird nicht unterstuetzt.');
   }
 
-  const hardLines = content.split('\n');
-  const visualLines = hardLines.reduce((total, line) => total + Math.max(1, Math.ceil(line.length / 88)), 0);
-
-  return 18 + visualLines * 16;
-}
-
-function splitTextIntoPrintItems(type, text) {
-  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
-
-  if (words.length === 0) {
-    return [];
+  if (!template.data || typeof template.data !== 'object') {
+    throw new Error('Die JSON-Datei enthaelt keine Rechnungsdaten.');
   }
 
-  const items = [];
-  let current = '';
-
-  words.forEach((word) => {
-    const next = current ? `${current} ${word}` : word;
-
-    if (next.length > 520 && current) {
-      items.push({ type, text: current, height: estimateTextBlockHeight(current) });
-      current = word;
-      return;
-    }
-
-    current = next;
-  });
-
-  if (current) {
-    items.push({ type, text: current, height: estimateTextBlockHeight(current) });
-  }
-
-  return items;
+  return template.data;
 }
 
-function estimatePositionHeight(position) {
-  const description = String(position.description || '');
-  const hardLines = description.split('\n');
-  const descriptionLines = hardLines.reduce(
-    (total, line) => total + Math.max(1, Math.ceil(line.length / 32)),
-    0,
-  );
+function createInvoicePrintItems({ positions, textBlocks }) {
+  const introBlock = textBlocks.find((block) => block.id === 'intro');
+  const closingBlock = textBlocks.find((block) => block.id === 'closing');
 
-  return Math.max(34, 18 + descriptionLines * 17);
-}
-
-function createInvoicePrintPages({ closingText, includeClosingText, includeIntroText, introText, positions, totals }) {
-  const items = [
-    ...(includeIntroText ? splitTextIntoPrintItems('introText', introText) : []),
-    ...positions.map((position, index) => ({
-      type: 'position',
-      index,
-      position,
-      height: estimatePositionHeight(position),
-    })),
-    {
-      type: 'summary',
-      height: 88 + totals.taxGroups.length * 18,
-    },
-    ...(includeClosingText ? splitTextIntoPrintItems('closingText', closingText) : []),
+  return [
+    ...(introBlock?.visible ? [{ type: 'text', id: 'intro', text: introBlock.value }] : []),
+    ...positions.map((position, index) => ({ type: 'position', index, position })),
+    { type: 'summary' },
+    ...(closingBlock?.visible ? [{ type: 'text', id: 'closing', text: closingBlock.value }] : []),
   ];
-  const pages = [{ items: [], used: 0 }];
-
-  items.forEach((item) => {
-    let currentPage = pages[pages.length - 1];
-    const capacity = pages.length === 1 ? invoicePrintLayout.firstPageCapacity : invoicePrintLayout.followPageCapacity;
-
-    if (currentPage.items.length > 0 && currentPage.used + item.height > capacity) {
-      currentPage = { items: [], used: 0 };
-      pages.push(currentPage);
-    }
-
-    currentPage.items.push(item);
-    currentPage.used += item.height;
-  });
-
-  return pages.map((page, index) => ({
-    ...page,
-    pageNumber: index + 1,
-  }));
 }
 
 export default function InvoiceForm() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
+  const [labels, setLabels] = useState(initialInvoiceLabels);
+  const [fieldConfig, setFieldConfig] = useState({
+    contact: createFieldConfig(invoiceContactFields),
+    details: createFieldConfig(invoiceMetaFields),
+    recipient: createFieldConfig(invoiceRecipientOptionalFields),
+    footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
+  });
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
-  const companyNameRef = useRef(null);
-  const introTextRef = useRef(null);
-  const closingTextRef = useRef(null);
-  const templateInputRef = useRef(null);
+  const paginatorRef = useRef(null);
+  const jsonInputRef = useRef(null);
+  const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
-  const [labels, setLabels] = useState(initialLabels);
-  const [sender, setSender] = useState(defaultSender);
-  const [senderAddress, setSenderAddress] = useState(defaultSenderAddressParts);
-  const [footerLines, setFooterLines] = useState(defaultFooterLines);
-  const [recipient, setRecipient] = useState(defaultRecipient);
-  const [recipientAddress, setRecipientAddress] = useState(defaultRecipientAddressParts);
-  const [details, setDetails] = useState(defaultDetails);
-  const [introText, setIntroText] = useState(defaultIntroText);
-  const [closingText, setClosingText] = useState(defaultClosingText);
-  const [positions, setPositions] = useState([createPosition()]);
-  const [fieldConfig, setFieldConfig] = useState({
-    contact: createFieldConfig(contactFieldDefinitions),
-    details: createFieldConfig(detailFieldDefinitions),
-    footerMiddle: createFieldConfig(footerMiddleDefinitions),
-    texts: {
-      hidden: [],
-      order: ['introText', 'closingText'],
-    },
-  });
+  const [invoiceData, setInvoiceData] = useState(defaultInvoiceData);
+  const [textBlocks, setTextBlocks] = useState(defaultInvoiceTextBlocks);
+  const [positions, setPositions] = useState([createInvoicePosition()]);
+  const { sender, recipient, details, footerLines } = useMemo(
+    () => createInvoiceViewData(invoiceData),
+    [invoiceData],
+  );
 
   useEffect(() => {
-    resizeTextarea(introTextRef.current);
-    resizeTextarea(closingTextRef.current);
-  }, [introText, closingText]);
-
-  useEffect(() => {
-    resizeCompanyName(companyNameRef.current);
-  }, [sender.company]);
+    textBlocks.forEach((block) => {
+      if (block.visible) {
+        resizeTextarea(textBlockRefs.current[block.id]);
+      }
+    });
+  }, [textBlocks]);
 
   const totals = useMemo(() => {
     const summary = positions.reduce(
       (current, position) => {
         const calculated = calculatePosition(position);
         const taxKey = String(calculated.taxRate);
-        const taxGroup = current.taxGroups.get(taxKey) ?? {
-          taxRate: calculated.taxRate,
-          tax: 0,
-        };
+        const taxGroup = current.taxGroups.get(taxKey) ?? { taxRate: calculated.taxRate, tax: 0 };
 
         taxGroup.tax += calculated.tax;
         current.taxGroups.set(taxKey, taxGroup);
@@ -568,39 +566,174 @@ export default function InvoiceForm() {
     };
   }, [positions]);
 
-  const printPages = useMemo(
-    () =>
-      createInvoicePrintPages({
-        closingText,
-        includeClosingText: !fieldConfig.texts.hidden.includes('closingText'),
-        includeIntroText: !fieldConfig.texts.hidden.includes('introText'),
-        introText,
-        positions,
-        totals,
-      }),
-    [closingText, fieldConfig.texts.hidden, introText, positions, totals],
-  );
+  const printItems = useMemo(() => createInvoicePrintItems({ positions, textBlocks }), [positions, textBlocks]);
+  const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
+  const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+
+  async function refreshPrintPages() {
+    setIsExportRenderActive(true);
+    await waitForNextFrame();
+
+    const nextPages = paginatorRef.current?.measureNow();
+
+    if (nextPages) {
+      setPrintPages((currentPages) => (arePrintPagesEqual(currentPages, nextPages) ? currentPages : nextPages));
+      await waitForNextFrame();
+    }
+  }
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
   }
 
-  function updateDetail(field, value) {
-    setDetails((current) => ({ ...current, [field]: value }));
+  function updateSender(field, value) {
+    setInvoiceData((current) => {
+      if (field === 'company') {
+        const nextSender = { ...current.sender, companyName: value };
+        return { ...current, sender: { ...nextSender, returnAddress: createReturnAddress(nextSender) } };
+      }
+
+      if (field === 'senderLine') {
+        return { ...current, sender: { ...current.sender, returnAddress: value } };
+      }
+
+      if (field === 'address') {
+        const nextSender = { ...current.sender, address: { ...current.sender.address, ...value } };
+        return { ...current, sender: { ...nextSender, returnAddress: createReturnAddress(nextSender) } };
+      }
+
+      return { ...current, sender: { ...current.sender, contact: { ...current.sender.contact, [field]: value } } };
+    });
   }
 
-  function handleCompanyNameChange(event) {
-    const textarea = event.target;
-    const nextValue = textarea.value;
+  function updateRecipient(field, value) {
+    setInvoiceData((current) => {
+      if (field === 'company') {
+        return { ...current, recipient: { ...current.recipient, companyName: value } };
+      }
 
-    if (!doesCompanyNameFit(textarea)) {
-      textarea.value = sender.company;
-      resizeCompanyName(textarea);
-      return;
-    }
+      if (field === 'address') {
+        return { ...current, recipient: { ...current.recipient, address: { ...current.recipient.address, ...value } } };
+      }
 
-    updateSender('company', nextValue);
-    resizeCompanyName(textarea);
+      return { ...current, recipient: { ...current.recipient, [field]: value } };
+    });
+  }
+
+  function updateDetail(field, value) {
+    setInvoiceData((current) => {
+      if (['internalNumber', 'externalNumber', 'customerNumber'].includes(field)) {
+        return { ...current, references: { ...current.references, [field]: value } };
+      }
+
+      return { ...current, details: { ...current.details, [field]: value } };
+    });
+  }
+
+  function updateFooterLine(field, value) {
+    setInvoiceData((current) => {
+      const patch = value && typeof value === 'object' ? value : { [field]: value };
+      const footer = {
+        company: { ...current.footer.company },
+        tax: { ...current.footer.tax },
+        bank: { ...current.footer.bank },
+      };
+
+      Object.entries(patch).forEach(([entryField, entryValue]) => {
+        const normalizedValue = String(entryValue ?? '').trim();
+
+        if (entryField === 'companyName') footer.company.companyName = normalizedValue;
+        if (entryField === 'companyStreetName') footer.company.street = normalizedValue;
+        if (entryField === 'companyHouseNumber') footer.company.houseNumber = normalizedValue;
+        if (entryField === 'companyPostalCode') footer.company.postalCode = normalizedValue;
+        if (entryField === 'companyCityName') footer.company.city = normalizedValue;
+        if (entryField === 'companyExtra') footer.company.extra = normalizedValue;
+        if (entryField === 'vatIdLabel') footer.tax.vatIdLabel = normalizedValue;
+        if (entryField === 'vatId') footer.tax.vatId = normalizedValue;
+        if (entryField === 'taxNumberLabel') footer.tax.taxNumberLabel = normalizedValue;
+        if (entryField === 'taxNumber') footer.tax.taxNumber = normalizedValue;
+        if (entryField === 'commercialRegister') footer.tax.commercialRegister = normalizedValue;
+        if (entryField === 'managingDirector') footer.tax.representation = normalizedValue;
+        if (entryField === 'bankName') footer.bank.bankName = normalizedValue;
+        if (entryField === 'ibanLabel') footer.bank.ibanLabel = normalizedValue;
+        if (entryField === 'iban') footer.bank.iban = normalizedValue;
+        if (entryField === 'bicLabel') footer.bank.bicLabel = normalizedValue;
+        if (entryField === 'bic') footer.bank.bic = normalizedValue;
+        if (entryField === 'bankExtra') footer.bank.bankExtra = normalizedValue;
+      });
+
+      return { ...current, footer };
+    });
+  }
+
+  function updatePosition(positionId, field, value) {
+    setPositions((current) =>
+      current.map((position) => (position.id === positionId ? { ...position, [field]: value } : position)),
+    );
+  }
+
+  function addPosition() {
+    setPositions((current) => [...current, createInvoicePosition()]);
+  }
+
+  function removePosition(positionId) {
+    setPositions((current) => (current.length === 1 ? current : current.filter((position) => position.id !== positionId)));
+  }
+
+  function movePosition(positionId, direction) {
+    setPositions((current) => {
+      const index = current.findIndex((position) => position.id === positionId);
+      const targetIndex = index + direction;
+
+      if (index < 0 || targetIndex < 0 || targetIndex >= current.length) {
+        return current;
+      }
+
+      const next = [...current];
+      const [position] = next.splice(index, 1);
+      next.splice(targetIndex, 0, position);
+
+      return next;
+    });
+  }
+
+  function getOrderedDefinitions(block, definitions) {
+    const order = fieldConfig[block].order;
+
+    return order.map((field) => definitions.find((definition) => definition.field === field)).filter(Boolean);
+  }
+
+  function getHiddenFields(block, definitions) {
+    const knownFields = new Set(definitions.map((definition) => definition.field));
+
+    return fieldConfig[block].hidden.filter((field) => knownFields.has(field));
+  }
+
+  function toggleConfiguredField(block, field) {
+    setFieldConfig((current) => {
+      const hidden = current[block].hidden.includes(field)
+        ? current[block].hidden.filter((entry) => entry !== field)
+        : [...current[block].hidden, field];
+
+      return { ...current, [block]: { ...current[block], hidden } };
+    });
+  }
+
+  function moveConfiguredField(block, field, direction) {
+    setFieldConfig((current) => {
+      const order = [...current[block].order];
+      const index = order.indexOf(field);
+      const targetIndex = index + direction;
+
+      if (index < 0 || targetIndex < 0 || targetIndex >= order.length) {
+        return current;
+      }
+
+      const [entry] = order.splice(index, 1);
+      order.splice(targetIndex, 0, entry);
+
+      return { ...current, [block]: { ...current[block], order } };
+    });
   }
 
   function openDatePicker(field) {
@@ -617,187 +750,38 @@ export default function InvoiceForm() {
     }
   }
 
-  function updateSender(field, value) {
-    setSender((current) => ({ ...current, [field]: value }));
-  }
-
-  function updateSenderCompany(value) {
-    setSender((current) => ({
-      ...current,
-      company: value,
-      senderLine: buildSenderLine(value, senderAddress),
-    }));
-    setFooterLines((current) => ({ ...current, companyName: value }));
-  }
-
-  function updateSenderAddress(field, value) {
-    setSenderAddress((current) => {
-      const next = { ...current, [field]: value };
-      const streetLine = joinAddressLine(next.street, next.houseNumber);
-      const cityLine = joinAddressLine(next.postalCode, next.city);
-
-      setSender((senderCurrent) => ({
-        ...senderCurrent,
-        street: streetLine,
-        cityLine,
-        senderLine: buildSenderLine(senderCurrent.company, next),
-      }));
-      setFooterLines((footerCurrent) => ({
-        ...footerCurrent,
-        companyStreet: streetLine,
-        companyCity: cityLine,
-      }));
-
-      return next;
-    });
-  }
-
-  function updateRecipient(field, value) {
-    setRecipient((current) => ({ ...current, [field]: value }));
-  }
-
-  function updateRecipientAddress(field, value) {
-    setRecipientAddress((current) => {
-      const next = { ...current, [field]: value };
-
-      setRecipient((recipientCurrent) => ({
-        ...recipientCurrent,
-        street: joinAddressLine(next.street, next.houseNumber),
-        cityLine: joinAddressLine(next.postalCode, next.city),
-      }));
-
-      return next;
-    });
-  }
-
-  function updateFooterLine(field, value) {
-    setFooterLines((current) => ({ ...current, [field]: value }));
-  }
-
-  function updatePosition(positionId, field, value) {
-    setPositions((current) =>
-      current.map((position) =>
-        position.id === positionId ? { ...position, [field]: value } : position,
-      ),
+  function updateTextBlock(blockId, patch) {
+    setTextBlocks((current) =>
+      current.map((block) => (block.id === blockId ? { ...block, ...patch } : block)),
     );
   }
 
-  function isFieldHidden(block, field) {
-    return fieldConfig[block].hidden.includes(field);
-  }
-
-  function getOrderedDefinitions(block, definitions) {
-    return fieldConfig[block].order
-      .map((field) => definitions.find((definition) => definition.field === field))
-      .filter(Boolean);
-  }
-
-  function getHiddenFields(block, definitions) {
-    return getOrderedDefinitions(block, definitions)
-      .filter((definition) => isFieldHidden(block, definition.field))
-      .map((definition) => definition.field);
-  }
-
-  function toggleConfiguredField(block, field) {
-    setFieldConfig((current) => {
-      const hidden = current[block].hidden.includes(field)
-        ? current[block].hidden.filter((entry) => entry !== field)
-        : [...current[block].hidden, field];
-
-      return {
-        ...current,
-        [block]: {
-          ...current[block],
-          hidden,
-        },
-      };
-    });
-  }
-
-  function moveConfiguredField(block, field, direction) {
-    setFieldConfig((current) => {
-      const order = [...current[block].order];
-      const index = order.indexOf(field);
-      const nextIndex = index + direction;
-
-      if (index < 0 || nextIndex < 0 || nextIndex >= order.length) {
-        return current;
-      }
-
-      [order[index], order[nextIndex]] = [order[nextIndex], order[index]];
-
-      return {
-        ...current,
-        [block]: {
-          ...current[block],
-          order,
-        },
-      };
-    });
-  }
-
-  function addPosition() {
-    setPositions((current) => [...current, createPosition()]);
-  }
-
-  function removePosition(positionId) {
-    setPositions((current) =>
-      current.length === 1 ? current : current.filter((position) => position.id !== positionId),
+  function toggleTextBlockVisibility(blockId) {
+    setTextBlocks((current) =>
+      current.map((block) => (block.id === blockId ? { ...block, visible: !block.visible } : block)),
     );
   }
 
-  function movePosition(positionId, direction) {
-    setPositions((current) => {
-      const index = current.findIndex((position) => position.id === positionId);
-      const nextIndex = index + direction;
-
-      if (index < 0 || nextIndex < 0 || nextIndex >= current.length) {
-        return current;
-      }
-
-      const next = [...current];
-      [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
-
-      return next;
-    });
-  }
-
-  function handleDownloadTemplate() {
-    const template = {
-      schemaVersion: 1,
+  function createInvoiceTemplate() {
+    return {
       documentType: 'invoice',
-      createdAt: new Date().toISOString(),
-      labels,
-      sender,
-      senderAddress,
-      recipient,
-      recipientAddress,
-      details,
-      positions,
-      introText,
-      closingText,
-      footerLines,
-      fieldConfig,
+      schemaVersion: invoiceSchemaVersion,
+      createdWith: 'Carta',
+      data: {
+        labels,
+        ...invoiceData,
+        positions,
+        textBlocks,
+        fieldConfig,
+      },
     };
-    const blob = new Blob([JSON.stringify(template, null, 2)], {
-      type: 'application/json;charset=utf-8',
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-
-    link.href = url;
-    link.download = createTemplateFileName(details.invoiceNumber);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
-  function handleLoadTemplateClick() {
-    templateInputRef.current?.click();
+  function handleSaveJson() {
+    downloadJson(createInvoiceTemplate(), createJsonFileName(details.invoiceNumber));
   }
 
-  async function handleTemplateFileChange(event) {
+  async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
 
@@ -805,26 +789,22 @@ export default function InvoiceForm() {
       return;
     }
 
+    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
+      window.alert('Bitte eine JSON-Datei auswaehlen.');
+      return;
+    }
+
     try {
       const template = JSON.parse(await file.text());
+      const data = validateInvoiceTemplate(template);
 
-      if (!template || template.documentType !== 'invoice') {
-        throw new Error('Invalid invoice template');
-      }
-
-      setLabels({ ...initialLabels, ...(template.labels ?? {}) });
-      setSender({ ...defaultSender, ...(template.sender ?? {}) });
-      setSenderAddress({ ...defaultSenderAddressParts, ...(template.senderAddress ?? {}) });
-      setRecipient({ ...defaultRecipient, ...(template.recipient ?? {}) });
-      setRecipientAddress({ ...defaultRecipientAddressParts, ...(template.recipientAddress ?? {}) });
-      setDetails({ ...defaultDetails, ...(template.details ?? {}) });
-      setFooterLines({ ...defaultFooterLines, ...(template.footerLines ?? {}) });
-      setIntroText(template.introText ?? defaultIntroText);
-      setClosingText(template.closingText ?? defaultClosingText);
-      setPositions(normalizePositions(template.positions));
-      setFieldConfig(normalizeFieldConfig(template.fieldConfig));
-    } catch {
-      window.alert('Die Vorlage konnte nicht geladen werden. Bitte prüfen Sie die Datei.');
+      setLabels({ ...initialInvoiceLabels, ...(data.labels ?? {}) });
+      setInvoiceData(normalizeInvoiceData(data));
+      setPositions(normalizePositions(data.positions));
+      setTextBlocks(normalizeTextBlocks(data.textBlocks));
+      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
   }
 
@@ -832,6 +812,7 @@ export default function InvoiceForm() {
     setIsExporting(true);
 
     try {
+      await refreshPrintPages();
       await requestPdfDownload({
         sheet: sheetRef.current,
         exportRoot: printPagesRef.current,
@@ -840,19 +821,22 @@ export default function InvoiceForm() {
       });
     } catch (error) {
       window.alert(
-        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
+        `PDF konnte nicht erstellt werden. Pruefe bitte, ob die Vercel Function lokal oder auf Vercel verfuegbar ist.\n\n${error.message}`,
       );
     } finally {
+      setIsExportRenderActive(false);
       setIsExporting(false);
     }
   }
 
-  function handlePrint() {
+  async function handlePrint() {
+    await refreshPrintPages();
     document.body.classList.add('document-print-mode');
     window.print();
 
     const cleanup = () => {
       document.body.classList.remove('document-print-mode');
+      setIsExportRenderActive(false);
       window.removeEventListener('afterprint', cleanup);
     };
 
@@ -860,413 +844,126 @@ export default function InvoiceForm() {
     window.setTimeout(cleanup, 1200);
   }
 
-  return (
-    <div className="visual-editor invoice-visual-editor">
-      <section className="invoice-form-panel" aria-label="Rechnungsformular">
-        <button
-          className="invoice-form-panel-toggle"
-          type="button"
-          aria-expanded={isFormPanelOpen}
-          onClick={() => setIsFormPanelOpen((current) => !current)}
-        >
-          <span className="invoice-form-panel-toggle-label">
-            {isFormPanelOpen ? 'Formular schließen' : 'Formular öffnen'}
-          </span>
-          <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
-            {isFormPanelOpen ? '−' : '+'}
-          </span>
-        </button>
+  function renderTextBlock(block, index) {
+    if (!block) return null;
 
-        {isFormPanelOpen && (
-          <div className="invoice-form-panel-body">
-            <div className="invoice-panel-row">
-              <div className="invoice-panel-section">
-                <h3>Eigene Absenderdaten</h3>
-                <div className="invoice-panel-grid">
-                  <InvoicePanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="sender-company" placeholder={defaultSender.company} value={sender.company} onChange={updateSenderCompany} />
-                  <InvoicePanelInput autoComplete="address-line1" label="Straße" name="sender-street" placeholder={defaultSenderAddressParts.street} value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
-                  <InvoicePanelInput autoComplete="address-line2" label="Hausnummer" name="sender-house-number" placeholder={defaultSenderAddressParts.houseNumber} value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
-                  <InvoicePanelInput autoComplete="postal-code" label="PLZ" name="sender-postal-code" placeholder={defaultSenderAddressParts.postalCode} value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
-                  <InvoicePanelInput autoComplete="address-level2" label="Ort" name="sender-city" placeholder={defaultSenderAddressParts.city} value={senderAddress.city} onChange={(value) => updateSenderAddress('city', value)} />
-                  <InvoicePanelInput autoComplete="off" className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" placeholder={defaultSender.senderLine} value={sender.senderLine} onChange={(value) => updateSender('senderLine', value)} />
-                </div>
-              </div>
-
-              <div className="invoice-panel-section">
-                <h3>Empfängerdaten</h3>
-                <div className="invoice-panel-grid">
-                  <InvoicePanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="recipient-company" placeholder={defaultRecipient.company} value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
-                  <InvoicePanelInput autoComplete="off" label="Zusatz / Ansprechpartner" name="recipient-attention" placeholder={defaultRecipient.attention} value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
-                  <InvoicePanelInput autoComplete="name" label="Name / Abteilung" name="recipient-name" placeholder={defaultRecipient.name} value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
-                  <InvoicePanelInput autoComplete="address-line1" label="Straße" name="recipient-street" placeholder={defaultRecipientAddressParts.street} value={recipientAddress.street} onChange={(value) => updateRecipientAddress('street', value)} />
-                  <InvoicePanelInput autoComplete="address-line2" label="Hausnummer" name="recipient-house-number" placeholder={defaultRecipientAddressParts.houseNumber} value={recipientAddress.houseNumber} onChange={(value) => updateRecipientAddress('houseNumber', value)} />
-                  <InvoicePanelInput autoComplete="postal-code" label="PLZ" name="recipient-postal-code" placeholder={defaultRecipientAddressParts.postalCode} value={recipientAddress.postalCode} onChange={(value) => updateRecipientAddress('postalCode', value)} />
-                  <InvoicePanelInput autoComplete="address-level2" label="Ort" name="recipient-city" placeholder={defaultRecipientAddressParts.city} value={recipientAddress.city} onChange={(value) => updateRecipientAddress('city', value)} />
-                </div>
-              </div>
-            </div>
-
-            <div className="invoice-panel-row">
-              <div className="invoice-panel-section">
-                <h3>Bankverbindung</h3>
-                <div className="invoice-panel-grid">
-                  {[
-                    ['bankName', 'Bankname', defaultFooterLines.bankName],
-                    ['iban', 'IBAN', defaultFooterLines.iban],
-                    ['bic', 'BIC', defaultFooterLines.bic],
-                  ].map(([field, label, placeholder]) => (
-                    <InvoicePanelInput key={field} autoComplete="off" className="invoice-panel-field-wide" label={label} name={`footer-${field}`} placeholder={placeholder} value={footerLines[field]} onChange={(value) => updateFooterLine(field, value)} />
-                  ))}
-                </div>
-              </div>
-
-              <div className="invoice-panel-section">
-                <h3>Steuer- und Firmendaten</h3>
-                <div className="invoice-panel-grid">
-                  {[
-                    ['vatId', 'USt-IdNr.', defaultFooterLines.vatId],
-                    ['taxNumber', 'Steuernummer', defaultFooterLines.taxNumber],
-                    ['commercialRegister', 'Handelsregister', defaultFooterLines.commercialRegister],
-                    ['managingDirector', 'Geschäftsführer', defaultFooterLines.managingDirector],
-                  ].map(([field, label, placeholder]) => (
-                    <InvoicePanelInput key={field} autoComplete="off" className="invoice-panel-field-wide" label={label} name={`footer-${field}`} placeholder={placeholder} value={footerLines[field]} onChange={(value) => updateFooterLine(field, value)} />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="invoice-panel-row">
-              <div className="invoice-panel-section">
-                <h3>Kontakt</h3>
-                <div className="invoice-panel-grid">
-                  <InvoicePanelInput autoComplete="email" className="invoice-panel-field-wide" label="E-Mail" name="sender-email" placeholder={defaultSender.email} value={sender.email} onChange={(value) => updateSender('email', value)} />
-                  <InvoicePanelInput autoComplete="url" className="invoice-panel-field-wide" label="Website" name="sender-website" placeholder={defaultSender.website} value={sender.website} onChange={(value) => updateSender('website', value)} />
-                </div>
-              </div>
-
-              <div className="invoice-panel-section">
-                <h3 className="invoice-panel-muted-heading">Kontakt</h3>
-                <div className="invoice-panel-grid">
-                  <InvoicePanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Telefon" name="sender-phone" placeholder={defaultSender.phone} value={sender.phone} onChange={(value) => updateSender('phone', value)} />
-                  <InvoicePanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Fax" name="sender-fax" placeholder={defaultSender.fax} value={sender.fax} onChange={(value) => updateSender('fax', value)} />
-                </div>
-              </div>
-            </div>
-
-            <div className="invoice-panel-row">
-              <div className="invoice-panel-section">
-                <h3>Rechnungsdaten</h3>
-                <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                  <InvoicePanelInput autoComplete="off" label="Rechnungsnummer" name="invoice-number" placeholder={defaultDetails.invoiceNumber} value={details.invoiceNumber} onChange={(value) => updateDetail('invoiceNumber', value)} />
-                  <InvoicePanelInput autoComplete="off" label="Rechnungsdatum" name="invoice-date" placeholder={defaultDetails.invoiceDate} type="date" value={details.invoiceDate} onChange={(value) => updateDetail('invoiceDate', value)} />
-                  <InvoicePanelInput autoComplete="off" label="Leistungsdatum" name="service-date" placeholder={defaultDetails.serviceDate} type="date" value={details.serviceDate} onChange={(value) => updateDetail('serviceDate', value)} />
-                </div>
-              </div>
-
-              <div className="invoice-panel-section">
-                <h3>Referenzen</h3>
-                <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                  <InvoicePanelInput autoComplete="off" label="Interne Nummer" name="internal-number" placeholder={defaultDetails.internalNumber} value={details.internalNumber} onChange={(value) => updateDetail('internalNumber', value)} />
-                  <InvoicePanelInput autoComplete="off" label="Externe Nummer" name="external-number" placeholder={defaultDetails.externalNumber} value={details.externalNumber} onChange={(value) => updateDetail('externalNumber', value)} />
-                  <InvoicePanelInput autoComplete="off" label="Kundennummer" name="customer-number" placeholder={defaultDetails.customerNumber} value={details.customerNumber} onChange={(value) => updateDetail('customerNumber', value)} />
-                </div>
-              </div>
-            </div>
-
-            <div className="invoice-panel-row">
-              <div className="invoice-panel-section">
-                <h3>Vorlauftext</h3>
-                <InvoicePanelTextarea label="Text oberhalb der Positionen" name="intro-text" placeholder={defaultIntroText} value={introText} onChange={setIntroText} />
-              </div>
-
-              <div className="invoice-panel-section">
-                <h3>Nachlauftext</h3>
-                <InvoicePanelTextarea label="Text unterhalb der Summen" name="closing-text" placeholder={defaultClosingText} value={closingText} onChange={setClosingText} />
-              </div>
-            </div>
-
-            <div className="invoice-panel-section invoice-panel-section-wide">
-              <h3>Positionen</h3>
-              <div className="invoice-panel-positions">
-                {positions.map((position, index) => (
-                  <div className="invoice-panel-position" key={position.id}>
-                    <span>{index + 1}</span>
-                    <InvoicePanelInput autoComplete="off" label="Leistung" name={`position-${index + 1}-description`} placeholder={defaultPosition.description} value={position.description} onChange={(value) => updatePosition(position.id, 'description', value)} />
-                    <InvoicePanelInput autoComplete="off" inputMode="decimal" label="Einzelpreis" name={`position-${index + 1}-unit-price`} placeholder={defaultPosition.unitPrice} value={position.unitPrice} onChange={(value) => updatePosition(position.id, 'unitPrice', value)} />
-                    <InvoicePanelInput autoComplete="off" inputMode="decimal" label="Anzahl" name={`position-${index + 1}-quantity`} placeholder={defaultPosition.quantity} value={position.quantity} onChange={(value) => updatePosition(position.id, 'quantity', value)} />
-                    <InvoicePanelInput autoComplete="off" label="Einheit" name={`position-${index + 1}-unit`} placeholder={defaultPosition.unit} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
-                    <InvoicePanelInput autoComplete="off" inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} placeholder={defaultPosition.taxRate} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
-                    <div className="invoice-panel-position-actions">
-                      <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} onClick={() => removePosition(position.id)}>
-                        ×
-                      </button>
-                      <button
-                        className="invoice-panel-move"
-                        type="button"
-                        aria-label={`Position ${index + 1} nach oben verschieben`}
-                        disabled={index === 0}
-                        onClick={() => movePosition(position.id, -1)}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        className="invoice-panel-move"
-                        type="button"
-                        aria-label={`Position ${index + 1} nach unten verschieben`}
-                        disabled={index === positions.length - 1}
-                        onClick={() => movePosition(position.id, 1)}
-                      >
-                        ↓
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="invoice-panel-add" type="button" onClick={addPosition}>
-                + Position hinzufügen
-              </button>
-            </div>
-          </div>
-        )}
-      </section>
-
-      <div className="visual-toolbar" aria-label="Rechnung Werkzeuge">
-        <div className="visual-toolbar-group">
-          <button
-            className={highlightFields ? 'is-active' : undefined}
-            type="button"
-            title="Bearbeitbare Felder im Dokument anzeigen"
-            aria-label="Bearbeitbare Felder im Dokument anzeigen"
-            aria-pressed={highlightFields}
-            onClick={() => setHighlightFields((current) => !current)}
-          >
-            {highlightFields ? 'Vorschau' : 'Bearbeiten'}
-          </button>
-        </div>
-        <div className="visual-toolbar-group">
-          <button
-            type="button"
-            title="Druckdialog öffnen"
-            aria-label="Druckdialog öffnen"
-            onClick={handlePrint}
-          >
-            Drucken
-          </button>
-          <button
-            type="button"
-            title="PDF-Datei erstellen"
-            aria-label="PDF-Datei erstellen"
-            onClick={handleCreatePdf}
-            disabled={isExporting}
-          >
-            {isExporting ? 'PDF wird erstellt' : 'PDF erstellen'}
-          </button>
-        </div>
-        <div className="visual-toolbar-group">
-          <button
-            type="button"
-            title="Aktuelle Daten als JSON Vorlage speichern"
-            aria-label="Aktuelle Daten als JSON Vorlage speichern"
-            onClick={handleDownloadTemplate}
-          >
-            Vorlage erstellen
-          </button>
-          <button
-            type="button"
-            title="Gespeicherte JSON Vorlage laden"
-            aria-label="Gespeicherte JSON Vorlage laden"
-            onClick={handleLoadTemplateClick}
-          >
-            Vorlage laden
-          </button>
-          <input
-            ref={templateInputRef}
-            className="invoice-template-input"
-            type="file"
-            accept="application/json,.json"
-            onChange={handleTemplateFileChange}
+    if (!block.visible) {
+      return (
+        <div className="invoice-flow-config-row invoice-flow-hidden-row" key={block.id}>
+          <TextBlockControls
+            isFirst={index === 0}
+            isLast={index === textBlocks.length - 1}
+            label={block.label}
+            visible={block.visible}
+            onToggle={() => toggleTextBlockVisibility(block.id)}
           />
         </div>
+      );
+    }
+
+    return (
+      <div className="invoice-flow-config-row" key={block.id}>
+        <TextBlock
+          ref={(element) => {
+            textBlockRefs.current[block.id] = element;
+          }}
+          ariaLabel={block.label}
+          value={block.value}
+          onChange={(value, event) => {
+            updateTextBlock(block.id, { value });
+            resizeTextarea(event.target);
+          }}
+        />
+        <TextBlockControls
+          isFirst={index === 0}
+          isLast={index === textBlocks.length - 1}
+          label={block.label}
+          visible={block.visible}
+          onToggle={() => toggleTextBlockVisibility(block.id)}
+        />
       </div>
+    );
+  }
 
-      <article
+  return (
+    <div className="visual-editor invoice-visual-editor">
+      <InvoiceDocumentForm
+        addPosition={addPosition}
+        details={invoiceData.details}
+        footerLines={footerLines}
+        formatCurrency={formatCurrency}
+        formatPercent={formatPercent}
+        isOpen={isFormPanelOpen}
+        movePosition={movePosition}
+        onToggle={() => setIsFormPanelOpen((current) => !current)}
+        positions={positions}
+        recipient={invoiceData.recipient}
+        references={invoiceData.references}
+        removePosition={removePosition}
+        sender={invoiceData.sender}
+        textBlocks={textBlocks}
+        toggleTextBlockVisibility={toggleTextBlockVisibility}
+        totals={totals}
+        updateDetail={updateDetail}
+        updateFooterLine={updateFooterLine}
+        updatePosition={updatePosition}
+        updateRecipient={updateRecipient}
+        updateSender={updateSender}
+        updateTextBlock={updateTextBlock}
+      />
+
+      <DocumentToolbar
+        ariaLabel="Rechnung Werkzeuge"
+        isEditable={highlightFields}
+        isExporting={isExporting}
+        jsonInputRef={jsonInputRef}
+        onCreatePdf={handleCreatePdf}
+        onLoadJson={handleLoadJson}
+        onPrint={handlePrint}
+        onSaveJson={handleSaveJson}
+        onToggleEditable={() => setHighlightFields((current) => !current)}
+      />
+
+      <A4Page
         ref={sheetRef}
-        className={`offer-sheet invoice-sheet${highlightFields ? ' is-highlight-mode' : ''}`}
-        aria-label="Editierbare Rechnung"
+        ariaLabel="Editierbare Rechnung"
+        className="offer-sheet invoice-sheet"
+        editable={highlightFields}
       >
-        <header className="invoice-document-header">
-          <div className="editable-group">
-            <textarea
-              ref={companyNameRef}
-              className="invoice-company-name"
-              aria-label="Absender Firmenname"
-              rows={1}
-              value={sender.company}
-              onChange={handleCompanyNameChange}
-            />
-          </div>
-
-          <div className="invoice-sender-side">
-            {getOrderedDefinitions('contact', contactFieldDefinitions).map((definition, index) => {
-              const isHidden = isFieldHidden('contact', definition.field);
-
-              if (isHidden) {
-                return null;
-              }
-
-              return (
-                <div className="invoice-config-row" key={definition.field}>
-                  <label>
-                    <input
-                      className="document-label-input"
-                      aria-label={`Beschriftung ${definition.label}`}
-                      value={labels[definition.labelField]}
-                      onChange={(event) => updateLabel(definition.labelField, event.target.value)}
-                    />
-                    <input
-                      aria-label={definition.label}
-                      value={sender[definition.field]}
-                      onChange={(event) => updateSender(definition.field, event.target.value)}
-                    />
-                  </label>
-                  <FieldActions
-                    canMove
-                    isFirst={index === 0}
-                    isLast={index === fieldConfig.contact.order.length - 1}
-                    isHidden={isHidden}
-                    label={definition.label}
-                    onMoveDown={() => moveConfiguredField('contact', definition.field, 1)}
-                    onMoveUp={() => moveConfiguredField('contact', definition.field, -1)}
-                    onToggle={() => toggleConfiguredField('contact', definition.field)}
-                  />
-                </div>
-              );
-            })}
-            <HiddenFieldActions
-              block="contact"
-              definitions={contactFieldDefinitions}
-              hiddenFields={getHiddenFields('contact', contactFieldDefinitions)}
-              onToggle={toggleConfiguredField}
-            />
-          </div>
-        </header>
+        <SenderBlock
+          contactFields={getOrderedDefinitions('contact', invoiceContactFields)}
+          hiddenFields={getHiddenFields('contact', invoiceContactFields)}
+          labels={labels}
+          sender={sender}
+          onLabelChange={updateLabel}
+          onMoveField={(field, direction) => moveConfiguredField('contact', field, direction)}
+          onSenderChange={updateSender}
+          onToggleField={(field) => toggleConfiguredField('contact', field)}
+        />
 
         <section className="invoice-address-row">
-          <div className="invoice-recipient-fields">
-            <input
-              className="invoice-sender-line"
-              aria-label="Absenderzeile über Empfängeradresse"
-              value={sender.senderLine}
-              onChange={(event) => updateSender('senderLine', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger Firma"
-              value={recipient.company}
-              onChange={(event) => updateRecipient('company', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger Zusatz oder z. Hd."
-              value={recipient.attention}
-              onChange={(event) => updateRecipient('attention', event.target.value)}
-            />
-            <input
-              aria-label="Ansprechpartner oder Name"
-              value={recipient.name}
-              onChange={(event) => updateRecipient('name', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger Straße und Hausnummer"
-              value={recipient.street}
-              onChange={(event) => updateRecipient('street', event.target.value)}
-            />
-            <input
-              aria-label="Empfänger PLZ und Stadt"
-              value={recipient.cityLine}
-              onChange={(event) => updateRecipient('cityLine', event.target.value)}
-            />
-          </div>
+          <RecipientBlock
+            hiddenFields={getHiddenFields('recipient', invoiceRecipientOptionalFields)}
+            recipient={recipient}
+            senderLine={sender.senderLine}
+            onRecipientChange={updateRecipient}
+            onSenderLineChange={(value) => updateSender('senderLine', value)}
+            onToggleField={(field) => toggleConfiguredField('recipient', field)}
+          />
 
-          <div className="invoice-details">
-            <label className="is-emphasized">
-              <input
-                className="document-label-input"
-                aria-label="Beschriftung Rechnungsnummer"
-                value={labels.invoiceNumber}
-                onChange={(event) => updateLabel('invoiceNumber', event.target.value)}
-              />
-              <input
-                aria-label="Rechnungsnummer"
-                type="text"
-                value={details.invoiceNumber}
-                onChange={(event) => updateDetail('invoiceNumber', event.target.value)}
-              />
-            </label>
-            {getOrderedDefinitions('details', detailFieldDefinitions).map((definition, index) => {
-              const isHidden = isFieldHidden('details', definition.field);
-
-              if (isHidden) {
-                return null;
-              }
-
-              return (
-                <div className="invoice-config-row" key={definition.field}>
-                  <label>
-                    <input
-                      className="document-label-input"
-                      aria-label={`Beschriftung ${definition.label}`}
-                      value={labels[definition.field]}
-                      onChange={(event) => updateLabel(definition.field, event.target.value)}
-                    />
-                    {definition.type === 'date' ? (
-                      <span className="invoice-date-field">
-                        <input
-                          ref={(element) => {
-                            dateInputRefs.current[definition.field] = element;
-                          }}
-                          className="invoice-date-input"
-                          aria-label={definition.label}
-                          type="date"
-                          value={details[definition.field]}
-                          onChange={(event) => updateDetail(definition.field, event.target.value)}
-                        />
-                        <button
-                          className="invoice-icon-action invoice-date-picker"
-                          type="button"
-                          aria-label={`${definition.label} auswählen`}
-                          onClick={() => openDatePicker(definition.field)}
-                        >
-                          <span aria-hidden="true" />
-                        </button>
-                      </span>
-                    ) : (
-                      <input
-                        aria-label={definition.label}
-                        type="text"
-                        value={details[definition.field]}
-                        onChange={(event) => updateDetail(definition.field, event.target.value)}
-                      />
-                    )}
-                  </label>
-                  <FieldActions
-                    canMove
-                    isFirst={index === 0}
-                    isLast={index === fieldConfig.details.order.length - 1}
-                    isHidden={isHidden}
-                    label={definition.label}
-                    onMoveDown={() => moveConfiguredField('details', definition.field, 1)}
-                    onMoveUp={() => moveConfiguredField('details', definition.field, -1)}
-                    onToggle={() => toggleConfiguredField('details', definition.field)}
-                  />
-                </div>
-              );
-            })}
-            <HiddenFieldActions
-              block="details"
-              definitions={detailFieldDefinitions}
-              hiddenFields={getHiddenFields('details', detailFieldDefinitions)}
-              onToggle={toggleConfiguredField}
-            />
-          </div>
+          <DocumentMetaBlock
+            dateInputRefs={dateInputRefs}
+            details={details}
+            emphasizedField="invoiceNumber"
+            fields={getOrderedDefinitions('details', invoiceMetaFields)}
+            hiddenFields={getHiddenFields('details', invoiceMetaFields)}
+            labels={labels}
+            onDatePicker={openDatePicker}
+            onDetailChange={updateDetail}
+            onLabelChange={updateLabel}
+            onMoveField={(field, direction) => moveConfiguredField('details', field, direction)}
+            onToggleField={(field) => toggleConfiguredField('details', field)}
+          />
         </section>
 
         <h2 className="invoice-document-title">
@@ -1278,337 +975,248 @@ export default function InvoiceForm() {
           />
         </h2>
 
-        <HiddenFieldActions
-          block="texts"
-          className="invoice-flow-hidden-row"
-          definitions={[{ field: 'introText', label: 'Vorlauftext' }]}
-          hiddenFields={fieldConfig.texts.hidden.filter((field) => field === 'introText')}
-          onToggle={toggleConfiguredField}
+        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
+
+        <PositionTable
+          calculatePosition={calculatePosition}
+          formatCurrency={formatCurrency}
+          labels={labels}
+          positions={positions}
+          variant="offer"
+          onLabelChange={updateLabel}
+          onMovePosition={movePosition}
+          onPositionChange={updatePosition}
+          onRemovePosition={removePosition}
         />
 
-        {!isFieldHidden('texts', 'introText') && (
-          <div className="invoice-flow-config-row">
-            <textarea
-              ref={introTextRef}
-              className="offer-flow-text invoice-flow-text"
-              aria-label="Vorlauftext"
-              value={introText}
-              onChange={(event) => {
-                setIntroText(event.target.value);
-                resizeTextarea(event.target);
-              }}
-            />
-            <FieldActions
-              isHidden={false}
-              label="Vorlauftext"
-              onToggle={() => toggleConfiguredField('texts', 'introText')}
-            />
-          </div>
-        )}
+        <button className="offer-add-position" type="button" onClick={addPosition}>
+          + Position hinzufuegen
+        </button>
 
-        <table className="offer-position-table invoice-position-table">
+        <TotalsBox
+          ariaLabel="Rechnungssummen"
+          formatCurrency={formatCurrency}
+          formatPercent={formatPercent}
+          labels={labels}
+          totals={totals}
+          onLabelChange={updateLabel}
+        />
+
+        {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}
+
+        <FooterBlock
+          columns={[
+            invoiceFooterColumns[0],
+            getOrderedDefinitions('footerMiddle', invoiceFooterColumns[1]),
+            invoiceFooterColumns[2],
+          ]}
+          footerLines={footerLines}
+          formatFooterLine={(field, value) => formatInvoiceFooterLine(field, value, footerLines)}
+          hiddenFields={getHiddenFields('footerMiddle', invoiceFooterColumns[1])}
+          onFooterLineChange={updateFooterLine}
+          onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)}
+          onToggleField={(field) => toggleConfiguredField('footerMiddle', field)}
+          parseFooterLine={parseInvoiceFooterLine}
+        />
+      </A4Page>
+
+      {isExportRenderActive ? (
+        <>
+          <MeasuredInvoicePaginator ref={paginatorRef} items={printItems} labels={labels} totals={totals} />
+          <InvoicePrintPages
+            ref={printPagesRef}
+            details={details}
+            footerLines={footerLines}
+            labels={labels}
+            pages={printPages}
+            recipient={recipient}
+            sender={sender}
+            totals={totals}
+            visibleContactDefinitions={getOrderedDefinitions('contact', invoiceContactFields).filter(
+              (definition) => !fieldConfig.contact.hidden.includes(definition.field),
+            )}
+            visibleDetailDefinitions={getOrderedDefinitions('details', invoiceMetaFields).filter(
+              (definition) => !fieldConfig.details.hidden.includes(definition.field),
+            )}
+            visibleRecipientFields={invoiceRecipientOptionalFields.filter(
+              (definition) => !fieldConfig.recipient.hidden.includes(definition.field),
+            )}
+            visibleFooterMiddleDefinitions={getOrderedDefinitions('footerMiddle', invoiceFooterColumns[1]).filter(
+              (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
+            )}
+          />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator({ items, labels, totals }, ref) {
+  const measureRootRef = useRef(null);
+  const positionItems = items.filter((item) => item.type === 'position');
+
+  function measureNow() {
+    return measureInvoicePages(measureRootRef.current, items);
+  }
+
+  useImperativeHandle(ref, () => ({ measureNow }), [items]);
+
+  return (
+    <div className="offer-measure-root" ref={measureRootRef} aria-hidden="true">
+      <div className="invoice-print-page offer-print-page is-first-page">
+        <div className="invoice-print-page-content" data-measure-first-content />
+      </div>
+      <div className="invoice-print-page offer-print-page is-follow-page">
+        <div className="invoice-print-page-content" data-measure-follow-content />
+      </div>
+      <div className="offer-measure-content">
+        <p className="invoice-print-flow-text" data-measure-text-probe />
+        <table className="invoice-print-position-table">
           <thead>
-            <tr>
-              {[
-                ['position', 'Tabellenkopf Position'],
-                ['description', 'Tabellenkopf Beschreibung'],
-                ['unitPrice', 'Tabellenkopf Einzelpreis'],
-                ['quantity', 'Tabellenkopf Anzahl'],
-                ['unit', 'Tabellenkopf Einheit'],
-                ['tax', 'Tabellenkopf Umsatzsteuer'],
-                ['total', 'Tabellenkopf Gesamt'],
-              ].map(([field, ariaLabel]) => (
-                <th key={field}>
-                  <input
-                    className="document-label-input"
-                    aria-label={ariaLabel}
-                    value={labels[field]}
-                    onChange={(event) => updateLabel(field, event.target.value)}
-                  />
-                </th>
-              ))}
-              <th />
+            <tr data-measure-position-header>
+              <th>{labels.position}</th>
+              <th>{labels.description}</th>
+              <th>{labels.unitPrice}</th>
+              <th>{labels.quantity}</th>
+              <th>{labels.unit}</th>
+              <th>{labels.tax}</th>
+              <th>{labels.total}</th>
             </tr>
           </thead>
           <tbody>
-            {positions.map((position, index) => {
+            {positionItems.map(({ index, position }) => {
               const calculated = calculatePosition(position);
 
               return (
-                <tr key={position.id}>
-                  <td className="invoice-position-index-cell">
-                    <span className="invoice-position-actions">
-                      <button
-                        aria-label={`Position ${index + 1} löschen`}
-                        className="invoice-position-action invoice-position-delete"
-                        type="button"
-                        onClick={() => removePosition(position.id)}
-                      >
-                        &times;
-                      </button>
-                      <button
-                        aria-label={`Position ${index + 1} nach oben verschieben`}
-                        className="invoice-position-action"
-                        type="button"
-                        disabled={index === 0}
-                        onClick={() => movePosition(position.id, -1)}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        aria-label={`Position ${index + 1} nach unten verschieben`}
-                        className="invoice-position-action"
-                        type="button"
-                        disabled={index === positions.length - 1}
-                        onClick={() => movePosition(position.id, 1)}
-                      >
-                        ↓
-                      </button>
-                    </span>
-                    {index + 1}
-                  </td>
-                  <td>
-                    <textarea
-                      ref={resizePositionDescription}
-                      className="invoice-position-description"
-                      aria-label={`Beschreibung Position ${index + 1}`}
-                      rows={1}
-                      value={position.description}
-                      onChange={(event) => {
-                        updatePosition(position.id, 'description', event.target.value);
-                        resizePositionDescription(event.target);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      aria-label={`Einzelpreis Position ${index + 1}`}
-                      inputMode="decimal"
-                      type="text"
-                      value={position.unitPrice}
-                      onChange={(event) => updatePosition(position.id, 'unitPrice', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      aria-label={`Anzahl Position ${index + 1}`}
-                      inputMode="decimal"
-                      type="text"
-                      value={position.quantity}
-                      onChange={(event) => updatePosition(position.id, 'quantity', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      aria-label={`Einheit Position ${index + 1}`}
-                      value={position.unit}
-                      onChange={(event) => updatePosition(position.id, 'unit', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <span className="invoice-tax-rate-cell">
-                      <input
-                        aria-label={`Umsatzsteuer Position ${index + 1}`}
-                        inputMode="decimal"
-                        type="text"
-                        value={position.taxRate}
-                        onChange={(event) => updatePosition(position.id, 'taxRate', event.target.value)}
-                      />
-                      <span>%</span>
-                    </span>
-                  </td>
+                <tr data-measure-position-row={String(index)} key={position.id}>
+                  <td>{index + 1}</td>
+                  <td>{position.description}</td>
+                  <td>{formatCurrency(toNumber(position.unitPrice))}</td>
+                  <td>{position.quantity}</td>
+                  <td>{position.unit}</td>
+                  <td>{formatPercent(calculated.taxRate)}%</td>
                   <td>{formatCurrency(calculated.net)}</td>
-                  <td />
                 </tr>
               );
             })}
           </tbody>
         </table>
-
-        <button className="offer-add-position" type="button" onClick={addPosition}>
-          + Position hinzufügen
-        </button>
-
-        <aside className="offer-summary invoice-document-summary" aria-label="Rechnungssummen">
-          <div>
-            <input
-              className="document-label-input"
-              aria-label="Beschriftung Nettobetrag"
-              value={labels.net}
-              onChange={(event) => updateLabel('net', event.target.value)}
-            />
-            <strong>{formatCurrency(totals.net)}</strong>
-          </div>
-          {totals.taxGroups.map((group) => (
-            <div key={group.taxRate}>
-              <span className="document-summary-label">
-                <input
-                  className="document-label-input"
-                  aria-label="Beschriftung Umsatzsteuer"
-                  value={labels.taxAmount}
-                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
-                />
-                <span>{formatPercent(group.taxRate)}%</span>
-              </span>
-              <strong>{formatCurrency(group.tax)}</strong>
-            </div>
-          ))}
-          <div>
-            <input
-              className="document-label-input"
-              aria-label="Beschriftung Rechnungsbetrag"
-              value={labels.grandTotal}
-              onChange={(event) => updateLabel('grandTotal', event.target.value)}
-            />
-            <strong>{formatCurrency(totals.gross)}</strong>
-          </div>
-        </aside>
-
-        <HiddenFieldActions
-          block="texts"
-          className="invoice-flow-hidden-row"
-          definitions={[{ field: 'closingText', label: 'Nachlauftext' }]}
-          hiddenFields={fieldConfig.texts.hidden.filter((field) => field === 'closingText')}
-          onToggle={toggleConfiguredField}
-        />
-
-        {!isFieldHidden('texts', 'closingText') && (
-          <div className="invoice-flow-config-row">
-            <textarea
-              ref={closingTextRef}
-              className="offer-flow-text invoice-flow-text"
-              aria-label="Nachlauftext"
-              value={closingText}
-              onChange={(event) => {
-                setClosingText(event.target.value);
-                resizeTextarea(event.target);
-              }}
-            />
-            <FieldActions
-              isHidden={false}
-              label="Nachlauftext"
-              onToggle={() => toggleConfiguredField('texts', 'closingText')}
-            />
-          </div>
-        )}
-
-        <footer className="invoice-footer-data" aria-label="Fußbereich">
-          <section>
-            {[
-              ['companyName', 'Firma'],
-              ['companyStreet', 'Straße und Hausnummer'],
-              ['companyCity', 'PLZ und Stadt'],
-              ['companyExtra', 'Zusatzzeile Firma'],
-            ].map(([field, label]) => (
-              <input
-                key={field}
-                aria-label={label}
-                value={footerLines[field]}
-                onChange={(event) => updateFooterLine(field, event.target.value)}
-              />
-            ))}
-          </section>
-
-          <section>
-            {getOrderedDefinitions('footerMiddle', footerMiddleDefinitions).map((definition, index) => {
-              const isHidden = isFieldHidden('footerMiddle', definition.field);
-
-              if (isHidden) {
-                return null;
-              }
-
-              return (
-                <div className="invoice-config-row" key={definition.field}>
-                  <input
-                    aria-label={definition.label}
-                    value={footerLines[definition.field]}
-                    onChange={(event) => updateFooterLine(definition.field, event.target.value)}
-                  />
-                  <FieldActions
-                    canMove
-                    isFirst={index === 0}
-                    isLast={index === fieldConfig.footerMiddle.order.length - 1}
-                    isHidden={isHidden}
-                    label={definition.label}
-                    onMoveDown={() => moveConfiguredField('footerMiddle', definition.field, 1)}
-                    onMoveUp={() => moveConfiguredField('footerMiddle', definition.field, -1)}
-                    onToggle={() => toggleConfiguredField('footerMiddle', definition.field)}
-                  />
-                </div>
-              );
-            })}
-            <HiddenFieldActions
-              block="footerMiddle"
-              definitions={footerMiddleDefinitions}
-              hiddenFields={getHiddenFields('footerMiddle', footerMiddleDefinitions)}
-              onToggle={toggleConfiguredField}
-            />
-          </section>
-
-          <section>
-            {[
-              ['bankName', 'Bankname'],
-              ['iban', 'IBAN'],
-              ['bic', 'BIC'],
-              ['bankExtra', 'Zusatzzeile Bank'],
-            ].map(([field, label]) => (
-              <input
-                key={field}
-                aria-label={label}
-                value={footerLines[field]}
-                onChange={(event) => updateFooterLine(field, event.target.value)}
-              />
-            ))}
-          </section>
-        </footer>
-      </article>
-
-      <InvoicePrintPages
-        ref={printPagesRef}
-        details={details}
-        fieldConfig={fieldConfig}
-        footerLines={footerLines}
-        footerMiddleDefinitions={footerMiddleDefinitions}
-        getOrderedDefinitions={getOrderedDefinitions}
-        labels={labels}
-        pages={printPages}
-        recipient={recipient}
-        sender={sender}
-        totals={totals}
-      />
+        <div data-measure-summary>
+          <InvoicePrintSummary labels={labels} totals={totals} />
+        </div>
+      </div>
     </div>
   );
+});
+
+function measureInvoicePages(measureRoot, items) {
+  if (!measureRoot) return null;
+
+  const firstContent = measureRoot.querySelector('[data-measure-first-content]');
+  const followContent = measureRoot.querySelector('[data-measure-follow-content]');
+  const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
+  const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+  const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
+  const positionRows = new Map(
+    [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
+      row.dataset.measurePositionRow,
+      getOuterHeight(row),
+    ]),
+  );
+
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) return null;
+
+  const firstPageCapacity = firstContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
+  const followPageCapacity = followContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
+  const blockGap =
+    parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || invoicePrintLayout.blockGap;
+  const positionHeaderHeight = getOuterHeight(positionHeader);
+
+  function measureTextHeight(text) {
+    textProbe.textContent = String(text || '').trim();
+    return getOuterHeight(textProbe);
+  }
+
+  function getItemHeight(item) {
+    if (item.type === 'text') return measureTextHeight(item.text);
+    if (item.type === 'position') return positionRows.get(String(item.index)) || 0;
+    if (item.type === 'summary') return getOuterHeight(summaryProbe);
+    return 0;
+  }
+
+  function getItemGap(page, item) {
+    const previousItem = page.items[page.items.length - 1];
+    const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
+    const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
+
+    return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
+  }
+
+  return paginateMeasuredItems({
+    items,
+    firstPageCapacity,
+    followPageCapacity,
+    getItemHeight,
+    getItemGap,
+    splitTextItem: (item, availableHeight) => takeMeasuredText(item.text, availableHeight, measureTextHeight),
+  });
+}
+
+function arePrintPagesEqual(currentPages, nextPages) {
+  if (currentPages.length !== nextPages.length) return false;
+
+  return currentPages.every((page, pageIndex) => {
+    const nextPage = nextPages[pageIndex];
+    if (page.items.length !== nextPage.items.length) return false;
+    return page.items.every((item, itemIndex) => arePrintItemsEqual(item, nextPage.items[itemIndex]));
+  });
+}
+
+function arePrintItemsEqual(first, second) {
+  if (first.type !== second.type) return false;
+  if (first.type === 'text') return first.id === second.id && first.text === second.text;
+  if (first.type === 'position') {
+    return (
+      first.index === second.index &&
+      first.position.id === second.position.id &&
+      first.position.description === second.position.description &&
+      first.position.unitPrice === second.position.unitPrice &&
+      first.position.quantity === second.position.quantity &&
+      first.position.unit === second.position.unit &&
+      first.position.taxRate === second.position.taxRate
+    );
+  }
+
+  return true;
 }
 
 const InvoicePrintPages = forwardRef(function InvoicePrintPages(
   {
     details,
-    fieldConfig,
     footerLines,
-    footerMiddleDefinitions,
-    getOrderedDefinitions,
     labels,
     pages,
     recipient,
     sender,
     totals,
+    visibleContactDefinitions,
+    visibleDetailDefinitions,
+    visibleRecipientFields,
+    visibleFooterMiddleDefinitions,
   },
   ref,
 ) {
-  const visibleFooterMiddleDefinitions = getOrderedDefinitions('footerMiddle', footerMiddleDefinitions).filter(
-    (definition) => !fieldConfig.footerMiddle.hidden.includes(definition.field),
-  );
-  const visibleContactDefinitions = getOrderedDefinitions('contact', contactFieldDefinitions).filter(
-    (definition) => !fieldConfig.contact.hidden.includes(definition.field),
-  );
-  const visibleDetailDefinitions = getOrderedDefinitions('details', detailFieldDefinitions).filter(
-    (definition) => !fieldConfig.details.hidden.includes(definition.field),
-  );
+  const totalPages = pages.length;
 
   return (
-    <div className="invoice-print-pages" ref={ref} aria-hidden="true">
+    <div className="invoice-print-pages offer-print-pages invoice-export-print-pages" ref={ref} aria-hidden="true">
       {pages.map((page) => (
-        <article className="invoice-print-page" key={page.pageNumber}>
+        <article
+          className={`invoice-print-page offer-print-page invoice-export-print-page${
+            page.pageNumber === 1 ? ' is-first-page' : ' is-follow-page'
+          }`}
+          key={page.pageNumber}
+        >
           {page.pageNumber === 1 ? (
             <InvoicePrintFirstPageHeader
               details={details}
@@ -1617,6 +1225,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
               sender={sender}
               visibleContactDefinitions={visibleContactDefinitions}
               visibleDetailDefinitions={visibleDetailDefinitions}
+              visibleRecipientFields={visibleRecipientFields}
             />
           ) : (
             <InvoicePrintContinuationHeader companyName={sender.company} />
@@ -1626,10 +1235,11 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
             <InvoicePrintPageItems items={page.items} labels={labels} totals={totals} />
           </div>
 
-          <InvoicePrintFooter
-            footerLines={footerLines}
-            visibleFooterMiddleDefinitions={visibleFooterMiddleDefinitions}
-          />
+          <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
+            {totalPages > 1 ? `${page.pageNumber}/${totalPages}` : ''}
+          </p>
+
+          <InvoicePrintFooter footerLines={footerLines} visibleFooterMiddleDefinitions={visibleFooterMiddleDefinitions} />
         </article>
       ))}
     </div>
@@ -1643,9 +1253,20 @@ function InvoicePrintFirstPageHeader({
   sender,
   visibleContactDefinitions,
   visibleDetailDefinitions,
+  visibleRecipientFields,
 }) {
+  const showRecipientAttention = visibleRecipientFields.some((definition) => definition.field === 'attention');
+  const showRecipientName = visibleRecipientFields.some((definition) => definition.field === 'name');
+  const recipientLines = [
+    recipient.company,
+    showRecipientAttention ? recipient.attention : '',
+    showRecipientName ? recipient.name : '',
+    recipient.street,
+    recipient.cityLine,
+  ];
+
   return (
-    <>
+    <div className="offer-print-first-page-header">
       <header className="invoice-print-header">
         <div>
           <p className="invoice-print-company-name">{sender.company}</p>
@@ -1663,27 +1284,25 @@ function InvoicePrintFirstPageHeader({
       <section className="invoice-print-address-row">
         <div className="invoice-print-recipient">
           <p className="invoice-print-sender-line">{sender.senderLine}</p>
-          {[recipient.company, recipient.attention, recipient.name, recipient.street, recipient.cityLine]
-            .filter(Boolean)
-            .map((line) => (
-              <p key={line}>{line}</p>
-            ))}
+          {recipientLines.filter(Boolean).map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
 
         <div className="invoice-print-details">
-          <PrintDetailRow label={labels.invoiceNumber} value={details.invoiceNumber} emphasized />
           {visibleDetailDefinitions.map((definition) => (
             <PrintDetailRow
               key={definition.field}
+              emphasized={definition.field === 'invoiceNumber'}
               label={labels[definition.field]}
-              value={details[definition.field]}
+              value={definition.type === 'date' ? formatGermanDate(details[definition.field]) : details[definition.field]}
             />
           ))}
         </div>
       </section>
 
       <h2 className="invoice-print-title">{labels.title}</h2>
-    </>
+    </div>
   );
 }
 
@@ -1720,11 +1339,7 @@ function InvoicePrintPageItems({ items, labels, totals }) {
       }
 
       renderedItems.push(
-        <InvoicePrintPositionTable
-          key={`positions-${positionItems[0].index}`}
-          labels={labels}
-          positionItems={positionItems}
-        />,
+        <InvoicePrintPositionTable key={`positions-${positionItems[0].index}`} labels={labels} positionItems={positionItems} />,
       );
       continue;
     }
@@ -1733,9 +1348,9 @@ function InvoicePrintPageItems({ items, labels, totals }) {
       renderedItems.push(<InvoicePrintSummary key="summary" labels={labels} totals={totals} />);
     }
 
-    if (item.type === 'introText' || item.type === 'closingText') {
+    if (item.type === 'text') {
       renderedItems.push(
-        <p className="invoice-print-flow-text" key={`${item.type}-${index}`}>
+        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
           {item.text}
         </p>,
       );
@@ -1818,7 +1433,7 @@ function InvoicePrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
       <section>
         {visibleFooterMiddleDefinitions
-          .map((definition) => footerLines[definition.field])
+          .map((definition) => formatInvoiceFooterLine(definition.field, footerLines[definition.field], footerLines))
           .filter(Boolean)
           .map((line) => (
             <p key={line}>{line}</p>
@@ -1826,7 +1441,7 @@ function InvoicePrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
       <section>
         {['bankName', 'iban', 'bic', 'bankExtra']
-          .map((field) => footerLines[field])
+          .map((field) => formatInvoiceFooterLine(field, footerLines[field], footerLines))
           .filter(Boolean)
           .map((line) => (
             <p key={line}>{line}</p>
@@ -1834,4 +1449,22 @@ function InvoicePrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
     </footer>
   );
+}
+
+function getOuterHeight(element) {
+  if (!element) return 0;
+
+  const styles = window.getComputedStyle(element);
+  const marginTop = parseFloat(styles.marginTop) || 0;
+  const marginBottom = parseFloat(styles.marginBottom) || 0;
+
+  return element.getBoundingClientRect().height + marginTop + marginBottom;
+}
+
+function waitForNextFrame() {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(resolve);
+    });
+  });
 }

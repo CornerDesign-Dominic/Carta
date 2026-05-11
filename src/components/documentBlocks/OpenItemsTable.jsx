@@ -1,3 +1,11 @@
+import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
+
+function formatGermanDate(value) {
+  const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+}
+
 export default function OpenItemsTable({
   dateInputRefs,
   items,
@@ -6,6 +14,7 @@ export default function OpenItemsTable({
   onDatePicker,
   onItemChange,
   onLabelChange,
+  onMoveItem,
   onRemoveItem,
 }) {
   return (
@@ -34,7 +43,40 @@ export default function OpenItemsTable({
         <tbody>
           {items.map((item, index) => (
             <tr key={item.id}>
-              <td>
+              <td className="reminder-open-item-number-cell">
+                <span className="invoice-position-actions">
+                  <button
+                    aria-label={`Offenen Posten ${index + 1} loeschen`}
+                    className="invoice-position-action invoice-position-delete"
+                    type="button"
+                    disabled={items.length === 1}
+                    onClick={() => onRemoveItem(item.id)}
+                  >
+                    &times;
+                  </button>
+                  {onMoveItem && (
+                    <>
+                      <button
+                        aria-label={`Offenen Posten ${index + 1} nach oben verschieben`}
+                        className="invoice-position-action"
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => onMoveItem(item.id, -1)}
+                      >
+                        <MoveUpIcon />
+                      </button>
+                      <button
+                        aria-label={`Offenen Posten ${index + 1} nach unten verschieben`}
+                        className="invoice-position-action"
+                        type="button"
+                        disabled={index === items.length - 1}
+                        onClick={() => onMoveItem(item.id, 1)}
+                      >
+                        <MoveDownIcon />
+                      </button>
+                    </>
+                  )}
+                </span>
                 <input
                   aria-label={`Rechnungsnummer ${index + 1}`}
                   value={item.invoiceNumber}
@@ -43,6 +85,9 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <span className="invoice-date-field">
+                  <span className="invoice-date-display" aria-hidden="true">
+                    {formatGermanDate(item.dueDate)}
+                  </span>
                   <input
                     ref={(element) => {
                       dateInputRefs.current[`dueDate-${item.id}`] = element;
@@ -81,17 +126,7 @@ export default function OpenItemsTable({
                   onChange={(event) => onItemChange(item.id, 'amount', event.target.value)}
                 />
               </td>
-              <td>
-                <button
-                  aria-label={`Offenen Posten ${index + 1} loeschen`}
-                  className="offer-remove"
-                  type="button"
-                  disabled={items.length === 1}
-                  onClick={() => onRemoveItem(item.id)}
-                >
-                  &times;
-                </button>
-              </td>
+              <td />
             </tr>
           ))}
         </tbody>

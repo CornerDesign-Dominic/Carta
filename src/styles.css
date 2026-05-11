@@ -2320,30 +2320,52 @@ h1 {
 
 .reminder-invoice-table th:nth-child(1),
 .reminder-invoice-table td:nth-child(1) {
-  width: 24%;
+  position: relative;
+  width: 30%;
 }
 
 .reminder-invoice-table th:nth-child(2),
 .reminder-invoice-table td:nth-child(2) {
-  width: 24%;
+  width: 22%;
 }
 
 .reminder-invoice-table th:nth-child(3),
 .reminder-invoice-table td:nth-child(3) {
-  width: 20%;
+  width: 18%;
   text-align: left;
 }
 
 .reminder-invoice-table th:nth-child(4),
 .reminder-invoice-table td:nth-child(4) {
-  width: 28%;
+  width: 22%;
   text-align: right;
 }
 
 .reminder-invoice-table th:nth-child(5),
 .reminder-invoice-table td:nth-child(5) {
-  width: 4%;
+  width: 8%;
   text-align: center;
+}
+
+.reminder-print-open-items-table th:nth-child(1),
+.reminder-print-open-items-table td:nth-child(1) {
+  width: 30%;
+}
+
+.reminder-print-open-items-table th:nth-child(2),
+.reminder-print-open-items-table td:nth-child(2) {
+  width: 24%;
+}
+
+.reminder-print-open-items-table th:nth-child(3),
+.reminder-print-open-items-table td:nth-child(3) {
+  width: 20%;
+}
+
+.reminder-print-open-items-table th:nth-child(4),
+.reminder-print-open-items-table td:nth-child(4) {
+  width: 26%;
+  text-align: right;
 }
 
 .reminder-invoice-table td:nth-child(4) input {
@@ -2387,6 +2409,14 @@ h1 {
   font-weight: 760;
   line-height: 1.12;
   text-align: right;
+}
+
+.invoice-panel-note {
+  align-self: end;
+  margin: 0;
+  color: #5f5e59;
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
 
 .invoice-footer-data {
