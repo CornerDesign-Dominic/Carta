@@ -8,9 +8,7 @@ export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }
     )?.id;
   }, [activeSlug]);
 
-  const [openCategoryIds, setOpenCategoryIds] = useState(() =>
-    knowledgeCategories.map((category) => category.id),
-  );
+  const [openCategoryIds, setOpenCategoryIds] = useState([]);
 
   useEffect(() => {
     if (!activeCategoryId) {

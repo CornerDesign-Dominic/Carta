@@ -4161,11 +4161,6 @@ h1 {
   max-width: 1000px;
 }
 
-.knowledge-sidebar {
-  left: -244px;
-  width: 226px;
-}
-
 .knowledge-sidebar-nav {
   gap: 6px;
 }
@@ -4553,12 +4548,6 @@ h1 {
   color: var(--muted);
   font-size: 0.92rem;
   line-height: 1.55;
-}
-
-@media (max-width: 1516px) {
-  .knowledge-sidebar {
-    width: min(100%, 260px);
-  }
 }
 
 @media (max-width: 760px) {
