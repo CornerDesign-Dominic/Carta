@@ -3,9 +3,11 @@ import { FieldActions, HiddenFieldActions } from './FieldActions.jsx';
 export default function FooterBlock({
   configurableColumnIndex = 1,
   footerLines,
+  formatFooterLine = (_field, value) => value,
   hiddenFields = [],
   columns,
   onFooterLineChange,
+  parseFooterLine = (_field, value) => value,
   onMoveField,
   onToggleField,
 }) {
@@ -23,8 +25,8 @@ export default function FooterBlock({
               <div className={isConfigurable ? 'invoice-config-row' : undefined} key={field}>
                 <input
                   aria-label={label}
-                  value={footerLines[field]}
-                  onChange={(event) => onFooterLineChange(field, event.target.value)}
+                  value={formatFooterLine(field, footerLines[field] ?? '')}
+                  onChange={(event) => onFooterLineChange(field, parseFooterLine(field, event.target.value))}
                 />
                 {isConfigurable && (
                   <FieldActions

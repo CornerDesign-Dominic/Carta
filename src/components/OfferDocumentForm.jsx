@@ -5,31 +5,190 @@ function OfferPanelInput({
   label,
   name,
   onChange,
+  placeholder = '',
   type = 'text',
   value,
 }) {
+  const effectivePlaceholder = placeholder || getOfferInputPlaceholder(name);
+  const effectiveAutoComplete = autoComplete === 'off' ? getOfferAutoComplete(name) : autoComplete;
+  const documentValue = value ?? effectivePlaceholder;
+
   return (
     <label className={`invoice-panel-field${className ? ` ${className}` : ''}`}>
       <span>{label}</span>
       <input
-        autoComplete={autoComplete}
+        autoComplete={effectiveAutoComplete}
         inputMode={inputMode}
         name={name}
+        placeholder={effectivePlaceholder}
         type={type}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
+        value={getFormValue(documentValue, effectivePlaceholder)}
+        onChange={(event) => onChange(getDocumentValue(event.target.value, effectivePlaceholder))}
       />
     </label>
   );
 }
 
-function OfferPanelTextarea({ label, name, onChange, value }) {
+function OfferPanelTextarea({ label, name, onChange, placeholder = '', value }) {
+  const documentValue = value ?? placeholder;
+
   return (
     <label className="invoice-panel-field invoice-panel-field-wide">
       <span>{label}</span>
-      <textarea name={name} value={value} onChange={(event) => onChange(event.target.value)} />
+      <textarea
+        name={name}
+        placeholder={placeholder}
+        value={getFormValue(documentValue, placeholder)}
+        onChange={(event) => onChange(getDocumentValue(event.target.value, placeholder))}
+      />
     </label>
   );
+}
+
+const defaultDetails = {
+  offerNumber: 'ANG-2026-001',
+  offerDate: '2026-05-07',
+  validUntil: '2026-05-21',
+  internalNumber: 'INT-1001',
+  externalNumber: 'EXT-4711',
+  customerNumber: 'K-2048',
+};
+
+const defaultPosition = {
+  description: 'Leistung beschreiben',
+  unitPrice: '0',
+  quantity: '1',
+  unit: 'Stk.',
+  taxRate: '19',
+};
+
+const offerFormDefaults = {
+  sender: {
+    company: 'Belege24 Muster GmbH',
+    senderLine: 'Belege24 Muster GmbH - Musterstra\u00dfe 12 - 10115 Berlin',
+    email: 'kontakt@belege24.com',
+    phone: '+49 30 123456',
+    fax: '+49 30 123457',
+    website: 'www.belege24.com',
+  },
+  recipient: {
+    company: 'Beispielkunde GmbH',
+    attention: 'z. Hd. Frau Beispiel',
+    name: 'Einkauf',
+    street: 'Kundenstra\u00dfe 8',
+    cityLine: '20095 Hamburg',
+  },
+  details: defaultDetails,
+  footerLines: {
+    companyName: 'Belege24 Muster GmbH',
+    companyStreet: 'Musterstra\u00dfe 12',
+    companyCity: '10115 Berlin',
+    companyExtra: '',
+    vatId: 'DE123456789',
+    taxNumber: '12/345/67890',
+    commercialRegister: 'HRB 123456',
+    managingDirector: 'Gesch\u00e4ftsf\u00fchrer: Max Mustermann',
+    bankName: 'Musterbank',
+    iban: 'DE00 0000 0000 0000 0000 00',
+    bic: 'COBADEFFXXX',
+    bankExtra: '',
+  },
+  textBlocks: {
+    intro: 'vielen Dank f\u00fcr Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot:',
+    closing:
+      'Dieses Angebot ist bis zum oben genannten Datum g\u00fcltig. Wir freuen uns auf Ihre R\u00fcckmeldung und stehen f\u00fcr Fragen jederzeit zur Verf\u00fcgung.',
+  },
+  position: defaultPosition,
+};
+
+const defaultSenderAddress = splitSenderLine(offerFormDefaults.sender.senderLine, offerFormDefaults.sender.company);
+const defaultRecipientStreet = splitStreetLine(offerFormDefaults.recipient.street);
+const defaultRecipientCity = splitCityLine(offerFormDefaults.recipient.cityLine);
+
+function getFormValue(value, placeholder) {
+  return value === placeholder ? '' : value;
+}
+
+function getDocumentValue(value, placeholder) {
+  return value === '' ? placeholder : value;
+}
+
+function getFooterAutoComplete(field) {
+  switch (field) {
+    case 'companyName':
+      return 'organization';
+    case 'companyStreet':
+      return 'address-line1';
+    case 'companyCity':
+      return 'address-level2';
+    default:
+      return 'off';
+  }
+}
+
+function getOfferInputPlaceholder(name) {
+  if (name.startsWith('position-') && name.endsWith('-description')) return offerFormDefaults.position.description;
+  if (name.startsWith('position-') && name.endsWith('-unit-price')) return offerFormDefaults.position.unitPrice;
+  if (name.startsWith('position-') && name.endsWith('-quantity')) return offerFormDefaults.position.quantity;
+  if (name.startsWith('position-') && name.endsWith('-unit')) return offerFormDefaults.position.unit;
+  if (name.startsWith('position-') && name.endsWith('-tax-rate')) return offerFormDefaults.position.taxRate;
+
+  const placeholders = {
+    'sender-company': defaultSenderAddress.company,
+    'sender-street': defaultSenderAddress.street,
+    'sender-house-number': defaultSenderAddress.houseNumber,
+    'sender-postal-code': defaultSenderAddress.postalCode,
+    'sender-city': defaultSenderAddress.city,
+    'sender-email': offerFormDefaults.sender.email,
+    'sender-website': offerFormDefaults.sender.website,
+    'sender-phone': offerFormDefaults.sender.phone,
+    'sender-fax': offerFormDefaults.sender.fax,
+    'recipient-company': offerFormDefaults.recipient.company,
+    'recipient-name': offerFormDefaults.recipient.name,
+    'recipient-street': defaultRecipientStreet.street,
+    'recipient-house-number': defaultRecipientStreet.houseNumber,
+    'recipient-postal-code': defaultRecipientCity.postalCode,
+    'recipient-city': defaultRecipientCity.city,
+    'recipient-attention': offerFormDefaults.recipient.attention,
+    'offer-number': offerFormDefaults.details.offerNumber,
+    'offer-date': offerFormDefaults.details.offerDate,
+    'valid-until': offerFormDefaults.details.validUntil,
+    'internal-number': offerFormDefaults.details.internalNumber,
+    'external-number': offerFormDefaults.details.externalNumber,
+    'customer-number': offerFormDefaults.details.customerNumber,
+  };
+
+  if (name.startsWith('footer-')) {
+    return offerFormDefaults.footerLines[name.replace('footer-', '')] ?? '';
+  }
+
+  return placeholders[name] ?? '';
+}
+
+function getOfferAutoComplete(name) {
+  if (name.startsWith('footer-')) {
+    return getFooterAutoComplete(name.replace('footer-', ''));
+  }
+
+  const autoCompleteValues = {
+    'sender-company': 'organization',
+    'sender-street': 'address-line1',
+    'sender-house-number': 'address-line2',
+    'sender-postal-code': 'postal-code',
+    'sender-city': 'address-level2',
+    'sender-email': 'email',
+    'sender-website': 'url',
+    'sender-phone': 'tel',
+    'sender-fax': 'tel',
+    'recipient-company': 'organization',
+    'recipient-name': 'name',
+    'recipient-street': 'address-line1',
+    'recipient-house-number': 'address-line2',
+    'recipient-postal-code': 'postal-code',
+    'recipient-city': 'address-level2',
+  };
+
+  return autoCompleteValues[name] ?? 'off';
 }
 
 function splitStreetLine(value = '') {
@@ -95,6 +254,7 @@ function TextBlockFormSection({ block, onToggleVisible, onUpdate }) {
         <OfferPanelTextarea
           label="Text"
           name={`offer-text-${block.id}`}
+          placeholder={offerFormDefaults.textBlocks[block.id] ?? ''}
           value={block.value}
           onChange={(value) => onUpdate(block.id, { value })}
         />
@@ -159,7 +319,7 @@ export default function OfferDocumentForm({
             <div className="invoice-panel-section">
               <h3>Absender</h3>
               <div className="invoice-panel-grid">
-                <OfferPanelInput className="invoice-panel-field-wide" label="Firmenname" name="sender-company" value={senderAddress.company} onChange={(value) => updateSenderAddress('company', value)} />
+                <OfferPanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firmenname" name="sender-company" placeholder={defaultSenderAddress.company} value={senderAddress.company} onChange={(value) => updateSenderAddress('company', value)} />
                 <OfferPanelInput label="Straße" name="sender-street" value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <OfferPanelInput label="Hausnummer" name="sender-house-number" value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <OfferPanelInput label="PLZ" name="sender-postal-code" value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
@@ -171,6 +331,7 @@ export default function OfferDocumentForm({
               <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <OfferPanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.company} onChange={(value) => updateRecipient('company', value)} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
                 <OfferPanelInput label="Straße" name="recipient-street" value={recipientStreet.street} onChange={(value) => updateRecipient('street', joinStreetLine(value, recipientStreet.houseNumber))} />
                 <OfferPanelInput label="Hausnummer" name="recipient-house-number" value={recipientStreet.houseNumber} onChange={(value) => updateRecipient('street', joinStreetLine(recipientStreet.street, value))} />
                 <OfferPanelInput label="PLZ" name="recipient-postal-code" value={recipientCity.postalCode} onChange={(value) => updateRecipient('cityLine', joinCityLine(value, recipientCity.city))} />

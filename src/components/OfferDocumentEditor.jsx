@@ -76,6 +76,48 @@ const offerFooterColumns = [
   ],
 ];
 
+const offerFooterLabelPrefixes = {
+  vatId: ['USt-IdNr.:', 'USt-IdNr.', 'USt-ID:', 'USt-ID'],
+  taxNumber: ['Steuernummer:', 'Steuernummer'],
+  iban: ['IBAN:', 'IBAN'],
+  bic: ['BIC:', 'BIC'],
+  bankName: ['Bankname:', 'Bankname'],
+};
+
+const offerFooterDisplayLabels = {
+  vatId: 'USt-IdNr.:',
+  taxNumber: 'Steuernummer:',
+  iban: 'IBAN:',
+  bic: 'BIC:',
+};
+
+function normalizeOfferFooterValue(field, value = '') {
+  const prefixes = offerFooterLabelPrefixes[field] ?? [];
+  let normalized = String(value ?? '').trim();
+
+  for (const prefix of prefixes) {
+    if (normalized.toLowerCase().startsWith(prefix.toLowerCase())) {
+      normalized = normalized.slice(prefix.length).replace(/^[:\s]+/, '').trim();
+      break;
+    }
+  }
+
+  return normalized;
+}
+
+function normalizeOfferFooterLines(lines = {}) {
+  return Object.fromEntries(
+    Object.entries(lines).map(([field, value]) => [field, normalizeOfferFooterValue(field, value)]),
+  );
+}
+
+function formatOfferFooterLine(field, value = '') {
+  const normalized = normalizeOfferFooterValue(field, value);
+  const label = offerFooterDisplayLabels[field];
+
+  return normalized && label ? `${label} ${normalized}` : normalized;
+}
+
 const offerSchemaVersion = 2;
 
 const defaultOfferTextBlocks = [
@@ -362,13 +404,13 @@ export default function OfferDocumentEditor() {
     companyStreet: 'Musterstraße 12',
     companyCity: '10115 Berlin',
     companyExtra: '',
-    vatId: 'USt-IdNr.: DE123456789',
-    taxNumber: 'Steuernummer: 12/345/67890',
+    vatId: 'DE123456789',
+    taxNumber: '12/345/67890',
     commercialRegister: 'HRB 123456',
     managingDirector: 'Geschäftsführer: Max Mustermann',
-    bankName: 'Bankname: Musterbank',
-    iban: 'IBAN: DE00 0000 0000 0000 0000 00',
-    bic: 'BIC: COBADEFFXXX',
+    bankName: 'Musterbank',
+    iban: 'DE00 0000 0000 0000 0000 00',
+    bic: 'COBADEFFXXX',
     bankExtra: '',
   });
   const [recipient, setRecipient] = useState({
@@ -461,7 +503,7 @@ export default function OfferDocumentEditor() {
   }
 
   function updateFooterLine(field, value) {
-    setFooterLines((current) => ({ ...current, [field]: value }));
+    setFooterLines((current) => ({ ...current, [field]: normalizeOfferFooterValue(field, value) }));
   }
 
   function updatePosition(positionId, field, value) {
@@ -595,7 +637,7 @@ export default function OfferDocumentEditor() {
         fieldConfig,
         introText: textBlocks.find((block) => block.id === 'intro')?.value ?? '',
         closingText: textBlocks.find((block) => block.id === 'closing')?.value ?? '',
-        footerLines,
+        footerLines: normalizeOfferFooterLines(footerLines),
       },
     };
   }
@@ -625,7 +667,7 @@ export default function OfferDocumentEditor() {
       setSender((current) => ({ ...current, ...(data.sender ?? {}) }));
       setRecipient((current) => ({ ...current, ...(data.recipient ?? {}) }));
       setDetails((current) => ({ ...current, ...(data.details ?? {}) }));
-      setFooterLines((current) => ({ ...current, ...(data.footerLines ?? {}) }));
+      setFooterLines((current) => normalizeOfferFooterLines({ ...current, ...(data.footerLines ?? {}) }));
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks, data.introText, data.closingText));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
@@ -860,9 +902,11 @@ export default function OfferDocumentEditor() {
             offerFooterColumns[2],
           ]}
           footerLines={footerLines}
+          formatFooterLine={formatOfferFooterLine}
           hiddenFields={getHiddenFields('footerMiddle', offerFooterColumns[1])}
           onFooterLineChange={updateFooterLine}
           onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)}
+          parseFooterLine={normalizeOfferFooterValue}
           onToggleField={(field) => toggleConfiguredField('footerMiddle', field)}
         />
       </A4Page>
@@ -1340,7 +1384,7 @@ function OfferPrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
       <section>
         {visibleFooterMiddleDefinitions
-          .map((definition) => footerLines[definition.field])
+          .map((definition) => formatOfferFooterLine(definition.field, footerLines[definition.field]))
           .filter(Boolean)
           .map((line) => (
             <p key={line}>{line}</p>
@@ -1348,7 +1392,7 @@ function OfferPrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
       <section>
         {['bankName', 'iban', 'bic', 'bankExtra']
-          .map((field) => footerLines[field])
+          .map((field) => formatOfferFooterLine(field, footerLines[field]))
           .filter(Boolean)
           .map((line) => (
             <p key={line}>{line}</p>
