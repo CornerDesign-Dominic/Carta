@@ -8,6 +8,7 @@ function OfferPanelInput({
   name,
   onChange,
   placeholder = '',
+  spellCheck,
   type = 'text',
   value,
 }) {
@@ -23,6 +24,7 @@ function OfferPanelInput({
         inputMode={inputMode}
         name={name}
         placeholder={effectivePlaceholder}
+        spellCheck={spellCheck}
         type={type}
         value={getFormValue(documentValue, effectivePlaceholder)}
         onChange={(event) => onChange(getDocumentValue(event.target.value, effectivePlaceholder))}
@@ -168,11 +170,11 @@ function getOfferInputPlaceholder(name) {
     'recipient-postal-code': defaultRecipientCity.postalCode,
     'recipient-city': defaultRecipientCity.city,
     'recipient-attention': offerFormDefaults.recipient.attention,
-    'offer-number': offerFormDefaults.details.offerNumber,
+    'offer-document-reference': offerFormDefaults.details.offerNumber,
     'offer-date': offerFormDefaults.details.offerDate,
     'valid-until': offerFormDefaults.details.validUntil,
-    'internal-number': offerFormDefaults.details.internalNumber,
-    'external-number': offerFormDefaults.details.externalNumber,
+    'offer-internal-reference': offerFormDefaults.details.internalNumber,
+    'offer-external-reference': offerFormDefaults.details.externalNumber,
     'customer-number': offerFormDefaults.details.customerNumber,
   };
 
@@ -405,7 +407,7 @@ export default function OfferDocumentForm({
             <div className="invoice-panel-section">
               <h3>Angebotsdaten</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <OfferPanelInput label="Angebotsnummer" name="offer-number" value={details.offerNumber} onChange={(value) => updateDetail('offerNumber', value)} />
+                <OfferPanelInput autoComplete="off" inputMode="text" label="Angebotsnummer" name="offer-document-reference" spellCheck={false} value={details.offerNumber} onChange={(value) => updateDetail('offerNumber', value)} />
                 <OfferPanelInput label="Angebotsdatum" name="offer-date" type="date" value={details.offerDate} onChange={(value) => updateDetail('offerDate', value)} />
                 <OfferPanelInput label="Gültig bis" name="valid-until" type="date" value={details.validUntil} onChange={(value) => updateDetail('validUntil', value)} />
               </div>
@@ -414,8 +416,8 @@ export default function OfferDocumentForm({
             <div className="invoice-panel-section">
               <h3>Referenzen</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <OfferPanelInput label="Interne Nummer" name="internal-number" value={details.internalNumber} onChange={(value) => updateDetail('internalNumber', value)} />
-                <OfferPanelInput label="Externe Nummer" name="external-number" value={details.externalNumber} onChange={(value) => updateDetail('externalNumber', value)} />
+                <OfferPanelInput autoComplete="off" inputMode="text" label="Interne Nummer" name="offer-internal-reference" spellCheck={false} value={details.internalNumber} onChange={(value) => updateDetail('internalNumber', value)} />
+                <OfferPanelInput autoComplete="off" inputMode="text" label="Externe Nummer" name="offer-external-reference" spellCheck={false} value={details.externalNumber} onChange={(value) => updateDetail('externalNumber', value)} />
                 <OfferPanelInput label="Kundennummer" name="customer-number" value={details.customerNumber} onChange={(value) => updateDetail('customerNumber', value)} />
               </div>
             </div>
