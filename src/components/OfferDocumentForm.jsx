@@ -422,12 +422,12 @@ export default function OfferDocumentForm({
             <h3>Eigene Kontakt</h3>
             <div className="invoice-panel-grid offer-contact-form-grid">
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <OfferPanelInput autoComplete="email" className="invoice-panel-field-wide" label="E-Mail" name="sender-email" value={sender.email} onChange={(value) => updateSender('email', value)} />
-                <OfferPanelInput autoComplete="url" className="invoice-panel-field-wide" label="Website" name="sender-website" value={sender.website} onChange={(value) => updateSender('website', value)} />
+                <OfferPanelInput autoComplete="email" className="invoice-panel-field-wide" label="E-Mail" name="sender-email" value={sender.contact.email} onChange={(value) => updateSender('email', value)} />
+                <OfferPanelInput autoComplete="url" className="invoice-panel-field-wide" label="Website" name="sender-website" value={sender.contact.website} onChange={(value) => updateSender('website', value)} />
               </div>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <OfferPanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Telefon" name="sender-phone" value={sender.phone} onChange={(value) => updateSender('phone', value)} />
-                <OfferPanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Fax" name="sender-fax" value={sender.fax} onChange={(value) => updateSender('fax', value)} />
+                <OfferPanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Telefon" name="sender-phone" value={sender.contact.phone} onChange={(value) => updateSender('phone', value)} />
+                <OfferPanelInput autoComplete="tel" className="invoice-panel-field-wide" label="Fax" name="sender-fax" value={sender.contact.fax} onChange={(value) => updateSender('fax', value)} />
               </div>
             </div>
           </div>

@@ -444,6 +444,12 @@ function formatPercent(value) {
   }).format(value);
 }
 
+function formatGermanDate(value) {
+  const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+}
+
 function calculatePosition(position) {
   const net = toNumber(position.unitPrice) * toNumber(position.quantity);
   const taxRate = Math.max(0, toNumber(position.taxRate));
@@ -1571,7 +1577,7 @@ function OfferPrintFirstPageHeader({
               key={definition.field}
               emphasized={definition.field === 'offerNumber'}
               label={labels[definition.field]}
-              value={details[definition.field]}
+              value={definition.type === 'date' ? formatGermanDate(details[definition.field]) : details[definition.field]}
             />
           ))}
         </div>

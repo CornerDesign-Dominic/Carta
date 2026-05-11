@@ -1,5 +1,11 @@
 import { FieldActions, HiddenFieldActions } from './FieldActions.jsx';
 
+function formatGermanDate(value) {
+  const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+}
+
 export default function DocumentMetaBlock({
   dateInputRefs,
   details,
@@ -28,6 +34,9 @@ export default function DocumentMetaBlock({
             />
             {type === 'date' ? (
               <span className="invoice-date-field">
+                <span className="invoice-date-display" aria-hidden="true">
+                  {formatGermanDate(details[field])}
+                </span>
                 <input
                   ref={(element) => {
                     dateInputRefs.current[field] = element;
