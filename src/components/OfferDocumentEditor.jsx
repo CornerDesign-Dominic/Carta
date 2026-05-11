@@ -53,7 +53,10 @@ const offerMetaFields = [
   { field: 'customerNumber', ariaLabel: 'Kundennummer', type: 'text' },
 ];
 
-const offerRecipientOptionalFields = [{ field: 'attention', label: 'Zusatz / zu Händen' }];
+const offerRecipientOptionalFields = [
+  { field: 'attention', label: 'Zusatz / zu Händen' },
+  { field: 'name', label: 'Name / Abteilung' },
+];
 
 const offerFooterColumns = [
   [
@@ -1297,10 +1300,11 @@ function OfferPrintFirstPageHeader({
   visibleRecipientFields,
 }) {
   const showRecipientAttention = visibleRecipientFields.some((definition) => definition.field === 'attention');
+  const showRecipientName = visibleRecipientFields.some((definition) => definition.field === 'name');
   const recipientLines = [
     recipient.company,
     showRecipientAttention ? recipient.attention : '',
-    recipient.name,
+    showRecipientName ? recipient.name : '',
     recipient.street,
     recipient.cityLine,
   ];

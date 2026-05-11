@@ -1,6 +1,9 @@
 import { FieldActions, HiddenFieldActions } from './FieldActions.jsx';
 
-const recipientOptionalFields = [{ field: 'attention', label: 'Zusatz / zu Haenden' }];
+const recipientOptionalFields = [
+  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'name', label: 'Name / Abteilung' },
+];
 
 export default function RecipientBlock({
   hiddenFields = [],
@@ -11,6 +14,7 @@ export default function RecipientBlock({
   senderLine,
 }) {
   const isAttentionHidden = hiddenFields.includes('attention');
+  const isNameHidden = hiddenFields.includes('name');
 
   return (
     <div className="invoice-recipient-fields">
@@ -49,11 +53,23 @@ export default function RecipientBlock({
           onToggle={onToggleField}
         />
       )}
-      <input
-        aria-label="Ansprechpartner oder Name"
-        value={recipient.name}
-        onChange={(event) => onRecipientChange('name', event.target.value)}
-      />
+      {!onToggleField && (
+        <input
+          aria-label="Ansprechpartner oder Name"
+          value={recipient.name}
+          onChange={(event) => onRecipientChange('name', event.target.value)}
+        />
+      )}
+      {onToggleField && !isNameHidden && (
+        <div className="invoice-config-row">
+          <input
+            aria-label="Ansprechpartner oder Name"
+            value={recipient.name}
+            onChange={(event) => onRecipientChange('name', event.target.value)}
+          />
+          <FieldActions label="Name / Abteilung" onToggle={() => onToggleField?.('name')} />
+        </div>
+      )}
       <input
         aria-label="Empfaenger Strasse und Hausnummer"
         value={recipient.street}
