@@ -1933,6 +1933,14 @@ h1 {
   min-width: 0;
 }
 
+.invoice-recipient-config-row {
+  display: grid;
+}
+
+.invoice-recipient-config-row > input {
+  width: 100%;
+}
+
 .invoice-sender-side .invoice-config-row {
   height: 18px;
 }
@@ -1968,9 +1976,9 @@ h1 {
   height: 0;
 }
 
-.invoice-recipient-actions {
+.invoice-recipient-hidden-actions {
   top: 30px;
-  right: calc(100% + 7px);
+  right: calc(100% + 29px);
   transform: none;
   flex-direction: column;
 }
