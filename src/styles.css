@@ -161,7 +161,7 @@ output {
 
 .paper-page {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: clamp(24px, 3.5vw, 48px);
   background: rgba(255, 254, 252, 0.94);
@@ -512,7 +512,7 @@ h1 {
 .documents-layout {
   position: relative;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
   min-width: 0;
 }
@@ -3958,7 +3958,7 @@ h1 {
 }
 
 .knowledge-layout {
-  max-width: 1100px;
+  max-width: 1000px;
 }
 
 .knowledge-sidebar {
