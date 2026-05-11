@@ -1504,6 +1504,49 @@ h1 {
   outline: none;
 }
 
+.offer-footer-labeled-field {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.offer-footer-labeled-field > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.offer-footer-labeled-row {
+  display: grid;
+  grid-template-columns: minmax(74px, 0.7fr) minmax(0, 1fr);
+  gap: 6px;
+  min-width: 0;
+}
+
+.offer-footer-labeled-row input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(190, 185, 176, 0.68);
+  border-radius: 4px;
+  padding: 7px 8px;
+  background: rgba(255, 255, 253, 0.98);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.84rem;
+  line-height: 1.2;
+}
+
+.offer-footer-labeled-row input::placeholder {
+  color: rgba(105, 104, 100, 0.64);
+}
+
+.offer-footer-labeled-row input:focus {
+  border-color: rgba(79, 111, 104, 0.42);
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(79, 111, 104, 0.075);
+  outline: none;
+}
+
 .invoice-panel-positions {
   display: grid;
   gap: 7px;

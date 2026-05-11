@@ -76,6 +76,20 @@ const offerFooterColumns = [
   ],
 ];
 
+const offerFooterLabeledFields = {
+  vatId: 'vatIdLabel',
+  taxNumber: 'taxNumberLabel',
+  iban: 'ibanLabel',
+  bic: 'bicLabel',
+};
+
+const offerFooterDefaultLabels = {
+  vatId: 'USt-IdNr.:',
+  taxNumber: 'Steuernummer:',
+  iban: 'IBAN:',
+  bic: 'BIC:',
+};
+
 const offerFooterLabelPrefixes = {
   vatId: ['USt-IdNr.:', 'USt-IdNr.', 'USt-ID:', 'USt-ID'],
   taxNumber: ['Steuernummer:', 'Steuernummer'],
@@ -84,38 +98,73 @@ const offerFooterLabelPrefixes = {
   bankName: ['Bankname:', 'Bankname'],
 };
 
-const offerFooterDisplayLabels = {
-  vatId: 'USt-IdNr.:',
-  taxNumber: 'Steuernummer:',
-  iban: 'IBAN:',
-  bic: 'BIC:',
-};
-
-function normalizeOfferFooterValue(field, value = '') {
+function splitOfferFooterLabelAndValue(field, value = '', fallbackLabel = offerFooterDefaultLabels[field] ?? '') {
   const prefixes = offerFooterLabelPrefixes[field] ?? [];
   let normalized = String(value ?? '').trim();
+  let label = fallbackLabel;
 
   for (const prefix of prefixes) {
     if (normalized.toLowerCase().startsWith(prefix.toLowerCase())) {
+      label = prefix.endsWith(':') ? prefix : `${prefix}:`;
       normalized = normalized.slice(prefix.length).replace(/^[:\s]+/, '').trim();
       break;
     }
   }
 
-  return normalized;
+  return { label, value: normalized };
+}
+
+function normalizeOfferFooterValue(field, value = '') {
+  return splitOfferFooterLabelAndValue(field, value).value;
 }
 
 function normalizeOfferFooterLines(lines = {}) {
-  return Object.fromEntries(
-    Object.entries(lines).map(([field, value]) => [field, normalizeOfferFooterValue(field, value)]),
+  const normalized = Object.fromEntries(
+    Object.entries(lines).map(([field, value]) => [field, String(value ?? '').trim()]),
   );
+
+  Object.entries(offerFooterLabeledFields).forEach(([field, labelField]) => {
+    const hasExplicitLabel = Object.prototype.hasOwnProperty.call(lines, labelField);
+    const { label, value } = splitOfferFooterLabelAndValue(
+      field,
+      lines[field],
+      hasExplicitLabel ? String(lines[labelField] ?? '') : offerFooterDefaultLabels[field],
+    );
+
+    normalized[labelField] = hasExplicitLabel ? String(lines[labelField] ?? '').trim() : label;
+    normalized[field] = value;
+  });
+
+  normalized.bankName = normalizeOfferFooterValue('bankName', normalized.bankName);
+
+  return normalized;
 }
 
-function formatOfferFooterLine(field, value = '') {
-  const normalized = normalizeOfferFooterValue(field, value);
-  const label = offerFooterDisplayLabels[field];
+function formatOfferFooterLine(field, value = '', footerLines = {}) {
+  const normalized = String(value ?? '').trim();
+  const labelField = offerFooterLabeledFields[field];
+  const label = labelField ? String(footerLines[labelField] ?? '').trim() : '';
 
-  return normalized && label ? `${label} ${normalized}` : normalized;
+  if (!labelField) {
+    return normalized;
+  }
+
+  return [label, normalized].filter(Boolean).join(' ');
+}
+
+function parseOfferFooterLine(field, value = '') {
+  const labelField = offerFooterLabeledFields[field];
+
+  if (!labelField) {
+    return normalizeOfferFooterValue(field, value);
+  }
+
+  const { label, value: normalizedValue } = splitOfferFooterLabelAndValue(field, value, '');
+
+  return {
+    [labelField]: label,
+    [field]: normalizedValue,
+  };
 }
 
 const offerSchemaVersion = 2;
@@ -404,12 +453,16 @@ export default function OfferDocumentEditor() {
     companyStreet: 'Musterstraße 12',
     companyCity: '10115 Berlin',
     companyExtra: '',
+    vatIdLabel: 'USt-IdNr.:',
     vatId: 'DE123456789',
+    taxNumberLabel: 'Steuernummer:',
     taxNumber: '12/345/67890',
     commercialRegister: 'HRB 123456',
     managingDirector: 'Geschäftsführer: Max Mustermann',
     bankName: 'Musterbank',
+    ibanLabel: 'IBAN:',
     iban: 'DE00 0000 0000 0000 0000 00',
+    bicLabel: 'BIC:',
     bic: 'COBADEFFXXX',
     bankExtra: '',
   });
@@ -503,7 +556,12 @@ export default function OfferDocumentEditor() {
   }
 
   function updateFooterLine(field, value) {
-    setFooterLines((current) => ({ ...current, [field]: normalizeOfferFooterValue(field, value) }));
+    setFooterLines((current) =>
+      normalizeOfferFooterLines({
+        ...current,
+        ...(value && typeof value === 'object' ? value : { [field]: value }),
+      }),
+    );
   }
 
   function updatePosition(positionId, field, value) {
@@ -902,11 +960,11 @@ export default function OfferDocumentEditor() {
             offerFooterColumns[2],
           ]}
           footerLines={footerLines}
-          formatFooterLine={formatOfferFooterLine}
+          formatFooterLine={(field, value) => formatOfferFooterLine(field, value, footerLines)}
           hiddenFields={getHiddenFields('footerMiddle', offerFooterColumns[1])}
           onFooterLineChange={updateFooterLine}
           onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)}
-          parseFooterLine={normalizeOfferFooterValue}
+          parseFooterLine={parseOfferFooterLine}
           onToggleField={(field) => toggleConfiguredField('footerMiddle', field)}
         />
       </A4Page>
@@ -1384,7 +1442,7 @@ function OfferPrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
       <section>
         {visibleFooterMiddleDefinitions
-          .map((definition) => formatOfferFooterLine(definition.field, footerLines[definition.field]))
+          .map((definition) => formatOfferFooterLine(definition.field, footerLines[definition.field], footerLines))
           .filter(Boolean)
           .map((line) => (
             <p key={line}>{line}</p>
@@ -1392,7 +1450,7 @@ function OfferPrintFooter({ footerLines, visibleFooterMiddleDefinitions }) {
       </section>
       <section>
         {['bankName', 'iban', 'bic', 'bankExtra']
-          .map((field) => formatOfferFooterLine(field, footerLines[field]))
+          .map((field) => formatOfferFooterLine(field, footerLines[field], footerLines))
           .filter(Boolean)
           .map((line) => (
             <p key={line}>{line}</p>

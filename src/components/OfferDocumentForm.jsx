@@ -84,12 +84,16 @@ const offerFormDefaults = {
     companyStreet: 'Musterstra\u00dfe 12',
     companyCity: '10115 Berlin',
     companyExtra: '',
+    vatIdLabel: 'USt-IdNr.:',
     vatId: 'DE123456789',
+    taxNumberLabel: 'Steuernummer:',
     taxNumber: '12/345/67890',
     commercialRegister: 'HRB 123456',
     managingDirector: 'Gesch\u00e4ftsf\u00fchrer: Max Mustermann',
     bankName: 'Musterbank',
+    ibanLabel: 'IBAN:',
     iban: 'DE00 0000 0000 0000 0000 00',
+    bicLabel: 'BIC:',
     bic: 'COBADEFFXXX',
     bankExtra: '',
   },
@@ -104,6 +108,13 @@ const offerFormDefaults = {
 const defaultSenderAddress = splitSenderLine(offerFormDefaults.sender.senderLine, offerFormDefaults.sender.company);
 const defaultRecipientStreet = splitStreetLine(offerFormDefaults.recipient.street);
 const defaultRecipientCity = splitCityLine(offerFormDefaults.recipient.cityLine);
+
+const offerFooterLabelFields = {
+  vatId: 'vatIdLabel',
+  taxNumber: 'taxNumberLabel',
+  iban: 'ibanLabel',
+  bic: 'bicLabel',
+};
 
 function getFormValue(value, placeholder) {
   return value === placeholder ? '' : value;
@@ -257,6 +268,33 @@ function TextBlockFormSection({ block, onToggleVisible, onUpdate }) {
           placeholder={offerFormDefaults.textBlocks[block.id] ?? ''}
           value={block.value}
           onChange={(value) => onUpdate(block.id, { value })}
+        />
+      </div>
+    </div>
+  );
+}
+
+function LabeledFooterValueInput({ field, label, footerLines, updateFooterLine }) {
+  const labelField = offerFooterLabelFields[field];
+
+  return (
+    <div className="offer-footer-labeled-field">
+      <span>{label}</span>
+      <div className="offer-footer-labeled-row">
+        <input
+          aria-label={`${label} Label`}
+          autoComplete="off"
+          name={`footer-${labelField}`}
+          value={footerLines[labelField] ?? ''}
+          onChange={(event) => updateFooterLine(labelField, event.target.value)}
+        />
+        <input
+          aria-label={`${label} Wert`}
+          autoComplete="off"
+          name={`footer-${field}`}
+          placeholder={offerFormDefaults.footerLines[field] ?? ''}
+          value={getFormValue(footerLines[field] ?? offerFormDefaults.footerLines[field], offerFormDefaults.footerLines[field])}
+          onChange={(event) => updateFooterLine(field, getDocumentValue(event.target.value, offerFormDefaults.footerLines[field]))}
         />
       </div>
     </div>
@@ -457,16 +495,26 @@ export default function OfferDocumentForm({
                 <div className="invoice-panel-section offer-footer-form-column" key={column.title}>
                   <h3 className="invoice-panel-muted-heading">{column.title}</h3>
                   <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                    {column.fields.map(([field, label]) => (
-                      <OfferPanelInput
-                        key={field}
-                        className="invoice-panel-field-wide"
-                        label={label}
-                        name={`footer-${field}`}
-                        value={footerLines[field]}
-                        onChange={(value) => updateFooterLine(field, value)}
-                      />
-                    ))}
+                    {column.fields.map(([field, label]) =>
+                      offerFooterLabelFields[field] ? (
+                        <LabeledFooterValueInput
+                          key={field}
+                          field={field}
+                          footerLines={footerLines}
+                          label={label}
+                          updateFooterLine={updateFooterLine}
+                        />
+                      ) : (
+                        <OfferPanelInput
+                          key={field}
+                          className="invoice-panel-field-wide"
+                          label={label}
+                          name={`footer-${field}`}
+                          value={footerLines[field]}
+                          onChange={(value) => updateFooterLine(field, value)}
+                        />
+                      ),
+                    )}
                   </div>
                 </div>
               ))}
