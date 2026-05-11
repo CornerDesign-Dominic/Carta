@@ -1136,7 +1136,7 @@ h1 {
   color: #3f5d57;
   font-size: 0.84rem;
   font-weight: 720;
-  line-height: 1.2;
+  line-height: 1.35;
 }
 
 .offer-add-position:hover {
@@ -1473,6 +1473,7 @@ h1 {
 
 .invoice-panel-field input,
 .invoice-panel-field textarea {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
   border: 1px solid rgba(190, 185, 176, 0.68);
@@ -1489,6 +1490,11 @@ h1 {
   min-height: 62px;
   resize: vertical;
   line-height: 1.45;
+}
+
+.invoice-panel-field input {
+  min-height: 34px;
+  overflow: visible;
 }
 
 .invoice-panel-field input::placeholder,
@@ -1524,6 +1530,7 @@ h1 {
 }
 
 .offer-footer-labeled-row input {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
   border: 1px solid rgba(190, 185, 176, 0.68);
@@ -1533,7 +1540,12 @@ h1 {
   color: var(--ink);
   font: inherit;
   font-size: 0.84rem;
-  line-height: 1.2;
+  line-height: 1.35;
+}
+
+.invoice-panel-field input {
+  min-height: 34px;
+  overflow: visible;
 }
 
 .offer-footer-labeled-row input::placeholder {
@@ -2058,7 +2070,9 @@ h1 {
   margin: 0 0 14px;
   color: #232320;
   font-size: 1.55rem;
-  line-height: 1.2;
+  line-height: 1.35;
+  min-height: 34px;
+  overflow: visible;
 }
 
 .invoice-document-title .document-title-label {
