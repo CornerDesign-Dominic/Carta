@@ -27,7 +27,7 @@ export default function DocumentToolbar({
         </button>
       </div>
       <div className="visual-toolbar-group">
-        <button type="button" title="Druckdialog oeffnen" aria-label="Druckdialog oeffnen" onClick={onPrint}>
+        <button type="button" title="Druckdialog öffnen" aria-label="Druckdialog öffnen" onClick={onPrint}>
           Drucken
         </button>
         <button

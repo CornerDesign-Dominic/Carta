@@ -63,7 +63,7 @@ const invoiceRecipientOptionalFields = [
 const invoiceFooterColumns = [
   [
     { field: 'companyName', label: 'Firma' },
-    { field: 'companyStreet', label: 'Strasse und Hausnummer' },
+    { field: 'companyStreet', label: 'Straße und Hausnummer' },
     { field: 'companyCity', label: 'PLZ und Stadt' },
     { field: 'companyExtra', label: 'Zusatzzeile Firma' },
   ],
@@ -71,7 +71,7 @@ const invoiceFooterColumns = [
     { field: 'vatId', label: 'USt-IdNr.' },
     { field: 'taxNumber', label: 'Steuernummer' },
     { field: 'commercialRegister', label: 'Handelsregister' },
-    { field: 'managingDirector', label: 'Geschaeftsfuehrer' },
+    { field: 'managingDirector', label: 'Geschäftsführer' },
   ],
   [
     { field: 'bankName', label: 'Bankname' },
@@ -106,12 +106,12 @@ const defaultInvoiceData = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
     },
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     contact: {
       email: 'kontakt@belege24.com',
       phone: '+49 30 123456',
@@ -124,7 +124,7 @@ const defaultInvoiceData = {
     attention: 'z. Hd. Frau Beispiel',
     name: 'Buchhaltung',
     address: {
-      street: 'Kundenstrasse',
+      street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
       city: 'Hamburg',
@@ -143,7 +143,7 @@ const defaultInvoiceData = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -155,7 +155,7 @@ const defaultInvoiceData = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -478,7 +478,7 @@ function downloadJson(data, filename) {
 
 function validateInvoiceTemplate(template) {
   if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gueltiges Rechnungsdokument.');
+    throw new Error('Die JSON-Datei ist kein gültiges Rechnungsdokument.');
   }
 
   if (template.documentType !== 'invoice') {
@@ -486,11 +486,11 @@ function validateInvoiceTemplate(template) {
   }
 
   if (template.schemaVersion !== invoiceSchemaVersion) {
-    throw new Error('Diese Rechnungsversion wird nicht unterstuetzt.');
+    throw new Error('Diese Rechnungsversion wird nicht unterstützt.');
   }
 
   if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthaelt keine Rechnungsdaten.');
+    throw new Error('Die JSON-Datei enthält keine Rechnungsdaten.');
   }
 
   return template.data;
@@ -508,7 +508,7 @@ function createInvoicePrintItems({ positions, textBlocks }) {
   ];
 }
 
-export default function InvoiceForm() {
+export default function InvoiceDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
@@ -790,7 +790,7 @@ export default function InvoiceForm() {
     }
 
     if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswaehlen.');
+      window.alert('Bitte eine JSON-Datei auswählen.');
       return;
     }
 
@@ -821,7 +821,7 @@ export default function InvoiceForm() {
       });
     } catch (error) {
       window.alert(
-        `PDF konnte nicht erstellt werden. Pruefe bitte, ob die Vercel Function lokal oder auf Vercel verfuegbar ist.\n\n${error.message}`,
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
       );
     } finally {
       setIsExportRenderActive(false);
@@ -990,7 +990,7 @@ export default function InvoiceForm() {
         />
 
         <button className="offer-add-position" type="button" onClick={addPosition}>
-          + Position hinzufuegen
+          + Position hinzufügen
         </button>
 
         <TotalsBox

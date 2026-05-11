@@ -24,8 +24,8 @@ export default function OpenItemsTable({
           <tr>
             {[
               ['invoiceNumber', 'Tabellenkopf Rechnungsnummer'],
-              ['dueDate', 'Tabellenkopf Faelligkeitsdatum'],
-              ['overdueDays', 'Tabellenkopf Faelligkeitstage'],
+              ['dueDate', 'Tabellenkopf Fälligkeitsdatum'],
+              ['overdueDays', 'Tabellenkopf Fälligkeitstage'],
               ['invoiceTotal', 'Tabellenkopf Rechnungsbetrag brutto'],
             ].map(([field, ariaLabel]) => (
               <th key={field}>
@@ -93,7 +93,7 @@ export default function OpenItemsTable({
                       dateInputRefs.current[`dueDate-${item.id}`] = element;
                     }}
                     className="invoice-date-input"
-                    aria-label={`Faelligkeitsdatum ${index + 1}`}
+                    aria-label={`Fälligkeitsdatum ${index + 1}`}
                     type="date"
                     value={item.dueDate}
                     onChange={(event) => onItemChange(item.id, 'dueDate', event.target.value)}
@@ -101,7 +101,7 @@ export default function OpenItemsTable({
                   <button
                     className="invoice-icon-action invoice-date-picker"
                     type="button"
-                    aria-label={`Faelligkeitsdatum ${index + 1} auswaehlen`}
+                    aria-label={`Fälligkeitsdatum ${index + 1} auswählen`}
                     onClick={() => onDatePicker(`dueDate-${item.id}`)}
                   >
                     <span aria-hidden="true" />
@@ -110,7 +110,7 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <input
-                  aria-label={`Faelligkeitstage ${index + 1}`}
+                  aria-label={`Fälligkeitstage ${index + 1}`}
                   inputMode="numeric"
                   type="text"
                   value={item.overdueDays}
@@ -133,7 +133,7 @@ export default function OpenItemsTable({
       </table>
 
       <button className="offer-add-position" type="button" onClick={onAddItem}>
-        + Rechnung hinzufuegen
+        + Rechnung hinzufügen
       </button>
     </>
   );

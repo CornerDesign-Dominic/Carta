@@ -22,12 +22,12 @@ const initialReminderLabels = {
   reference: 'Bezug',
   customerNumber: 'Kundennummer',
   invoiceNumber: 'Rechnungsnummer',
-  dueDate: 'Faelligkeitsdatum',
-  overdueDays: 'Faelligkeitstage',
+  dueDate: 'Fälligkeitsdatum',
+  overdueDays: 'Fälligkeitstage',
   invoiceTotal: 'Rechnungsbetrag brutto',
   sumInvoices: 'Summe Rechnungen',
   interest: 'Zinsen',
-  reminderFee: 'Mahngebuehr',
+  reminderFee: 'Mahngebühr',
   grandTotal: 'Gesamt zu zahlender Betrag',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
@@ -64,7 +64,7 @@ const reminderRecipientOptionalFields = [
 const reminderFooterColumns = [
   [
     { field: 'companyName', label: 'Firma' },
-    { field: 'companyStreet', label: 'Strasse und Hausnummer' },
+    { field: 'companyStreet', label: 'Straße und Hausnummer' },
     { field: 'companyCity', label: 'PLZ und Stadt' },
     { field: 'companyExtra', label: 'Zusatzzeile Firma' },
   ],
@@ -72,7 +72,7 @@ const reminderFooterColumns = [
     { field: 'vatId', label: 'USt-IdNr.' },
     { field: 'taxNumber', label: 'Steuernummer' },
     { field: 'commercialRegister', label: 'Handelsregister' },
-    { field: 'managingDirector', label: 'Geschaeftsfuehrer' },
+    { field: 'managingDirector', label: 'Geschäftsführer' },
   ],
   [
     { field: 'bankName', label: 'Bankname' },
@@ -93,12 +93,12 @@ const defaultReminderData = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
     },
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     contact: {
       email: 'kontakt@belege24.com',
       phone: '+49 30 123456',
@@ -111,7 +111,7 @@ const defaultReminderData = {
     attention: 'z. Hd. Frau Beispiel',
     name: 'Buchhaltung',
     address: {
-      street: 'Kundenstrasse',
+      street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
       city: 'Hamburg',
@@ -127,7 +127,7 @@ const defaultReminderData = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -139,7 +139,7 @@ const defaultReminderData = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -431,7 +431,7 @@ function downloadJson(data, filename) {
 
 function validateReminderTemplate(template) {
   if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gueltiges Mahnungsdokument.');
+    throw new Error('Die JSON-Datei ist kein gültiges Mahnungsdokument.');
   }
 
   if (template.documentType !== 'reminder') {
@@ -439,11 +439,11 @@ function validateReminderTemplate(template) {
   }
 
   if (template.schemaVersion !== reminderSchemaVersion) {
-    throw new Error('Diese Mahnungsversion wird nicht unterstuetzt.');
+    throw new Error('Diese Mahnungsversion wird nicht unterstützt.');
   }
 
   if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthaelt keine Mahnungsdaten.');
+    throw new Error('Die JSON-Datei enthält keine Mahnungsdaten.');
   }
 
   return template.data;
@@ -755,7 +755,7 @@ export default function ReminderDocumentEditor() {
     }
 
     if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswaehlen.');
+      window.alert('Bitte eine JSON-Datei auswählen.');
       return;
     }
 
@@ -787,7 +787,7 @@ export default function ReminderDocumentEditor() {
       });
     } catch (error) {
       window.alert(
-        `PDF konnte nicht erstellt werden. Pruefe bitte, ob die Vercel Function lokal oder auf Vercel verfuegbar ist.\n\n${error.message}`,
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
       );
     } finally {
       setIsExportRenderActive(false);
@@ -1020,8 +1020,8 @@ function ReminderSummary({ charges, labels, totals, updateCharge, updateLabel })
         <input className="reminder-summary-value" aria-label="Zinsen" inputMode="decimal" type="text" value={charges.interest} onChange={(event) => updateCharge('interest', event.target.value)} />
       </div>
       <div>
-        <input className="document-label-input" aria-label="Beschriftung Mahngebuehr" value={labels.reminderFee} onChange={(event) => updateLabel('reminderFee', event.target.value)} />
-        <input className="reminder-summary-value" aria-label="Mahngebuehr" inputMode="decimal" type="text" value={charges.reminderFee} onChange={(event) => updateCharge('reminderFee', event.target.value)} />
+        <input className="document-label-input" aria-label="Beschriftung Mahngebühr" value={labels.reminderFee} onChange={(event) => updateLabel('reminderFee', event.target.value)} />
+        <input className="reminder-summary-value" aria-label="Mahngebühr" inputMode="decimal" type="text" value={charges.reminderFee} onChange={(event) => updateCharge('reminderFee', event.target.value)} />
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Gesamt zu zahlender Betrag" value={labels.grandTotal} onChange={(event) => updateLabel('grandTotal', event.target.value)} />

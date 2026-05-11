@@ -3,9 +3,9 @@ import { MoveDownIcon, MoveUpIcon } from './documentBlocks/FieldActions.jsx';
 const reminderFormDefaults = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -22,7 +22,7 @@ const reminderFormDefaults = {
     attention: 'z. Hd. Frau Beispiel',
     name: 'Buchhaltung',
     address: {
-      street: 'Kundenstrasse',
+      street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
       city: 'Hamburg',
@@ -54,7 +54,7 @@ const reminderFormDefaults = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -66,7 +66,7 @@ const reminderFormDefaults = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -311,7 +311,7 @@ export default function ReminderDocumentForm({
     <section className="invoice-form-panel" aria-label="Mahnungsformular">
       <button className="invoice-form-panel-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>
         <span className="invoice-form-panel-toggle-label">
-          {isOpen ? 'Formular schliessen' : 'Formular oeffnen'}
+          {isOpen ? 'Formular schließen' : 'Formular öffnen'}
         </span>
         <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
           {isOpen ? '-' : '+'}
@@ -326,7 +326,7 @@ export default function ReminderDocumentForm({
               <div className="invoice-panel-grid">
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Firmenname" name="sender-company" value={sender.companyName} onChange={(value) => updateSenderAddress('company', value)} />
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.returnAddress} onChange={(value) => updateSender('senderLine', value)} />
-                <ReminderPanelInput label="Strasse" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
+                <ReminderPanelInput label="Straße" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <ReminderPanelInput label="Hausnummer" name="sender-house-number" value={sender.address.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <ReminderPanelInput label="PLZ" name="sender-postal-code" value={sender.address.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
                 <ReminderPanelInput label="Stadt" name="sender-city" value={sender.address.city} onChange={(value) => updateSenderAddress('city', value)} />
@@ -334,12 +334,12 @@ export default function ReminderDocumentForm({
             </div>
 
             <div className="invoice-panel-section">
-              <h3>Empfaenger</h3>
+              <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.companyName} onChange={(value) => updateRecipient('company', value)} />
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Zusatz / zu Haenden" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
-                <ReminderPanelInput label="Strasse" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
+                <ReminderPanelInput label="Straße" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
                 <ReminderPanelInput label="Hausnummer" name="recipient-house-number" value={recipient.address.houseNumber} onChange={(value) => updateRecipient('address', { ...recipient.address, houseNumber: value })} />
                 <ReminderPanelInput label="PLZ" name="recipient-postal-code" value={recipient.address.postalCode} onChange={(value) => updateRecipient('address', { ...recipient.address, postalCode: value })} />
                 <ReminderPanelInput label="Stadt" name="recipient-city" value={recipient.address.city} onChange={(value) => updateRecipient('address', { ...recipient.address, city: value })} />
@@ -392,7 +392,7 @@ export default function ReminderDocumentForm({
                 <div className="invoice-panel-position" key={item.id}>
                   <span>{index + 1}</span>
                   <ReminderPanelInput label="Rechnung" name={`open-item-${index + 1}-invoice-number`} value={item.invoiceNumber} onChange={(value) => updateOpenItem(item.id, 'invoiceNumber', value)} />
-                  <ReminderPanelInput label="Faelligkeit" name={`open-item-${index + 1}-due-date`} type="date" value={item.dueDate} onChange={(value) => updateOpenItem(item.id, 'dueDate', value)} />
+                  <ReminderPanelInput label="Fälligkeit" name={`open-item-${index + 1}-due-date`} type="date" value={item.dueDate} onChange={(value) => updateOpenItem(item.id, 'dueDate', value)} />
                   <ReminderPanelInput inputMode="numeric" label="Tage" name={`open-item-${index + 1}-overdue-days`} value={item.overdueDays} onChange={(value) => updateOpenItem(item.id, 'overdueDays', value)} />
                   <ReminderPanelInput inputMode="decimal" label="Betrag" name={`open-item-${index + 1}-amount`} value={item.amount} onChange={(value) => updateOpenItem(item.id, 'amount', value)} />
                   <div className="invoice-panel-position-actions">
@@ -410,7 +410,7 @@ export default function ReminderDocumentForm({
               ))}
             </div>
             <button className="invoice-panel-add" type="button" onClick={addOpenItem}>
-              + Rechnung hinzufuegen
+              + Rechnung hinzufügen
             </button>
           </div>
 
@@ -418,7 +418,7 @@ export default function ReminderDocumentForm({
             <h3>Summen</h3>
             <div className="invoice-panel-grid">
               <ReminderPanelInput inputMode="decimal" label="Zinsen" name="interest" value={charges.interest} onChange={(value) => updateCharge('interest', value)} />
-              <ReminderPanelInput inputMode="decimal" label="Mahngebuehr" name="reminder-fee" value={charges.reminderFee} onChange={(value) => updateCharge('reminderFee', value)} />
+              <ReminderPanelInput inputMode="decimal" label="Mahngebühr" name="reminder-fee" value={charges.reminderFee} onChange={(value) => updateCharge('reminderFee', value)} />
               <p className="invoice-panel-note">Summe Rechnungen: {formatCurrency(totals.invoiceSum)}</p>
               <p className="invoice-panel-note">Gesamt: {formatCurrency(totals.grandTotal)}</p>
             </div>
@@ -432,7 +432,7 @@ export default function ReminderDocumentForm({
                   title: 'Firmendaten/Adresse',
                   fields: [
                     ['companyName', 'Firma'],
-                    ['companyStreetName', 'Strasse'],
+                    ['companyStreetName', 'Straße'],
                     ['companyHouseNumber', 'Hausnummer'],
                     ['companyPostalCode', 'PLZ'],
                     ['companyCityName', 'Stadt'],
@@ -445,7 +445,7 @@ export default function ReminderDocumentForm({
                     ['vatId', 'USt-IdNr.'],
                     ['taxNumber', 'Steuernummer'],
                     ['commercialRegister', 'Handelsregister'],
-                    ['managingDirector', 'Geschaeftsfuehrer'],
+                    ['managingDirector', 'Geschäftsführer'],
                   ],
                 },
                 {

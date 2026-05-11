@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
-import InvoiceForm from '../components/InvoiceForm.jsx';
+import InvoiceDocumentEditor from '../components/InvoiceDocumentEditor.jsx';
 import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
 import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
 import { documentSections, findDocumentItem } from '../data/documents.js';
@@ -140,7 +140,7 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
               <p className="intro document-intro">{activeDocument.description}</p>
             )}
 
-            {activeDocument.formType === 'invoice' && <InvoiceForm />}
+            {activeDocument.formType === 'invoice' && <InvoiceDocumentEditor />}
             {activeDocument.formType === 'offer' && <OfferDocumentEditor />}
             {activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}
           </>

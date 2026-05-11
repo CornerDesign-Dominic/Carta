@@ -5,7 +5,7 @@ export const featureDocuments = [
   },
   {
     title: 'Rechnungen',
-    text: 'Übersichtliche Rechnungsgrundlagen, die sich später um Nummernkreise, Positionen und Steuern erweitern lassen.',
+    text: 'Übersichtliche Rechnungen mit Formular, Positionen, Steuerangaben, Vorlagen, PDF und Druck.',
   },
   {
     title: 'Mahnungen',
@@ -19,7 +19,7 @@ export const documentSections = [
     label: 'Rechnungen',
     title: 'Rechnungen',
     description:
-      'Bereite klare Rechnungsdokumente im Browser vor. Später finden hier Positionen, Nummernkreise, Steuerangaben und Exportoptionen ihren Platz.',
+      'Erstelle klare Rechnungsdokumente im Browser mit Formular, Positionen, Steuerangaben, Vorlagen, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Rechnung?',
@@ -96,7 +96,7 @@ export const documentSections = [
         title: 'Angebot schreiben',
         formType: 'offer',
         description:
-          'Diese Ansicht bereitet später die Erstellung eines neuen Angebots mit Leistungen, Preisen und gültigen Konditionen vor.',
+          'Erstelle Angebote mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
       },
     ],
   },
@@ -105,7 +105,7 @@ export const documentSections = [
     label: 'Mahnungen',
     title: 'Mahnungen',
     description:
-      'Bereite klare Zahlungserinnerungen und Mahnungen mit Bezug zur Rechnung, Fristen und offenen Beträgen im Browser vor.',
+      'Erstelle klare Zahlungserinnerungen und Mahnungen mit Formular, direkter Dokumentbearbeitung, Vorlagen, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Mahnung?',
@@ -126,7 +126,8 @@ export const documentSections = [
         label: 'Mahnung schreiben',
         title: 'Mahnung schreiben',
         formType: 'reminder',
-        description: '',
+        description:
+          'Erstelle Mahnungen mit offenen Posten, Summen, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
       },
     ],
   },

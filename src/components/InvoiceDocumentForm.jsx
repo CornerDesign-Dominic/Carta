@@ -3,9 +3,9 @@ import { MoveDownIcon, MoveUpIcon } from './documentBlocks/FieldActions.jsx';
 const invoiceFormDefaults = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -22,7 +22,7 @@ const invoiceFormDefaults = {
     attention: 'z. Hd. Frau Beispiel',
     name: 'Buchhaltung',
     address: {
-      street: 'Kundenstrasse',
+      street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
       city: 'Hamburg',
@@ -51,7 +51,7 @@ const invoiceFormDefaults = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -63,7 +63,7 @@ const invoiceFormDefaults = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -308,7 +308,7 @@ export default function InvoiceDocumentForm({
     <section className="invoice-form-panel" aria-label="Rechnungsformular">
       <button className="invoice-form-panel-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>
         <span className="invoice-form-panel-toggle-label">
-          {isOpen ? 'Formular schliessen' : 'Formular oeffnen'}
+          {isOpen ? 'Formular schließen' : 'Formular öffnen'}
         </span>
         <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
           {isOpen ? '-' : '+'}
@@ -323,7 +323,7 @@ export default function InvoiceDocumentForm({
               <div className="invoice-panel-grid">
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Firmenname" name="sender-company" value={sender.companyName} onChange={(value) => updateSenderAddress('company', value)} />
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.returnAddress} onChange={(value) => updateSender('senderLine', value)} />
-                <InvoicePanelInput label="Strasse" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
+                <InvoicePanelInput label="Straße" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <InvoicePanelInput label="Hausnummer" name="sender-house-number" value={sender.address.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <InvoicePanelInput label="PLZ" name="sender-postal-code" value={sender.address.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
                 <InvoicePanelInput label="Stadt" name="sender-city" value={sender.address.city} onChange={(value) => updateSenderAddress('city', value)} />
@@ -331,12 +331,12 @@ export default function InvoiceDocumentForm({
             </div>
 
             <div className="invoice-panel-section">
-              <h3>Empfaenger</h3>
+              <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.companyName} onChange={(value) => updateRecipient('company', value)} />
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Zusatz / zu Haenden" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
-                <InvoicePanelInput label="Strasse" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
+                <InvoicePanelInput label="Straße" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
                 <InvoicePanelInput label="Hausnummer" name="recipient-house-number" value={recipient.address.houseNumber} onChange={(value) => updateRecipient('address', { ...recipient.address, houseNumber: value })} />
                 <InvoicePanelInput label="PLZ" name="recipient-postal-code" value={recipient.address.postalCode} onChange={(value) => updateRecipient('address', { ...recipient.address, postalCode: value })} />
                 <InvoicePanelInput label="Stadt" name="recipient-city" value={recipient.address.city} onChange={(value) => updateRecipient('address', { ...recipient.address, city: value })} />
@@ -409,7 +409,7 @@ export default function InvoiceDocumentForm({
               ))}
             </div>
             <button className="invoice-panel-add" type="button" onClick={addPosition}>
-              + Position hinzufuegen
+              + Position hinzufügen
             </button>
             <p className="invoice-panel-note">
               Rechnungsbetrag: {formatCurrency(totals.gross)} | USt.: {formatCurrency(totals.tax)} ({totals.taxGroups.map((group) => `${formatPercent(group.taxRate)}%`).join(', ') || '0%'})
@@ -424,7 +424,7 @@ export default function InvoiceDocumentForm({
                   title: 'Firmendaten/Adresse',
                   fields: [
                     ['companyName', 'Firma'],
-                    ['companyStreetName', 'Strasse'],
+                    ['companyStreetName', 'Straße'],
                     ['companyHouseNumber', 'Hausnummer'],
                     ['companyPostalCode', 'PLZ'],
                     ['companyCityName', 'Stadt'],
@@ -437,7 +437,7 @@ export default function InvoiceDocumentForm({
                     ['vatId', 'USt-IdNr.'],
                     ['taxNumber', 'Steuernummer'],
                     ['commercialRegister', 'Handelsregister'],
-                    ['managingDirector', 'Geschaeftsfuehrer'],
+                    ['managingDirector', 'Geschäftsführer'],
                   ],
                 },
                 {
