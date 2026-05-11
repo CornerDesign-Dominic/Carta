@@ -1717,6 +1717,7 @@ h1 {
 }
 
 .invoice-recipient-fields {
+  position: relative;
   display: grid;
   gap: 0;
   min-width: 0;
@@ -1941,6 +1942,13 @@ h1 {
 
 .invoice-hidden-field-row {
   height: 0;
+}
+
+.invoice-recipient-actions {
+  top: 30px;
+  right: calc(100% + 7px);
+  transform: none;
+  flex-direction: column;
 }
 
 .invoice-flow-config-row .invoice-field-actions,
