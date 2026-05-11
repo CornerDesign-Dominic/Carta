@@ -17,7 +17,7 @@ export default function DocumentMetaBlock({
 
   return (
     <div className="invoice-details">
-      {visibleFields.map(({ ariaLabel, field, type = 'text' }, index) => (
+      {visibleFields.map(({ ariaLabel, field, name, type = 'text' }, index) => (
         <div className="invoice-config-row" key={field}>
           <label className={field === emphasizedField ? 'is-emphasized' : undefined}>
             <input
@@ -50,6 +50,10 @@ export default function DocumentMetaBlock({
             ) : (
               <input
                 aria-label={ariaLabel}
+                autoComplete="off"
+                inputMode="text"
+                name={name ?? `carta-${field}`}
+                spellCheck={false}
                 type="text"
                 value={details[field]}
                 onChange={(event) => onDetailChange(field, event.target.value)}

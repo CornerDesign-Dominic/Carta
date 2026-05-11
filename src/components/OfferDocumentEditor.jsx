@@ -45,11 +45,11 @@ const offerContactFields = [
 ];
 
 const offerMetaFields = [
-  { field: 'offerNumber', ariaLabel: 'Angebotsnummer', type: 'text' },
+  { field: 'offerNumber', ariaLabel: 'Angebotsnummer', name: 'carta-offer-id', type: 'text' },
   { field: 'offerDate', ariaLabel: 'Angebotsdatum', type: 'date' },
   { field: 'validUntil', ariaLabel: 'Gültig bis', type: 'date' },
-  { field: 'internalNumber', ariaLabel: 'Interne Nummer', type: 'text' },
-  { field: 'externalNumber', ariaLabel: 'Externe Nummer', type: 'text' },
+  { field: 'internalNumber', ariaLabel: 'Interne Nummer', name: 'carta-internal-reference', type: 'text' },
+  { field: 'externalNumber', ariaLabel: 'Externe Nummer', name: 'carta-external-reference', type: 'text' },
   { field: 'customerNumber', ariaLabel: 'Kundennummer', type: 'text' },
 ];
 
