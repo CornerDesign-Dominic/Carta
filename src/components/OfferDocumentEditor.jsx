@@ -125,6 +125,89 @@ function joinOfferLine(...parts) {
   return parts.map((part) => String(part ?? '').trim()).filter(Boolean).join(' ');
 }
 
+function createReturnAddress(sender) {
+  return [
+    sender.companyName,
+    joinOfferLine(sender.address.street, sender.address.houseNumber),
+    joinOfferLine(sender.address.postalCode, sender.address.city),
+  ]
+    .filter(Boolean)
+    .join(' - ');
+}
+
+function combineLabelValue(label, value) {
+  return [String(label ?? '').trim(), String(value ?? '').trim()].filter(Boolean).join(' ');
+}
+
+function createOfferViewData({ sender, recipient, details, references, footer }) {
+  return {
+    sender: {
+      company: sender.companyName,
+      senderLine: sender.returnAddress,
+      email: sender.contact.email,
+      phone: sender.contact.phone,
+      fax: sender.contact.fax,
+      website: sender.contact.website,
+    },
+    recipient: {
+      company: recipient.companyName,
+      attention: recipient.attention,
+      name: recipient.name,
+      street: joinOfferLine(recipient.address.street, recipient.address.houseNumber),
+      cityLine: joinOfferLine(recipient.address.postalCode, recipient.address.city),
+    },
+    details: {
+      ...details,
+      ...references,
+    },
+    footerLines: {
+      companyName: footer.company.companyName,
+      companyStreetName: footer.company.street,
+      companyHouseNumber: footer.company.houseNumber,
+      companyStreet: joinOfferLine(footer.company.street, footer.company.houseNumber),
+      companyPostalCode: footer.company.postalCode,
+      companyCityName: footer.company.city,
+      companyCity: joinOfferLine(footer.company.postalCode, footer.company.city),
+      companyExtra: footer.company.extra,
+      vatIdLabel: footer.tax.vatIdLabel,
+      vatId: footer.tax.vatId,
+      taxNumberLabel: footer.tax.taxNumberLabel,
+      taxNumber: footer.tax.taxNumber,
+      commercialRegister: footer.tax.commercialRegister,
+      managingDirector: footer.tax.representation,
+      bankName: footer.bank.bankName,
+      ibanLabel: footer.bank.ibanLabel,
+      iban: footer.bank.iban,
+      bicLabel: footer.bank.bicLabel,
+      bic: footer.bank.bic,
+      bankExtra: footer.bank.bankExtra,
+    },
+  };
+}
+
+function normalizeOfferData(data = {}) {
+  return {
+    sender: {
+      ...defaultOfferData.sender,
+      ...(data.sender ?? {}),
+      address: { ...defaultOfferData.sender.address, ...(data.sender?.address ?? {}) },
+      contact: { ...defaultOfferData.sender.contact, ...(data.sender?.contact ?? {}) },
+    },
+    recipient: {
+      ...defaultOfferData.recipient,
+      ...(data.recipient ?? {}),
+      address: { ...defaultOfferData.recipient.address, ...(data.recipient?.address ?? {}) },
+    },
+    details: { ...defaultOfferData.details, ...(data.details ?? {}) },
+    references: { ...defaultOfferData.references, ...(data.references ?? {}) },
+    footer: {
+      company: { ...defaultOfferData.footer.company, ...(data.footer?.company ?? {}) },
+      tax: { ...defaultOfferData.footer.tax, ...(data.footer?.tax ?? {}) },
+      bank: { ...defaultOfferData.footer.bank, ...(data.footer?.bank ?? {}) },
+    },
+  };
+}
+
 function splitOfferFooterLabelAndValue(field, value = '', fallbackLabel = offerFooterDefaultLabels[field] ?? '') {
   const prefixes = offerFooterLabelPrefixes[field] ?? [];
   let normalized = String(value ?? '').trim();
@@ -203,7 +286,73 @@ function parseOfferFooterLine(field, value = '') {
   };
 }
 
-const offerSchemaVersion = 2;
+const offerSchemaVersion = '1.0';
+
+const defaultOfferData = {
+  sender: {
+    companyName: 'Belege24 Muster GmbH',
+    address: {
+      street: 'Musterstraße',
+      houseNumber: '12',
+      postalCode: '10115',
+      city: 'Berlin',
+    },
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
+    contact: {
+      email: 'kontakt@belege24.com',
+      phone: '+49 30 123456',
+      fax: '+49 30 123457',
+      website: 'www.belege24.com',
+    },
+  },
+  recipient: {
+    companyName: 'Beispielkunde GmbH',
+    attention: 'z. Hd. Frau Beispiel',
+    name: 'Einkauf',
+    address: {
+      street: 'Kundenstraße',
+      houseNumber: '8',
+      postalCode: '20095',
+      city: 'Hamburg',
+    },
+  },
+  details: {
+    offerNumber: 'ANG-2026-001',
+    offerDate: '2026-05-07',
+    validUntil: '2026-05-21',
+  },
+  references: {
+    internalNumber: 'INT-1001',
+    externalNumber: 'EXT-4711',
+    customerNumber: 'K-2048',
+  },
+  footer: {
+    company: {
+      companyName: 'Belege24 Muster GmbH',
+      street: 'Musterstraße',
+      houseNumber: '12',
+      postalCode: '10115',
+      city: 'Berlin',
+      extra: '',
+    },
+    tax: {
+      vatIdLabel: 'USt-IdNr.:',
+      vatId: 'DE123456789',
+      taxNumberLabel: 'Steuernummer:',
+      taxNumber: '12/345/67890',
+      commercialRegister: 'HRB 123456',
+      representation: 'Geschäftsführer: Max Mustermann',
+    },
+    bank: {
+      bankName: 'Musterbank',
+      ibanLabel: 'IBAN:',
+      iban: 'DE00 0000 0000 0000 0000 00',
+      bicLabel: 'BIC:',
+      bic: 'COBADEFFXXX',
+      bankExtra: '',
+    },
+  },
+};
 
 const defaultOfferTextBlocks = [
   {
@@ -448,7 +597,7 @@ function validateOfferTemplate(template) {
     throw new Error('Diese JSON-Datei ist kein Angebot.');
   }
 
-  if (![1, offerSchemaVersion].includes(template.schemaVersion)) {
+  if (template.schemaVersion !== offerSchemaVersion) {
     throw new Error('Diese Angebotsversion wird nicht unterstützt.');
   }
 
@@ -476,53 +625,13 @@ export default function OfferDocumentEditor() {
   const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
-  const [sender, setSender] = useState({
-    company: 'Belege24 Muster GmbH',
-    senderLine: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
-    email: 'kontakt@belege24.com',
-    phone: '+49 30 123456',
-    fax: '+49 30 123457',
-    website: 'www.belege24.com',
-  });
-  const [footerLines, setFooterLines] = useState({
-    companyName: 'Belege24 Muster GmbH',
-    companyStreetName: 'Musterstraße',
-    companyHouseNumber: '12',
-    companyStreet: 'Musterstraße 12',
-    companyPostalCode: '10115',
-    companyCityName: 'Berlin',
-    companyCity: '10115 Berlin',
-    companyExtra: '',
-    vatIdLabel: 'USt-IdNr.:',
-    vatId: 'DE123456789',
-    taxNumberLabel: 'Steuernummer:',
-    taxNumber: '12/345/67890',
-    commercialRegister: 'HRB 123456',
-    managingDirector: 'Geschäftsführer: Max Mustermann',
-    bankName: 'Musterbank',
-    ibanLabel: 'IBAN:',
-    iban: 'DE00 0000 0000 0000 0000 00',
-    bicLabel: 'BIC:',
-    bic: 'COBADEFFXXX',
-    bankExtra: '',
-  });
-  const [recipient, setRecipient] = useState({
-    company: 'Beispielkunde GmbH',
-    attention: 'z. Hd. Frau Beispiel',
-    name: 'Einkauf',
-    street: 'Kundenstraße 8',
-    cityLine: '20095 Hamburg',
-  });
-  const [details, setDetails] = useState({
-    offerNumber: 'ANG-2026-001',
-    offerDate: '2026-05-07',
-    validUntil: '2026-05-21',
-    internalNumber: 'INT-1001',
-    externalNumber: 'EXT-4711',
-    customerNumber: 'K-2048',
-  });
+  const [offerData, setOfferData] = useState(defaultOfferData);
   const [textBlocks, setTextBlocks] = useState(defaultOfferTextBlocks);
   const [positions, setPositions] = useState([createOfferPosition()]);
+  const { sender, recipient, details, footerLines } = useMemo(
+    () => createOfferViewData(offerData),
+    [offerData],
+  );
 
   useEffect(() => {
     textBlocks.forEach((block) => {
@@ -584,24 +693,151 @@ export default function OfferDocumentEditor() {
   }
 
   function updateSender(field, value) {
-    setSender((current) => ({ ...current, [field]: value }));
+    setOfferData((current) => {
+      if (field === 'company') {
+        const nextSender = { ...current.sender, companyName: value };
+        return {
+          ...current,
+          sender: {
+            ...nextSender,
+            returnAddress: createReturnAddress(nextSender),
+          },
+        };
+      }
+
+      if (field === 'senderLine') {
+        return { ...current, sender: { ...current.sender, returnAddress: value } };
+      }
+
+      if (field === 'address') {
+        const nextSender = {
+          ...current.sender,
+          address: { ...current.sender.address, ...value },
+        };
+
+        return {
+          ...current,
+          sender: {
+            ...nextSender,
+            returnAddress: createReturnAddress(nextSender),
+          },
+        };
+      }
+
+      return {
+        ...current,
+        sender: {
+          ...current.sender,
+          contact: { ...current.sender.contact, [field]: value },
+        },
+      };
+    });
   }
 
   function updateRecipient(field, value) {
-    setRecipient((current) => ({ ...current, [field]: value }));
+    setOfferData((current) => {
+      if (field === 'company') {
+        return { ...current, recipient: { ...current.recipient, companyName: value } };
+      }
+
+      if (field === 'street') {
+        const street = splitOfferStreetLine(value);
+        return {
+          ...current,
+          recipient: {
+            ...current.recipient,
+            address: {
+              ...current.recipient.address,
+              street: street.street,
+              houseNumber: street.houseNumber,
+            },
+          },
+        };
+      }
+
+      if (field === 'cityLine') {
+        const city = splitOfferCityLine(value);
+        return {
+          ...current,
+          recipient: {
+            ...current.recipient,
+            address: {
+              ...current.recipient.address,
+              postalCode: city.postalCode,
+              city: city.city,
+            },
+          },
+        };
+      }
+
+      if (field === 'address') {
+        return {
+          ...current,
+          recipient: {
+            ...current.recipient,
+            address: { ...current.recipient.address, ...value },
+          },
+        };
+      }
+
+      return { ...current, recipient: { ...current.recipient, [field]: value } };
+    });
   }
 
   function updateDetail(field, value) {
-    setDetails((current) => ({ ...current, [field]: value }));
+    setOfferData((current) => {
+      if (['internalNumber', 'externalNumber', 'customerNumber'].includes(field)) {
+        return { ...current, references: { ...current.references, [field]: value } };
+      }
+
+      return { ...current, details: { ...current.details, [field]: value } };
+    });
   }
 
   function updateFooterLine(field, value) {
-    setFooterLines((current) =>
-      normalizeOfferFooterLines({
-        ...current,
-        ...(value && typeof value === 'object' ? value : { [field]: value }),
-      }),
-    );
+    setOfferData((current) => {
+      const patch = value && typeof value === 'object' ? value : { [field]: value };
+      const footer = {
+        company: { ...current.footer.company },
+        tax: { ...current.footer.tax },
+        bank: { ...current.footer.bank },
+      };
+
+      Object.entries(patch).forEach(([entryField, entryValue]) => {
+        const normalizedValue = String(entryValue ?? '').trim();
+
+        if (entryField === 'companyName') footer.company.companyName = normalizedValue;
+        if (entryField === 'companyStreet') {
+          const street = splitOfferStreetLine(normalizedValue);
+          footer.company.street = street.street;
+          footer.company.houseNumber = street.houseNumber;
+        }
+        if (entryField === 'companyStreetName') footer.company.street = normalizedValue;
+        if (entryField === 'companyHouseNumber') footer.company.houseNumber = normalizedValue;
+        if (entryField === 'companyCity') {
+          const city = splitOfferCityLine(normalizedValue);
+          footer.company.postalCode = city.postalCode;
+          footer.company.city = city.city;
+        }
+        if (entryField === 'companyPostalCode') footer.company.postalCode = normalizedValue;
+        if (entryField === 'companyCityName') footer.company.city = normalizedValue;
+        if (entryField === 'companyExtra') footer.company.extra = normalizedValue;
+        if (entryField === 'vatIdLabel') footer.tax.vatIdLabel = normalizedValue;
+        if (entryField === 'vatId') footer.tax.vatId = normalizedValue;
+        if (entryField === 'taxNumberLabel') footer.tax.taxNumberLabel = normalizedValue;
+        if (entryField === 'taxNumber') footer.tax.taxNumber = normalizedValue;
+        if (entryField === 'commercialRegister') footer.tax.commercialRegister = normalizedValue;
+        if (entryField === 'managingDirector') footer.tax.representation = normalizedValue;
+        if (entryField === 'bankName') footer.bank.bankName = normalizedValue;
+        if (entryField === 'ibanLabel') footer.bank.ibanLabel = normalizedValue;
+        if (entryField === 'iban') footer.bank.iban = normalizedValue;
+        if (entryField === 'bicLabel') footer.bank.bicLabel = normalizedValue;
+        if (entryField === 'bic') footer.bank.bic = normalizedValue;
+        if (entryField === 'bankExtra') footer.bank.bankExtra = normalizedValue;
+      });
+
+      return { ...current, footer };
+    });
   }
 
   function updatePosition(positionId, field, value) {
@@ -727,15 +963,10 @@ export default function OfferDocumentEditor() {
       createdWith: 'Carta',
       data: {
         labels,
-        sender,
-        recipient,
-        details,
+        ...offerData,
         positions,
         textBlocks,
         fieldConfig,
-        introText: textBlocks.find((block) => block.id === 'intro')?.value ?? '',
-        closingText: textBlocks.find((block) => block.id === 'closing')?.value ?? '',
-        footerLines: normalizeOfferFooterLines(footerLines),
       },
     };
   }
@@ -762,12 +993,9 @@ export default function OfferDocumentEditor() {
       const data = validateOfferTemplate(template);
 
       setLabels({ ...initialOfferLabels, ...(data.labels ?? {}) });
-      setSender((current) => ({ ...current, ...(data.sender ?? {}) }));
-      setRecipient((current) => ({ ...current, ...(data.recipient ?? {}) }));
-      setDetails((current) => ({ ...current, ...(data.details ?? {}) }));
-      setFooterLines((current) => normalizeOfferFooterLines({ ...current, ...(data.footerLines ?? {}) }));
+      setOfferData(normalizeOfferData(data));
       setPositions(normalizePositions(data.positions));
-      setTextBlocks(normalizeTextBlocks(data.textBlocks, data.introText, data.closingText));
+      setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
@@ -879,17 +1107,19 @@ export default function OfferDocumentEditor() {
     <div className="visual-editor invoice-visual-editor">
       <OfferDocumentForm
         addPosition={addPosition}
-        details={details}
+        details={offerData.details}
         footerLines={footerLines}
+        footerData={offerData.footer}
         formatCurrency={formatCurrency}
         formatPercent={formatPercent}
         isOpen={isFormPanelOpen}
         movePosition={movePosition}
         onToggle={() => setIsFormPanelOpen((current) => !current)}
         positions={positions}
-        recipient={recipient}
+        recipient={offerData.recipient}
+        references={offerData.references}
         removePosition={removePosition}
-        sender={sender}
+        sender={offerData.sender}
         textBlocks={textBlocks}
         toggleTextBlockVisibility={toggleTextBlockVisibility}
         totals={totals}
