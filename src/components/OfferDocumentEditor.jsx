@@ -98,6 +98,30 @@ const offerFooterLabelPrefixes = {
   bankName: ['Bankname:', 'Bankname'],
 };
 
+function splitOfferStreetLine(value = '') {
+  const trimmed = String(value ?? '').trim();
+  const match = trimmed.match(/^(.*?)(?:\s+(\d+\s*[a-zA-Z]?))$/);
+
+  return {
+    street: match ? match[1].trim() : trimmed,
+    houseNumber: match ? match[2].trim() : '',
+  };
+}
+
+function splitOfferCityLine(value = '') {
+  const trimmed = String(value ?? '').trim();
+  const match = trimmed.match(/^(\d{4,5})\s+(.+)$/);
+
+  return {
+    postalCode: match ? match[1].trim() : '',
+    city: match ? match[2].trim() : trimmed,
+  };
+}
+
+function joinOfferLine(...parts) {
+  return parts.map((part) => String(part ?? '').trim()).filter(Boolean).join(' ');
+}
+
 function splitOfferFooterLabelAndValue(field, value = '', fallbackLabel = offerFooterDefaultLabels[field] ?? '') {
   const prefixes = offerFooterLabelPrefixes[field] ?? [];
   let normalized = String(value ?? '').trim();
@@ -122,6 +146,15 @@ function normalizeOfferFooterLines(lines = {}) {
   const normalized = Object.fromEntries(
     Object.entries(lines).map(([field, value]) => [field, String(value ?? '').trim()]),
   );
+  const companyStreetParts = splitOfferStreetLine(normalized.companyStreet);
+  const companyCityParts = splitOfferCityLine(normalized.companyCity);
+
+  normalized.companyStreetName = normalized.companyStreetName ?? companyStreetParts.street;
+  normalized.companyHouseNumber = normalized.companyHouseNumber ?? companyStreetParts.houseNumber;
+  normalized.companyPostalCode = normalized.companyPostalCode ?? companyCityParts.postalCode;
+  normalized.companyCityName = normalized.companyCityName ?? companyCityParts.city;
+  normalized.companyStreet = joinOfferLine(normalized.companyStreetName, normalized.companyHouseNumber);
+  normalized.companyCity = joinOfferLine(normalized.companyPostalCode, normalized.companyCityName);
 
   Object.entries(offerFooterLabeledFields).forEach(([field, labelField]) => {
     const hasExplicitLabel = Object.prototype.hasOwnProperty.call(lines, labelField);
@@ -450,7 +483,11 @@ export default function OfferDocumentEditor() {
   });
   const [footerLines, setFooterLines] = useState({
     companyName: 'Belege24 Muster GmbH',
+    companyStreetName: 'Musterstraße',
+    companyHouseNumber: '12',
     companyStreet: 'Musterstraße 12',
+    companyPostalCode: '10115',
+    companyCityName: 'Berlin',
     companyCity: '10115 Berlin',
     companyExtra: '',
     vatIdLabel: 'USt-IdNr.:',
