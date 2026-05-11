@@ -1957,6 +1957,11 @@ h1 {
   left: -30px;
 }
 
+.offer-sheet .invoice-flow-config-row .invoice-field-actions {
+  top: 0;
+  transform: none;
+}
+
 .invoice-field-actions button,
 .invoice-hidden-field-actions button {
   display: inline-flex;
