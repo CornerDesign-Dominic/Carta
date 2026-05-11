@@ -138,7 +138,7 @@ export default function App() {
             onSelectSlug={handleKnowledgeSlugChange}
           />
         )}
-        {currentView === 'home' && <HomeView />}
+        {currentView === 'home' && <HomeView onNavigate={handleNavigate} />}
         {currentView.startsWith('legal:') && (
           <LegalPage pageId={currentView.replace('legal:', '')} />
         )}
