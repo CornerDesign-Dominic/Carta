@@ -1,3 +1,5 @@
+import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
+
 export default function PositionTable({
   calculatePosition,
   formatCurrency,
@@ -60,7 +62,7 @@ export default function PositionTable({
                     disabled={index === 0}
                     onClick={() => onMovePosition(position.id, -1)}
                   >
-                    &uarr;
+                    <MoveUpIcon />
                   </button>
                   <button
                     aria-label={`Position ${index + 1} nach unten verschieben`}
@@ -69,7 +71,7 @@ export default function PositionTable({
                     disabled={index === positions.length - 1}
                     onClick={() => onMovePosition(position.id, 1)}
                   >
-                    &darr;
+                    <MoveDownIcon />
                   </button>
                 </span>
                 {index + 1}

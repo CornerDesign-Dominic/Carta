@@ -1,3 +1,5 @@
+import { MoveDownIcon, MoveUpIcon } from './documentBlocks/FieldActions.jsx';
+
 function OfferPanelInput({
   autoComplete = 'off',
   className = '',
@@ -452,10 +454,10 @@ export default function OfferDocumentForm({
                       x
                     </button>
                     <button className="invoice-panel-move" type="button" aria-label={`Position ${index + 1} nach oben verschieben`} disabled={index === 0} onClick={() => movePosition(position.id, -1)}>
-                      &uarr;
+                      <MoveUpIcon />
                     </button>
                     <button className="invoice-panel-move" type="button" aria-label={`Position ${index + 1} nach unten verschieben`} disabled={index === positions.length - 1} onClick={() => movePosition(position.id, 1)}>
-                      &darr;
+                      <MoveDownIcon />
                     </button>
                   </div>
                 </div>
