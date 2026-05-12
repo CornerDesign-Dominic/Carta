@@ -2456,7 +2456,7 @@ h1 {
 .reminder-invoice-table th:nth-child(1),
 .reminder-invoice-table td:nth-child(1) {
   position: relative;
-  width: 30%;
+  width: 27%;
 }
 
 .reminder-invoice-table th:nth-child(2),
@@ -2466,30 +2466,30 @@ h1 {
 
 .reminder-invoice-table th:nth-child(3),
 .reminder-invoice-table td:nth-child(3) {
-  width: 18%;
+  width: 16%;
   text-align: left;
 }
 
 .reminder-invoice-table th:nth-child(4),
 .reminder-invoice-table td:nth-child(4) {
-  width: 22%;
+  width: 26%;
   text-align: right;
 }
 
 .reminder-invoice-table th:nth-child(5),
 .reminder-invoice-table td:nth-child(5) {
-  width: 8%;
+  width: 9%;
   text-align: center;
 }
 
 .reminder-print-open-items-table th:nth-child(1),
 .reminder-print-open-items-table td:nth-child(1) {
-  width: 30%;
+  width: 28%;
 }
 
 .reminder-print-open-items-table th:nth-child(2),
 .reminder-print-open-items-table td:nth-child(2) {
-  width: 24%;
+  width: 22%;
 }
 
 .reminder-print-open-items-table th:nth-child(3),
@@ -2499,7 +2499,11 @@ h1 {
 
 .reminder-print-open-items-table th:nth-child(4),
 .reminder-print-open-items-table td:nth-child(4) {
-  width: 26%;
+  width: 30%;
+  text-align: right;
+}
+
+.reminder-invoice-table th:nth-child(4) .document-label-input {
   text-align: right;
 }
 

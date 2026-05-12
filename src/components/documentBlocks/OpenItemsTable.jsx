@@ -25,8 +25,8 @@ export default function OpenItemsTable({
             {[
               ['invoiceNumber', 'Tabellenkopf Rechnungsnummer'],
               ['dueDate', 'Tabellenkopf Fälligkeitsdatum'],
-              ['overdueDays', 'Tabellenkopf Fälligkeitstage'],
-              ['invoiceTotal', 'Tabellenkopf Rechnungsbetrag brutto'],
+              ['overdueDays', 'Tabellenkopf Verzugstage'],
+              ['invoiceTotal', 'Tabellenkopf Rechnungsbetrag'],
             ].map(([field, ariaLabel]) => (
               <th key={field}>
                 <input
@@ -110,7 +110,7 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <input
-                  aria-label={`Fälligkeitstage ${index + 1}`}
+                  aria-label={`Verzugstage ${index + 1}`}
                   inputMode="numeric"
                   type="text"
                   value={item.overdueDays}
@@ -119,7 +119,7 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <input
-                  aria-label={`Rechnungsbetrag brutto ${index + 1}`}
+                  aria-label={`Rechnungsbetrag ${index + 1}`}
                   inputMode="decimal"
                   type="text"
                   value={item.amount}

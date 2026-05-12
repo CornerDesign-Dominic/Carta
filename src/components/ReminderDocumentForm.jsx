@@ -31,8 +31,6 @@ const reminderFormDefaults = {
   details: {
     reminderNumber: 'MAH-2026-001',
     reminderDate: '2026-05-07',
-    paymentTerm: '7 Tage',
-    reference: 'Offene Rechnung',
     customerNumber: 'K-2048',
   },
   textBlocks: {
@@ -120,8 +118,6 @@ function getPlaceholder(name) {
     'recipient-city': reminderFormDefaults.recipient.address.city,
     'reminder-code': reminderFormDefaults.details.reminderNumber,
     'reminder-date': reminderFormDefaults.details.reminderDate,
-    'payment-term': reminderFormDefaults.details.paymentTerm,
-    'reminder-reference': reminderFormDefaults.details.reference,
     'customer-reference': reminderFormDefaults.details.customerNumber,
     interest: reminderFormDefaults.charges.interest,
     'reminder-fee': reminderFormDefaults.charges.reminderFee,
@@ -362,19 +358,11 @@ export default function ReminderDocumentForm({
           </div>
 
           <div className="invoice-panel-row">
-            <div className="invoice-panel-section">
+            <div className="invoice-panel-section invoice-panel-section-wide">
               <h3>Mahndaten</h3>
-              <div className="invoice-panel-grid invoice-panel-grid-stacked">
+              <div className="invoice-panel-grid">
                 <ReminderPanelInput autoComplete="off" inputMode="text" label="Mahnungsnummer" name="reminder-code" spellCheck={false} value={details.reminderNumber} onChange={(value) => updateDetail('reminderNumber', value)} />
                 <ReminderPanelInput label="Mahnungsdatum" name="reminder-date" type="date" value={details.reminderDate} onChange={(value) => updateDetail('reminderDate', value)} />
-                <ReminderPanelInput label="Zahlungsfrist" name="payment-term" value={details.paymentTerm} onChange={(value) => updateDetail('paymentTerm', value)} />
-              </div>
-            </div>
-
-            <div className="invoice-panel-section">
-              <h3>Referenzen</h3>
-              <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <ReminderPanelInput label="Bezug" name="reminder-reference" value={details.reference} onChange={(value) => updateDetail('reference', value)} />
                 <ReminderPanelInput label="Kundennummer" name="customer-reference" value={details.customerNumber} onChange={(value) => updateDetail('customerNumber', value)} />
               </div>
             </div>
@@ -392,8 +380,8 @@ export default function ReminderDocumentForm({
                 <div className="invoice-panel-position" key={item.id}>
                   <span>{index + 1}</span>
                   <ReminderPanelInput label="Rechnung" name={`open-item-${index + 1}-invoice-number`} value={item.invoiceNumber} onChange={(value) => updateOpenItem(item.id, 'invoiceNumber', value)} />
-                  <ReminderPanelInput label="Fälligkeit" name={`open-item-${index + 1}-due-date`} type="date" value={item.dueDate} onChange={(value) => updateOpenItem(item.id, 'dueDate', value)} />
-                  <ReminderPanelInput inputMode="numeric" label="Tage" name={`open-item-${index + 1}-overdue-days`} value={item.overdueDays} onChange={(value) => updateOpenItem(item.id, 'overdueDays', value)} />
+                  <ReminderPanelInput label="Fälligkeitsdatum" name={`open-item-${index + 1}-due-date`} type="date" value={item.dueDate} onChange={(value) => updateOpenItem(item.id, 'dueDate', value)} />
+                  <ReminderPanelInput inputMode="numeric" label="Verzugstage" name={`open-item-${index + 1}-overdue-days`} value={item.overdueDays} onChange={(value) => updateOpenItem(item.id, 'overdueDays', value)} />
                   <ReminderPanelInput inputMode="decimal" label="Betrag" name={`open-item-${index + 1}-amount`} value={item.amount} onChange={(value) => updateOpenItem(item.id, 'amount', value)} />
                   <div className="invoice-panel-position-actions">
                     <button className="invoice-panel-remove" type="button" aria-label={`Offenen Posten ${index + 1} loeschen`} disabled={openItems.length === 1} onClick={() => removeOpenItem(item.id)}>

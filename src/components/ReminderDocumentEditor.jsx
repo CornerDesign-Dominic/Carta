@@ -15,16 +15,14 @@ import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 const reminderSchemaVersion = '1.0';
 
 const initialReminderLabels = {
-  title: '1. Mahnung',
+  title: 'Mahnung',
   reminderNumber: 'Mahnungsnummer',
   reminderDate: 'Mahnungsdatum',
-  paymentTerm: 'Zahlungsfrist',
-  reference: 'Bezug',
   customerNumber: 'Kundennummer',
   invoiceNumber: 'Rechnungsnummer',
   dueDate: 'Fälligkeitsdatum',
-  overdueDays: 'Fälligkeitstage',
-  invoiceTotal: 'Rechnungsbetrag brutto',
+  overdueDays: 'Verzugstage',
+  invoiceTotal: 'Rechnungsbetrag',
   sumInvoices: 'Summe Rechnungen',
   interest: 'Zinsen',
   reminderFee: 'Mahngebühr',
@@ -51,8 +49,6 @@ const reminderMetaFields = [
     type: 'text',
   },
   { field: 'reminderDate', ariaLabel: 'Mahnungsdatum', type: 'date' },
-  { field: 'paymentTerm', ariaLabel: 'Zahlungsfrist', type: 'text' },
-  { field: 'reference', ariaLabel: 'Referenz', type: 'text' },
   { field: 'customerNumber', ariaLabel: 'Kundenreferenz', name: 'carta-reminder-customer-reference', type: 'text' },
 ];
 
@@ -120,8 +116,6 @@ const defaultReminderData = {
   details: {
     reminderNumber: 'MAH-2026-001',
     reminderDate: '2026-05-07',
-    paymentTerm: '7 Tage',
-    reference: 'Offene Rechnung',
     customerNumber: 'K-2048',
   },
   footer: {
@@ -232,13 +226,34 @@ function createReminderViewData({ sender, recipient, details, footer }) {
 }
 
 function createOpenItem() {
+  const dueDate = '2026-04-24';
+
   return {
     id: crypto.randomUUID(),
     invoiceNumber: 'RE-2026-001',
-    dueDate: '2026-04-24',
-    overdueDays: '14',
+    dueDate,
+    overdueDays: calculateOverdueDays(dueDate),
     amount: '595.00',
   };
+}
+
+function calculateOverdueDays(dueDate) {
+  const match = String(dueDate ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (!match) {
+    return '';
+  }
+
+  const due = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  if (Number.isNaN(due.getTime())) {
+    return '';
+  }
+
+  const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const dayDifference = Math.floor((todayStart.getTime() - due.getTime()) / 86400000);
+
+  return String(Math.max(0, dayDifference));
 }
 
 function createFieldConfig(fields) {
@@ -339,7 +354,10 @@ function normalizeOpenItems(templateItems) {
     id: typeof item.id === 'string' && item.id ? item.id : crypto.randomUUID(),
     invoiceNumber: String(item.invoiceNumber ?? 'RE-2026-001'),
     dueDate: String(item.dueDate ?? ''),
-    overdueDays: String(item.overdueDays ?? '0'),
+    overdueDays:
+      item.overdueDays === undefined || item.overdueDays === null
+        ? calculateOverdueDays(item.dueDate)
+        : String(item.overdueDays),
     amount: String(item.amount ?? '0'),
   }));
 }
@@ -630,7 +648,17 @@ export default function ReminderDocumentEditor() {
 
   function updateOpenItem(itemId, field, value) {
     setOpenItems((current) =>
-      current.map((item) => (item.id === itemId ? { ...item, [field]: value } : item)),
+      current.map((item) => {
+        if (item.id !== itemId) {
+          return item;
+        }
+
+        if (field === 'dueDate') {
+          return { ...item, dueDate: value, overdueDays: calculateOverdueDays(value) };
+        }
+
+        return { ...item, [field]: value };
+      }),
     );
   }
 
