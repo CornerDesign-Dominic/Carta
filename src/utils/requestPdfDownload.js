@@ -46,13 +46,14 @@ function buildExportHtml(sheet, exportRoot = sheet) {
   const clonedSheet = exportRoot.cloneNode(true);
   clonedSheet.classList.remove('is-highlight-mode');
   clonedSheet.classList.add('is-export-mode');
-  clonedSheet.querySelectorAll('.offer-sheet, .invoice-print-page').forEach((page) => {
+  clonedSheet.querySelectorAll('.offer-sheet, .invoice-print-page, .receipt-sheet').forEach((page) => {
     page.classList.remove('is-highlight-mode');
     page.classList.add('is-export-mode');
   });
   syncFormValues(clonedSheet);
 
   const styles = getDocumentStyles();
+  const isReceipt = sheet.classList.contains('receipt-sheet');
 
   return `<!doctype html>
 <html lang="de">
@@ -63,14 +64,14 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     ${styles}
 
     @page {
-      size: A4 portrait;
+      size: ${isReceipt ? 'A5 landscape' : 'A4 portrait'};
       margin: 0;
     }
 
     html,
     body {
       width: 210mm;
-      min-height: 297mm;
+      min-height: ${isReceipt ? '148mm' : '297mm'};
       margin: 0;
       background: #ffffff;
     }
@@ -92,6 +93,20 @@ function buildExportHtml(sheet, exportRoot = sheet) {
       background: #ffffff !important;
     }
 
+    .receipt-sheet {
+      width: 210mm !important;
+      min-width: 210mm !important;
+      max-width: 210mm !important;
+      height: 148mm !important;
+      min-height: 148mm !important;
+      max-height: 148mm !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      background: #ffffff !important;
+      overflow: hidden !important;
+    }
+
     .offer-sheet,
     .invoice-print-page:not(:last-child) {
       break-after: page;
@@ -110,6 +125,12 @@ function buildExportHtml(sheet, exportRoot = sheet) {
       display: none !important;
     }
 
+    .receipt-sheet .invoice-icon-action,
+    .receipt-sheet .invoice-field-actions,
+    .receipt-sheet .invoice-hidden-field-actions {
+      display: none !important;
+    }
+
     .offer-sheet input,
     .offer-sheet textarea,
     .offer-sheet select,
@@ -119,6 +140,21 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     .offer-sheet.is-export-mode input,
     .offer-sheet.is-export-mode textarea,
     .offer-sheet.is-export-mode select {
+      border-color: transparent !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .receipt-sheet input,
+    .receipt-sheet textarea,
+    .receipt-sheet select,
+    .receipt-sheet.is-highlight-mode input,
+    .receipt-sheet.is-highlight-mode textarea,
+    .receipt-sheet.is-highlight-mode select,
+    .receipt-sheet.is-export-mode input,
+    .receipt-sheet.is-export-mode textarea,
+    .receipt-sheet.is-export-mode select {
       border-color: transparent !important;
       background: transparent !important;
       box-shadow: none !important;

@@ -983,9 +983,27 @@ h1 {
   break-after: auto;
 }
 
+.a5-landscape-page {
+  width: 794px;
+  height: 559px;
+  min-width: 794px;
+  min-height: 559px;
+  flex-shrink: 0;
+  margin: 0 auto;
+  padding: 28px 36px 22px 42px;
+  background: #ffffff;
+  color: #232320;
+  border: 1px solid #d6d1c8;
+  box-shadow: 0 20px 54px rgba(35, 35, 32, 0.15);
+  break-after: auto;
+}
+
 .offer-sheet input,
 .offer-sheet textarea,
-.offer-sheet select {
+.offer-sheet select,
+.receipt-sheet input,
+.receipt-sheet textarea,
+.receipt-sheet select {
   width: 100%;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -996,13 +1014,17 @@ h1 {
   resize: vertical;
 }
 
-.offer-sheet select {
+.offer-sheet select,
+.receipt-sheet select {
   appearance: none;
 }
 
 .offer-sheet input:focus,
 .offer-sheet textarea:focus,
-.offer-sheet select:focus {
+.offer-sheet select:focus,
+.receipt-sheet input:focus,
+.receipt-sheet textarea:focus,
+.receipt-sheet select:focus {
   border-color: rgba(79, 111, 104, 0.42);
   background: #fffefa;
   outline: none;
@@ -1010,19 +1032,24 @@ h1 {
 
 .offer-sheet.is-export-mode input,
 .offer-sheet.is-export-mode textarea,
-.offer-sheet.is-export-mode select {
+.offer-sheet.is-export-mode select,
+.receipt-sheet.is-export-mode input,
+.receipt-sheet.is-export-mode textarea,
+.receipt-sheet.is-export-mode select {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
   outline: none;
 }
 
-.offer-sheet.is-export-mode select {
+.offer-sheet.is-export-mode select,
+.receipt-sheet.is-export-mode select {
   appearance: none;
 }
 
 .document-label-input,
-.offer-sheet .document-label-input {
+.offer-sheet .document-label-input,
+.receipt-sheet .document-label-input {
   display: inline-block;
   width: auto;
   max-width: 100%;
@@ -1042,7 +1069,8 @@ h1 {
 }
 
 .document-label-input:focus,
-.offer-sheet .document-label-input:focus {
+.offer-sheet .document-label-input:focus,
+.receipt-sheet .document-label-input:focus {
   border-color: rgba(74, 103, 119, 0.32);
   background: rgba(236, 244, 246, 0.62);
   box-shadow: 0 0 0 2px rgba(74, 103, 119, 0.08);
@@ -1783,6 +1811,215 @@ h1 {
   overflow: visible;
 }
 
+.receipt-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  font-size: 8.6pt;
+  line-height: 1.28;
+}
+
+.receipt-sheet .invoice-document-header {
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 24px;
+  min-height: 58px;
+  margin-bottom: 14px;
+  font-size: 0.64rem;
+}
+
+.receipt-sheet .invoice-sender-side {
+  font-size: 0.62rem;
+}
+
+.receipt-sheet .invoice-sender-side label {
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 6px;
+  height: 15px;
+}
+
+.receipt-sheet .invoice-sender-side .document-label-input,
+.receipt-sheet .invoice-sender-side input {
+  height: 15px;
+  min-height: 15px;
+  font-size: 0.62rem;
+}
+
+.receipt-address-row {
+  grid-template-columns: minmax(210px, 270px) minmax(0, 1fr);
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.receipt-sheet .invoice-recipient-fields {
+  font-size: 8.7pt;
+  line-height: 1.18;
+}
+
+.receipt-sheet .invoice-recipient-fields > input,
+.receipt-sheet .invoice-recipient-fields .invoice-config-row input {
+  min-height: 13px;
+  line-height: 1.05;
+}
+
+.receipt-sheet .invoice-sender-line {
+  margin-bottom: 4px;
+  font-size: 0.47rem !important;
+}
+
+.receipt-sheet .invoice-details {
+  width: min(100%, 330px);
+  padding-top: 3px;
+  font-size: 8.3pt;
+  line-height: 1.18;
+}
+
+.receipt-sheet .invoice-details label {
+  grid-template-columns: 116px minmax(92px, 1fr);
+  gap: 7px;
+  min-height: 14px;
+}
+
+.receipt-sheet .invoice-details label > input,
+.receipt-sheet .invoice-details label > .document-label-input,
+.receipt-sheet .invoice-date-field,
+.receipt-sheet .invoice-date-input {
+  min-height: 14px;
+  line-height: 1.05;
+}
+
+.receipt-document-title {
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+  min-height: 28px;
+}
+
+.receipt-document-title .document-title-label {
+  width: min(100%, 190px);
+  height: 32px;
+  min-height: 32px;
+  line-height: 32px;
+}
+
+.receipt-flow-row {
+  margin-bottom: 7px;
+}
+
+.receipt-sheet textarea.receipt-flow-text {
+  min-height: 34px;
+  max-height: 54px;
+  font-size: 8.8pt;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  resize: vertical;
+}
+
+.receipt-amount-box {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 2px 0 13px;
+  border: 1px solid rgba(195, 188, 176, 0.78);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.receipt-amount-box label {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 7px 8px;
+  border-left: 1px solid rgba(195, 188, 176, 0.58);
+  color: #4b4943;
+}
+
+.receipt-amount-box label:first-child {
+  border-left: 0;
+}
+
+.receipt-amount-box label.is-emphasized {
+  background: #f6f5f1;
+  color: #232320;
+  font-weight: 760;
+}
+
+.receipt-amount-box .document-label-input {
+  color: #6b675f;
+  font-size: 0.62rem;
+  font-weight: 720;
+  text-transform: uppercase;
+}
+
+.receipt-amount-box input:not(.document-label-input) {
+  min-height: 18px;
+  font-size: 0.82rem;
+  font-weight: 720;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.receipt-signature-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr minmax(170px, 1.35fr);
+  gap: 16px;
+  align-items: end;
+  margin-top: auto;
+  margin-bottom: 12px;
+}
+
+.receipt-signature-row label,
+.receipt-signature-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.receipt-signature-row label input:not(.document-label-input) {
+  min-height: 22px;
+  border-bottom: 1px solid rgba(84, 80, 72, 0.48);
+  border-radius: 0;
+}
+
+.receipt-signature-field {
+  min-height: 38px;
+  border-bottom: 1px solid rgba(84, 80, 72, 0.55);
+}
+
+.receipt-signature-field .document-label-input {
+  align-self: end;
+  color: #6b675f;
+  font-size: 0.66rem;
+  font-weight: 720;
+}
+
+.receipt-sheet .invoice-footer-data {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(195, 188, 176, 0.64);
+  color: #69665f;
+  font-size: 0.55rem;
+  line-height: 1.24;
+}
+
+.receipt-sheet .invoice-footer-data section {
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  min-width: 0;
+}
+
+.receipt-sheet .invoice-footer-data input {
+  min-height: 10px;
+  padding: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.16;
+}
+
 .invoice-document-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 230px;
@@ -2210,14 +2447,22 @@ h1 {
 .invoice-sheet.is-highlight-mode .invoice-field-actions,
 .invoice-sheet:hover .invoice-hidden-field-actions,
 .invoice-sheet:focus-within .invoice-hidden-field-actions,
-.invoice-sheet.is-highlight-mode .invoice-hidden-field-actions {
+.invoice-sheet.is-highlight-mode .invoice-hidden-field-actions,
+.receipt-sheet:hover .invoice-field-actions,
+.receipt-sheet:focus-within .invoice-field-actions,
+.receipt-sheet.is-highlight-mode .invoice-field-actions,
+.receipt-sheet:hover .invoice-hidden-field-actions,
+.receipt-sheet:focus-within .invoice-hidden-field-actions,
+.receipt-sheet.is-highlight-mode .invoice-hidden-field-actions {
   opacity: 1;
   pointer-events: auto;
 }
 
 .offer-sheet.is-export-mode .invoice-field-actions,
 .offer-sheet.is-export-mode .invoice-hidden-field-actions,
-.offer-sheet.is-export-mode .invoice-position-actions {
+.offer-sheet.is-export-mode .invoice-position-actions,
+.receipt-sheet.is-export-mode .invoice-field-actions,
+.receipt-sheet.is-export-mode .invoice-hidden-field-actions {
   display: none;
 }
 
@@ -2459,6 +2704,48 @@ h1 {
   width: 27%;
 }
 
+.delivery-note-table th:nth-child(1),
+.delivery-note-table td:nth-child(1) {
+  position: relative;
+  width: 7%;
+}
+
+.delivery-note-table th:nth-child(2),
+.delivery-note-table td:nth-child(2) {
+  width: 9%;
+}
+
+.delivery-note-table th:nth-child(3),
+.delivery-note-table td:nth-child(3) {
+  width: 10%;
+}
+
+.delivery-note-table th:nth-child(4),
+.delivery-note-table td:nth-child(4) {
+  width: 29%;
+}
+
+.delivery-note-table th:nth-child(5),
+.delivery-note-table td:nth-child(5) {
+  width: 16%;
+}
+
+.delivery-note-table th:nth-child(6),
+.delivery-note-table td:nth-child(6) {
+  width: 23%;
+  text-align: left;
+}
+
+.delivery-note-table th:nth-child(7),
+.delivery-note-table td:nth-child(7) {
+  width: 6%;
+}
+
+.delivery-note-table td:nth-child(4) textarea,
+.delivery-note-table td:nth-child(6) textarea {
+  white-space: pre-wrap;
+}
+
 .reminder-invoice-table th:nth-child(2),
 .reminder-invoice-table td:nth-child(2) {
   width: 22%;
@@ -2501,6 +2788,39 @@ h1 {
 .reminder-print-open-items-table td:nth-child(4) {
   width: 30%;
   text-align: right;
+}
+
+.delivery-note-print-table th:nth-child(1),
+.delivery-note-print-table td:nth-child(1) {
+  width: 7%;
+}
+
+.delivery-note-print-table th:nth-child(2),
+.delivery-note-print-table td:nth-child(2) {
+  width: 9%;
+}
+
+.delivery-note-print-table th:nth-child(3),
+.delivery-note-print-table td:nth-child(3) {
+  width: 10%;
+}
+
+.delivery-note-print-table th:nth-child(4),
+.delivery-note-print-table td:nth-child(4) {
+  width: 29%;
+  white-space: pre-wrap;
+}
+
+.delivery-note-print-table th:nth-child(5),
+.delivery-note-print-table td:nth-child(5) {
+  width: 16%;
+}
+
+.delivery-note-print-table th:nth-child(6),
+.delivery-note-print-table td:nth-child(6) {
+  width: 29%;
+  text-align: left;
+  white-space: pre-wrap;
 }
 
 .reminder-invoice-table th:nth-child(4) .document-label-input {
@@ -2963,6 +3283,194 @@ h1 {
 
 .invoice-print-footer p {
   margin: 0;
+}
+
+.self-receipt-recipient-section {
+  display: grid;
+  gap: 8px;
+}
+
+.self-receipt-recipient-heading,
+.self-receipt-print-recipient-title {
+  margin: 0;
+  color: #77736b;
+  font-size: 0.76rem;
+  font-weight: 760;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.self-receipt-document-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin-bottom: 24px;
+}
+
+.self-receipt-detail-card {
+  align-items: start;
+}
+
+.self-receipt-detail-card > label {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.self-receipt-detail-card-wide {
+  grid-column: 1 / -1;
+}
+
+.self-receipt-detail-card textarea {
+  min-height: 82px;
+  resize: none;
+  white-space: pre-wrap;
+}
+
+.self-receipt-text-actions {
+  align-items: center;
+  gap: 4px;
+}
+
+.self-receipt-text-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(74, 103, 119, 0.18);
+  border-radius: 999px;
+  background: rgba(236, 244, 246, 0.72);
+  color: #4a6777;
+}
+
+.self-receipt-text-actions > button:disabled {
+  opacity: 0.4;
+}
+
+.self-receipt-expense-table td,
+.self-receipt-expense-table th {
+  vertical-align: top;
+}
+
+.self-receipt-expense-table th:nth-child(1),
+.self-receipt-expense-table td:nth-child(1) {
+  width: 6%;
+}
+
+.self-receipt-expense-table th:nth-child(2),
+.self-receipt-expense-table td:nth-child(2) {
+  width: 13%;
+}
+
+.self-receipt-expense-table th:nth-child(3),
+.self-receipt-expense-table td:nth-child(3) {
+  width: 14%;
+}
+
+.self-receipt-expense-table th:nth-child(4),
+.self-receipt-expense-table td:nth-child(4) {
+  width: 30%;
+}
+
+.self-receipt-expense-table th:nth-child(5),
+.self-receipt-expense-table td:nth-child(5),
+.self-receipt-expense-table th:nth-child(6),
+.self-receipt-expense-table td:nth-child(6),
+.self-receipt-expense-table th:nth-child(7),
+.self-receipt-expense-table td:nth-child(7) {
+  width: 11%;
+}
+
+.self-receipt-expense-table th:nth-child(8),
+.self-receipt-expense-table td:nth-child(8) {
+  width: 4%;
+}
+
+.self-receipt-expense-table textarea {
+  min-height: 46px;
+  resize: none;
+  white-space: pre-wrap;
+}
+
+.self-receipt-expense-total-cell {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.self-receipt-print-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.self-receipt-print-detail-card {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.self-receipt-print-detail-label {
+  margin: 0;
+  color: #77736b;
+  font-size: 9px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.self-receipt-print-detail-text {
+  margin: 0;
+  color: #4d4b46;
+  font-size: 11pt;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.self-receipt-print-position-table th:nth-child(1),
+.self-receipt-print-position-table td:nth-child(1) {
+  width: 6%;
+}
+
+.self-receipt-print-position-table th:nth-child(2),
+.self-receipt-print-position-table td:nth-child(2) {
+  width: 13%;
+}
+
+.self-receipt-print-position-table th:nth-child(3),
+.self-receipt-print-position-table td:nth-child(3) {
+  width: 15%;
+}
+
+.self-receipt-print-position-table th:nth-child(4),
+.self-receipt-print-position-table td:nth-child(4) {
+  width: 29%;
+  white-space: pre-wrap;
+}
+
+.self-receipt-print-position-table th:nth-child(5),
+.self-receipt-print-position-table td:nth-child(5),
+.self-receipt-print-position-table th:nth-child(6),
+.self-receipt-print-position-table td:nth-child(6),
+.self-receipt-print-position-table th:nth-child(7),
+.self-receipt-print-position-table td:nth-child(7) {
+  width: 12%;
+}
+
+.self-receipt-print-position-table th:nth-child(5),
+.self-receipt-print-position-table td:nth-child(5),
+.self-receipt-print-position-table th:nth-child(7),
+.self-receipt-print-position-table td:nth-child(7) {
+  text-align: right;
+}
+
+@media (max-width: 860px) {
+  .self-receipt-document-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .self-receipt-print-detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-section {
@@ -4136,6 +4644,11 @@ h1 {
     visibility: visible;
   }
 
+  body.document-print-mode.receipt-print-mode .receipt-sheet,
+  body.document-print-mode.receipt-print-mode .receipt-sheet * {
+    visibility: visible;
+  }
+
   body.document-print-mode .invoice-sheet,
   body.document-print-mode .invoice-sheet * {
     visibility: hidden;
@@ -4239,6 +4752,34 @@ h1 {
     display: none;
   }
 
+  body.document-print-mode.receipt-print-mode .receipt-sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    height: 148mm;
+    min-height: 148mm;
+    max-height: 148mm;
+    margin: 0;
+    padding: 7.4mm 9.5mm 5.8mm 11.1mm;
+    overflow: hidden;
+    border: 0;
+    box-shadow: none;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  body.document-print-mode.receipt-print-mode .receipt-sheet .invoice-icon-action,
+  body.document-print-mode.receipt-print-mode .receipt-sheet .invoice-field-actions,
+  body.document-print-mode.receipt-print-mode .receipt-sheet .invoice-hidden-field-actions {
+    display: none;
+  }
+
   body.document-print-mode .invoice-sheet {
     --invoice-right-safe-offset: 0px;
   }
@@ -4259,6 +4800,25 @@ h1 {
   }
 
   .offer-sheet select {
+    appearance: none;
+  }
+
+  .receipt-sheet input,
+  .receipt-sheet textarea,
+  .receipt-sheet select,
+  .receipt-sheet.is-highlight-mode input,
+  .receipt-sheet.is-highlight-mode textarea,
+  .receipt-sheet.is-highlight-mode select,
+  .receipt-sheet.is-export-mode input,
+  .receipt-sheet.is-export-mode textarea,
+  .receipt-sheet.is-export-mode select {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .receipt-sheet select {
     appearance: none;
   }
 }

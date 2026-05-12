@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
+import CreditNoteDocumentEditor from '../components/CreditNoteDocumentEditor.jsx';
+import DeliveryNoteDocumentEditor from '../components/DeliveryNoteDocumentEditor.jsx';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
 import InvoiceDocumentEditor from '../components/InvoiceDocumentEditor.jsx';
 import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
+import ReceiptDocumentEditor from '../components/ReceiptDocumentEditor.jsx';
 import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
+import SelfReceiptDocumentEditor from '../components/SelfReceiptDocumentEditor.jsx';
 import { documentSections, findDocumentItem } from '../data/documents.js';
 
 function DocumentOverview({ onSelect }) {
@@ -114,7 +118,7 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
-  const showDocumentDescription = !['write-invoice', 'write-offer'].includes(activeDocumentId)
+  const showDocumentDescription = !['write-invoice', 'write-offer', 'write-credit-note', 'write-delivery-note', 'write-self-receipt'].includes(activeDocumentId)
     && activeDocument?.description;
 
   useEffect(() => {
@@ -140,9 +144,13 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
               <p className="intro document-intro">{activeDocument.description}</p>
             )}
 
+            {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor />}
+            {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
             {activeDocument.formType === 'invoice' && <InvoiceDocumentEditor />}
             {activeDocument.formType === 'offer' && <OfferDocumentEditor />}
+            {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor />}
             {activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}
+            {activeDocument.formType === 'selfReceipt' && <SelfReceiptDocumentEditor />}
           </>
         )}
       </section>
