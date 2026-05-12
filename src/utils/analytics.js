@@ -1,9 +1,14 @@
 const GA_SCRIPT_ID = 'belege24-ga-script';
 const GA_INIT_FLAG = '__belege24GaInitialized';
+const DEFAULT_MEASUREMENT_ID = 'G-7Q9VSC21C9';
 
 function getMeasurementId() {
   const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-  return typeof measurementId === 'string' ? measurementId.trim() : '';
+  const resolvedMeasurementId =
+    typeof measurementId === 'string' && measurementId.trim()
+      ? measurementId.trim()
+      : DEFAULT_MEASUREMENT_ID;
+  return resolvedMeasurementId;
 }
 
 export function syncAnalyticsConsent(enabled) {

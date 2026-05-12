@@ -52,7 +52,7 @@ export default function CookieConsentBanner({
               zuverlässig funktioniert. Mit Ihrer Zustimmung nutzen wir außerdem
               Google Analytics, um zu verstehen, welche Bereiche genutzt werden und wie
               Besucher auf unsere Website gelangen. Sie können selbst entscheiden, ob
-              Sie Analyse zulassen.
+              Sie Statistik zulassen.
             </p>
             <button
               type="button"
@@ -77,7 +77,11 @@ export default function CookieConsentBanner({
       )}
 
       {isSettingsOpen && (
-        <div className="cookie-consent-modal-backdrop" role="presentation" onClick={onCloseSettings}>
+        <div
+          className="cookie-consent-modal-backdrop"
+          role="presentation"
+          onClick={onCloseSettings}
+        >
           <section
             className="cookie-consent-modal"
             role="dialog"
@@ -100,7 +104,7 @@ export default function CookieConsentBanner({
               </button>
             </div>
             <p className="cookie-consent-modal-intro">
-              Sie können selbst festlegen, ob wir Analyse zur Verbesserung von
+              Sie können selbst festlegen, ob wir Statistik zur Verbesserung von
               Belege24 verwenden dürfen. Notwendige lokale Speicherfunktionen bleiben
               immer aktiv.
             </p>
@@ -115,7 +119,7 @@ export default function CookieConsentBanner({
               <ConsentToggle
                 checked={analyticsEnabled}
                 disabled={false}
-                label="Analyse"
+                label="Statistik"
                 description="Google Analytics hilft uns zu verstehen, wie Belege24 genutzt wird."
                 onChange={setAnalyticsEnabled}
               />
