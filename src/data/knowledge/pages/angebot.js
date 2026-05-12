@@ -1,51 +1,104 @@
 import { defaultDisclaimer } from '../shared.js';
 
 const angebot = {
-    slug: 'angebot',
-    category: 'Belege',
-    title: 'Angebot',
-    description: 'Ein Angebot beschreibt Leistungen, Preise und Bedingungen, bevor ein Auftrag erteilt wird.',
-    intro:
-      'Ein Angebot ist ein geschaeftliches Dokument, mit dem ein Anbieter einem Kunden konkrete Leistungen, Produkte, Preise und Rahmenbedingungen vorschlaegt. Es hilft beiden Seiten, Umfang, Kosten und Bedingungen vor einem Auftrag klar zu verstehen.',
-    keyPoints: [
-      'Name und Anschrift von Anbieter und Kunde',
-      'Angebotsdatum und Angebotsnummer',
-      'Beschreibung der Leistung oder Lieferung',
-      'Preise, Mengen und Gesamtsumme',
-      'Umsatzsteuer oder Hinweis zur Kleinunternehmerregelung',
-      'Gueltigkeitsdauer des Angebots',
-      'Zahlungs- und Lieferbedingungen',
-    ],
-    typicalUse:
-      'Ein Angebot wird genutzt, bevor ein Kunde eine Leistung beauftragt oder eine Ware bestellt. Es dient als Entscheidungsgrundlage und kann spaeter zur Auftragsbestaetigung oder Rechnung fuehren.',
-    commonMistakes: [
-      'unklare Leistungsbeschreibung',
-      'fehlende Gueltigkeitsdauer',
-      'nicht erkennbare Zusatzkosten',
-      'fehlende Zahlungs- oder Lieferbedingungen',
-      'Abweichungen zwischen Angebot und spaeterer Rechnung',
-    ],
-    toolLink: '/dokumente',
-    toolLabel: 'Angebot erstellen',
-    faqs: [
-      {
-        question: 'Was gehoert in ein Angebot?',
-        answer:
-          'Ein Angebot sollte klar zeigen, wer anbietet, wer der Kunde ist, welche Leistung oder Ware angeboten wird, welche Preise gelten und wie lange das Angebot gueltig ist.',
-      },
-      {
-        question: 'Ist ein Angebot verbindlich?',
-        answer:
-          'Ein Angebot kann verbindlich sein, wenn es klar formuliert ist und keine Einschraenkungen enthaelt. Deshalb sollten Gueltigkeit, Bedingungen und Leistungsumfang eindeutig beschrieben werden.',
-      },
-      {
-        question: 'Was ist der Unterschied zwischen Angebot und Rechnung?',
-        answer:
-          'Ein Angebot steht vor einem Auftrag und beschreibt moegliche Leistungen und Preise. Eine Rechnung wird nach einer Lieferung oder Leistung erstellt und fordert zur Zahlung auf.',
-      },
-    ],
-    related: ['rechnung', 'lieferschein', 'gutschrift'],
-    disclaimer: defaultDisclaimer,
-  };
+  slug: "angebot",
+  category: "Belege",
+  title: "Angebot",
+  description: "Ein Angebot beschreibt Leistungen, Preise und Bedingungen, bevor ein Auftrag erteilt wird.",
+  seo: {
+    title: "Angebot einfach erklaert | Carta",
+    description: "Ein Angebot beschreibt Leistungen, Preise und Bedingungen, bevor ein Auftrag erteilt wird.",
+    canonicalPath: "/wissen/angebot",
+  },
+  hero: {
+    headline: "Angebot",
+    intro: "Ein Angebot ist ein geschaeftliches Dokument, mit dem ein Anbieter einem Kunden konkrete Leistungen, Produkte, Preise und Rahmenbedingungen vorschlaegt. Es hilft beiden Seiten, Umfang, Kosten und Bedingungen vor einem Auftrag klar zu verstehen.",
+  },
+  sections: [
+    {
+      heading: "Was ist Angebot?",
+      paragraphs: [
+        "Ein Angebot ist ein geschaeftliches Dokument, mit dem ein Anbieter einem Kunden konkrete Leistungen, Produkte, Preise und Rahmenbedingungen vorschlaegt. Es hilft beiden Seiten, Umfang, Kosten und Bedingungen vor einem Auftrag klar zu verstehen.",
+      ],
+    },
+    {
+      heading: "Wichtige Punkte",
+      paragraphs: [
+        "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
+      ],
+      list: [
+        "Name und Anschrift von Anbieter und Kunde",
+        "Angebotsdatum und Angebotsnummer",
+        "Beschreibung der Leistung oder Lieferung",
+        "Preise, Mengen und Gesamtsumme",
+        "Umsatzsteuer oder Hinweis zur Kleinunternehmerregelung",
+        "Gueltigkeitsdauer des Angebots",
+        "Zahlungs- und Lieferbedingungen",
+      ],
+    },
+    {
+      heading: "Praxis",
+      paragraphs: [
+        "Ein Angebot wird genutzt, bevor ein Kunde eine Leistung beauftragt oder eine Ware bestellt. Es dient als Entscheidungsgrundlage und kann spaeter zur Auftragsbestaetigung oder Rechnung fuehren.",
+      ],
+    },
+    {
+      heading: "Worauf sollte man achten?",
+      paragraphs: [
+        "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+      ],
+      list: [
+        "unklare Leistungsbeschreibung",
+        "fehlende Gueltigkeitsdauer",
+        "nicht erkennbare Zusatzkosten",
+        "fehlende Zahlungs- oder Lieferbedingungen",
+        "Abweichungen zwischen Angebot und spaeterer Rechnung",
+      ],
+    },
+  ],
+  keyPoints: [
+    "Name und Anschrift von Anbieter und Kunde",
+    "Angebotsdatum und Angebotsnummer",
+    "Beschreibung der Leistung oder Lieferung",
+    "Preise, Mengen und Gesamtsumme",
+    "Umsatzsteuer oder Hinweis zur Kleinunternehmerregelung",
+    "Gueltigkeitsdauer des Angebots",
+    "Zahlungs- und Lieferbedingungen",
+  ],
+  commonMistakes: [
+    "unklare Leistungsbeschreibung",
+    "fehlende Gueltigkeitsdauer",
+    "nicht erkennbare Zusatzkosten",
+    "fehlende Zahlungs- oder Lieferbedingungen",
+    "Abweichungen zwischen Angebot und spaeterer Rechnung",
+  ],
+  faqs: [
+    {
+      question: "Was gehoert in ein Angebot?",
+      answer: "Ein Angebot sollte klar zeigen, wer anbietet, wer der Kunde ist, welche Leistung oder Ware angeboten wird, welche Preise gelten und wie lange das Angebot gueltig ist.",
+    },
+    {
+      question: "Ist ein Angebot verbindlich?",
+      answer: "Ein Angebot kann verbindlich sein, wenn es klar formuliert ist und keine Einschraenkungen enthaelt. Deshalb sollten Gueltigkeit, Bedingungen und Leistungsumfang eindeutig beschrieben werden.",
+    },
+    {
+      question: "Was ist der Unterschied zwischen Angebot und Rechnung?",
+      answer: "Ein Angebot steht vor einem Auftrag und beschreibt moegliche Leistungen und Preise. Eine Rechnung wird nach einer Lieferung oder Leistung erstellt und fordert zur Zahlung auf.",
+    },
+  ],
+  related: [
+    "rechnung",
+    "lieferschein",
+    "gutschrift",
+  ],
+  sources: [],
+  updatedAt: "2026-05-12",
+  reviewedAt: "2026-05-12",
+  disclaimer: defaultDisclaimer,
+  intro: "Ein Angebot ist ein geschaeftliches Dokument, mit dem ein Anbieter einem Kunden konkrete Leistungen, Produkte, Preise und Rahmenbedingungen vorschlaegt. Es hilft beiden Seiten, Umfang, Kosten und Bedingungen vor einem Auftrag klar zu verstehen.",
+  typicalUse: "Ein Angebot wird genutzt, bevor ein Kunde eine Leistung beauftragt oder eine Ware bestellt. Es dient als Entscheidungsgrundlage und kann spaeter zur Auftragsbestaetigung oder Rechnung fuehren.",
+  toolLink: "/dokumente",
+  toolLabel: "Angebot erstellen",
+};
 
 export default angebot;
