@@ -396,11 +396,11 @@ export default function OfferDocumentForm({
               <h3>Absender</h3>
               <div className="invoice-panel-grid">
                 <OfferPanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firmenname" name="sender-company" placeholder={defaultSenderAddress.company} value={sender.companyName} onChange={(value) => updateSenderAddress('company', value)} />
-                <OfferPanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.returnAddress} onChange={(value) => updateSender('senderLine', value)} />
                 <OfferPanelInput label="Straße" name="sender-street" value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <OfferPanelInput label="Hausnummer" name="sender-house-number" value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <OfferPanelInput label="PLZ" name="sender-postal-code" value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
                 <OfferPanelInput label="Stadt" name="sender-city" value={senderAddress.city} onChange={(value) => updateSenderAddress('city', value)} />
+                <OfferPanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.returnAddress} onChange={(value) => updateSender('senderLine', value)} />
               </div>
             </div>
 

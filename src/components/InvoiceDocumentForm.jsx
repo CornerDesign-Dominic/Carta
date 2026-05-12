@@ -322,11 +322,11 @@ export default function InvoiceDocumentForm({
               <h3>Absender</h3>
               <div className="invoice-panel-grid">
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Firmenname" name="sender-company" value={sender.companyName} onChange={(value) => updateSenderAddress('company', value)} />
-                <InvoicePanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.returnAddress} onChange={(value) => updateSender('senderLine', value)} />
                 <InvoicePanelInput label="Straße" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <InvoicePanelInput label="Hausnummer" name="sender-house-number" value={sender.address.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <InvoicePanelInput label="PLZ" name="sender-postal-code" value={sender.address.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
                 <InvoicePanelInput label="Stadt" name="sender-city" value={sender.address.city} onChange={(value) => updateSenderAddress('city', value)} />
+                <InvoicePanelInput className="invoice-panel-field-wide" label="Absenderzeile" name="sender-line" value={sender.returnAddress} onChange={(value) => updateSender('senderLine', value)} />
               </div>
             </div>
 
