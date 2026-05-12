@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
+import CookieConsentBanner from './components/CookieConsentBanner.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
+import { syncAnalyticsConsent } from './utils/analytics.js';
+import {
+  createDefaultConsent,
+  normalizeConsent,
+  readStoredConsent,
+  writeStoredConsent,
+} from './utils/consent.js';
 import DocumentsView from './views/DocumentsView.jsx';
 import HomeView from './views/HomeView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
@@ -83,10 +91,14 @@ function pathForNavigation(item) {
 
 export default function App() {
   const initialRoute = routeFromLocation();
+  const initialConsent = readStoredConsent();
   const [currentView, setCurrentView] = useState(initialRoute.view);
   const [currentKnowledgeSlug, setCurrentKnowledgeSlug] = useState(initialRoute.knowledgeSlug);
   const [currentDocumentId, setCurrentDocumentId] = useState(initialRoute.documentId);
   const [documentsViewKey, setDocumentsViewKey] = useState(0);
+  const [consent, setConsent] = useState(initialConsent ?? createDefaultConsent());
+  const [hasResolvedConsent, setHasResolvedConsent] = useState(initialConsent !== null);
+  const [isConsentSettingsOpen, setIsConsentSettingsOpen] = useState(false);
 
   function applyRoute(route) {
     setCurrentView(route.view);
@@ -102,6 +114,10 @@ export default function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  useEffect(() => {
+    syncAnalyticsConsent(consent.analytics === true);
+  }, [consent.analytics]);
 
   function handleNavigate(item, options = {}) {
     if (item.view === 'documents') {
@@ -124,6 +140,30 @@ export default function App() {
     handleNavigate({ view: 'knowledge', slug });
   }
 
+  function saveConsent(nextConsent) {
+    const normalized = normalizeConsent({
+      ...nextConsent,
+      necessary: true,
+      decidedAt: new Date().toISOString(),
+    });
+    setConsent(normalized);
+    setHasResolvedConsent(true);
+    setIsConsentSettingsOpen(false);
+    writeStoredConsent(normalized);
+  }
+
+  function handleAcceptAll() {
+    saveConsent({ analytics: true });
+  }
+
+  function handleAcceptNecessary() {
+    saveConsent({ analytics: false });
+  }
+
+  function handleSaveConsentSettings(analyticsEnabled) {
+    saveConsent({ analytics: analyticsEnabled });
+  }
+
   return (
     <div className="site-shell">
       <Header currentView={currentView} onNavigate={handleNavigate} />
@@ -144,7 +184,21 @@ export default function App() {
         )}
         {currentView === 'not-found' && <NotFoundView onNavigate={handleNavigate} />}
       </div>
-      <Footer onNavigate={handleNavigate} />
+      <Footer
+        onNavigate={handleNavigate}
+        onOpenCookieSettings={() => setIsConsentSettingsOpen(true)}
+      />
+      <CookieConsentBanner
+        initialConsent={consent}
+        isVisible={!hasResolvedConsent}
+        isSettingsOpen={isConsentSettingsOpen}
+        onAcceptAll={handleAcceptAll}
+        onAcceptNecessary={handleAcceptNecessary}
+        onSaveSettings={handleSaveConsentSettings}
+        onOpenSettings={() => setIsConsentSettingsOpen(true)}
+        onCloseSettings={() => setIsConsentSettingsOpen(false)}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 }

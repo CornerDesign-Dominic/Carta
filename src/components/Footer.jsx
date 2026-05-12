@@ -4,7 +4,7 @@ const footerItems = [
   { label: 'AGB', view: 'legal:agb' },
 ];
 
-export default function Footer({ onNavigate }) {
+export default function Footer({ onNavigate, onOpenCookieSettings }) {
   return (
     <footer className="site-footer" id="rechtliches">
       <nav className="footer-links" aria-label="Rechtliches">
@@ -13,6 +13,9 @@ export default function Footer({ onNavigate }) {
             {item.label}
           </button>
         ))}
+        <button type="button" onClick={onOpenCookieSettings}>
+          Cookie-Einstellungen
+        </button>
       </nav>
     </footer>
   );
