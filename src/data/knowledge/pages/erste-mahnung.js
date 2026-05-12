@@ -10,50 +10,54 @@ const ersteMahnung = {
     description: "Die erste Mahnung erinnert sachlich an eine faellige offene Forderung.",
     canonicalPath: "/wissen/erste-mahnung",
   },
-  hero: {
-    headline: "1. Mahnung",
+  article: {
     intro: "Die 1. Mahnung ist ein formellerer Schritt nach einer offenen oder ueberfaelligen Rechnung. Sie benennt die Forderung klar und setzt meist eine neue Zahlungsfrist.",
+    sections: [
+      {
+        heading: "Was ist 1. Mahnung?",
+        paragraphs: [
+          "Die 1. Mahnung ist ein formellerer Schritt nach einer offenen oder ueberfaelligen Rechnung. Sie benennt die Forderung klar und setzt meist eine neue Zahlungsfrist.",
+        ],
+      },
+      {
+        heading: "Wichtige Punkte",
+        paragraphs: [
+          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
+        ],
+        list: [
+          "klare Bezugnahme auf Rechnung und Faelligkeit",
+          "offener Rechnungsbetrag",
+          "neue Zahlungsfrist",
+          "sachlicher und bestimmter Ton",
+          "Zahlungsinformationen",
+          "Hinweis auf moegliche weitere Schritte",
+        ],
+      },
+      {
+        heading: "Praxis",
+        paragraphs: [
+          "Die erste Mahnung wird verwendet, wenn eine Rechnung trotz Faelligkeit nicht bezahlt wurde und eine freundliche Erinnerung nicht ausgereicht hat oder uebersprungen werden soll.",
+        ],
+      },
+      {
+        heading: "Worauf sollte man achten?",
+        paragraphs: [
+          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+        ],
+        list: [
+          "fehlende neue Frist",
+          "unvollstaendige Rechnungsdaten",
+          "zu aggressiver Ton",
+          "unklare Forderungshoehe",
+        ],
+      },
+    ],
   },
-  sections: [
-    {
-      heading: "Was ist 1. Mahnung?",
-      paragraphs: [
-        "Die 1. Mahnung ist ein formellerer Schritt nach einer offenen oder ueberfaelligen Rechnung. Sie benennt die Forderung klar und setzt meist eine neue Zahlungsfrist.",
-      ],
-    },
-    {
-      heading: "Wichtige Punkte",
-      paragraphs: [
-        "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-      ],
-      list: [
-        "klare Bezugnahme auf Rechnung und Faelligkeit",
-        "offener Rechnungsbetrag",
-        "neue Zahlungsfrist",
-        "sachlicher und bestimmter Ton",
-        "Zahlungsinformationen",
-        "Hinweis auf moegliche weitere Schritte",
-      ],
-    },
-    {
-      heading: "Praxis",
-      paragraphs: [
-        "Die erste Mahnung wird verwendet, wenn eine Rechnung trotz Faelligkeit nicht bezahlt wurde und eine freundliche Erinnerung nicht ausgereicht hat oder uebersprungen werden soll.",
-      ],
-    },
-    {
-      heading: "Worauf sollte man achten?",
-      paragraphs: [
-        "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
-      ],
-      list: [
-        "fehlende neue Frist",
-        "unvollstaendige Rechnungsdaten",
-        "zu aggressiver Ton",
-        "unklare Forderungshoehe",
-      ],
-    },
-  ],
+  generator: {
+    label: "Mahnung erstellen",
+    href: "/dokumente",
+    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.",
+  },
   keyPoints: [
     "klare Bezugnahme auf Rechnung und Faelligkeit",
     "offener Rechnungsbetrag",
@@ -92,10 +96,6 @@ const ersteMahnung = {
   updatedAt: "2026-05-12",
   reviewedAt: "2026-05-12",
   disclaimer: defaultDisclaimer,
-  intro: "Die 1. Mahnung ist ein formellerer Schritt nach einer offenen oder ueberfaelligen Rechnung. Sie benennt die Forderung klar und setzt meist eine neue Zahlungsfrist.",
-  typicalUse: "Die erste Mahnung wird verwendet, wenn eine Rechnung trotz Faelligkeit nicht bezahlt wurde und eine freundliche Erinnerung nicht ausgereicht hat oder uebersprungen werden soll.",
-  toolLink: "/dokumente",
-  toolLabel: "Mahnung erstellen",
 };
 
 export default ersteMahnung;

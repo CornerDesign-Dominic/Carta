@@ -10,50 +10,50 @@ const zahlungserinnerung = {
     description: "Eine Zahlungserinnerung weist freundlich auf eine noch offene Rechnung hin.",
     canonicalPath: "/wissen/zahlungserinnerung",
   },
-  hero: {
-    headline: "Zahlungserinnerung",
+  article: {
     intro: "Eine Zahlungserinnerung ist ein sachlicher Hinweis, dass eine Rechnung noch nicht bezahlt wurde. Sie ist meist freundlich formuliert und wird oft vor einer formellen Mahnung versendet.",
+    sections: [
+      {
+        heading: "Was ist Zahlungserinnerung?",
+        paragraphs: [
+          "Eine Zahlungserinnerung ist ein sachlicher Hinweis, dass eine Rechnung noch nicht bezahlt wurde. Sie ist meist freundlich formuliert und wird oft vor einer formellen Mahnung versendet.",
+        ],
+      },
+      {
+        heading: "Wichtige Punkte",
+        paragraphs: [
+          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
+        ],
+        list: [
+          "Bezug zur offenen Rechnung",
+          "Rechnungsnummer und Rechnungsdatum",
+          "offener Betrag",
+          "urspruengliches Zahlungsziel",
+          "neue Bitte um Zahlung",
+          "Bankverbindung oder Zahlungsweg",
+        ],
+      },
+      {
+        heading: "Praxis",
+        paragraphs: [
+          "Eine Zahlungserinnerung wird genutzt, wenn ein Zahlungsziel verstrichen ist oder kurz davor steht und der Kunde an die offene Zahlung erinnert werden soll.",
+        ],
+      },
+      {
+        heading: "Worauf sollte man achten?",
+        paragraphs: [
+          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+        ],
+        list: [
+          "zu scharfer Ton beim ersten Hinweis",
+          "fehlende Rechnungsdaten",
+          "kein klarer offener Betrag",
+          "fehlende Zahlungsinformationen",
+        ],
+      },
+    ],
   },
-  sections: [
-    {
-      heading: "Was ist Zahlungserinnerung?",
-      paragraphs: [
-        "Eine Zahlungserinnerung ist ein sachlicher Hinweis, dass eine Rechnung noch nicht bezahlt wurde. Sie ist meist freundlich formuliert und wird oft vor einer formellen Mahnung versendet.",
-      ],
-    },
-    {
-      heading: "Wichtige Punkte",
-      paragraphs: [
-        "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-      ],
-      list: [
-        "Bezug zur offenen Rechnung",
-        "Rechnungsnummer und Rechnungsdatum",
-        "offener Betrag",
-        "urspruengliches Zahlungsziel",
-        "neue Bitte um Zahlung",
-        "Bankverbindung oder Zahlungsweg",
-      ],
-    },
-    {
-      heading: "Praxis",
-      paragraphs: [
-        "Eine Zahlungserinnerung wird genutzt, wenn ein Zahlungsziel verstrichen ist oder kurz davor steht und der Kunde an die offene Zahlung erinnert werden soll.",
-      ],
-    },
-    {
-      heading: "Worauf sollte man achten?",
-      paragraphs: [
-        "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
-      ],
-      list: [
-        "zu scharfer Ton beim ersten Hinweis",
-        "fehlende Rechnungsdaten",
-        "kein klarer offener Betrag",
-        "fehlende Zahlungsinformationen",
-      ],
-    },
-  ],
+  generator: null,
   keyPoints: [
     "Bezug zur offenen Rechnung",
     "Rechnungsnummer und Rechnungsdatum",
@@ -91,8 +91,6 @@ const zahlungserinnerung = {
   updatedAt: "2026-05-12",
   reviewedAt: "2026-05-12",
   disclaimer: defaultDisclaimer,
-  intro: "Eine Zahlungserinnerung ist ein sachlicher Hinweis, dass eine Rechnung noch nicht bezahlt wurde. Sie ist meist freundlich formuliert und wird oft vor einer formellen Mahnung versendet.",
-  typicalUse: "Eine Zahlungserinnerung wird genutzt, wenn ein Zahlungsziel verstrichen ist oder kurz davor steht und der Kunde an die offene Zahlung erinnert werden soll.",
 };
 
 export default zahlungserinnerung;

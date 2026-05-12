@@ -21,9 +21,9 @@ Jede Wissensseite sollte diese Felder enthalten:
 - `seo.title`
 - `seo.description`
 - `seo.canonicalPath`
-- `hero.headline`
-- `hero.intro`
-- `sections`
+- `article.intro`
+- `article.sections`
+- `generator`
 - `keyPoints`
 - `commonMistakes`
 - `faqs`
@@ -47,7 +47,7 @@ Jede Wissensseite sollte diese Felder enthalten:
 - `seo.title` soll kurz, eindeutig und suchnah sein.
 - `seo.description` fasst den konkreten Nutzen der Seite zusammen.
 - `seo.canonicalPath` entspricht dem finalen Pfad, zum Beispiel `/wissen/rechnung`.
-- `hero.headline` darf kuerzer und nutzerfreundlicher sein als der SEO-Titel.
+- `article.intro` ist der Einleitungstext direkt unter dem Seitentitel.
 - Interne Links sollen ueber `related` gepflegt werden.
 
 ## FAQs

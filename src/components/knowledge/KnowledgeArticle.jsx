@@ -20,7 +20,11 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
     return <MissingArticle />;
   }
 
-  const articleSections = article.sections ?? article.articleSections ?? [
+  const articleIntro = article.article?.intro
+    ?? article.hero?.intro
+    ?? article.intro
+    ?? article.description;
+  const articleSections = article.article?.sections ?? article.sections ?? article.articleSections ?? [
     {
       heading: `Was ist ${article.title}?`,
       paragraphs: [article.intro],
@@ -40,12 +44,21 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
       list: article.commonMistakes,
     },
   ].filter((section) => section.paragraphs?.length || section.list?.length);
+  const generator = article.generator ?? (
+    article.toolLabel || article.toolLink || article.ctaText
+      ? {
+          label: article.toolLabel,
+          href: article.toolLink,
+          text: article.ctaText,
+        }
+      : null
+  );
 
   return (
     <>
       <p className="eyebrow">WISSEN / {article.category}</p>
-      <h1 id="knowledge-title">{article.hero?.headline ?? article.title}</h1>
-      <p className="intro document-intro">{article.hero?.intro ?? article.description}</p>
+      <h1 id="knowledge-title">{article.title}</h1>
+      <p className="intro document-intro">{articleIntro}</p>
 
       <article className="knowledge-article-body">
         {articleSections.map((section) => (
@@ -65,17 +78,17 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
         ))}
       </article>
 
-      {article.toolLabel && (
+      {generator && (
         <section className="knowledge-cta-section" aria-label="Passender Generator">
           <div>
             <h2>Passenden Generator nutzen</h2>
             <p>
-              {article.ctaText
+              {generator.text
                 ?? 'Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.'}
             </p>
           </div>
-          <button type="button" onClick={() => onOpenTool(article.toolLink)}>
-            {article.toolLabel}
+          <button type="button" onClick={() => onOpenTool(generator.href)}>
+            {generator.label}
           </button>
         </section>
       )}

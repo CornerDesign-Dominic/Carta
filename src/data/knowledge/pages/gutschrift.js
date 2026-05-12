@@ -10,51 +10,51 @@ const gutschrift = {
     description: "Eine Gutschrift korrigiert oder verrechnet Betraege zugunsten eines Kunden oder Geschaeftspartners.",
     canonicalPath: "/wissen/gutschrift",
   },
-  hero: {
-    headline: "Gutschrift",
+  article: {
     intro: "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Ruecksendungen, Preisnachlaessen oder Rechnungskorrekturen eingesetzt werden.",
+    sections: [
+      {
+        heading: "Was ist Gutschrift?",
+        paragraphs: [
+          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Ruecksendungen, Preisnachlaessen oder Rechnungskorrekturen eingesetzt werden.",
+        ],
+      },
+      {
+        heading: "Wichtige Punkte",
+        paragraphs: [
+          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
+        ],
+        list: [
+          "Name und Anschrift der beteiligten Parteien",
+          "Gutschriftsdatum",
+          "Gutschriftsnummer",
+          "Bezug zur urspruenglichen Rechnung oder Lieferung",
+          "Grund der Gutschrift",
+          "Betrag, Steuer und Gesamtsumme",
+          "klare Verrechnung oder Auszahlung",
+        ],
+      },
+      {
+        heading: "Praxis",
+        paragraphs: [
+          "Eine Gutschrift wird haeufig erstellt, wenn eine Rechnung teilweise oder vollstaendig korrigiert werden muss, Ware zurueckgegeben wurde oder ein Preisnachlass nachtraeglich gewaehrt wird.",
+        ],
+      },
+      {
+        heading: "Worauf sollte man achten?",
+        paragraphs: [
+          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+        ],
+        list: [
+          "kein Bezug zur urspruenglichen Rechnung",
+          "unklarer Grund der Gutschrift",
+          "falsche Steuerangaben",
+          "Verwechslung von Gutschrift und Stornorechnung",
+        ],
+      },
+    ],
   },
-  sections: [
-    {
-      heading: "Was ist Gutschrift?",
-      paragraphs: [
-        "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Ruecksendungen, Preisnachlaessen oder Rechnungskorrekturen eingesetzt werden.",
-      ],
-    },
-    {
-      heading: "Wichtige Punkte",
-      paragraphs: [
-        "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-      ],
-      list: [
-        "Name und Anschrift der beteiligten Parteien",
-        "Gutschriftsdatum",
-        "Gutschriftsnummer",
-        "Bezug zur urspruenglichen Rechnung oder Lieferung",
-        "Grund der Gutschrift",
-        "Betrag, Steuer und Gesamtsumme",
-        "klare Verrechnung oder Auszahlung",
-      ],
-    },
-    {
-      heading: "Praxis",
-      paragraphs: [
-        "Eine Gutschrift wird haeufig erstellt, wenn eine Rechnung teilweise oder vollstaendig korrigiert werden muss, Ware zurueckgegeben wurde oder ein Preisnachlass nachtraeglich gewaehrt wird.",
-      ],
-    },
-    {
-      heading: "Worauf sollte man achten?",
-      paragraphs: [
-        "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
-      ],
-      list: [
-        "kein Bezug zur urspruenglichen Rechnung",
-        "unklarer Grund der Gutschrift",
-        "falsche Steuerangaben",
-        "Verwechslung von Gutschrift und Stornorechnung",
-      ],
-    },
-  ],
+  generator: null,
   keyPoints: [
     "Name und Anschrift der beteiligten Parteien",
     "Gutschriftsdatum",
@@ -93,8 +93,6 @@ const gutschrift = {
   updatedAt: "2026-05-12",
   reviewedAt: "2026-05-12",
   disclaimer: defaultDisclaimer,
-  intro: "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Ruecksendungen, Preisnachlaessen oder Rechnungskorrekturen eingesetzt werden.",
-  typicalUse: "Eine Gutschrift wird haeufig erstellt, wenn eine Rechnung teilweise oder vollstaendig korrigiert werden muss, Ware zurueckgegeben wurde oder ein Preisnachlass nachtraeglich gewaehrt wird.",
 };
 
 export default gutschrift;

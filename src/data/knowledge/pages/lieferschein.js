@@ -10,51 +10,51 @@ const lieferschein = {
     description: "Ein Lieferschein dokumentiert, welche Waren geliefert wurden.",
     canonicalPath: "/wissen/lieferschein",
   },
-  hero: {
-    headline: "Lieferschein",
+  article: {
     intro: "Ein Lieferschein begleitet eine Warenlieferung und zeigt, welche Artikel, Mengen oder Leistungen geliefert wurden. Er dient vor allem der Kontrolle beim Versand und beim Empfaenger.",
+    sections: [
+      {
+        heading: "Was ist Lieferschein?",
+        paragraphs: [
+          "Ein Lieferschein begleitet eine Warenlieferung und zeigt, welche Artikel, Mengen oder Leistungen geliefert wurden. Er dient vor allem der Kontrolle beim Versand und beim Empfaenger.",
+        ],
+      },
+      {
+        heading: "Wichtige Punkte",
+        paragraphs: [
+          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
+        ],
+        list: [
+          "Absender und Empfaenger",
+          "Lieferdatum",
+          "Lieferscheinnummer",
+          "Beschreibung der gelieferten Waren",
+          "Mengenangaben",
+          "Bezug zu Angebot, Auftrag oder Rechnung",
+          "Hinweise zu Teillieferungen oder Rueckstaenden",
+        ],
+      },
+      {
+        heading: "Praxis",
+        paragraphs: [
+          "Ein Lieferschein wird verwendet, wenn Waren verschickt oder persoenlich uebergeben werden. Der Empfaenger kann damit pruefen, ob die Lieferung vollstaendig angekommen ist.",
+        ],
+      },
+      {
+        heading: "Worauf sollte man achten?",
+        paragraphs: [
+          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+        ],
+        list: [
+          "fehlende Mengenangaben",
+          "kein Bezug zu Auftrag oder Rechnung",
+          "unklare Artikelbeschreibung",
+          "nicht vermerkte Teillieferungen",
+        ],
+      },
+    ],
   },
-  sections: [
-    {
-      heading: "Was ist Lieferschein?",
-      paragraphs: [
-        "Ein Lieferschein begleitet eine Warenlieferung und zeigt, welche Artikel, Mengen oder Leistungen geliefert wurden. Er dient vor allem der Kontrolle beim Versand und beim Empfaenger.",
-      ],
-    },
-    {
-      heading: "Wichtige Punkte",
-      paragraphs: [
-        "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-      ],
-      list: [
-        "Absender und Empfaenger",
-        "Lieferdatum",
-        "Lieferscheinnummer",
-        "Beschreibung der gelieferten Waren",
-        "Mengenangaben",
-        "Bezug zu Angebot, Auftrag oder Rechnung",
-        "Hinweise zu Teillieferungen oder Rueckstaenden",
-      ],
-    },
-    {
-      heading: "Praxis",
-      paragraphs: [
-        "Ein Lieferschein wird verwendet, wenn Waren verschickt oder persoenlich uebergeben werden. Der Empfaenger kann damit pruefen, ob die Lieferung vollstaendig angekommen ist.",
-      ],
-    },
-    {
-      heading: "Worauf sollte man achten?",
-      paragraphs: [
-        "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
-      ],
-      list: [
-        "fehlende Mengenangaben",
-        "kein Bezug zu Auftrag oder Rechnung",
-        "unklare Artikelbeschreibung",
-        "nicht vermerkte Teillieferungen",
-      ],
-    },
-  ],
+  generator: null,
   keyPoints: [
     "Absender und Empfaenger",
     "Lieferdatum",
@@ -93,8 +93,6 @@ const lieferschein = {
   updatedAt: "2026-05-12",
   reviewedAt: "2026-05-12",
   disclaimer: defaultDisclaimer,
-  intro: "Ein Lieferschein begleitet eine Warenlieferung und zeigt, welche Artikel, Mengen oder Leistungen geliefert wurden. Er dient vor allem der Kontrolle beim Versand und beim Empfaenger.",
-  typicalUse: "Ein Lieferschein wird verwendet, wenn Waren verschickt oder persoenlich uebergeben werden. Der Empfaenger kann damit pruefen, ob die Lieferung vollstaendig angekommen ist.",
 };
 
 export default lieferschein;

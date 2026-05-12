@@ -10,49 +10,53 @@ const zweiteMahnung = {
     description: "Die zweite Mahnung erhoeht den Nachdruck bei weiterhin offener Zahlung.",
     canonicalPath: "/wissen/zweite-mahnung",
   },
-  hero: {
-    headline: "2. Mahnung",
+  article: {
     intro: "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf moegliche Folgen.",
+    sections: [
+      {
+        heading: "Was ist 2. Mahnung?",
+        paragraphs: [
+          "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf moegliche Folgen.",
+        ],
+      },
+      {
+        heading: "Wichtige Punkte",
+        paragraphs: [
+          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
+        ],
+        list: [
+          "Bezug auf vorherige Mahnung",
+          "offener Betrag und Rechnungsdaten",
+          "erneute Zahlungsfrist",
+          "deutlichere Zahlungsaufforderung",
+          "Hinweis auf weitere Schritte bei Nichtzahlung",
+        ],
+      },
+      {
+        heading: "Praxis",
+        paragraphs: [
+          "Die zweite Mahnung wird genutzt, wenn eine erste Mahnung erfolglos geblieben ist und der Kunde erneut zur Zahlung aufgefordert werden soll.",
+        ],
+      },
+      {
+        heading: "Worauf sollte man achten?",
+        paragraphs: [
+          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+        ],
+        list: [
+          "kein Bezug zur vorherigen Mahnung",
+          "unprofessioneller oder emotionaler Ton",
+          "unklare Konsequenzen",
+          "fehlende Zahlungsfrist",
+        ],
+      },
+    ],
   },
-  sections: [
-    {
-      heading: "Was ist 2. Mahnung?",
-      paragraphs: [
-        "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf moegliche Folgen.",
-      ],
-    },
-    {
-      heading: "Wichtige Punkte",
-      paragraphs: [
-        "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-      ],
-      list: [
-        "Bezug auf vorherige Mahnung",
-        "offener Betrag und Rechnungsdaten",
-        "erneute Zahlungsfrist",
-        "deutlichere Zahlungsaufforderung",
-        "Hinweis auf weitere Schritte bei Nichtzahlung",
-      ],
-    },
-    {
-      heading: "Praxis",
-      paragraphs: [
-        "Die zweite Mahnung wird genutzt, wenn eine erste Mahnung erfolglos geblieben ist und der Kunde erneut zur Zahlung aufgefordert werden soll.",
-      ],
-    },
-    {
-      heading: "Worauf sollte man achten?",
-      paragraphs: [
-        "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
-      ],
-      list: [
-        "kein Bezug zur vorherigen Mahnung",
-        "unprofessioneller oder emotionaler Ton",
-        "unklare Konsequenzen",
-        "fehlende Zahlungsfrist",
-      ],
-    },
-  ],
+  generator: {
+    label: "Mahnung erstellen",
+    href: "/dokumente",
+    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.",
+  },
   keyPoints: [
     "Bezug auf vorherige Mahnung",
     "offener Betrag und Rechnungsdaten",
@@ -89,10 +93,6 @@ const zweiteMahnung = {
   updatedAt: "2026-05-12",
   reviewedAt: "2026-05-12",
   disclaimer: defaultDisclaimer,
-  intro: "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf moegliche Folgen.",
-  typicalUse: "Die zweite Mahnung wird genutzt, wenn eine erste Mahnung erfolglos geblieben ist und der Kunde erneut zur Zahlung aufgefordert werden soll.",
-  toolLink: "/dokumente",
-  toolLabel: "Mahnung erstellen",
 };
 
 export default zweiteMahnung;

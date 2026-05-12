@@ -363,7 +363,7 @@ export default function SelfReceiptDocumentForm({
     <section className="invoice-form-panel" aria-label="Eigenbelegformular">
       <button className="invoice-form-panel-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>
         <span className="invoice-form-panel-toggle-label">
-          {isOpen ? 'Formular schliessen' : 'Formular oeffnen'}
+          {isOpen ? 'Formular schliessen' : 'Formular (optional) ausfuellen'}
         </span>
         <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
           {isOpen ? '-' : '+'}
