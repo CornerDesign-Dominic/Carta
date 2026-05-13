@@ -115,7 +115,7 @@ function DocumentOverview({ onSelect }) {
   );
 }
 
-export default function DocumentsView({ initialDocumentId = 'overview' }) {
+export default function DocumentsView({ initialDocumentId = 'overview', onNavigate }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
@@ -157,7 +157,7 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
       </section>
 
       {!isOverview && activeDocument?.formType && (
-        <FeedbackWidget documentType={activeDocument.formType} />
+        <FeedbackWidget documentType={activeDocument.formType} onNavigate={onNavigate} />
       )}
     </main>
   );

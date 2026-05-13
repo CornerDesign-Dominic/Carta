@@ -169,7 +169,11 @@ export default function App() {
       <Header currentView={currentView} onNavigate={handleNavigate} />
       <div className="site-main">
         {currentView === 'documents' && (
-          <DocumentsView key={documentsViewKey} initialDocumentId={currentDocumentId} />
+          <DocumentsView
+            key={documentsViewKey}
+            initialDocumentId={currentDocumentId}
+            onNavigate={handleNavigate}
+          />
         )}
         {currentView === 'knowledge' && (
           <KnowledgeView

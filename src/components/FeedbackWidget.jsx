@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const feedbackCategories = [
   'Fehler gefunden',
@@ -8,13 +8,36 @@ const feedbackCategories = [
   'Lob / Sonstiges',
 ];
 
-export default function FeedbackWidget({ documentType = 'document' }) {
+const maxFeedbackLength = 600;
+
+export default function FeedbackWidget({ documentType = 'document', onNavigate }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const canSubmit = category || message.trim();
+  const canSubmit = categories.length > 0 || message.trim();
+
+  useEffect(() => {
+    if (!isSubmitted) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsSubmitted(false);
+      setIsOpen(false);
+    }, 1800);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isSubmitted]);
+
+  function toggleCategory(category) {
+    setCategories((current) =>
+      current.includes(category)
+        ? current.filter((entry) => entry !== category)
+        : [...current, category],
+    );
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -30,7 +53,7 @@ export default function FeedbackWidget({ documentType = 'document' }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          category,
+          categories,
           message: message.trim(),
           documentType,
           page: window.location.pathname,
@@ -40,7 +63,7 @@ export default function FeedbackWidget({ documentType = 'document' }) {
     } finally {
       setIsSending(false);
       setIsSubmitted(true);
-      setCategory('');
+      setCategories([]);
       setMessage('');
     }
   }
@@ -76,26 +99,39 @@ export default function FeedbackWidget({ documentType = 'document' }) {
                 anonym. Bitte gib keine personenbezogenen Daten ein.
               </p>
 
+              <p className="feedback-widget-privacy">
+                Hinweise zur Verarbeitung findest du in der{' '}
+                <button
+                  type="button"
+                  onClick={() => onNavigate?.({ view: 'legal:datenschutz' })}
+                >
+                  Datenschutzerklärung
+                </button>
+                .
+              </p>
+
               <div className="feedback-widget-options" aria-label="Feedback-Kategorie">
                 {feedbackCategories.map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    className={category === option ? 'is-active' : ''}
-                    onClick={() => setCategory((current) => (current === option ? '' : option))}
-                  >
-                    {option}
-                  </button>
+                  <label className="feedback-widget-option" key={option}>
+                    <input
+                      type="checkbox"
+                      checked={categories.includes(option)}
+                      onChange={() => toggleCategory(option)}
+                    />
+                    <span>{option}</span>
+                  </label>
                 ))}
               </div>
 
               <label className="feedback-widget-field">
                 <span>Nachricht</span>
                 <textarea
+                  maxLength={maxFeedbackLength}
                   placeholder="Was ist dir aufgefallen?"
                   value={message}
                   onChange={(event) => setMessage(event.target.value)}
                 />
+                <small>{message.length} / {maxFeedbackLength}</small>
               </label>
 
               <button className="feedback-widget-submit" type="submit" disabled={!canSubmit || isSending}>
