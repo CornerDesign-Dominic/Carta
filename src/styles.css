@@ -877,12 +877,14 @@ h1 {
 }
 
 .feedback-widget-tab {
+  display: inline-flex;
+  align-items: center;
   width: 190px;
   min-height: 52px;
   border: 1px solid rgba(199, 186, 168, 0.76);
   border-bottom: 0;
   border-radius: 8px 8px 0 0;
-  padding: 13px 16px 16px;
+  padding: 13px 16px;
   background: rgba(255, 253, 249, 0.94);
   color: var(--accent-deep);
   font-size: 0.9rem;
@@ -917,7 +919,7 @@ h1 {
 
 .feedback-widget-header {
   display: flex;
-  align-items: start;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
@@ -938,9 +940,13 @@ h1 {
   height: 24px;
   border-radius: 999px;
   color: var(--muted);
-  font-size: 1.08rem;
+  font-size: 1rem;
   line-height: 1;
   padding: 0;
+}
+
+.feedback-widget-close > * {
+  line-height: 1;
 }
 
 .feedback-widget-close:hover {
@@ -959,6 +965,8 @@ h1 {
 
 .feedback-widget-privacy {
   padding-top: 2px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(199, 186, 168, 0.48);
   font-size: 0.78rem;
   line-height: 1.5;
 }
@@ -984,6 +992,7 @@ h1 {
 .feedback-widget-options {
   display: grid;
   gap: 7px;
+  padding-top: 2px;
 }
 
 .feedback-widget-option {
