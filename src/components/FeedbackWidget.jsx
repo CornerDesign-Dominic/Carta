@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const feedbackCategories = [
   'Fehler gefunden',
@@ -11,12 +11,47 @@ const feedbackCategories = [
 const maxFeedbackLength = 600;
 
 export default function FeedbackWidget({ documentType = 'document', onNavigate }) {
+  const widgetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [footerOffset, setFooterOffset] = useState(-1);
   const canSubmit = categories.length > 0 || message.trim();
+
+  useEffect(() => {
+    let animationFrame = 0;
+
+    function updateFooterOffset() {
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = window.requestAnimationFrame(() => {
+        const footer = document.querySelector('.site-footer');
+
+        if (!footer || !widgetRef.current) {
+          setFooterOffset(-1);
+          return;
+        }
+
+        const footerTop = footer.getBoundingClientRect().top;
+        const clearDistance = isOpen ? 14 : 28;
+        const nextOffset =
+          footerTop < window.innerHeight ? window.innerHeight - footerTop + clearDistance : -1;
+
+        setFooterOffset((current) => (Math.abs(current - nextOffset) < 1 ? current : nextOffset));
+      });
+    }
+
+    updateFooterOffset();
+    window.addEventListener('scroll', updateFooterOffset, { passive: true });
+    window.addEventListener('resize', updateFooterOffset);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener('scroll', updateFooterOffset);
+      window.removeEventListener('resize', updateFooterOffset);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isSubmitted) {
@@ -69,7 +104,12 @@ export default function FeedbackWidget({ documentType = 'document', onNavigate }
   }
 
   return (
-    <aside className={`feedback-widget${isOpen ? ' is-open' : ''}`} aria-label="Feedback">
+    <aside
+      className={`feedback-widget${isOpen ? ' is-open' : ''}`}
+      ref={widgetRef}
+      style={{ bottom: `${footerOffset}px` }}
+      aria-label="Feedback"
+    >
       {!isOpen ? (
         <button className="feedback-widget-tab" type="button" onClick={() => setIsOpen(true)}>
           Feedback geben
