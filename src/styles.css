@@ -879,20 +879,21 @@ h1 {
 .feedback-widget-tab {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  min-height: 52px;
+  min-height: 64px;
   border: 1px solid rgba(199, 186, 168, 0.76);
   border-bottom: 0;
   border-radius: 8px 8px 0 0;
-  padding: 13px 16px;
+  padding: 16px 18px 18px;
   background: rgba(255, 253, 249, 0.94);
   color: var(--accent-deep);
-  font-size: 0.9rem;
-  font-weight: 720;
+  font-size: 0.95rem;
+  font-weight: 760;
   line-height: 1.2;
-  text-align: left;
-  box-shadow: 0 -8px 24px rgba(31, 38, 37, 0.09);
-  transform: translateY(12px);
+  text-align: center;
+  box-shadow: 0 -12px 30px rgba(31, 38, 37, 0.13);
+  transform: translateY(14px);
   transform-origin: bottom center;
   animation: feedback-tab-fold 220ms linear both;
   transition:
@@ -941,7 +942,7 @@ h1 {
 
   to {
     opacity: 1;
-    transform: translateY(12px) scaleY(1);
+    transform: translateY(14px) scaleY(1);
   }
 }
 
