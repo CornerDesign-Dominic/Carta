@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import CreditNoteDocumentEditor from '../components/CreditNoteDocumentEditor.jsx';
 import DeliveryNoteDocumentEditor from '../components/DeliveryNoteDocumentEditor.jsx';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
+import FeedbackWidget from '../components/FeedbackWidget.jsx';
 import InvoiceDocumentEditor from '../components/InvoiceDocumentEditor.jsx';
 import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
 import ReceiptDocumentEditor from '../components/ReceiptDocumentEditor.jsx';
@@ -154,6 +155,10 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
           </>
         )}
       </section>
+
+      {!isOverview && activeDocument?.formType && (
+        <FeedbackWidget documentType={activeDocument.formType} />
+      )}
     </main>
   );
 }

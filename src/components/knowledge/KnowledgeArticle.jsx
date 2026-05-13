@@ -13,6 +13,24 @@ function MissingArticle() {
   );
 }
 
+function formatGermanDate(dateValue) {
+  if (!dateValue) {
+    return null;
+  }
+
+  const date = new Date(`${dateValue}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date);
+}
+
 export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) {
   const article = findKnowledgePage(slug);
 
@@ -53,6 +71,9 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
         }
       : null
   );
+  const faqs = article.faqs ?? [];
+  const sources = article.sources ?? [];
+  const updatedAt = formatGermanDate(article.updatedAt);
 
   return (
     <>
@@ -93,12 +114,34 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
         </section>
       )}
 
-      <section className="knowledge-faq-section" aria-label="Haeufige Fragen">
-        <div className="knowledge-faq-list">
-          {article.faqs.map((faq) => (
-            <KnowledgeFaqCard faq={faq} key={faq.question} />
-          ))}
-        </div>
+      <section className="knowledge-faq-section" aria-label="Haeufige Fragen und Hinweise">
+        {faqs.length > 0 && (
+          <div className="knowledge-faq-list">
+            {faqs.map((faq) => (
+              <KnowledgeFaqCard faq={faq} key={faq.question} />
+            ))}
+          </div>
+        )}
+
+        {sources.length > 0 && (
+          <section className="knowledge-sources" aria-label="Quellen">
+            <h2>Quellen</h2>
+            <ul>
+              {sources.map((source) => (
+                <li key={source.url ?? source.label}>
+                  <a href={source.url} target="_blank" rel="noreferrer">
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {updatedAt && (
+          <p className="knowledge-updated-at">Zuletzt aktualisiert: {updatedAt}</p>
+        )}
+
         <p className="knowledge-disclaimer">
           {article.disclaimer
             ?? 'Diese Inhalte dienen der allgemeinen Orientierung und ersetzen keine rechtliche oder steuerliche Beratung.'}
