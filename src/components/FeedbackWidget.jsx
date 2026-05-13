@@ -34,9 +34,9 @@ export default function FeedbackWidget({ documentType = 'document', onNavigate }
         }
 
         const footerTop = footer.getBoundingClientRect().top;
-        const clearDistance = isOpen ? 14 : 28;
-        const nextOffset =
-          footerTop < window.innerHeight ? window.innerHeight - footerTop + clearDistance : -1;
+        const visibleFooterHeight = Math.max(0, window.innerHeight - footerTop);
+        const tabVisualOffset = isOpen ? 0 : 14;
+        const nextOffset = visibleFooterHeight > 0 ? visibleFooterHeight + tabVisualOffset : -1;
 
         setFooterOffset((current) => (Math.abs(current - nextOffset) < 1 ? current : nextOffset));
       });

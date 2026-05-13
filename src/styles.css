@@ -874,7 +874,6 @@ h1 {
   z-index: 35;
   width: 300px;
   color: var(--ink);
-  transition: bottom 180ms linear;
 }
 
 .feedback-widget-tab {
