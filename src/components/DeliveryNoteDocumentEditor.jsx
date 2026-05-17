@@ -25,9 +25,7 @@ const initialDeliveryNoteLabels = {
   position: 'Pos.',
   quantity: 'Menge',
   unit: 'Einheit',
-  description: 'Artikel / Leistung',
-  deliveryDateColumn: 'Lieferdatum',
-  note: 'Hinweis',
+  description: 'Beschreibung',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactFax: 'Fax',
@@ -619,8 +617,7 @@ export default function DeliveryNoteDocumentEditor() {
   }
 
   function updateLabel(field, value) {
-    const normalizedField = field === 'deliveryDateColumn' ? 'deliveryDateColumn' : field;
-    setLabels((current) => ({ ...current, [normalizedField]: value }));
+    setLabels((current) => ({ ...current, [field]: value }));
   }
 
   function updateSender(field, value) {
@@ -915,7 +912,6 @@ export default function DeliveryNoteDocumentEditor() {
       setLabels({
         ...initialDeliveryNoteLabels,
         ...(data.labels ?? {}),
-        deliveryDateColumn: data.labels?.deliveryDateColumn ?? data.labels?.deliveryDate ?? initialDeliveryNoteLabels.deliveryDate,
       });
       setDeliveryNoteData(normalizeDeliveryNoteData(data));
       setPositions(normalizePositions(data.positions));
@@ -1102,13 +1098,8 @@ export default function DeliveryNoteDocumentEditor() {
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <DeliveryNoteTable
-          dateInputRefs={dateInputRefs}
-          labels={{
-            ...labels,
-            deliveryDate: labels.deliveryDateColumn ?? labels.deliveryDate,
-          }}
-          onDatePicker={openDatePicker}
-          onLabelChange={(field, value) => updateLabel(field === 'deliveryDate' ? 'deliveryDateColumn' : field, value)}
+          labels={labels}
+          onLabelChange={updateLabel}
           onMovePosition={movePosition}
           onPositionChange={updatePosition}
           onRemovePosition={removePosition}
@@ -1199,8 +1190,6 @@ const MeasuredDeliveryNotePaginator = forwardRef(function MeasuredDeliveryNotePa
               <th>{labels.quantity}</th>
               <th>{labels.unit}</th>
               <th>{labels.description}</th>
-              <th>{labels.deliveryDateColumn ?? labels.deliveryDate}</th>
-              <th>{labels.note}</th>
             </tr>
           </thead>
           <tbody>
@@ -1210,8 +1199,6 @@ const MeasuredDeliveryNotePaginator = forwardRef(function MeasuredDeliveryNotePa
                 <td>{position.quantity}</td>
                 <td>{position.unit}</td>
                 <td>{position.description}</td>
-                <td>{formatGermanDate(position.deliveryDate)}</td>
-                <td>{position.note}</td>
               </tr>
             ))}
           </tbody>
@@ -1461,8 +1448,6 @@ function DeliveryNotePrintPositionTable({ labels, positionItems }) {
           <th>{labels.quantity}</th>
           <th>{labels.unit}</th>
           <th>{labels.description}</th>
-          <th>{labels.deliveryDateColumn ?? labels.deliveryDate}</th>
-          <th>{labels.note}</th>
         </tr>
       </thead>
       <tbody>
@@ -1472,8 +1457,6 @@ function DeliveryNotePrintPositionTable({ labels, positionItems }) {
             <td>{position.quantity}</td>
             <td>{position.unit}</td>
             <td>{position.description}</td>
-            <td>{formatGermanDate(position.deliveryDate)}</td>
-            <td>{position.note}</td>
           </tr>
         ))}
       </tbody>

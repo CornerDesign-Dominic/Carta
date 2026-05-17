@@ -47,8 +47,6 @@ const deliveryNoteFormDefaults = {
     quantity: '1',
     unit: 'Stk.',
     description: 'Artikel oder Leistung beschreiben',
-    deliveryDate: '2026-05-12',
-    note: 'Hinweis zur Lieferung',
   },
   footer: {
     company: {
@@ -97,8 +95,6 @@ function getPlaceholder(name) {
   if (name.startsWith('position-') && name.endsWith('-quantity')) return deliveryNoteFormDefaults.position.quantity;
   if (name.startsWith('position-') && name.endsWith('-unit')) return deliveryNoteFormDefaults.position.unit;
   if (name.startsWith('position-') && name.endsWith('-description')) return deliveryNoteFormDefaults.position.description;
-  if (name.startsWith('position-') && name.endsWith('-delivery-date')) return deliveryNoteFormDefaults.position.deliveryDate;
-  if (name.startsWith('position-') && name.endsWith('-note')) return deliveryNoteFormDefaults.position.note;
 
   const placeholders = {
     'sender-company': deliveryNoteFormDefaults.sender.companyName,
@@ -390,9 +386,7 @@ export default function DeliveryNoteDocumentForm({
                   <span>{index + 1}</span>
                   <DeliveryNotePanelInput inputMode="decimal" label="Menge" name={`position-${index + 1}-quantity`} value={position.quantity} onChange={(value) => updatePosition(position.id, 'quantity', value)} />
                   <DeliveryNotePanelInput label="Einheit" name={`position-${index + 1}-unit`} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
-                  <DeliveryNotePanelInput label="Lieferdatum" name={`position-${index + 1}-delivery-date`} type="date" value={position.deliveryDate} onChange={(value) => updatePosition(position.id, 'deliveryDate', value)} />
-                  <DeliveryNotePanelTextarea label="Artikel / Leistung" name={`position-${index + 1}-description`} placeholder={deliveryNoteFormDefaults.position.description} value={position.description} onChange={(value) => updatePosition(position.id, 'description', value)} />
-                  <DeliveryNotePanelTextarea label="Hinweis" name={`position-${index + 1}-note`} placeholder={deliveryNoteFormDefaults.position.note} value={position.note} onChange={(value) => updatePosition(position.id, 'note', value)} />
+                  <DeliveryNotePanelTextarea label="Beschreibung" name={`position-${index + 1}-description`} placeholder={deliveryNoteFormDefaults.position.description} value={position.description} onChange={(value) => updatePosition(position.id, 'description', value)} />
                   <div className="invoice-panel-position-actions">
                     <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} loeschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
                       x
