@@ -15,6 +15,8 @@ import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
 
+const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE === 'true';
+
 function routeFromLocation() {
   const path = window.location.pathname;
 
@@ -23,10 +25,18 @@ function routeFromLocation() {
   }
 
   if (path === '/wissen') {
+    if (!isKnowledgeEnabled) {
+      return { view: 'not-found', knowledgeSlug: null, documentId: 'overview' };
+    }
+
     return { view: 'knowledge', knowledgeSlug: null, documentId: 'overview' };
   }
 
   if (path.startsWith('/wissen/')) {
+    if (!isKnowledgeEnabled) {
+      return { view: 'not-found', knowledgeSlug: null, documentId: 'overview' };
+    }
+
     return {
       view: 'knowledge',
       knowledgeSlug: decodeURIComponent(path.replace('/wissen/', '')),
@@ -120,6 +130,10 @@ export default function App() {
   }, [consent.analytics]);
 
   function handleNavigate(item, options = {}) {
+    if (item.view === 'knowledge' && !isKnowledgeEnabled) {
+      return;
+    }
+
     if (item.view === 'documents') {
       setDocumentsViewKey((key) => key + 1);
     }
@@ -137,6 +151,10 @@ export default function App() {
   }
 
   function handleKnowledgeSlugChange(slug) {
+    if (!isKnowledgeEnabled) {
+      return;
+    }
+
     handleNavigate({ view: 'knowledge', slug });
   }
 
@@ -166,7 +184,11 @@ export default function App() {
 
   return (
     <div className="site-shell">
-      <Header currentView={currentView} onNavigate={handleNavigate} />
+      <Header
+        currentView={currentView}
+        enableKnowledge={isKnowledgeEnabled}
+        onNavigate={handleNavigate}
+      />
       <div className="site-main">
         {currentView === 'documents' && (
           <DocumentsView
@@ -175,7 +197,7 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         )}
-        {currentView === 'knowledge' && (
+        {currentView === 'knowledge' && isKnowledgeEnabled && (
           <KnowledgeView
             activeSlug={currentKnowledgeSlug}
             onNavigate={handleNavigate}

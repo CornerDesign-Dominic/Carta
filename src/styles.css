@@ -869,7 +869,7 @@ h1 {
 
 .feedback-widget {
   position: fixed;
-  right: clamp(22px, calc((100vw - 1000px) / 4), 148px);
+  right: clamp(18px, calc((100vw - 1000px) / 8), 86px);
   bottom: -1px;
   z-index: 35;
   width: 300px;
