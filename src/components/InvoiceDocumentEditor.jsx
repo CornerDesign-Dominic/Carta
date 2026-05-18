@@ -185,7 +185,7 @@ const defaultInvoiceTextBlocks = [
 ];
 
 const invoicePrintLayout = {
-  blockGap: 12,
+  blockGap: 16,
   smallSafetyBuffer: 8,
 };
 

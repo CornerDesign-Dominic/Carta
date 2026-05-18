@@ -205,7 +205,7 @@ const selfReceiptDetailFields = [
 ];
 
 const selfReceiptPrintLayout = {
-  blockGap: 12,
+  blockGap: 16,
   smallSafetyBuffer: 8,
 };
 

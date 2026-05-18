@@ -164,7 +164,7 @@ const defaultReminderTextBlocks = [
 ];
 
 const reminderPrintLayout = {
-  blockGap: 12,
+  blockGap: 16,
   smallSafetyBuffer: 8,
 };
 

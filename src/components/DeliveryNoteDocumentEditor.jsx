@@ -203,7 +203,7 @@ const defaultDeliveryNoteTextBlocks = [
 ];
 
 const deliveryNotePrintLayout = {
-  blockGap: 12,
+  blockGap: 16,
   smallSafetyBuffer: 8,
 };
 

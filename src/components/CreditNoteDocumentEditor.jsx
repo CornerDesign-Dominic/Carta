@@ -556,7 +556,7 @@ function normalizePositions(templatePositions) {
 }
 
 const offerPrintLayout = {
-  blockGap: 12,
+  blockGap: 16,
   smallSafetyBuffer: 8,
 };
 

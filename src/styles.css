@@ -3067,47 +3067,34 @@ h1 {
   white-space: pre-wrap;
 }
 
-.delivery-note-print-page .invoice-print-page-content {
-  gap: 8px;
-}
-
-.delivery-note-print-page .delivery-note-print-text-before-table {
-  margin-bottom: 2px;
-}
-
-.delivery-note-print-page .delivery-note-print-table-after-text {
-  margin-top: 0;
-  margin-bottom: 2px;
-}
-
-.delivery-note-print-page .delivery-note-print-text-after-table {
-  margin-top: 0;
-}
-
+.delivery-note-print-page .invoice-print-page-content,
 .credit-note-print-page .invoice-print-page-content,
 .reminder-print-page .invoice-print-page-content {
-  gap: 10px;
+  gap: 16px;
 }
 
+.delivery-note-print-page .delivery-note-print-text-before-table,
 .credit-note-print-page .credit-note-print-text-before-table,
 .reminder-print-page .reminder-print-text-before-table {
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 
+.delivery-note-print-page .delivery-note-print-table-after-text,
 .credit-note-print-page .credit-note-print-table-after-text,
 .reminder-print-page .reminder-print-table-after-text {
   margin-top: 0;
 }
 
-.credit-note-print-page .credit-note-print-summary-after-table,
-.reminder-print-page .reminder-print-summary-after-table {
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
+.delivery-note-print-page .delivery-note-print-text-after-table,
 .credit-note-print-page .credit-note-print-text-after-summary,
 .reminder-print-page .reminder-print-text-after-summary {
+  margin-top: 0;
+}
+
+.credit-note-print-page .credit-note-print-summary-after-table,
+.reminder-print-page .reminder-print-summary-after-table {
   margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .invoice-print-position-table.delivery-note-print-table th:nth-child(2),
@@ -3538,6 +3525,7 @@ h1 {
   max-height: var(--offer-print-content-max-height);
   min-height: 0;
   overflow: hidden;
+  gap: 16px;
 }
 
 .offer-print-page .invoice-print-page-number {
