@@ -2962,30 +2962,41 @@ h1 {
 .delivery-note-table th:nth-child(1),
 .delivery-note-table td:nth-child(1) {
   position: relative;
-  width: 7%;
+  width: 6%;
 }
 
 .delivery-note-table th:nth-child(2),
 .delivery-note-table td:nth-child(2) {
-  width: 12%;
+  width: 10%;
 }
 
 .delivery-note-table th:nth-child(3),
 .delivery-note-table td:nth-child(3) {
-  width: 13%;
+  width: 10%;
 }
 
 .delivery-note-table th:nth-child(4),
 .delivery-note-table td:nth-child(4) {
-  width: 62%;
+  width: 74%;
 }
 
 .delivery-note-table th:nth-child(5),
 .delivery-note-table td:nth-child(5) {
-  width: 6%;
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.delivery-note-table td:nth-child(4) {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .delivery-note-table td:nth-child(4) textarea {
+  display: block;
+  width: 100%;
   white-space: pre-wrap;
 }
 
@@ -3035,23 +3046,33 @@ h1 {
 
 .delivery-note-print-table th:nth-child(1),
 .delivery-note-print-table td:nth-child(1) {
-  width: 7%;
+  width: 6%;
 }
 
 .delivery-note-print-table th:nth-child(2),
 .delivery-note-print-table td:nth-child(2) {
-  width: 12%;
+  width: 9%;
 }
 
 .delivery-note-print-table th:nth-child(3),
 .delivery-note-print-table td:nth-child(3) {
-  width: 13%;
+  width: 9%;
 }
 
 .delivery-note-print-table th:nth-child(4),
 .delivery-note-print-table td:nth-child(4) {
-  width: 68%;
+  width: 76%;
   white-space: pre-wrap;
+}
+
+.delivery-note-print-table th:nth-child(2),
+.delivery-note-print-table td:nth-child(2),
+.delivery-note-print-table th:nth-child(3),
+.delivery-note-print-table td:nth-child(3),
+.delivery-note-print-table th:nth-child(4),
+.delivery-note-print-table td:nth-child(4) {
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .reminder-invoice-table th:nth-child(4) .document-label-input {
