@@ -76,7 +76,17 @@ export default async function handler(request, response) {
       return;
     }
 
-    if (!['invoice', 'offer', 'reminder', 'deliveryNote'].includes(documentType)) {
+    if (
+      ![
+        'invoice',
+        'offer',
+        'reminder',
+        'creditNote',
+        'deliveryNote',
+        'selfReceipt',
+        'receipt',
+      ].includes(documentType)
+    ) {
       response.status(400).json({ error: 'Invalid documentType.' });
       return;
     }

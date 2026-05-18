@@ -1486,10 +1486,10 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
   const totalPages = pages.length;
 
   return (
-    <div className="invoice-print-pages offer-print-pages" ref={ref} aria-hidden="true">
+    <div className="invoice-print-pages offer-print-pages credit-note-print-pages" ref={ref} aria-hidden="true">
       {pages.map((page) => (
         <article
-          className={`invoice-print-page offer-print-page${
+          className={`invoice-print-page offer-print-page credit-note-print-page${
             page.pageNumber === 1 ? ' is-first-page' : ' is-follow-page'
           }`}
           key={page.pageNumber}
@@ -1613,6 +1613,7 @@ function OfferPrintPageItems({ items, labels, totals }) {
     const item = items[index];
 
     if (item.type === 'position') {
+      const blockStartIndex = index;
       const positionItems = [];
 
       while (items[index]?.type === 'position') {
@@ -1622,6 +1623,7 @@ function OfferPrintPageItems({ items, labels, totals }) {
 
       renderedItems.push(
         <OfferPrintPositionTable
+          className={items[blockStartIndex - 1]?.type === 'text' ? 'credit-note-print-table-after-text' : undefined}
           key={`positions-${positionItems[0].index}`}
           labels={labels}
           positionItems={positionItems}
@@ -1631,12 +1633,31 @@ function OfferPrintPageItems({ items, labels, totals }) {
     }
 
     if (item.type === 'summary') {
-      renderedItems.push(<OfferPrintSummary key="summary" labels={labels} totals={totals} />);
+      renderedItems.push(
+        <OfferPrintSummary
+          className={items[index - 1]?.type === 'position' ? 'credit-note-print-summary-after-table' : undefined}
+          key="summary"
+          labels={labels}
+          totals={totals}
+        />,
+      );
     }
 
     if (item.type === 'text') {
+      const previousItem = items[index - 1];
+      const nextItem = items[index + 1];
+      const textClassName = [
+        nextItem?.type === 'position' ? 'credit-note-print-text-before-table' : '',
+        previousItem?.type === 'summary' ? 'credit-note-print-text-after-summary' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
       renderedItems.push(
-        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
+        <p
+          className={`invoice-print-flow-text${textClassName ? ` ${textClassName}` : ''}`}
+          key={`${item.id}-${index}`}
+        >
           {item.text}
         </p>,
       );
@@ -1648,9 +1669,9 @@ function OfferPrintPageItems({ items, labels, totals }) {
   return renderedItems;
 }
 
-function OfferPrintPositionTable({ labels, positionItems }) {
+function OfferPrintPositionTable({ className = '', labels, positionItems }) {
   return (
-    <table className="invoice-print-position-table">
+    <table className={`invoice-print-position-table${className ? ` ${className}` : ''}`}>
       <thead>
         <tr>
           <th>{labels.position}</th>
@@ -1683,9 +1704,9 @@ function OfferPrintPositionTable({ labels, positionItems }) {
   );
 }
 
-function OfferPrintSummary({ labels, totals }) {
+function OfferPrintSummary({ className = '', labels, totals }) {
   return (
-    <aside className="invoice-print-summary" aria-label="Gutschriftssummen">
+    <aside className={`invoice-print-summary${className ? ` ${className}` : ''}`} aria-label="Gutschriftssummen">
       <div>
         <span>{labels.net}</span>
         <strong>{formatCurrency(totals.net)}</strong>

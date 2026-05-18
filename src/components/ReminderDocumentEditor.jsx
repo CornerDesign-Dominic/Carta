@@ -1341,6 +1341,7 @@ function ReminderPrintPageItems({ items, labels, totals }) {
     const item = items[index];
 
     if (item.type === 'openItem') {
+      const blockStartIndex = index;
       const openItemRows = [];
 
       while (items[index]?.type === 'openItem') {
@@ -1350,6 +1351,7 @@ function ReminderPrintPageItems({ items, labels, totals }) {
 
       renderedItems.push(
         <ReminderPrintOpenItemsTable
+          className={items[blockStartIndex - 1]?.type === 'text' ? 'reminder-print-table-after-text' : undefined}
           key={`open-items-${openItemRows[0].index}`}
           labels={labels}
           openItemRows={openItemRows}
@@ -1359,12 +1361,31 @@ function ReminderPrintPageItems({ items, labels, totals }) {
     }
 
     if (item.type === 'summary') {
-      renderedItems.push(<ReminderPrintSummary key="summary" labels={labels} totals={totals} />);
+      renderedItems.push(
+        <ReminderPrintSummary
+          className={items[index - 1]?.type === 'openItem' ? 'reminder-print-summary-after-table' : undefined}
+          key="summary"
+          labels={labels}
+          totals={totals}
+        />,
+      );
     }
 
     if (item.type === 'text') {
+      const previousItem = items[index - 1];
+      const nextItem = items[index + 1];
+      const textClassName = [
+        nextItem?.type === 'openItem' ? 'reminder-print-text-before-table' : '',
+        previousItem?.type === 'summary' ? 'reminder-print-text-after-summary' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
       renderedItems.push(
-        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
+        <p
+          className={`invoice-print-flow-text${textClassName ? ` ${textClassName}` : ''}`}
+          key={`${item.id}-${index}`}
+        >
           {item.text}
         </p>,
       );
@@ -1376,9 +1397,9 @@ function ReminderPrintPageItems({ items, labels, totals }) {
   return renderedItems;
 }
 
-function ReminderPrintOpenItemsTable({ labels, openItemRows }) {
+function ReminderPrintOpenItemsTable({ className = '', labels, openItemRows }) {
   return (
-    <table className="invoice-print-position-table reminder-print-open-items-table">
+    <table className={`invoice-print-position-table reminder-print-open-items-table${className ? ` ${className}` : ''}`}>
       <thead>
         <tr>
           <th>{labels.invoiceNumber}</th>
@@ -1401,9 +1422,9 @@ function ReminderPrintOpenItemsTable({ labels, openItemRows }) {
   );
 }
 
-function ReminderPrintSummary({ labels, totals }) {
+function ReminderPrintSummary({ className = '', labels, totals }) {
   return (
-    <aside className="invoice-print-summary" aria-label="Mahnungssummen">
+    <aside className={`invoice-print-summary${className ? ` ${className}` : ''}`} aria-label="Mahnungssummen">
       <div>
         <span>{labels.sumInvoices}</span>
         <strong>{formatCurrency(totals.invoiceSum)}</strong>
