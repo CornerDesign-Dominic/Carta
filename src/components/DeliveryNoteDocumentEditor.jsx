@@ -1408,6 +1408,7 @@ function DeliveryNotePrintPageItems({ items, labels }) {
     const item = items[index];
 
     if (item.type === 'position') {
+      const blockStartIndex = index;
       const positionItems = [];
 
       while (items[index]?.type === 'position') {
@@ -1417,6 +1418,7 @@ function DeliveryNotePrintPageItems({ items, labels }) {
 
       renderedItems.push(
         <DeliveryNotePrintPositionTable
+          className={items[blockStartIndex - 1]?.type === 'text' ? 'delivery-note-print-table-after-text' : undefined}
           key={`positions-${positionItems[0].index}`}
           labels={labels}
           positionItems={positionItems}
@@ -1426,8 +1428,20 @@ function DeliveryNotePrintPageItems({ items, labels }) {
     }
 
     if (item.type === 'text') {
+      const previousItem = items[index - 1];
+      const nextItem = items[index + 1];
+      const textClassName = [
+        previousItem?.type === 'position' ? 'delivery-note-print-text-after-table' : '',
+        nextItem?.type === 'position' ? 'delivery-note-print-text-before-table' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
       renderedItems.push(
-        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
+        <p
+          className={`invoice-print-flow-text${textClassName ? ` ${textClassName}` : ''}`}
+          key={`${item.id}-${index}`}
+        >
           {item.text}
         </p>,
       );
@@ -1439,9 +1453,9 @@ function DeliveryNotePrintPageItems({ items, labels }) {
   return renderedItems;
 }
 
-function DeliveryNotePrintPositionTable({ labels, positionItems }) {
+function DeliveryNotePrintPositionTable({ className = '', labels, positionItems }) {
   return (
-    <table className="invoice-print-position-table delivery-note-print-table">
+    <table className={`invoice-print-position-table delivery-note-print-table${className ? ` ${className}` : ''}`}>
       <thead>
         <tr>
           <th>{labels.position}</th>

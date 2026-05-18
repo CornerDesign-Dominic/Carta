@@ -119,7 +119,15 @@ export default function DocumentsView({ initialDocumentId = 'overview', onNaviga
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
-  const showDocumentDescription = !['write-invoice', 'write-offer', 'write-credit-note', 'write-delivery-note', 'write-self-receipt'].includes(activeDocumentId)
+  const showDocumentDescription = ![
+    'write-invoice',
+    'write-offer',
+    'write-credit-note',
+    'write-delivery-note',
+    'write-reminder',
+    'write-receipt',
+    'write-self-receipt',
+  ].includes(activeDocumentId)
     && activeDocument?.description;
 
   useEffect(() => {

@@ -3067,6 +3067,23 @@ h1 {
   white-space: pre-wrap;
 }
 
+.delivery-note-print-page .invoice-print-page-content {
+  gap: 8px;
+}
+
+.delivery-note-print-page .delivery-note-print-text-before-table {
+  margin-bottom: 2px;
+}
+
+.delivery-note-print-page .delivery-note-print-table-after-text {
+  margin-top: 0;
+  margin-bottom: 2px;
+}
+
+.delivery-note-print-page .delivery-note-print-text-after-table {
+  margin-top: 0;
+}
+
 .invoice-print-position-table.delivery-note-print-table th:nth-child(2),
 .invoice-print-position-table.delivery-note-print-table td:nth-child(2) {
   padding-left: 2px;
