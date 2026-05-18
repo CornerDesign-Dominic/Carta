@@ -3044,35 +3044,45 @@ h1 {
   text-align: right;
 }
 
-.delivery-note-print-table th:nth-child(1),
-.delivery-note-print-table td:nth-child(1) {
+.invoice-print-position-table.delivery-note-print-table th:nth-child(1),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(1) {
   width: 6%;
 }
 
-.delivery-note-print-table th:nth-child(2),
-.delivery-note-print-table td:nth-child(2) {
-  width: 9%;
+.invoice-print-position-table.delivery-note-print-table th:nth-child(2),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(2) {
+  width: 10%;
 }
 
-.delivery-note-print-table th:nth-child(3),
-.delivery-note-print-table td:nth-child(3) {
-  width: 9%;
+.invoice-print-position-table.delivery-note-print-table th:nth-child(3),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(3) {
+  width: 10%;
+  text-align: left;
 }
 
-.delivery-note-print-table th:nth-child(4),
-.delivery-note-print-table td:nth-child(4) {
-  width: 76%;
+.invoice-print-position-table.delivery-note-print-table th:nth-child(4),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(4) {
+  width: 74%;
+  text-align: left;
   white-space: pre-wrap;
 }
 
-.delivery-note-print-table th:nth-child(2),
-.delivery-note-print-table td:nth-child(2),
-.delivery-note-print-table th:nth-child(3),
-.delivery-note-print-table td:nth-child(3),
-.delivery-note-print-table th:nth-child(4),
-.delivery-note-print-table td:nth-child(4) {
-  padding-left: 3px;
-  padding-right: 3px;
+.invoice-print-position-table.delivery-note-print-table th:nth-child(2),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(2) {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.invoice-print-position-table.delivery-note-print-table th:nth-child(3),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(3) {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.invoice-print-position-table.delivery-note-print-table th:nth-child(4),
+.invoice-print-position-table.delivery-note-print-table td:nth-child(4) {
+  padding-left: 2px;
+  padding-right: 4px;
 }
 
 .reminder-invoice-table th:nth-child(4) .document-label-input {
