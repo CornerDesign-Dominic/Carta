@@ -16,7 +16,7 @@ import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 const initialCreditNoteLabels = {
   title: 'Gutschrift',
   creditNoteNumber: 'Gutschriftsnummer',
-  creditNoteDate: 'Gutschriftsdatum',
+  creditNoteDate: 'Belegdatum',
   serviceDate: 'Leistungsdatum',
   internalReference: 'Interne Referenz',
   externalReference: 'Externe Referenz',
@@ -46,7 +46,7 @@ const offerContactFields = [
 
 const offerMetaFields = [
   { autoComplete: 'new-password', field: 'creditNoteNumber', ariaLabel: 'Gutschriftskennung', name: 'carta-credit-note-id', type: 'text' },
-  { field: 'creditNoteDate', ariaLabel: 'Gutschriftsdatum', type: 'date' },
+    { field: 'creditNoteDate', ariaLabel: 'Belegdatum', type: 'date' },
   { field: 'serviceDate', ariaLabel: 'Leistungsdatum', type: 'date' },
   { autoComplete: 'new-password', field: 'internalReference', ariaLabel: 'Interne Referenz', name: 'carta-internal-reference', type: 'text' },
   { autoComplete: 'new-password', field: 'externalReference', ariaLabel: 'Externe Referenz', name: 'carta-external-reference', type: 'text' },

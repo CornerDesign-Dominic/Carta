@@ -3023,25 +3023,37 @@ h1 {
   text-align: center;
 }
 
-.reminder-print-open-items-table th:nth-child(1),
-.reminder-print-open-items-table td:nth-child(1) {
-  width: 28%;
+.invoice-print-position-table.reminder-print-open-items-table th:nth-child(1),
+.invoice-print-position-table.reminder-print-open-items-table td:nth-child(1) {
+  width: 34%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
-.reminder-print-open-items-table th:nth-child(2),
-.reminder-print-open-items-table td:nth-child(2) {
-  width: 22%;
-}
-
-.reminder-print-open-items-table th:nth-child(3),
-.reminder-print-open-items-table td:nth-child(3) {
+.invoice-print-position-table.reminder-print-open-items-table th:nth-child(2),
+.invoice-print-position-table.reminder-print-open-items-table td:nth-child(2) {
   width: 20%;
+  white-space: nowrap;
 }
 
-.reminder-print-open-items-table th:nth-child(4),
-.reminder-print-open-items-table td:nth-child(4) {
+.invoice-print-position-table.reminder-print-open-items-table th:nth-child(3),
+.invoice-print-position-table.reminder-print-open-items-table td:nth-child(3) {
+  width: 16%;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.invoice-print-position-table.reminder-print-open-items-table th:nth-child(4),
+.invoice-print-position-table.reminder-print-open-items-table td:nth-child(4) {
   width: 30%;
+  white-space: nowrap;
   text-align: right;
+}
+
+.invoice-print-position-table.reminder-print-open-items-table th,
+.invoice-print-position-table.reminder-print-open-items-table td {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .invoice-print-position-table.delivery-note-print-table th:nth-child(1),

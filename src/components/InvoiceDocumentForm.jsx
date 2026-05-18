@@ -363,7 +363,7 @@ export default function InvoiceDocumentForm({
               <h3>Rechnungsdaten</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
                 <InvoicePanelInput autoComplete="off" inputMode="text" label="Rechnungsnummer" name="invoice-code" spellCheck={false} value={details.invoiceNumber} onChange={(value) => updateDetail('invoiceNumber', value)} />
-                <InvoicePanelInput label="Rechnungsdatum" name="invoice-date" type="date" value={details.invoiceDate} onChange={(value) => updateDetail('invoiceDate', value)} />
+                <InvoicePanelInput label="Belegdatum" name="invoice-date" type="date" value={details.invoiceDate} onChange={(value) => updateDetail('invoiceDate', value)} />
                 <InvoicePanelInput label="Leistungsdatum" name="service-date" type="date" value={details.serviceDate} onChange={(value) => updateDetail('serviceDate', value)} />
               </div>
             </div>

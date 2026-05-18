@@ -17,7 +17,7 @@ const reminderSchemaVersion = '1.0';
 const initialReminderLabels = {
   title: 'Mahnung',
   reminderNumber: 'Mahnungsnummer',
-  reminderDate: 'Mahnungsdatum',
+  reminderDate: 'Belegdatum',
   customerNumber: 'Kundennummer',
   invoiceNumber: 'Rechnungsnummer',
   dueDate: 'Fälligkeitsdatum',
@@ -48,7 +48,7 @@ const reminderMetaFields = [
     name: 'carta-reminder-code',
     type: 'text',
   },
-  { field: 'reminderDate', ariaLabel: 'Mahnungsdatum', type: 'date' },
+  { field: 'reminderDate', ariaLabel: 'Belegdatum', type: 'date' },
   { field: 'customerNumber', ariaLabel: 'Kundenreferenz', name: 'carta-reminder-customer-reference', type: 'text' },
 ];
 

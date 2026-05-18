@@ -358,7 +358,7 @@ export default function DeliveryNoteDocumentForm({
               <h3>Lieferscheindaten</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
                 <DeliveryNotePanelInput autoComplete="off" inputMode="text" label="Lieferscheinnummer" name="delivery-note-code" spellCheck={false} value={details.deliveryNoteNumber} onChange={(value) => updateDetail('deliveryNoteNumber', value)} />
-                <DeliveryNotePanelInput label="Lieferdatum" name="delivery-date" type="date" value={details.deliveryDate} onChange={(value) => updateDetail('deliveryDate', value)} />
+                <DeliveryNotePanelInput label="Belegdatum" name="delivery-date" type="date" value={details.deliveryDate} onChange={(value) => updateDetail('deliveryDate', value)} />
                 <DeliveryNotePanelInput label="Bestelldatum" name="order-date" type="date" value={details.orderDate} onChange={(value) => updateDetail('orderDate', value)} />
               </div>
             </div>

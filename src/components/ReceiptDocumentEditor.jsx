@@ -15,7 +15,7 @@ const receiptSchemaVersion = '1.0';
 const initialReceiptLabels = {
   title: 'Quittung',
   receiptId: 'Quittungskennung',
-  receiptDate: 'Datum',
+  receiptDate: 'Belegdatum',
   paymentDate: 'Zahlungsdatum',
   internalReference: 'Interne Referenz',
   externalReference: 'Externe Referenz',

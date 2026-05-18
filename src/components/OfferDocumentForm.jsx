@@ -437,7 +437,7 @@ export default function OfferDocumentForm({
               <h3>Angebotsdaten</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
                 <OfferPanelInput autoComplete="off" inputMode="text" label="Angebotsnummer" name="offer-document-reference" spellCheck={false} value={details.offerNumber} onChange={(value) => updateDetail('offerNumber', value)} />
-                <OfferPanelInput label="Angebotsdatum" name="offer-date" type="date" value={details.offerDate} onChange={(value) => updateDetail('offerDate', value)} />
+                  <OfferPanelInput label="Belegdatum" name="offer-date" type="date" value={details.offerDate} onChange={(value) => updateDetail('offerDate', value)} />
                 <OfferPanelInput label="Gültig bis" name="valid-until" type="date" value={details.validUntil} onChange={(value) => updateDetail('validUntil', value)} />
               </div>
             </div>

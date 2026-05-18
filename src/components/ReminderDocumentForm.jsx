@@ -362,7 +362,7 @@ export default function ReminderDocumentForm({
               <h3>Mahndaten</h3>
               <div className="invoice-panel-grid">
                 <ReminderPanelInput autoComplete="off" inputMode="text" label="Mahnungsnummer" name="reminder-code" spellCheck={false} value={details.reminderNumber} onChange={(value) => updateDetail('reminderNumber', value)} />
-                <ReminderPanelInput label="Mahnungsdatum" name="reminder-date" type="date" value={details.reminderDate} onChange={(value) => updateDetail('reminderDate', value)} />
+                <ReminderPanelInput label="Belegdatum" name="reminder-date" type="date" value={details.reminderDate} onChange={(value) => updateDetail('reminderDate', value)} />
                 <ReminderPanelInput label="Kundennummer" name="customer-reference" value={details.customerNumber} onChange={(value) => updateDetail('customerNumber', value)} />
               </div>
             </div>

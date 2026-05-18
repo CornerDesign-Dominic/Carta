@@ -437,7 +437,7 @@ export default function CreditNoteDocumentForm({
               <h3>Gutschriftsdaten</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
                 <OfferPanelInput autoComplete="off" inputMode="text" label="Gutschriftskennung" name="credit-note-id" spellCheck={false} value={details.creditNoteNumber} onChange={(value) => updateDetail('creditNoteNumber', value)} />
-                <OfferPanelInput label="Gutschriftsdatum" name="credit-note-date" type="date" value={details.creditNoteDate} onChange={(value) => updateDetail('creditNoteDate', value)} />
+                <OfferPanelInput label="Belegdatum" name="credit-note-date" type="date" value={details.creditNoteDate} onChange={(value) => updateDetail('creditNoteDate', value)} />
                 <OfferPanelInput label="Leistungsdatum" name="service-date" type="date" value={details.serviceDate} onChange={(value) => updateDetail('serviceDate', value)} />
               </div>
             </div>

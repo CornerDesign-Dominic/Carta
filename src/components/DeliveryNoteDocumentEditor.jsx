@@ -17,7 +17,7 @@ const deliveryNoteSchemaVersion = '1.0';
 const initialDeliveryNoteLabels = {
   title: 'Lieferschein',
   deliveryNoteNumber: 'Lieferscheinnummer',
-  deliveryDate: 'Lieferdatum',
+  deliveryDate: 'Belegdatum',
   orderDate: 'Bestelldatum',
   internalReference: 'Interne Referenz',
   externalReference: 'Externe Referenz',
@@ -47,7 +47,7 @@ const deliveryNoteMetaFields = [
     name: 'carta-delivery-note-code',
     type: 'text',
   },
-  { field: 'deliveryDate', ariaLabel: 'Lieferdatum', type: 'date' },
+    { field: 'deliveryDate', ariaLabel: 'Belegdatum', type: 'date' },
   { field: 'orderDate', ariaLabel: 'Bestelldatum', type: 'date' },
   {
     autoComplete: 'new-password',

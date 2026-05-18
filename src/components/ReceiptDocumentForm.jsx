@@ -191,7 +191,7 @@ export default function ReceiptDocumentForm({
               <h3>Quittungsdaten</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
                 <ReceiptPanelInput autoComplete="off" inputMode="text" label="Quittungskennung" name="receipt-internal-code" placeholder={defaults.details.receiptId} spellCheck={false} value={details.receiptId} onChange={(value) => updateDetail('receiptId', value)} />
-                <ReceiptPanelInput label="Datum" name="receipt-date" placeholder={defaults.details.receiptDate} type="date" value={details.receiptDate} onChange={(value) => updateDetail('receiptDate', value)} />
+                <ReceiptPanelInput label="Belegdatum" name="receipt-date" placeholder={defaults.details.receiptDate} type="date" value={details.receiptDate} onChange={(value) => updateDetail('receiptDate', value)} />
                 <ReceiptPanelInput label="Zahlungsdatum" name="receipt-booking-date" placeholder={defaults.details.paymentDate} type="date" value={details.paymentDate} onChange={(value) => updateDetail('paymentDate', value)} />
                 <ReceiptPanelInput label="Ort" name="receipt-place" placeholder={defaults.details.place} value={details.place} onChange={(value) => updateDetail('place', value)} />
               </div>

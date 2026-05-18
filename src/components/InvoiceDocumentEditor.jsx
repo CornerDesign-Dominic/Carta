@@ -18,7 +18,7 @@ const invoiceSchemaVersion = '1.0';
 const initialInvoiceLabels = {
   title: 'Rechnung',
   invoiceNumber: 'Rechnungsnummer',
-  invoiceDate: 'Rechnungsdatum',
+  invoiceDate: 'Belegdatum',
   serviceDate: 'Leistungsdatum',
   internalNumber: 'Interne Nummer',
   externalNumber: 'Externe Nummer',
@@ -48,7 +48,7 @@ const invoiceContactFields = [
 
 const invoiceMetaFields = [
   { autoComplete: 'new-password', field: 'invoiceNumber', ariaLabel: 'Rechnungskennung', name: 'carta-invoice-code', type: 'text' },
-  { field: 'invoiceDate', ariaLabel: 'Rechnungsdatum', type: 'date' },
+    { field: 'invoiceDate', ariaLabel: 'Belegdatum', type: 'date' },
   { field: 'serviceDate', ariaLabel: 'Leistungsdatum', type: 'date' },
   { autoComplete: 'new-password', field: 'internalNumber', ariaLabel: 'Interne Referenz', name: 'carta-invoice-internal-code', type: 'text' },
   { autoComplete: 'new-password', field: 'externalNumber', ariaLabel: 'Externe Referenz', name: 'carta-invoice-external-code', type: 'text' },
