@@ -2956,7 +2956,7 @@ h1 {
 .reminder-invoice-table th:nth-child(1),
 .reminder-invoice-table td:nth-child(1) {
   position: relative;
-  width: 27%;
+  width: 34%;
 }
 
 .delivery-note-table th:nth-child(1),
@@ -3002,25 +3002,49 @@ h1 {
 
 .reminder-invoice-table th:nth-child(2),
 .reminder-invoice-table td:nth-child(2) {
-  width: 22%;
+  width: 20%;
+  text-align: left;
 }
 
 .reminder-invoice-table th:nth-child(3),
 .reminder-invoice-table td:nth-child(3) {
-  width: 16%;
+  width: 14%;
   text-align: left;
 }
 
 .reminder-invoice-table th:nth-child(4),
 .reminder-invoice-table td:nth-child(4) {
-  width: 26%;
+  width: 32%;
   text-align: right;
 }
 
 .reminder-invoice-table th:nth-child(5),
 .reminder-invoice-table td:nth-child(5) {
-  width: 9%;
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+  border-top-color: transparent;
   text-align: center;
+}
+
+.reminder-invoice-table th:nth-child(2) .document-label-input,
+.reminder-invoice-table td:nth-child(2) .invoice-date-display {
+  text-align: left;
+}
+
+.reminder-invoice-table td:nth-child(2) .invoice-date-field {
+  grid-template-columns: minmax(0, 1fr) 24px;
+}
+
+.reminder-invoice-table td:nth-child(2) .invoice-date-input::-webkit-datetime-edit,
+.reminder-invoice-table td:nth-child(2) .invoice-date-input::-webkit-datetime-edit-fields-wrapper {
+  justify-content: flex-start;
+  margin-left: 0;
+}
+
+.reminder-invoice-table td:nth-child(2) .invoice-date-input::-webkit-date-and-time-value {
+  margin-left: 0;
+  text-align: left;
 }
 
 .invoice-print-position-table.reminder-print-open-items-table th:nth-child(1),
