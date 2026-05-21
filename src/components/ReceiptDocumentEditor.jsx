@@ -873,6 +873,7 @@ export default function ReceiptDocumentEditor() {
         editable={highlightFields}
       >
         <header className="receipt-header">
+          <ReceiptHeaderAddress sender={sender} onSenderChange={updateSender} />
           <h2 className="invoice-document-title receipt-document-title">
             <input
               className="document-label-input document-title-label"
@@ -881,7 +882,6 @@ export default function ReceiptDocumentEditor() {
               onChange={(event) => updateLabel('title', event.target.value)}
             />
           </h2>
-          <ReceiptHeaderAddress sender={sender} onSenderChange={updateSender} />
         </header>
 
         <section className="receipt-amount-box" aria-label="Betragsdarstellung">

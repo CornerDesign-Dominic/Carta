@@ -2102,18 +2102,18 @@ h1 {
 
 .receipt-header-address {
   display: grid;
-  justify-items: end;
+  justify-items: start;
   align-content: start;
   gap: 2px;
   min-width: 0;
   color: #5f5e59;
   font-size: 0.74rem;
   line-height: 1.2;
-  text-align: right;
+  text-align: left;
 }
 
 .receipt-header-address .editable-group {
-  justify-items: end;
+  justify-items: start;
 }
 
 .receipt-header-address input {
@@ -2122,7 +2122,7 @@ h1 {
   color: inherit;
   font-size: 0.72rem;
   line-height: 1.18;
-  text-align: right;
+  text-align: left;
 }
 
 .receipt-header-address .editable-group input:first-child {
@@ -2135,9 +2135,11 @@ h1 {
 
 .receipt-document-title {
   align-self: start;
+  justify-self: end;
   margin: 0;
   font-size: 1.42rem;
   min-height: 34px;
+  text-align: right;
 }
 
 .receipt-document-title .document-title-label {
@@ -2145,6 +2147,7 @@ h1 {
   height: 38px;
   min-height: 38px;
   line-height: 38px;
+  text-align: right;
 }
 
 .receipt-amount-box {
