@@ -3644,7 +3644,7 @@ h1 {
   max-height: var(--offer-print-content-max-height);
   min-height: 0;
   overflow: hidden;
-  gap: 16px;
+  gap: 24px;
 }
 
 .offer-print-page .invoice-print-page-number {
