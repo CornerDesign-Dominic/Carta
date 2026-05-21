@@ -1,10 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
-import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
-import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
-import TextBlock from './documentBlocks/TextBlock.jsx';
-import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
@@ -328,6 +324,14 @@ function createViewData(data) {
     sender: {
       company: firstFilled(senderData.companyName, defaultReceiptData.sender.companyName),
       senderLine: firstFilled(senderData.returnAddress, defaultReceiptData.sender.returnAddress),
+      streetLine: firstFilled(
+        joinLine(senderData.address.street, senderData.address.houseNumber),
+        joinLine(defaultReceiptData.sender.address.street, defaultReceiptData.sender.address.houseNumber),
+      ),
+      cityLine: firstFilled(
+        joinLine(senderData.address.postalCode, senderData.address.city),
+        joinLine(defaultReceiptData.sender.address.postalCode, defaultReceiptData.sender.address.city),
+      ),
       email: firstFilled(senderData.contact.email, defaultReceiptData.sender.contact.email),
       phone: firstFilled(senderData.contact.phone, defaultReceiptData.sender.contact.phone),
       website: firstFilled(senderData.contact.website, defaultReceiptData.sender.contact.website),
@@ -469,20 +473,12 @@ function validateReceiptTemplate(template) {
   return template.data;
 }
 
-function ReceiptHeaderContact({
-  contactFields,
-  hiddenFields = [],
-  labels,
-  onLabelChange,
-  onMoveField,
+function ReceiptHeaderAddress({
   onSenderChange,
-  onToggleField,
   sender,
 }) {
-  const visibleFields = contactFields.filter(({ field }) => !hiddenFields.includes(field));
-
   return (
-    <div className="receipt-header-contact">
+    <div className="receipt-header-address">
       <div className="editable-group">
         <input
           aria-label="Aussteller Firmenname"
@@ -490,36 +486,16 @@ function ReceiptHeaderContact({
           onChange={(event) => onSenderChange('company', event.target.value)}
         />
       </div>
-
-      <div className="receipt-contact-lines">
-        {visibleFields.map(({ field, label, labelField }, index) => (
-          <div className="invoice-config-row" key={field}>
-            <label>
-              <input
-                className="document-label-input"
-                aria-label={`Beschriftung ${label}`}
-                value={labels[labelField]}
-                onChange={(event) => onLabelChange(labelField, event.target.value)}
-              />
-              <input
-                aria-label={label}
-                value={sender[field]}
-                onChange={(event) => onSenderChange(field, event.target.value)}
-              />
-            </label>
-            <FieldActions
-              canMove
-              isFirst={index === 0}
-              isLast={index === visibleFields.length - 1}
-              label={label}
-              onMoveDown={() => onMoveField(field, 1)}
-              onMoveUp={() => onMoveField(field, -1)}
-              onToggle={() => onToggleField(field)}
-            />
-          </div>
-        ))}
-        <HiddenFieldActions definitions={contactFields} hiddenFields={hiddenFields} onToggle={onToggleField} />
-      </div>
+      <input
+        aria-label="Aussteller Strasse und Hausnummer"
+        value={sender.streetLine}
+        onChange={(event) => onSenderChange('address', splitStreetLine(event.target.value))}
+      />
+      <input
+        aria-label="Aussteller PLZ und Stadt"
+        value={sender.cityLine}
+        onChange={(event) => onSenderChange('address', splitCityLine(event.target.value))}
+      />
     </div>
   );
 }
@@ -539,18 +515,9 @@ export default function ReceiptDocumentEditor() {
   });
   const sheetRef = useRef(null);
   const jsonInputRef = useRef(null);
-  const dateInputRefs = useRef({});
   const { sender, details, amount } = useMemo(
     () => createViewData(receiptData),
     [receiptData],
-  );
-  const documentTextBlocks = useMemo(
-    () =>
-      textBlocks.map((block) => ({
-        ...block,
-        value: firstFilled(block.value, receiptTextDefaults[block.id]),
-      })),
-    [textBlocks],
   );
 
   function updateLabel(field, value) {
@@ -778,20 +745,6 @@ export default function ReceiptDocumentEditor() {
     });
   }
 
-  function openDatePicker(field) {
-    const dateInput = dateInputRefs.current[field];
-
-    if (!dateInput) {
-      return;
-    }
-
-    dateInput.focus();
-
-    if (typeof dateInput.showPicker === 'function') {
-      dateInput.showPicker();
-    }
-  }
-
   function createReceiptTemplate() {
     return {
       documentType: 'receipt',
@@ -867,42 +820,6 @@ export default function ReceiptDocumentEditor() {
     window.setTimeout(cleanup, 1200);
   }
 
-  function renderTextBlock(block, index) {
-    if (!block) {
-      return null;
-    }
-
-    if (!block.visible) {
-      return (
-        <div className="invoice-flow-config-row invoice-flow-hidden-row receipt-flow-row" key={block.id}>
-          <TextBlockControls
-            label={block.label}
-            visible={block.visible}
-            onToggle={() => toggleTextBlockVisibility(block.id)}
-          />
-        </div>
-      );
-    }
-
-    return (
-      <div className="invoice-flow-config-row receipt-flow-row" key={block.id}>
-        <TextBlock
-          ariaLabel={block.label}
-          className="receipt-flow-text"
-          value={block.value}
-          onChange={(value) => updateTextBlock(block.id, { value })}
-        />
-        <TextBlockControls
-          isFirst={index === 0}
-          isLast={index === documentTextBlocks.length - 1}
-          label={block.label}
-          visible={block.visible}
-          onToggle={() => toggleTextBlockVisibility(block.id)}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="visual-editor invoice-visual-editor receipt-visual-editor">
       <ReceiptDocumentForm
@@ -956,45 +873,16 @@ export default function ReceiptDocumentEditor() {
         editable={highlightFields}
       >
         <header className="receipt-header">
-          <div className="receipt-header-empty" aria-hidden="true" />
-          <div className="receipt-header-right">
-            <ReceiptHeaderContact
-              contactFields={getOrderedDefinitions('contact', receiptContactFields)}
-              hiddenFields={getHiddenFields('contact', receiptContactFields)}
-              labels={labels}
-              sender={sender}
-              onLabelChange={updateLabel}
-              onMoveField={(field, direction) => moveConfiguredField('contact', field, direction)}
-              onSenderChange={updateSender}
-              onToggleField={(field) => toggleConfiguredField('contact', field)}
+          <h2 className="invoice-document-title receipt-document-title">
+            <input
+              className="document-label-input document-title-label"
+              aria-label="Dokumenttitel"
+              value={labels.title}
+              onChange={(event) => updateLabel('title', event.target.value)}
             />
-            <DocumentMetaBlock
-              dateInputRefs={dateInputRefs}
-              details={details}
-              emphasizedField="receiptId"
-              fields={getOrderedDefinitions('details', receiptMetaFields)}
-              hiddenFields={getHiddenFields('details', receiptMetaFields)}
-              labels={labels}
-              onDatePicker={openDatePicker}
-              onDetailChange={updateDetail}
-              onLabelChange={updateLabel}
-              onMoveField={(field, direction) => moveConfiguredField('details', field, direction)}
-              onToggleField={(field) => toggleConfiguredField('details', field)}
-            />
-          </div>
+          </h2>
+          <ReceiptHeaderAddress sender={sender} onSenderChange={updateSender} />
         </header>
-
-        <h2 className="invoice-document-title receipt-document-title">
-          <input
-            className="document-label-input document-title-label"
-            aria-label="Dokumenttitel"
-            value={labels.title}
-            onChange={(event) => updateLabel('title', event.target.value)}
-          />
-        </h2>
-
-        {renderTextBlock(documentTextBlocks.find((block) => block.id === 'receiptText'), 0)}
-        {renderTextBlock(documentTextBlocks.find((block) => block.id === 'purpose'), 1)}
 
         <section className="receipt-amount-box" aria-label="Betragsdarstellung">
           {['netAmount', 'taxAmount', 'grossAmount', 'amountInWords', 'settlementMethod'].map((field) => (

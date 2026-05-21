@@ -2093,128 +2093,65 @@ h1 {
 
 .receipt-header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 342px);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
   gap: 24px;
   align-items: start;
-  min-height: 108px;
-  margin-bottom: 14px;
+  min-height: 78px;
+  margin-bottom: 22px;
 }
 
-.receipt-header-empty {
-  min-width: 0;
-}
-
-.receipt-header-right {
+.receipt-header-address {
   display: grid;
-  justify-self: end;
-  width: min(100%, 342px);
-  gap: 8px;
-}
-
-.receipt-header-contact {
-  display: grid;
-  justify-items: stretch;
-  gap: 4px;
+  justify-items: end;
+  align-content: start;
+  gap: 2px;
   min-width: 0;
   color: #5f5e59;
-  font-size: 0.64rem;
-  line-height: 1.22;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  text-align: right;
 }
 
-.receipt-header-contact .editable-group {
+.receipt-header-address .editable-group {
   justify-items: end;
 }
 
-.receipt-header-contact .editable-group input:first-child {
-  min-height: 18px;
+.receipt-header-address input {
+  min-height: 16px;
+  padding: 0 !important;
+  color: inherit;
+  font-size: 0.72rem;
+  line-height: 1.18;
+  text-align: right;
+}
+
+.receipt-header-address .editable-group input:first-child {
+  min-height: 20px;
   color: #232320;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 760;
   line-height: 1.18;
-  text-align: right;
-}
-
-.receipt-contact-lines {
-  display: grid;
-  justify-items: stretch;
-  gap: 0;
-  min-width: 0;
-}
-
-.receipt-contact-lines label {
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: 7px;
-  align-items: center;
-  min-height: 14px;
-  min-width: 0;
-}
-
-.receipt-contact-lines .document-label-input,
-.receipt-contact-lines input {
-  min-height: 14px;
-  padding: 0 !important;
-  color: #6b675f;
-  font-size: 0.62rem;
-  line-height: 1.1;
-}
-
-.receipt-contact-lines input:not(.document-label-input) {
-  text-align: right;
-}
-
-.receipt-sheet .invoice-details {
-  width: min(100%, 330px);
-  padding-top: 3px;
-  font-size: 8.3pt;
-  line-height: 1.18;
-}
-
-.receipt-sheet .invoice-details label {
-  grid-template-columns: 116px minmax(92px, 1fr);
-  gap: 7px;
-  min-height: 14px;
-}
-
-.receipt-sheet .invoice-details label > input,
-.receipt-sheet .invoice-details label > .document-label-input,
-.receipt-sheet .invoice-date-field,
-.receipt-sheet .invoice-date-input {
-  min-height: 14px;
-  line-height: 1.05;
 }
 
 .receipt-document-title {
-  margin-bottom: 8px;
-  font-size: 1.2rem;
-  min-height: 28px;
+  align-self: start;
+  margin: 0;
+  font-size: 1.42rem;
+  min-height: 34px;
 }
 
 .receipt-document-title .document-title-label {
-  width: min(100%, 190px);
-  height: 32px;
-  min-height: 32px;
-  line-height: 32px;
-}
-
-.receipt-flow-row {
-  margin-bottom: 7px;
-}
-
-.receipt-sheet textarea.receipt-flow-text {
-  min-height: 34px;
-  max-height: 54px;
-  font-size: 8.8pt;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-  resize: vertical;
+  width: min(100%, 210px);
+  height: 38px;
+  min-height: 38px;
+  line-height: 38px;
 }
 
 .receipt-amount-box {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0;
-  margin: 2px 0 13px;
+  margin: 0 0 18px;
   border: 1px solid rgba(195, 188, 176, 0.78);
   border-radius: 5px;
   overflow: hidden;
