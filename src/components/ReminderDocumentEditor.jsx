@@ -962,7 +962,7 @@ export default function ReminderDocumentEditor() {
           />
         </section>
 
-        <h2 className="invoice-document-title">
+        <h2 className="invoice-document-title reminder-document-title">
           <input
             className="document-label-input document-title-label"
             aria-label="Dokumenttitel"
@@ -1311,7 +1311,7 @@ function ReminderPrintFirstPageHeader({
         </div>
       </section>
 
-      <h2 className="invoice-print-title">{labels.title}</h2>
+      <h2 className="invoice-print-title reminder-print-title">{labels.title}</h2>
     </div>
   );
 }

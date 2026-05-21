@@ -23,13 +23,9 @@ export const featureDocuments = [
     title: 'Quittungen',
     text: 'Kompakte Quittungen im DIN-A5-Querformat mit Betrag, Leistung, Referenzen und Unterschriftbereich.',
   },
-  {
-    title: 'Eigenbelege',
-    text: 'Eigenbelege fuer Ausgaben ohne vorhandenen Fremdbeleg mit Positionen, Summen, Vorlagen, PDF und Druck.',
-  },
 ];
 
-export const documentSections = [
+const allDocumentSections = [
   {
     id: 'invoices',
     label: 'Rechnungen',
@@ -291,6 +287,10 @@ export const documentSections = [
     ],
   },
 ];
+
+export const documentSections = allDocumentSections.filter(
+  (section) => section.id !== 'self-receipts',
+);
 
 export function findDocumentItem(activeId) {
   if (activeId === 'overview') {

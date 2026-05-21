@@ -13,13 +13,19 @@ const initialReceiptLabels = {
   paymentDate: 'Zahlungsdatum',
   internalReference: 'Interne Referenz',
   externalReference: 'Externe Referenz',
-  netAmount: 'Betrag netto',
-  taxAmount: 'Umsatzsteuer',
-  grossAmount: 'Betrag brutto',
-  amountInWords: 'Betrag in Worten',
+  netAmount: 'Netto Betrag',
+  taxRate: 'USt.-Satz',
+  taxAmount: 'USt.-Betrag',
+  grossAmount: 'Brutto Gesamtbetrag',
+  amountInWords: 'EUR in Worten',
   settlementMethod: 'Zahlungsart',
+  from: 'von',
+  purpose: 'für',
   place: 'Ort',
+  placeDate: 'Ort/Datum',
+  bookingNote: 'Buchungsvermerk',
   signature: 'Unterschrift',
+  receiverSignature: 'Stempel/Unterschrift des Empfängers',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactWebsite: 'Website',
@@ -113,6 +119,10 @@ const defaultReceiptData = {
     receiptDate: '2026-05-12',
     paymentDate: '2026-05-12',
     place: 'Berlin',
+    from: 'Beispielkunde GmbH',
+    purpose: 'Leistung oder Verwendungszweck kurz beschreiben',
+    bookingNote: 'Kasse',
+    receiverSignature: '',
   },
   references: {
     internalReference: 'REF-1001',
@@ -120,6 +130,7 @@ const defaultReceiptData = {
   },
   amount: {
     netAmount: '100,00',
+    taxRate: '19',
     taxAmount: '19,00',
     grossAmount: '119,00',
     amountInWords: 'einhundertneunzehn Euro',
@@ -169,6 +180,10 @@ const emptyReceiptData = {
     receiptDate: '',
     paymentDate: '',
     place: '',
+    from: '',
+    purpose: '',
+    bookingNote: '',
+    receiverSignature: '',
   },
   references: {
     internalReference: '',
@@ -176,6 +191,7 @@ const emptyReceiptData = {
   },
   amount: {
     netAmount: '',
+    taxRate: '',
     taxAmount: '',
     grossAmount: '',
     amountInWords: '',
@@ -354,11 +370,16 @@ function createViewData(data) {
       receiptDate: firstFilled(data.details.receiptDate, defaultReceiptData.details.receiptDate),
       paymentDate: firstFilled(data.details.paymentDate, defaultReceiptData.details.paymentDate),
       place: firstFilled(data.details.place, defaultReceiptData.details.place),
+      from: firstFilled(data.details.from, defaultReceiptData.details.from),
+      purpose: firstFilled(data.details.purpose, defaultReceiptData.details.purpose),
+      bookingNote: firstFilled(data.details.bookingNote, defaultReceiptData.details.bookingNote),
+      receiverSignature: firstFilled(data.details.receiverSignature, defaultReceiptData.details.receiverSignature),
       internalReference: firstFilled(data.references.internalReference, defaultReceiptData.references.internalReference),
       externalReference: firstFilled(data.references.externalReference, defaultReceiptData.references.externalReference),
     },
     amount: {
       netAmount: firstFilled(data.amount.netAmount, defaultReceiptData.amount.netAmount),
+      taxRate: firstFilled(data.amount.taxRate, defaultReceiptData.amount.taxRate),
       taxAmount: firstFilled(data.amount.taxAmount, defaultReceiptData.amount.taxAmount),
       grossAmount: firstFilled(data.amount.grossAmount, defaultReceiptData.amount.grossAmount),
       amountInWords: firstFilled(data.amount.amountInWords, defaultReceiptData.amount.amountInWords),
@@ -389,6 +410,10 @@ function formatGermanDate(value) {
   const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
 
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+}
+
+function joinPlaceDate(place, date) {
+  return [String(place ?? '').trim(), formatGermanDate(date)].filter(Boolean).join(', ');
 }
 
 function createPdfFileName(title, receiptId) {
@@ -497,6 +522,20 @@ function ReceiptHeaderAddress({
         onChange={(event) => onSenderChange('address', splitCityLine(event.target.value))}
       />
     </div>
+  );
+}
+
+function ReceiptLineField({ label, value, onChange, valueClassName = '' }) {
+  return (
+    <label className="receipt-line-field">
+      <span>{label}</span>
+      <input
+        className={valueClassName}
+        aria-label={label}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
   );
 }
 
@@ -874,69 +913,136 @@ export default function ReceiptDocumentEditor() {
       >
         <header className="receipt-header">
           <ReceiptHeaderAddress sender={sender} onSenderChange={updateSender} />
-          <h2 className="invoice-document-title receipt-document-title">
-            <input
-              className="document-label-input document-title-label"
-              aria-label="Dokumenttitel"
-              value={labels.title}
-              onChange={(event) => updateLabel('title', event.target.value)}
-            />
-          </h2>
+          <div className="receipt-header-summary">
+            <h2 className="invoice-document-title receipt-document-title">
+              <input
+                className="document-label-input document-title-label"
+                aria-label="Dokumenttitel"
+                value={labels.title}
+                onChange={(event) => updateLabel('title', event.target.value)}
+              />
+            </h2>
+            <section className="receipt-amount-box" aria-label="Betragsdarstellung">
+              <label>
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${labels.netAmount}`}
+                  value={labels.netAmount}
+                  onChange={(event) => updateLabel('netAmount', event.target.value)}
+                />
+                <input
+                  aria-label={labels.netAmount}
+                  value={amount.netAmount}
+                  onChange={(event) => updateAmount('netAmount', event.target.value)}
+                />
+              </label>
+              <label>
+                <span className="receipt-tax-row">
+                  <input
+                    className="document-label-input"
+                    aria-label={`Beschriftung ${labels.taxRate}`}
+                    value={labels.taxRate}
+                    onChange={(event) => updateLabel('taxRate', event.target.value)}
+                  />
+                  <input
+                    aria-label={labels.taxRate}
+                    value={amount.taxRate}
+                    onChange={(event) => updateAmount('taxRate', event.target.value)}
+                  />
+                </span>
+                <span className="receipt-tax-row">
+                  <input
+                    className="document-label-input"
+                    aria-label={`Beschriftung ${labels.taxAmount}`}
+                    value={labels.taxAmount}
+                    onChange={(event) => updateLabel('taxAmount', event.target.value)}
+                  />
+                  <input
+                    aria-label={labels.taxAmount}
+                    value={amount.taxAmount}
+                    onChange={(event) => updateAmount('taxAmount', event.target.value)}
+                  />
+                </span>
+              </label>
+              <label className="is-emphasized">
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${labels.grossAmount}`}
+                  value={labels.grossAmount}
+                  onChange={(event) => updateLabel('grossAmount', event.target.value)}
+                />
+                <input
+                  aria-label={labels.grossAmount}
+                  value={amount.grossAmount}
+                  onChange={(event) => updateAmount('grossAmount', event.target.value)}
+                />
+              </label>
+            </section>
+          </div>
         </header>
 
-        <section className="receipt-amount-box" aria-label="Betragsdarstellung">
-          {['netAmount', 'taxAmount', 'grossAmount', 'amountInWords', 'settlementMethod'].map((field) => (
-            <label className={field === 'grossAmount' ? 'is-emphasized' : undefined} key={field}>
-              <input
-                className="document-label-input"
-                aria-label={`Beschriftung ${labels[field]}`}
-                value={labels[field]}
-                onChange={(event) => updateLabel(field, event.target.value)}
-              />
-              <input
-                aria-label={labels[field]}
-                value={amount[field]}
-                onChange={(event) => updateAmount(field, event.target.value)}
-              />
-            </label>
-          ))}
+        <section className="receipt-lines" aria-label="Quittungsangaben">
+          <ReceiptLineField
+            label="Quittungsnummer"
+            value={details.receiptId}
+            onChange={(value) => updateDetail('receiptId', value)}
+          />
+          <ReceiptLineField
+            label={labels.amountInWords}
+            value={amount.amountInWords}
+            onChange={(value) => updateAmount('amountInWords', value)}
+          />
+          <ReceiptLineField
+            label={labels.from}
+            value={details.from}
+            onChange={(value) => updateDetail('from', value)}
+          />
+          <ReceiptLineField
+            label={labels.purpose}
+            value={details.purpose}
+            onChange={(value) => updateDetail('purpose', value)}
+          />
+          <label className="receipt-line-field receipt-place-date-line">
+            <span>{labels.placeDate}</span>
+            <input
+              aria-label={labels.placeDate}
+              value={joinPlaceDate(details.place, details.receiptDate)}
+              onChange={(event) => {
+                const [place, ...dateParts] = event.target.value.split(',');
+                updateDetail('place', place.trim());
+                updateDetail('receiptDate', dateParts.join(',').trim());
+              }}
+            />
+          </label>
         </section>
 
-        <section className="receipt-signature-row" aria-label="Abschluss der Quittung">
-          <label>
+        <section className="receipt-bottom-row" aria-label="Abschluss der Quittung">
+          <label className="receipt-bottom-field receipt-booking-note">
             <input
               className="document-label-input"
-              aria-label="Beschriftung Ort"
-              value={labels.place}
-              onChange={(event) => updateLabel('place', event.target.value)}
+              aria-label="Beschriftung Buchungsvermerk"
+              value={labels.bookingNote}
+              onChange={(event) => updateLabel('bookingNote', event.target.value)}
             />
-            <input
-              aria-label="Ort der Ausstellung"
-              value={details.place}
-              onChange={(event) => updateDetail('place', event.target.value)}
+            <textarea
+              aria-label={labels.bookingNote}
+              value={details.bookingNote}
+              onChange={(event) => updateDetail('bookingNote', event.target.value)}
             />
           </label>
-          <label>
+          <label className="receipt-bottom-field receipt-receiver-signature">
             <input
               className="document-label-input"
-              aria-label="Beschriftung Datum"
-              value={labels.receiptDate}
-              onChange={(event) => updateLabel('receiptDate', event.target.value)}
+              aria-label="Beschriftung Empfaenger-Unterschrift"
+              value={labels.receiverSignature}
+              onChange={(event) => updateLabel('receiverSignature', event.target.value)}
             />
-            <input
-              aria-label="Ausstellungsdatum"
-              value={formatGermanDate(details.receiptDate)}
-              onChange={(event) => updateDetail('receiptDate', event.target.value)}
+            <textarea
+              aria-label={labels.receiverSignature}
+              value={details.receiverSignature}
+              onChange={(event) => updateDetail('receiverSignature', event.target.value)}
             />
           </label>
-          <div className="receipt-signature-field">
-            <input
-              className="document-label-input"
-              aria-label="Beschriftung Unterschrift"
-              value={labels.signature}
-              onChange={(event) => updateLabel('signature', event.target.value)}
-            />
-          </div>
         </section>
 
       </A5LandscapePage>

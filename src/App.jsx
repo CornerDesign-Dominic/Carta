@@ -60,6 +60,10 @@ function routeFromLocation() {
     return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId };
   }
 
+  if (path === '/dokumente/eigenbeleg') {
+    return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
+  }
+
   if (path === '/dokumente') {
     return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
   }

@@ -194,6 +194,8 @@ export default function ReceiptDocumentForm({
                 <ReceiptPanelInput label="Belegdatum" name="receipt-date" placeholder={defaults.details.receiptDate} type="date" value={details.receiptDate} onChange={(value) => updateDetail('receiptDate', value)} />
                 <ReceiptPanelInput label="Zahlungsdatum" name="receipt-booking-date" placeholder={defaults.details.paymentDate} type="date" value={details.paymentDate} onChange={(value) => updateDetail('paymentDate', value)} />
                 <ReceiptPanelInput label="Ort" name="receipt-place" placeholder={defaults.details.place} value={details.place} onChange={(value) => updateDetail('place', value)} />
+                <ReceiptPanelInput className="invoice-panel-field-wide" label="Von" name="receipt-from" placeholder={defaults.details.from} value={details.from} onChange={(value) => updateDetail('from', value)} />
+                <ReceiptPanelInput className="invoice-panel-field-wide" label="Für" name="receipt-purpose" placeholder={defaults.details.purpose} value={details.purpose} onChange={(value) => updateDetail('purpose', value)} />
               </div>
             </div>
 
@@ -210,10 +212,19 @@ export default function ReceiptDocumentForm({
             <h3>Betrag und Leistung</h3>
             <div className="invoice-panel-grid">
               <ReceiptPanelInput inputMode="decimal" label="Betrag netto" name="receipt-net-amount" placeholder={defaults.amount.netAmount} value={amount.netAmount} onChange={(value) => updateAmount('netAmount', value)} />
+              <ReceiptPanelInput inputMode="decimal" label="USt.-Satz" name="receipt-tax-rate" placeholder={defaults.amount.taxRate} value={amount.taxRate} onChange={(value) => updateAmount('taxRate', value)} />
               <ReceiptPanelInput inputMode="decimal" label="Umsatzsteuer" name="receipt-tax-amount" placeholder={defaults.amount.taxAmount} value={amount.taxAmount} onChange={(value) => updateAmount('taxAmount', value)} />
               <ReceiptPanelInput inputMode="decimal" label="Betrag brutto" name="receipt-gross-amount" placeholder={defaults.amount.grossAmount} value={amount.grossAmount} onChange={(value) => updateAmount('grossAmount', value)} />
               <ReceiptPanelInput label="Betrag in Worten" name="receipt-amount-words" placeholder={defaults.amount.amountInWords} value={amount.amountInWords} onChange={(value) => updateAmount('amountInWords', value)} />
               <ReceiptPanelInput label="Zahlungsart" name="receipt-method" placeholder={defaults.amount.settlementMethod} value={amount.settlementMethod} onChange={(value) => updateAmount('settlementMethod', value)} />
+            </div>
+          </div>
+
+          <div className="invoice-panel-section invoice-panel-section-wide">
+            <h3>Abschluss</h3>
+            <div className="invoice-panel-grid">
+              <ReceiptPanelTextarea label="Buchungsvermerk" name="receipt-booking-note" placeholder={defaults.details.bookingNote} value={details.bookingNote} onChange={(value) => updateDetail('bookingNote', value)} />
+              <ReceiptPanelTextarea label="Stempel / Unterschrift des Empfängers" name="receipt-receiver-signature" placeholder={defaults.details.receiverSignature} value={details.receiverSignature} onChange={(value) => updateDetail('receiverSignature', value)} />
             </div>
           </div>
 
