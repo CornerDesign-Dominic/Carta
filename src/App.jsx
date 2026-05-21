@@ -14,11 +14,22 @@ import HomeView from './views/HomeView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
+import { documentSections } from './data/documents.js';
 
 const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE === 'true';
+const generatorPathById = new Map(
+  documentSections.flatMap((section) =>
+    (section.children ?? [])
+      .filter((child) => child.path)
+      .map((child) => [child.id, child.path]),
+  ),
+);
+const generatorIdByPath = new Map(
+  [...generatorPathById.entries()].map(([documentId, path]) => [path, documentId]),
+);
 
 function routeFromLocation() {
-  const path = window.location.pathname;
+  const path = window.location.pathname.replace(/\/$/, '') || '/';
 
   if (path === '/') {
     return { view: 'home', knowledgeSlug: null, documentId: 'overview' };
@@ -44,11 +55,12 @@ function routeFromLocation() {
     };
   }
 
-  if (path === '/dokumente/rechnung') {
-    return { view: 'documents', knowledgeSlug: null, documentId: 'write-invoice' };
+  const generatorDocumentId = generatorIdByPath.get(path);
+  if (generatorDocumentId) {
+    return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId };
   }
 
-  if (path.startsWith('/dokumente')) {
+  if (path === '/dokumente') {
     return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
   }
 
@@ -77,7 +89,7 @@ function pathForNavigation(item) {
   }
 
   if (item.view === 'documents') {
-    return item.documentId === 'write-invoice' ? '/dokumente/rechnung' : '/dokumente';
+    return generatorPathById.get(item.documentId) ?? '/dokumente';
   }
 
   if (item.view === 'home') {

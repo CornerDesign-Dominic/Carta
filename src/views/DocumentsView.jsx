@@ -10,6 +10,22 @@ import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
 import SelfReceiptDocumentEditor from '../components/SelfReceiptDocumentEditor.jsx';
 import { documentSections, findDocumentItem } from '../data/documents.js';
 
+function isPlainLeftClick(event) {
+  return (
+    event.button === 0
+    && !event.metaKey
+    && !event.ctrlKey
+    && !event.shiftKey
+    && !event.altKey
+    && !event.defaultPrevented
+  );
+}
+
+function pathForDocumentId(documentId) {
+  const { item } = findDocumentItem(documentId);
+  return item?.path ?? '/dokumente';
+}
+
 function DocumentOverview({ onSelect }) {
   const usageSections = [
     {
@@ -90,18 +106,27 @@ function DocumentOverview({ onSelect }) {
 
       <div className="document-overview-grid" aria-label="Dokumentgeneratoren">
         {documentSections.map((section) => {
-          const targetId = section.children?.[0]?.id ?? section.id;
+          const target = section.children?.[0] ?? section;
+          const targetId = target.id;
+          const targetPath = target.path ?? '/dokumente';
 
           return (
-            <button
+            <a
               className="document-overview-card"
               key={section.id}
-              type="button"
-              onClick={() => onSelect(targetId)}
+              href={targetPath}
+              onClick={(event) => {
+                if (!isPlainLeftClick(event)) {
+                  return;
+                }
+
+                event.preventDefault();
+                onSelect(targetId);
+              }}
             >
               <span>{section.label}</span>
               <p>{section.description}</p>
-            </button>
+            </a>
           );
         })}
       </div>
@@ -134,16 +159,25 @@ export default function DocumentsView({ initialDocumentId = 'overview', onNaviga
     setActiveDocumentId(initialDocumentId);
   }, [initialDocumentId]);
 
+  function handleSelectDocument(documentId) {
+    setActiveDocumentId(documentId);
+
+    const nextPath = pathForDocumentId(documentId);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+    }
+  }
+
   return (
     <main className="documents-layout">
       <DocumentSidebar
         activeId={activeDocumentId}
         activeParentId={parentId}
-        onSelect={setActiveDocumentId}
+        onSelect={handleSelectDocument}
       />
 
       <section className="paper-page document-paper" aria-labelledby="document-title">
-        {isOverview && <DocumentOverview onSelect={setActiveDocumentId} />}
+        {isOverview && <DocumentOverview onSelect={handleSelectDocument} />}
 
         {!isOverview && (
           <>

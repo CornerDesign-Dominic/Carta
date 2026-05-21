@@ -67,6 +67,7 @@ export const documentSections = [
         id: 'write-invoice',
         label: 'Rechnung schreiben',
         title: 'Rechnung schreiben',
+        path: '/dokumente/rechnung',
         formType: 'invoice',
         description:
           'Erstelle eine Rechnung direkt im A4-Dokument mit Absender, Empfaenger, Positionen, Steuern und Fussdaten.',
@@ -110,6 +111,7 @@ export const documentSections = [
         id: 'write-offer',
         label: 'Angebot schreiben',
         title: 'Angebot schreiben',
+        path: '/dokumente/angebot',
         formType: 'offer',
         description:
           'Erstelle Angebote mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
@@ -147,6 +149,7 @@ export const documentSections = [
         id: 'write-delivery-note',
         label: 'Lieferschein schreiben',
         title: 'Lieferschein schreiben',
+        path: '/dokumente/lieferschein',
         formType: 'deliveryNote',
         description:
           'Erstelle Lieferscheine mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
@@ -184,6 +187,7 @@ export const documentSections = [
         id: 'write-credit-note',
         label: 'Gutschrift schreiben',
         title: 'Gutschrift schreiben',
+        path: '/dokumente/gutschrift',
         formType: 'creditNote',
         description:
           'Erstelle Gutschriften mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
@@ -215,6 +219,7 @@ export const documentSections = [
         id: 'write-reminder',
         label: 'Mahnung schreiben',
         title: 'Mahnung schreiben',
+        path: '/dokumente/mahnung',
         formType: 'reminder',
         description:
           'Erstelle Mahnungen mit offenen Posten, Summen, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
@@ -246,6 +251,7 @@ export const documentSections = [
         id: 'write-receipt',
         label: 'Quittung schreiben',
         title: 'Quittung schreiben',
+        path: '/dokumente/quittung',
         formType: 'receipt',
         description:
           'Erstelle eine Quittung im DIN-A5-Querformat mit Betragsdarstellung, Leistungstext, Referenzen, JSON-Vorlagen, PDF und Druck.',
@@ -277,6 +283,7 @@ export const documentSections = [
         id: 'write-self-receipt',
         label: 'Eigenbeleg schreiben',
         title: 'Eigenbeleg schreiben',
+        path: '/dokumente/eigenbeleg',
         formType: 'selfReceipt',
         description:
           'Erstelle Eigenbelege mit Formular, direkter Dokumentbearbeitung, eigener Ausgabentabelle, JSON-Vorlagen, PDF und Druck.',

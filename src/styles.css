@@ -647,6 +647,7 @@ h1 {
   font-weight: 760;
   letter-spacing: 0.1em;
   text-align: left;
+  text-decoration: none;
   text-transform: uppercase;
   transition: color 160ms ease;
 }
@@ -667,13 +668,17 @@ h1 {
 }
 
 .sidebar-nav button,
-.sidebar-subnav button {
+.sidebar-nav a,
+.sidebar-subnav button,
+.sidebar-subnav a {
   width: 100%;
   position: relative;
+  display: block;
   border-radius: 6px;
   padding: 8px 9px;
   color: var(--muted);
   text-align: left;
+  text-decoration: none;
   overflow-wrap: anywhere;
   transition:
     background-color 160ms ease,
@@ -682,13 +687,17 @@ h1 {
 }
 
 .sidebar-nav button:hover,
-.sidebar-subnav button:hover {
+.sidebar-nav a:hover,
+.sidebar-subnav button:hover,
+.sidebar-subnav a:hover {
   color: var(--ink);
   background: rgba(223, 236, 232, 0.62);
 }
 
 .sidebar-nav button.is-active,
-.sidebar-subnav button.is-active {
+.sidebar-nav a.is-active,
+.sidebar-subnav button.is-active,
+.sidebar-subnav a.is-active {
   color: var(--accent-deep);
   background: rgba(223, 236, 232, 0.92);
   box-shadow:
@@ -697,7 +706,9 @@ h1 {
 }
 
 .sidebar-nav button.is-active::before,
-.sidebar-subnav button.is-active::before {
+.sidebar-nav a.is-active::before,
+.sidebar-subnav button.is-active::before,
+.sidebar-subnav a.is-active::before {
   content: '';
   position: absolute;
   top: 7px;
@@ -714,14 +725,16 @@ h1 {
   padding-left: 14px;
 }
 
-.sidebar-subnav button {
+.sidebar-subnav button,
+.sidebar-subnav a {
   border-radius: 5px;
   padding: 7px 10px;
   color: var(--muted);
   font-size: 0.88rem;
 }
 
-.sidebar-subnav button.is-active {
+.sidebar-subnav button.is-active,
+.sidebar-subnav a.is-active {
   background: rgba(236, 233, 226, 0.72);
   box-shadow: none;
 }
@@ -824,12 +837,14 @@ h1 {
 }
 
 .document-overview-card {
+  display: block;
   min-height: 178px;
   padding: 24px;
   border: 1px solid rgba(216, 208, 196, 0.96);
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(248, 244, 237, 0.96));
   text-align: left;
+  text-decoration: none;
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -3033,7 +3048,17 @@ h1 {
 }
 
 .reminder-invoice-table td:nth-child(2) .invoice-date-field {
-  grid-template-columns: minmax(0, 1fr) 24px;
+  display: block;
+  padding-right: 22px;
+}
+
+.reminder-invoice-table td:nth-child(2) .invoice-date-input,
+.reminder-invoice-table td:nth-child(2) .invoice-date-display {
+  justify-self: start;
+}
+
+.reminder-invoice-table td:nth-child(2) .invoice-date-input {
+  text-align: left;
 }
 
 .reminder-invoice-table td:nth-child(2) .invoice-date-input::-webkit-datetime-edit,
@@ -3045,6 +3070,11 @@ h1 {
 .reminder-invoice-table td:nth-child(2) .invoice-date-input::-webkit-date-and-time-value {
   margin-left: 0;
   text-align: left;
+}
+
+.reminder-invoice-table td:nth-child(2) .invoice-date-picker {
+  left: auto;
+  right: 0;
 }
 
 .invoice-print-position-table.reminder-print-open-items-table th:nth-child(1),
@@ -5395,7 +5425,9 @@ h1 {
   }
 
   .sidebar-nav button,
-  .sidebar-subnav button {
+  .sidebar-nav a,
+  .sidebar-subnav button,
+  .sidebar-subnav a {
     width: auto;
     white-space: nowrap;
   }
