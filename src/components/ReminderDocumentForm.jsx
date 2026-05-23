@@ -41,6 +41,7 @@ const reminderFormDefaults = {
   },
   openItem: {
     invoiceNumber: 'RE-2026-001',
+    externalNumber: 'EXT-4711',
     dueDate: '2026-04-24',
     overdueDays: '14',
     amount: '595.00',
@@ -94,6 +95,7 @@ function getDocumentValue(value, placeholder) {
 
 function getPlaceholder(name) {
   if (name.startsWith('open-item-') && name.endsWith('-invoice-number')) return reminderFormDefaults.openItem.invoiceNumber;
+  if (name.startsWith('open-item-') && name.endsWith('-external-number')) return reminderFormDefaults.openItem.externalNumber;
   if (name.startsWith('open-item-') && name.endsWith('-due-date')) return reminderFormDefaults.openItem.dueDate;
   if (name.startsWith('open-item-') && name.endsWith('-overdue-days')) return reminderFormDefaults.openItem.overdueDays;
   if (name.startsWith('open-item-') && name.endsWith('-amount')) return reminderFormDefaults.openItem.amount;
@@ -377,9 +379,10 @@ export default function ReminderDocumentForm({
             <h3>Offene Posten</h3>
             <div className="invoice-panel-positions">
               {openItems.map((item, index) => (
-                <div className="invoice-panel-position" key={item.id}>
+                <div className="invoice-panel-position reminder-panel-open-item" key={item.id}>
                   <span>{index + 1}</span>
                   <ReminderPanelInput label="Rechnung" name={`open-item-${index + 1}-invoice-number`} value={item.invoiceNumber} onChange={(value) => updateOpenItem(item.id, 'invoiceNumber', value)} />
+                  <ReminderPanelInput label="Externe Nummer" name={`open-item-${index + 1}-external-number`} value={item.externalNumber} onChange={(value) => updateOpenItem(item.id, 'externalNumber', value)} />
                   <ReminderPanelInput label="Fälligkeitsdatum" name={`open-item-${index + 1}-due-date`} type="date" value={item.dueDate} onChange={(value) => updateOpenItem(item.id, 'dueDate', value)} />
                   <ReminderPanelInput inputMode="numeric" label="Verzugstage" name={`open-item-${index + 1}-overdue-days`} value={item.overdueDays} onChange={(value) => updateOpenItem(item.id, 'overdueDays', value)} />
                   <ReminderPanelInput inputMode="decimal" label="Betrag" name={`open-item-${index + 1}-amount`} value={item.amount} onChange={(value) => updateOpenItem(item.id, 'amount', value)} />
@@ -461,6 +464,12 @@ export default function ReminderDocumentForm({
               ))}
             </div>
           </div>
+          <button className="invoice-form-panel-toggle invoice-form-panel-close" type="button" aria-expanded="true" onClick={onToggle}>
+            <span className="invoice-form-panel-toggle-label">Formular zuklappen</span>
+            <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
+              -
+            </span>
+          </button>
         </div>
       )}
     </section>

@@ -24,6 +24,7 @@ export default function OpenItemsTable({
           <tr>
             {[
               ['invoiceNumber', 'Tabellenkopf Rechnungsnummer'],
+              ['externalNumber', 'Tabellenkopf Externe Nummer'],
               ['dueDate', 'Tabellenkopf Fälligkeitsdatum'],
               ['overdueDays', 'Tabellenkopf Verzugstage'],
               ['invoiceTotal', 'Tabellenkopf Rechnungsbetrag'],
@@ -81,6 +82,13 @@ export default function OpenItemsTable({
                   aria-label={`Rechnungsnummer ${index + 1}`}
                   value={item.invoiceNumber}
                   onChange={(event) => onItemChange(item.id, 'invoiceNumber', event.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  aria-label={`Externe Nummer ${index + 1}`}
+                  value={item.externalNumber}
+                  onChange={(event) => onItemChange(item.id, 'externalNumber', event.target.value)}
                 />
               </td>
               <td>

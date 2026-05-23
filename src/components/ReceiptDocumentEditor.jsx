@@ -17,6 +17,7 @@ const initialReceiptLabels = {
   taxRate: 'USt.-Satz',
   taxAmount: 'USt.-Betrag',
   grossAmount: 'Brutto Gesamtbetrag',
+  amountInNumbers: 'Betrag in Zahlen',
   amountInWords: 'EUR in Worten',
   settlementMethod: 'Zahlungsart',
   from: 'von',
@@ -865,32 +866,12 @@ export default function ReceiptDocumentEditor() {
         amount={receiptData.amount}
         defaults={{ ...defaultReceiptData, textBlocks: receiptTextDefaults }}
         details={{ ...receiptData.details, ...receiptData.references }}
-        footerData={receiptData.footer}
-        footerLines={{
-          companyName: receiptData.footer.company.companyName,
-          companyStreet: joinLine(receiptData.footer.company.street, receiptData.footer.company.houseNumber),
-          companyCity: joinLine(receiptData.footer.company.postalCode, receiptData.footer.company.city),
-          companyExtra: receiptData.footer.company.extra,
-          vatId: receiptData.footer.tax.vatId,
-          taxId: receiptData.footer.tax.taxId,
-          representation: receiptData.footer.tax.representation,
-          bankName: receiptData.footer.bank.bankName,
-          iban: receiptData.footer.bank.iban,
-          bic: receiptData.footer.bank.bic,
-        }}
         isOpen={isFormPanelOpen}
         onToggle={() => setIsFormPanelOpen((current) => !current)}
-        recipient={receiptData.recipient}
         sender={receiptData.sender}
-        textBlocks={textBlocks}
-        toggleTextBlockVisibility={toggleTextBlockVisibility}
         updateAmount={updateAmount}
         updateDetail={updateDetail}
-        updateFooterLabel={updateFooterLabel}
-        updateFooterLine={updateFooterLine}
-        updateRecipient={updateRecipient}
         updateSender={updateSender}
-        updateTextBlock={updateTextBlock}
       />
 
       <DocumentToolbar
@@ -936,7 +917,7 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateAmount('netAmount', event.target.value)}
                 />
               </label>
-              <label>
+              <label className="receipt-tax-lines">
                 <span className="receipt-tax-row">
                   <input
                     className="document-label-input"
@@ -950,7 +931,7 @@ export default function ReceiptDocumentEditor() {
                     onChange={(event) => updateAmount('taxRate', event.target.value)}
                   />
                 </span>
-                <span className="receipt-tax-row">
+                <span className="receipt-tax-row is-summary">
                   <input
                     className="document-label-input"
                     aria-label={`Beschriftung ${labels.taxAmount}`}
@@ -986,6 +967,11 @@ export default function ReceiptDocumentEditor() {
             label="Quittungsnummer"
             value={details.receiptId}
             onChange={(value) => updateDetail('receiptId', value)}
+          />
+          <ReceiptLineField
+            label={labels.amountInNumbers}
+            value={amount.grossAmount}
+            onChange={(value) => updateAmount('grossAmount', value)}
           />
           <ReceiptLineField
             label={labels.amountInWords}

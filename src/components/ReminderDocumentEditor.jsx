@@ -20,6 +20,7 @@ const initialReminderLabels = {
   reminderDate: 'Belegdatum',
   customerNumber: 'Kundennummer',
   invoiceNumber: 'Rechnungsnummer',
+  externalNumber: 'Externe Nummer',
   dueDate: 'Fälligkeitsdatum',
   overdueDays: 'Verzugstage',
   invoiceTotal: 'Rechnungsbetrag',
@@ -231,6 +232,7 @@ function createOpenItem() {
   return {
     id: crypto.randomUUID(),
     invoiceNumber: 'RE-2026-001',
+    externalNumber: 'EXT-4711',
     dueDate,
     overdueDays: calculateOverdueDays(dueDate),
     amount: '595.00',
@@ -353,6 +355,7 @@ function normalizeOpenItems(templateItems) {
   return templateItems.map((item) => ({
     id: typeof item.id === 'string' && item.id ? item.id : crypto.randomUUID(),
     invoiceNumber: String(item.invoiceNumber ?? 'RE-2026-001'),
+    externalNumber: String(item.externalNumber ?? item.externalReference ?? ''),
     dueDate: String(item.dueDate ?? ''),
     overdueDays:
       item.overdueDays === undefined || item.overdueDays === null
@@ -1083,6 +1086,7 @@ const MeasuredReminderPaginator = forwardRef(function MeasuredReminderPaginator(
           <thead>
             <tr data-measure-open-item-header>
               <th>{labels.invoiceNumber}</th>
+              <th>{labels.externalNumber}</th>
               <th>{labels.dueDate}</th>
               <th>{labels.overdueDays}</th>
               <th>{labels.invoiceTotal}</th>
@@ -1092,6 +1096,7 @@ const MeasuredReminderPaginator = forwardRef(function MeasuredReminderPaginator(
             {openItemItems.map(({ index, item }) => (
               <tr data-measure-open-item-row={String(index)} key={item.id}>
                 <td>{item.invoiceNumber}</td>
+                <td>{item.externalNumber}</td>
                 <td>{formatGermanDate(item.dueDate)}</td>
                 <td>{item.overdueDays}</td>
                 <td>{formatCurrency(toNumber(item.amount))}</td>
@@ -1184,6 +1189,7 @@ function arePrintItemsEqual(first, second) {
       first.index === second.index &&
       first.item.id === second.item.id &&
       first.item.invoiceNumber === second.item.invoiceNumber &&
+      first.item.externalNumber === second.item.externalNumber &&
       first.item.dueDate === second.item.dueDate &&
       first.item.overdueDays === second.item.overdueDays &&
       first.item.amount === second.item.amount
@@ -1403,6 +1409,7 @@ function ReminderPrintOpenItemsTable({ className = '', labels, openItemRows }) {
       <thead>
         <tr>
           <th>{labels.invoiceNumber}</th>
+          <th>{labels.externalNumber}</th>
           <th>{labels.dueDate}</th>
           <th>{labels.overdueDays}</th>
           <th>{labels.invoiceTotal}</th>
@@ -1412,6 +1419,7 @@ function ReminderPrintOpenItemsTable({ className = '', labels, openItemRows }) {
         {openItemRows.map(({ index, item }) => (
           <tr key={item.id}>
             <td>{item.invoiceNumber}</td>
+            <td>{item.externalNumber}</td>
             <td>{formatGermanDate(item.dueDate)}</td>
             <td>{item.overdueDays}</td>
             <td>{formatCurrency(toNumber(item.amount))}</td>

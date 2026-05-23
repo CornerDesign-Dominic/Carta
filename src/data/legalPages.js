@@ -5,8 +5,7 @@ export const legalPages = {
       {
         heading: 'Angaben gemäß § 5 DDG',
         paragraphs: [
-          'Dominic Franz, handelnd unter Corner Design',
-          'Kleinunternehmer gemäß § 19 UStG',
+          'Dominic Franz',
           'Erbschlöer Straße 70c',
           '42369 Wuppertal',
           'Deutschland',
@@ -15,10 +14,6 @@ export const legalPages = {
       {
         heading: 'Kontakt',
         paragraphs: ['E-Mail: info@belege24.com'],
-      },
-      {
-        heading: 'Umsatzsteuer-Identifikationsnummer',
-        paragraphs: ['USt-IdNr.: DE460253596'],
       },
       {
         heading: 'Verantwortlich für den Inhalt',
@@ -32,13 +27,13 @@ export const legalPages = {
       {
         heading: '1. Verantwortlicher',
         paragraphs: [
-          'Verantwortlich für die Datenverarbeitung auf dieser Website ist Dominic Franz, handelnd unter Corner Design, Erbschlöer Straße 70c, 42369 Wuppertal, Deutschland, E-Mail: info@belege24.com.',
+          'Verantwortlich für die Datenverarbeitung auf dieser Website ist Dominic Franz, Erbschlöer Straße 70c, 42369 Wuppertal, Deutschland, E-Mail: info@belege24.com.',
         ],
       },
       {
         heading: '2. Allgemeines zur Nutzung von Belege24',
         paragraphs: [
-          'Belege24 ist ein kostenloses und werbefreies Online-Angebot zur Erstellung kaufmännischer Dokumente wie Rechnungen, Angebote und Mahnungen. Die Nutzung ist aktuell ohne Anmeldung möglich. Es gibt derzeit keine Nutzerkonten, keine Zahlungen und kein Premium-Angebot.',
+          'Belege24 ist ein kostenloses, werbefreies Online-Tool zur Erstellung kaufmännischer Dokumente wie Rechnungen, Angebote und Mahnungen.',
           'Erstellte Dokumentdaten werden grundsätzlich nicht dauerhaft gespeichert. Nutzer sind selbst dafür verantwortlich, ihre Dokumente vor der Verwendung zu prüfen.',
         ],
       },
@@ -113,7 +108,7 @@ export const legalPages = {
       {
         heading: '1. Geltungsbereich',
         paragraphs: [
-          'Diese Nutzungsbedingungen gelten für die Nutzung des Online-Angebots Belege24. Belege24 ist ein kostenloses, werbefreies Angebot zur Erstellung kaufmännischer Dokumente im Browser.',
+          'Diese Nutzungsbedingungen gelten für die Nutzung von Belege24. Belege24 ist ein kostenloses, werbefreies Online-Tool zur Erstellung kaufmännischer Dokumente im Browser.',
         ],
       },
       {
@@ -126,7 +121,7 @@ export const legalPages = {
       {
         heading: '3. Kostenfreie Nutzung',
         paragraphs: [
-          'Die Nutzung von Belege24 ist aktuell kostenlos. Es bestehen derzeit keine Nutzerkonten, keine Zahlungen und kein Premium-Angebot.',
+          'Die Nutzung von Belege24 ist kostenlos. Durch die Nutzung entsteht kein Vertrag über kostenpflichtige Leistungen.',
         ],
       },
       {

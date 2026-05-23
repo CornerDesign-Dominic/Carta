@@ -561,6 +561,12 @@ export default function CreditNoteDocumentForm({
               ))}
             </div>
           </div>
+          <button className="invoice-form-panel-toggle invoice-form-panel-close" type="button" aria-expanded="true" onClick={onToggle}>
+            <span className="invoice-form-panel-toggle-label">Formular zuklappen</span>
+            <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
+              -
+            </span>
+          </button>
         </div>
       )}
     </section>
