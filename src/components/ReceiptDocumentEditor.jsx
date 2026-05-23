@@ -969,11 +969,6 @@ export default function ReceiptDocumentEditor() {
             onChange={(value) => updateDetail('receiptId', value)}
           />
           <ReceiptLineField
-            label={labels.amountInNumbers}
-            value={amount.grossAmount}
-            onChange={(value) => updateAmount('grossAmount', value)}
-          />
-          <ReceiptLineField
             label={labels.amountInWords}
             value={amount.amountInWords}
             onChange={(value) => updateAmount('amountInWords', value)}
