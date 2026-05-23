@@ -1245,7 +1245,7 @@ h1 {
   min-height: 559px;
   flex-shrink: 0;
   margin: 0 auto;
-  padding: 28px 36px 22px 42px;
+  padding: 28px 36px 22px 72px;
   background: #ffffff;
   color: #232320;
   border: 1px solid #d6d1c8;
@@ -5333,7 +5333,7 @@ h1 {
     min-height: 148mm;
     max-height: 148mm;
     margin: 0;
-    padding: 7.4mm 9.5mm 5.8mm 11.1mm;
+    padding: 7.4mm 9.5mm 5.8mm 19mm;
     overflow: hidden;
     border: 0;
     box-shadow: none;
