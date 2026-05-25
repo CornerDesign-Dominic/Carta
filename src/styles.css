@@ -2271,8 +2271,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: max-content 24px max-content minmax(0, 1fr) 64px max-content;
-  gap: 4px;
+  grid-template-columns: max-content 20px max-content minmax(0, 1fr) 64px max-content;
+  column-gap: 2px;
 }
 
 .receipt-tax-line .document-label-input {

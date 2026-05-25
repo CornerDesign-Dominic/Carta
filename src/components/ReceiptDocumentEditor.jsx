@@ -18,7 +18,7 @@ const initialReceiptLabels = {
   taxAmount: 'USt.-Betrag',
   grossAmount: 'Brutto Gesamtbetrag',
   amountInNumbers: 'Betrag in Zahlen',
-  amountInWords: 'EUR in Worten',
+  amountInWords: 'Betrag in Worten',
   settlementMethod: 'Zahlungsart',
   from: 'von',
   purpose: 'für',
