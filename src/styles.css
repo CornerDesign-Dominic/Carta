@@ -1247,8 +1247,8 @@ h1 {
   margin: 0 auto;
   padding: 28px 36px 22px 72px;
   background: #ffffff;
-  color: #232320;
-  border: 1px solid #d6d1c8;
+  color: #000000;
+  border: 1px solid #000000;
   box-shadow: 0 20px 54px rgba(35, 35, 32, 0.15);
   break-after: auto;
 }
@@ -1283,6 +1283,13 @@ h1 {
   border-color: rgba(79, 111, 104, 0.42);
   background: #fffefa;
   outline: none;
+}
+
+.receipt-sheet input:focus,
+.receipt-sheet textarea:focus,
+.receipt-sheet select:focus {
+  border-color: #000000;
+  background: transparent;
 }
 
 .offer-sheet.is-export-mode input,
@@ -1330,6 +1337,12 @@ h1 {
   background: rgba(236, 244, 246, 0.62);
   box-shadow: 0 0 0 2px rgba(74, 103, 119, 0.08);
   outline: none;
+}
+
+.receipt-sheet .document-label-input:focus {
+  border-color: #000000;
+  background: transparent;
+  box-shadow: none;
 }
 
 .document-title-label,
@@ -2091,8 +2104,17 @@ h1 {
   flex-direction: column;
   gap: 0;
   overflow: hidden;
+  color: #000000;
   font-size: 8.6pt;
   line-height: 1.28;
+}
+
+.receipt-sheet,
+.receipt-sheet input,
+.receipt-sheet textarea,
+.receipt-sheet select,
+.receipt-sheet .document-label-input {
+  color: #000000;
 }
 
 .receipt-header {
@@ -2110,7 +2132,7 @@ h1 {
   gap: 2px;
   margin-top: 8px;
   min-width: 0;
-  color: #5f5e59;
+  color: #000000;
   font-size: 0.74rem;
   line-height: 1.2;
   text-align: left;
@@ -2131,7 +2153,7 @@ h1 {
 
 .receipt-header-address .editable-group input:first-child {
   min-height: 20px;
-  color: #232320;
+  color: #000000;
   font-size: 0.92rem;
   font-weight: 760;
   line-height: 1.18;
@@ -2176,22 +2198,23 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  box-sizing: border-box;
   min-width: 0;
   min-height: 26px;
   padding: 5px 8px;
-  border-bottom: 1px solid rgba(84, 80, 72, 0.58);
-  color: #4b4943;
+  border-bottom: 1px solid #000000;
+  color: #000000;
 }
 
 .receipt-amount-box label.is-emphasized {
-  background: rgba(246, 245, 241, 0.82);
-  color: #232320;
+  background: transparent;
+  color: #000000;
   font-weight: 760;
 }
 
 .receipt-amount-box .document-label-input {
   flex: 1 1 auto;
-  color: #6b675f;
+  color: #000000;
   font-size: 0.62rem;
   font-weight: 720;
   text-transform: uppercase;
@@ -2212,9 +2235,11 @@ h1 {
   grid-template-columns: minmax(0, 1fr) minmax(54px, 0.62fr);
   gap: 8px;
   align-items: center;
+  box-sizing: border-box;
   width: 100%;
   min-height: 24px;
-  border-bottom: 1px solid rgba(84, 80, 72, 0.58);
+  padding: 5px 8px;
+  border-bottom: 1px solid #000000;
 }
 
 .receipt-tax-row + .receipt-tax-row {
@@ -2224,12 +2249,12 @@ h1 {
 .receipt-tax-lines {
   display: grid;
   gap: 0;
-  padding: 0 8px;
+  padding: 0;
   border-bottom: 0 !important;
 }
 
 .receipt-tax-row.is-summary {
-  background: rgba(246, 245, 241, 0.82);
+  background: transparent;
   font-weight: 760;
 }
 
@@ -2245,22 +2270,27 @@ h1 {
   gap: 12px;
   align-items: end;
   min-width: 0;
-  border-bottom: 1px solid rgba(84, 80, 72, 0.58);
+  min-height: 28px;
+  border-bottom: 1px solid #000000;
 }
 
 .receipt-line-field span {
-  color: #5f5e59;
+  align-self: end;
+  min-height: 22px;
+  padding-bottom: 4px;
+  color: #000000;
   font-size: 0.76rem;
   font-weight: 720;
-  line-height: 1.2;
+  line-height: 1.25;
   text-transform: none;
 }
 
 .receipt-line-field input {
-  min-height: 24px;
+  align-self: end;
+  min-height: 22px;
   border-bottom: 0;
   border-radius: 0;
-  padding: 0 2px 2px !important;
+  padding: 0 2px 4px !important;
   font-size: 0.86rem;
   line-height: 1.25;
   overflow-wrap: anywhere;
@@ -2272,7 +2302,7 @@ h1 {
 }
 
 .receipt-place-date-line span {
-  align-self: center;
+  align-self: end;
 }
 
 .receipt-place-date-line input {
@@ -2296,19 +2326,11 @@ h1 {
 }
 
 .receipt-bottom-field::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 74px;
-  border: 1px solid rgba(195, 188, 176, 0.7);
-  border-radius: 4px;
-  pointer-events: none;
+  content: none;
 }
 
 .receipt-bottom-field .document-label-input {
-  color: #5f5e59;
+  color: #000000;
   font-size: 0.76rem;
   font-weight: 720;
 }
@@ -2351,18 +2373,18 @@ h1 {
 
 .receipt-signature-row label input:not(.document-label-input) {
   min-height: 22px;
-  border-bottom: 1px solid rgba(84, 80, 72, 0.48);
+  border-bottom: 1px solid #000000;
   border-radius: 0;
 }
 
 .receipt-signature-field {
   min-height: 38px;
-  border-bottom: 1px solid rgba(84, 80, 72, 0.55);
+  border-bottom: 1px solid #000000;
 }
 
 .receipt-signature-field .document-label-input {
   align-self: end;
-  color: #6b675f;
+  color: #000000;
   font-size: 0.66rem;
   font-weight: 720;
 }
