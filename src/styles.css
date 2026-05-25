@@ -2238,7 +2238,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   box-sizing: border-box;
   min-width: 0;
   min-height: 26px;
-  padding: 5px 8px;
+  padding: 5px 0;
   border-bottom: 1px solid #cfc9be;
   color: #000000;
 }
@@ -2261,6 +2261,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .receipt-amount-box input:not(.document-label-input) {
   width: 100%;
   min-height: 18px;
+  padding-right: 0;
+  padding-left: 0;
   font-size: 0.82rem;
   font-weight: 720;
   line-height: 1.18;
@@ -2275,10 +2277,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-tax-line .document-label-input {
   min-width: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .receipt-tax-line input:not(.document-label-input) {
   min-width: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 
