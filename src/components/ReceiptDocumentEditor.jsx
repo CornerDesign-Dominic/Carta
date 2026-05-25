@@ -917,33 +917,29 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateAmount('netAmount', event.target.value)}
                 />
               </label>
-              <label className="receipt-tax-lines">
-                <span className="receipt-tax-row">
-                  <input
-                    className="document-label-input"
-                    aria-label={`Beschriftung ${labels.taxRate}`}
-                    value={labels.taxRate}
-                    onChange={(event) => updateLabel('taxRate', event.target.value)}
-                  />
-                  <input
-                    aria-label={labels.taxRate}
-                    value={amount.taxRate}
-                    onChange={(event) => updateAmount('taxRate', event.target.value)}
-                  />
-                </span>
-                <span className="receipt-tax-row is-summary">
-                  <input
-                    className="document-label-input"
-                    aria-label={`Beschriftung ${labels.taxAmount}`}
-                    value={labels.taxAmount}
-                    onChange={(event) => updateLabel('taxAmount', event.target.value)}
-                  />
-                  <input
-                    aria-label={labels.taxAmount}
-                    value={amount.taxAmount}
-                    onChange={(event) => updateAmount('taxAmount', event.target.value)}
-                  />
-                </span>
+              <label className="receipt-tax-line">
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${labels.taxRate}`}
+                  value={labels.taxRate}
+                  onChange={(event) => updateLabel('taxRate', event.target.value)}
+                />
+                <input
+                  aria-label={labels.taxRate}
+                  value={amount.taxRate}
+                  onChange={(event) => updateAmount('taxRate', event.target.value)}
+                />
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${labels.taxAmount}`}
+                  value={labels.taxAmount}
+                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
+                />
+                <input
+                  aria-label={labels.taxAmount}
+                  value={amount.taxAmount}
+                  onChange={(event) => updateAmount('taxAmount', event.target.value)}
+                />
               </label>
               <label className="is-emphasized">
                 <input

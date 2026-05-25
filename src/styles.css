@@ -2221,8 +2221,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-amount-box {
   display: grid;
-  width: 100%;
-  max-width: 292px;
+  justify-self: end;
+  width: 292px;
   gap: 0;
   border: 0;
   border-radius: 0;
@@ -2232,7 +2232,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-amount-box label {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.48fr);
+  grid-template-columns: minmax(0, 1fr) 96px;
   align-items: end;
   gap: 10px;
   box-sizing: border-box;
@@ -2268,33 +2268,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   overflow-wrap: anywhere;
 }
 
-.receipt-tax-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.48fr);
-  gap: 10px;
-  align-items: end;
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 26px;
-  padding: 5px 8px;
-  border-bottom: 1px solid #cfc9be;
+.receipt-amount-box .receipt-tax-line {
+  grid-template-columns: minmax(58px, 0.9fr) minmax(38px, 0.5fr) minmax(74px, 1fr) minmax(76px, 0.85fr);
+  gap: 8px;
 }
 
-.receipt-tax-row + .receipt-tax-row {
-  margin-top: 0;
+.receipt-tax-line .document-label-input {
+  min-width: 0;
 }
 
-.receipt-tax-lines {
-  display: grid;
-  gap: 0;
-  padding: 0;
-  border-bottom: 0 !important;
+.receipt-tax-line input:not(.document-label-input) {
+  min-width: 0;
 }
 
-.receipt-tax-row.is-summary {
-  background: transparent;
-  font-weight: 760;
-}
 
 .receipt-lines {
   display: grid;
