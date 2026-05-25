@@ -2271,7 +2271,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: minmax(58px, max-content) 32px max-content minmax(72px, 1fr) 64px max-content;
+  grid-template-columns: max-content 24px max-content minmax(0, 1fr) 64px max-content;
   gap: 4px;
 }
 
@@ -2285,6 +2285,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-width: 0;
   padding-right: 0;
   padding-left: 0;
+}
+
+.receipt-tax-line input:nth-child(2) {
+  text-align: left;
 }
 
 .receipt-amount-unit {
