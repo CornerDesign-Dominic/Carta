@@ -2150,7 +2150,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-header {
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(220px, 292px);
+  grid-template-columns: minmax(0, 1fr) 50%;
   gap: 18px;
   align-items: start;
   margin-bottom: 12px;
@@ -2222,7 +2222,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .receipt-amount-box {
   display: grid;
   justify-self: end;
-  width: 292px;
+  width: 100%;
   gap: 0;
   border: 0;
   border-radius: 0;
@@ -2232,9 +2232,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-amount-box label {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 96px;
+  grid-template-columns: minmax(0, 1fr) 84px max-content;
   align-items: end;
-  gap: 10px;
+  gap: 4px;
   box-sizing: border-box;
   min-width: 0;
   min-height: 26px;
@@ -2271,8 +2271,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: minmax(58px, 0.9fr) minmax(38px, 0.5fr) minmax(74px, 1fr) minmax(76px, 0.85fr);
-  gap: 8px;
+  grid-template-columns: minmax(58px, max-content) 32px max-content minmax(72px, 1fr) 64px max-content;
+  gap: 4px;
 }
 
 .receipt-tax-line .document-label-input {
@@ -2285,6 +2285,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-width: 0;
   padding-right: 0;
   padding-left: 0;
+}
+
+.receipt-amount-unit {
+  min-width: 8px;
+  font-size: 0.82rem;
+  font-weight: 720;
+  line-height: 1.18;
+  text-align: right;
 }
 
 

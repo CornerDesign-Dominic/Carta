@@ -916,6 +916,9 @@ export default function ReceiptDocumentEditor() {
                   value={amount.netAmount}
                   onChange={(event) => updateAmount('netAmount', event.target.value)}
                 />
+                <span className="receipt-amount-unit" aria-hidden="true">
+                  {'\u20ac'}
+                </span>
               </label>
               <label className="receipt-tax-line">
                 <input
@@ -929,6 +932,9 @@ export default function ReceiptDocumentEditor() {
                   value={amount.taxRate}
                   onChange={(event) => updateAmount('taxRate', event.target.value)}
                 />
+                <span className="receipt-amount-unit" aria-hidden="true">
+                  %
+                </span>
                 <input
                   className="document-label-input"
                   aria-label={`Beschriftung ${labels.taxAmount}`}
@@ -940,6 +946,9 @@ export default function ReceiptDocumentEditor() {
                   value={amount.taxAmount}
                   onChange={(event) => updateAmount('taxAmount', event.target.value)}
                 />
+                <span className="receipt-amount-unit" aria-hidden="true">
+                  {'\u20ac'}
+                </span>
               </label>
               <label className="is-emphasized">
                 <input
@@ -953,6 +962,9 @@ export default function ReceiptDocumentEditor() {
                   value={amount.grossAmount}
                   onChange={(event) => updateAmount('grossAmount', event.target.value)}
                 />
+                <span className="receipt-amount-unit" aria-hidden="true">
+                  {'\u20ac'}
+                </span>
               </label>
             </section>
           </div>
