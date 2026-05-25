@@ -8,7 +8,7 @@ const receiptSchemaVersion = '1.0';
 
 const initialReceiptLabels = {
   title: 'Quittung',
-  receiptId: 'Quittungskennung',
+  receiptId: 'Quittungsnummer',
   receiptDate: 'Belegdatum',
   paymentDate: 'Zahlungsdatum',
   internalReference: 'Interne Referenz',
@@ -526,12 +526,17 @@ function ReceiptHeaderAddress({
   );
 }
 
-function ReceiptLineField({ label, value, onChange, valueClassName = '' }) {
+function ReceiptLineField({ label, onLabelChange, value, onChange, valueClassName = '' }) {
   return (
     <label className="receipt-line-field">
-      <span>{label}</span>
       <input
-        className={valueClassName}
+        className="document-label-input receipt-line-label"
+        aria-label={`Beschriftung ${label}`}
+        value={label}
+        onChange={(event) => onLabelChange(event.target.value)}
+      />
+      <input
+        className={['receipt-line-value', valueClassName].filter(Boolean).join(' ')}
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -972,28 +977,38 @@ export default function ReceiptDocumentEditor() {
 
         <section className="receipt-lines" aria-label="Quittungsangaben">
           <ReceiptLineField
-            label="Quittungsnummer"
+            label={labels.receiptId}
+            onLabelChange={(value) => updateLabel('receiptId', value)}
             value={details.receiptId}
             onChange={(value) => updateDetail('receiptId', value)}
           />
           <ReceiptLineField
             label={labels.amountInWords}
+            onLabelChange={(value) => updateLabel('amountInWords', value)}
             value={amount.amountInWords}
             onChange={(value) => updateAmount('amountInWords', value)}
           />
           <ReceiptLineField
             label={labels.from}
+            onLabelChange={(value) => updateLabel('from', value)}
             value={details.from}
             onChange={(value) => updateDetail('from', value)}
           />
           <ReceiptLineField
             label={labels.purpose}
+            onLabelChange={(value) => updateLabel('purpose', value)}
             value={details.purpose}
             onChange={(value) => updateDetail('purpose', value)}
           />
           <label className="receipt-line-field receipt-place-date-line">
-            <span>{labels.placeDate}</span>
             <input
+              className="document-label-input receipt-line-label"
+              aria-label={`Beschriftung ${labels.placeDate}`}
+              value={labels.placeDate}
+              onChange={(event) => updateLabel('placeDate', event.target.value)}
+            />
+            <input
+              className="receipt-line-value"
               aria-label={labels.placeDate}
               value={joinPlaceDate(details.place, details.receiptDate)}
               onChange={(event) => {
