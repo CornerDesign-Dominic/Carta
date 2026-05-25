@@ -1,4 +1,5 @@
 import { documentSections } from '../data/documents.js';
+import { trackAnalyticsEvent } from '../utils/analytics.js';
 
 function isPlainLeftClick(event) {
   return (
@@ -12,12 +13,19 @@ function isPlainLeftClick(event) {
 }
 
 export default function DocumentSidebar({ activeId, activeParentId, onSelect }) {
-  function handleNavigationClick(event, targetId) {
+  function handleNavigationClick(event, targetId, generatorLabel) {
     if (!isPlainLeftClick(event)) {
       return;
     }
 
     event.preventDefault();
+    if (targetId !== 'overview') {
+      trackAnalyticsEvent('generator_select', {
+        generator_id: targetId,
+        generator_label: generatorLabel,
+        source: 'sidebar',
+      });
+    }
     onSelect(targetId);
   }
 
@@ -26,7 +34,7 @@ export default function DocumentSidebar({ activeId, activeParentId, onSelect }) 
       <a
         className={activeId === 'overview' ? 'sidebar-title is-active' : 'sidebar-title'}
         href="/dokumente"
-        onClick={(event) => handleNavigationClick(event, 'overview')}
+        onClick={(event) => handleNavigationClick(event, 'overview', 'Dokumente')}
       >
         Dokumente
       </a>
@@ -42,7 +50,7 @@ export default function DocumentSidebar({ activeId, activeParentId, onSelect }) 
               <a
                 className={isActive ? 'is-active' : undefined}
                 href={targetPath}
-                onClick={(event) => handleNavigationClick(event, targetId)}
+                onClick={(event) => handleNavigationClick(event, targetId, item.label)}
               >
                 {item.label}
               </a>

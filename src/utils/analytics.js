@@ -50,3 +50,11 @@ export function syncAnalyticsConsent(enabled) {
   });
   window[GA_INIT_FLAG] = true;
 }
+
+export function trackAnalyticsEvent(eventName, params = {}) {
+  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+    return;
+  }
+
+  window.gtag('event', eventName, params);
+}
