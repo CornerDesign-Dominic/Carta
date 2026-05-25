@@ -311,4 +311,3 @@ export function findDocumentItem(activeId) {
 
   return { item: documentSections[0], parentId: documentSections[0].id };
 }
-
