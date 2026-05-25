@@ -1288,8 +1288,8 @@ h1 {
 .receipt-sheet input:focus,
 .receipt-sheet textarea:focus,
 .receipt-sheet select:focus {
-  border-color: #000000;
-  background: transparent;
+  border-color: rgba(79, 111, 104, 0.42);
+  background: #fffefa;
 }
 
 .offer-sheet.is-export-mode input,
@@ -1340,9 +1340,9 @@ h1 {
 }
 
 .receipt-sheet .document-label-input:focus {
-  border-color: #000000;
-  background: transparent;
-  box-shadow: none;
+  border-color: rgba(74, 103, 119, 0.32);
+  background: rgba(236, 244, 246, 0.62);
+  box-shadow: 0 0 0 2px rgba(74, 103, 119, 0.08);
 }
 
 .receipt-sheet.is-highlight-mode input,
@@ -2150,8 +2150,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
-  gap: 24px;
+  grid-template-columns: minmax(300px, 1fr) minmax(220px, 292px);
+  gap: 18px;
   align-items: start;
   margin-bottom: 12px;
 }
@@ -2225,15 +2225,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.48fr);
+  align-items: end;
   gap: 10px;
   box-sizing: border-box;
   min-width: 0;
   min-height: 26px;
   padding: 5px 8px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #cfc9be;
   color: #000000;
 }
 
@@ -2244,15 +2244,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .document-label-input {
-  flex: 1 1 auto;
+  width: 100%;
   color: #000000;
   font-size: 0.62rem;
   font-weight: 720;
+  text-align: left;
   text-transform: uppercase;
 }
 
 .receipt-amount-box input:not(.document-label-input) {
-  flex: 0 1 96px;
+  width: 100%;
   min-height: 18px;
   font-size: 0.82rem;
   font-weight: 720;
@@ -2263,14 +2264,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-tax-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(54px, 0.62fr);
-  gap: 8px;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.48fr);
+  gap: 10px;
+  align-items: end;
   box-sizing: border-box;
   width: 100%;
-  min-height: 24px;
+  min-height: 26px;
   padding: 5px 8px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #cfc9be;
 }
 
 .receipt-tax-row + .receipt-tax-row {
@@ -2302,7 +2303,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   align-items: end;
   min-width: 0;
   min-height: 28px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #cfc9be;
 }
 
 .receipt-line-field span {
@@ -2404,13 +2405,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-signature-row label input:not(.document-label-input) {
   min-height: 22px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #cfc9be;
   border-radius: 0;
 }
 
 .receipt-signature-field {
   min-height: 38px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #cfc9be;
 }
 
 .receipt-signature-field .document-label-input {
