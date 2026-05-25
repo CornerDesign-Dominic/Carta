@@ -17,7 +17,7 @@ const foundationFacts = [
   'Kostenlos nutzbar',
   'Keine Anmeldung erforderlich',
   'Keine Werbung',
-  'Keine Speicherung der eingegebenen Daten',
+  'Keine Speicherung eingegebener Daten',
   'Direkt im Browser ausfüllen',
   'Als PDF speichern oder drucken',
 ];
@@ -52,14 +52,14 @@ export default function HomeView({ onNavigate }) {
       <section className="foundation-section" id="basis">
         <div>
           <p className="section-kicker">Klare Dokumente</p>
-          <h2>Einfach Dokumente erstellen.</h2>
+          <h2>Einfach nutzen, direkt erstellen.</h2>
         </div>
         <div className="foundation-content">
           <p>
-            Belege24 kann kostenlos genutzt werden. Es ist keine Anmeldung erforderlich
-            und es werden keine eingegebenen Daten gespeichert. Die Dokumente werden
-            direkt im Browser erstellt und können anschließend als PDF gespeichert oder
-            gedruckt werden.
+            Belege24 funktioniert direkt im Browser. Es ist keine Anmeldung erforderlich,
+            es wird keine Werbung angezeigt und eingegebene Daten werden nicht gespeichert.
+            Wenn das Dokument fertig ist, kann es als PDF gespeichert oder gedruckt
+            werden.
           </p>
           <ul className="foundation-facts" aria-label="Eigenschaften von Belege24">
             {foundationFacts.map((fact) => (

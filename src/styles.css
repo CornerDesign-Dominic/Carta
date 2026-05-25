@@ -548,17 +548,21 @@ h1 {
 
 .foundation-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: clamp(32px, 6vw, 74px);
-  padding-top: 30px;
-  border-top: 1px solid rgba(199, 186, 168, 0.68);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: start;
+  padding: clamp(24px, 4vw, 34px);
+  border: 1px solid rgba(216, 208, 196, 0.82);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.9), rgba(248, 248, 245, 0.86));
+  box-shadow: 0 14px 34px rgba(31, 38, 37, 0.04);
 }
 
 .foundation-section h2 {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: var(--ink);
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.16;
+  font-size: clamp(1.38rem, 2.6vw, 1.86rem);
+  line-height: 1.18;
   letter-spacing: 0;
 }
 
@@ -568,13 +572,13 @@ h1 {
 
 .foundation-content {
   display: grid;
-  gap: 20px;
+  gap: 18px;
   min-width: 0;
 }
 
 .foundation-facts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
   padding: 0;
@@ -583,12 +587,12 @@ h1 {
 
 .foundation-facts li {
   min-width: 0;
-  padding: 10px 12px;
+  padding: 9px 10px;
   border: 1px solid rgba(216, 208, 196, 0.76);
   border-radius: 5px;
   background: rgba(255, 253, 249, 0.72);
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.35;
 }
 
@@ -5670,6 +5674,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
   .foundation-section {
     gap: 18px;
+    padding: 20px 16px;
+  }
+
+  .foundation-facts {
+    grid-template-columns: 1fr;
   }
 
   .invoice-summary {
