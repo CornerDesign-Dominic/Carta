@@ -1345,6 +1345,37 @@ h1 {
   box-shadow: none;
 }
 
+.receipt-sheet.is-highlight-mode input,
+.receipt-sheet.is-highlight-mode textarea,
+.receipt-sheet.is-highlight-mode select {
+  border-color: rgba(74, 103, 119, 0.28);
+  background: rgba(236, 244, 246, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+}
+
+.receipt-sheet.is-highlight-mode input:focus,
+.receipt-sheet.is-highlight-mode textarea:focus,
+.receipt-sheet.is-highlight-mode select:focus,
+.receipt-sheet.is-highlight-mode .document-label-input:focus {
+  border-color: rgba(74, 103, 119, 0.48);
+  background: #f7fbfb;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+}
+
+.receipt-sheet.is-export-mode input,
+.receipt-sheet.is-export-mode textarea,
+.receipt-sheet.is-export-mode select,
+.receipt-sheet.is-export-mode .document-label-input,
+body.document-print-mode.receipt-print-mode .receipt-sheet input,
+body.document-print-mode.receipt-print-mode .receipt-sheet textarea,
+body.document-print-mode.receipt-print-mode .receipt-sheet select,
+body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
 .document-title-label,
 .offer-sheet .document-title-label {
   width: min(100%, 320px);
