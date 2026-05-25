@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import CreditNoteDocumentEditor from '../components/CreditNoteDocumentEditor.jsx';
 import DeliveryNoteDocumentEditor from '../components/DeliveryNoteDocumentEditor.jsx';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
-import FeedbackWidget from '../components/FeedbackWidget.jsx';
 import InvoiceDocumentEditor from '../components/InvoiceDocumentEditor.jsx';
 import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
 import ReceiptDocumentEditor from '../components/ReceiptDocumentEditor.jsx';
@@ -140,7 +139,7 @@ function DocumentOverview({ onSelect }) {
   );
 }
 
-export default function DocumentsView({ initialDocumentId = 'overview', onNavigate }) {
+export default function DocumentsView({ initialDocumentId = 'overview' }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
@@ -197,10 +196,6 @@ export default function DocumentsView({ initialDocumentId = 'overview', onNaviga
           </>
         )}
       </section>
-
-      {!isOverview && activeDocument?.formType && (
-        <FeedbackWidget documentType={activeDocument.formType} onNavigate={onNavigate} />
-      )}
     </main>
   );
 }

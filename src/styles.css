@@ -2271,23 +2271,43 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: max-content 20px max-content minmax(0, 1fr) 64px max-content;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 8px;
+}
+
+.receipt-tax-rate-group,
+.receipt-tax-amount-group {
+  display: grid;
+  align-items: end;
+  min-width: 0;
+}
+
+.receipt-tax-rate-group {
+  grid-template-columns: max-content 18px max-content;
   column-gap: 2px;
 }
 
+.receipt-tax-amount-group {
+  justify-self: end;
+  grid-template-columns: max-content 64px max-content;
+  column-gap: 4px;
+}
+
 .receipt-tax-line .document-label-input {
+  width: auto;
   min-width: 0;
   padding-right: 0;
   padding-left: 0;
 }
 
 .receipt-tax-line input:not(.document-label-input) {
+  width: 100%;
   min-width: 0;
   padding-right: 0;
   padding-left: 0;
 }
 
-.receipt-tax-line input:nth-child(2) {
+.receipt-tax-rate-group input:not(.document-label-input) {
   text-align: left;
 }
 

@@ -926,33 +926,37 @@ export default function ReceiptDocumentEditor() {
                 </span>
               </label>
               <label className="receipt-tax-line">
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${labels.taxRate}`}
-                  value={labels.taxRate}
-                  onChange={(event) => updateLabel('taxRate', event.target.value)}
-                />
-                <input
-                  aria-label={labels.taxRate}
-                  value={amount.taxRate}
-                  onChange={(event) => updateAmount('taxRate', event.target.value)}
-                />
-                <span className="receipt-amount-unit" aria-hidden="true">
-                  %
+                <span className="receipt-tax-rate-group">
+                  <input
+                    className="document-label-input"
+                    aria-label={`Beschriftung ${labels.taxRate}`}
+                    value={labels.taxRate}
+                    onChange={(event) => updateLabel('taxRate', event.target.value)}
+                  />
+                  <input
+                    aria-label={labels.taxRate}
+                    value={amount.taxRate}
+                    onChange={(event) => updateAmount('taxRate', event.target.value)}
+                  />
+                  <span className="receipt-amount-unit" aria-hidden="true">
+                    %
+                  </span>
                 </span>
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${labels.taxAmount}`}
-                  value={labels.taxAmount}
-                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
-                />
-                <input
-                  aria-label={labels.taxAmount}
-                  value={amount.taxAmount}
-                  onChange={(event) => updateAmount('taxAmount', event.target.value)}
-                />
-                <span className="receipt-amount-unit" aria-hidden="true">
-                  {'\u20ac'}
+                <span className="receipt-tax-amount-group">
+                  <input
+                    className="document-label-input"
+                    aria-label={`Beschriftung ${labels.taxAmount}`}
+                    value={labels.taxAmount}
+                    onChange={(event) => updateLabel('taxAmount', event.target.value)}
+                  />
+                  <input
+                    aria-label={labels.taxAmount}
+                    value={amount.taxAmount}
+                    onChange={(event) => updateAmount('taxAmount', event.target.value)}
+                  />
+                  <span className="receipt-amount-unit" aria-hidden="true">
+                    {'\u20ac'}
+                  </span>
                 </span>
               </label>
               <label className="is-emphasized">
