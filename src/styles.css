@@ -546,56 +546,6 @@ h1 {
   font-size: 0.96rem;
 }
 
-.workflow-section {
-  display: grid;
-  gap: 24px;
-  margin-bottom: clamp(38px, 5vw, 58px);
-}
-
-.workflow-section h2 {
-  margin: 10px 0 0;
-  color: var(--navy);
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.16;
-}
-
-.workflow-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.workflow-card {
-  min-height: 176px;
-  padding: 20px;
-  border: 1px solid rgba(216, 208, 196, 0.9);
-  border-radius: 8px;
-  background: rgba(255, 253, 249, 0.84);
-}
-
-.workflow-card span {
-  display: block;
-  margin-bottom: 18px;
-  color: var(--accent);
-  font-size: 0.74rem;
-  font-weight: 780;
-  letter-spacing: 0.12em;
-}
-
-.workflow-card h3 {
-  margin: 0 0 10px;
-  color: var(--accent-deep);
-  font-size: 1rem;
-  line-height: 1.3;
-}
-
-.workflow-card p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.6;
-}
-
 .foundation-section {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -614,6 +564,32 @@ h1 {
 
 .foundation-section p {
   margin-bottom: 0;
+}
+
+.foundation-content {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.foundation-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.foundation-facts li {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(216, 208, 196, 0.76);
+  border-radius: 5px;
+  background: rgba(255, 253, 249, 0.72);
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.35;
 }
 
 .documents-layout {
@@ -5616,8 +5592,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   }
 
   .feature-grid,
-  .workflow-grid,
   .foundation-section,
+  .foundation-facts,
   .document-usage-grid,
   .document-actions-list,
   .document-overview-grid,

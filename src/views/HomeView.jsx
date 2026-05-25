@@ -13,23 +13,13 @@ const homeDocumentTypes = [
   },
 ];
 
-const workflowSteps = [
-  {
-    title: 'Formular ausfüllen',
-    text: 'Erfasse Absender, Empfänger, Dokumentdaten, Positionen und Fußdaten übersichtlich im Formular.',
-  },
-  {
-    title: 'Dokument prüfen',
-    text: 'Sieh das fertige A4-Dokument direkt darunter und passe Texte oder Angaben bei Bedarf im Dokument an.',
-  },
-  {
-    title: 'PDF erstellen oder drucken',
-    text: 'Speichere das Ergebnis als PDF oder öffne den Druckdialog für eine saubere Ausgabe.',
-  },
-  {
-    title: 'Vorlage wiederverwenden',
-    text: 'Speichere deine Daten als JSON-Vorlage und lade sie für ähnliche Dokumente erneut.',
-  },
+const foundationFacts = [
+  'Kostenlos nutzbar',
+  'Keine Anmeldung erforderlich',
+  'Keine Werbung',
+  'Keine Speicherung der eingegebenen Daten',
+  'Direkt im Browser ausfüllen',
+  'Als PDF speichern oder drucken',
 ];
 
 export default function HomeView({ onNavigate }) {
@@ -59,32 +49,24 @@ export default function HomeView({ onNavigate }) {
         ))}
       </section>
 
-      <section className="workflow-section" aria-labelledby="workflow-title">
-        <div>
-          <p className="section-kicker">So funktioniert Belege24</p>
-          <h2 id="workflow-title">Vom Formular zum fertigen Beleg.</h2>
-        </div>
-        <div className="workflow-grid">
-          {workflowSteps.map((step, index) => (
-            <article className="workflow-card" key={step.title}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="foundation-section" id="basis">
         <div>
           <p className="section-kicker">Klare Dokumente</p>
-          <h2>Für klare Belege ohne unnötige Komplexität.</h2>
+          <h2>Einfach Dokumente erstellen.</h2>
         </div>
-        <p>
-          Belege24 konzentriert sich auf sauber aufgebaute Geschäftsdokumente statt auf
-          überladene Buchhaltungssoftware. Du füllst aus, prüfst und gibst deine Belege
-          direkt weiter.
-        </p>
+        <div className="foundation-content">
+          <p>
+            Belege24 kann kostenlos genutzt werden. Es ist keine Anmeldung erforderlich
+            und es werden keine eingegebenen Daten gespeichert. Die Dokumente werden
+            direkt im Browser erstellt und können anschließend als PDF gespeichert oder
+            gedruckt werden.
+          </p>
+          <ul className="foundation-facts" aria-label="Eigenschaften von Belege24">
+            {foundationFacts.map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
+          </ul>
+        </div>
       </section>
     </main>
   );
