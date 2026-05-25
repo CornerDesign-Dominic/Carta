@@ -2344,7 +2344,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-place-date-line {
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.64fr);
+  grid-template-columns: 118px minmax(0, 1fr);
   margin-top: 2px;
 }
 
