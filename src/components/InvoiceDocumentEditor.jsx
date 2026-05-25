@@ -56,7 +56,7 @@ const invoiceMetaFields = [
 ];
 
 const invoiceRecipientOptionalFields = [
-  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'attention', label: 'Zusatz / zu Händen' },
   { field: 'name', label: 'Name / Abteilung' },
 ];
 
@@ -172,14 +172,14 @@ const defaultInvoiceTextBlocks = [
   {
     id: 'intro',
     label: 'Vorlauftext',
-    value: 'vielen Dank fuer Ihren Auftrag. Fuer unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
+    value: 'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
     visible: true,
   },
   {
     id: 'closing',
     label: 'Nachlauftext',
     value:
-      'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank fuer die angenehme Zusammenarbeit.',
+      'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.',
     visible: true,
   },
 ];

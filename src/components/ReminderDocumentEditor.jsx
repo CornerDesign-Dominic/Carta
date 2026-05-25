@@ -54,7 +54,7 @@ const reminderMetaFields = [
 ];
 
 const reminderRecipientOptionalFields = [
-  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'attention', label: 'Zusatz / zu Händen' },
   { field: 'name', label: 'Name / Abteilung' },
 ];
 
@@ -152,14 +152,14 @@ const defaultReminderTextBlocks = [
     id: 'intro',
     label: 'Vorlauftext',
     value:
-      'bei der Durchsicht unserer Unterlagen haben wir festgestellt, dass die unten aufgefuehrte Rechnung noch nicht ausgeglichen wurde. Bitte ueberweisen Sie den offenen Betrag innerhalb von 7 Tagen nach Erhalt dieser Mahnung.',
+      'bei der Durchsicht unserer Unterlagen haben wir festgestellt, dass die unten aufgeführte Rechnung noch nicht ausgeglichen wurde. Bitte überweisen Sie den offenen Betrag innerhalb von 7 Tagen nach Erhalt dieser Mahnung.',
     visible: true,
   },
   {
     id: 'closing',
     label: 'Nachlauftext',
     value:
-      'Sollten Sie die Zahlung bereits veranlasst haben, betrachten Sie dieses Schreiben bitte als gegenstandslos. Vielen Dank fuer Ihre zeitnahe Rueckmeldung.',
+      'Sollten Sie die Zahlung bereits veranlasst haben, betrachten Sie dieses Schreiben bitte als gegenstandslos. Vielen Dank für Ihre zeitnahe Rückmeldung.',
     visible: true,
   },
 ];

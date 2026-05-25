@@ -11,7 +11,7 @@ export default function RecipientBlock({
   const isAttentionHidden = hiddenFields.includes('attention');
   const isNameHidden = hiddenFields.includes('name');
   const hiddenOptionalFields = [
-    { field: 'attention', hidden: isAttentionHidden, label: 'Zusatz / zu Haenden' },
+    { field: 'attention', hidden: isAttentionHidden, label: 'Zusatz / zu Händen' },
     { field: 'name', hidden: isNameHidden, label: 'Name / Abteilung' },
   ].filter(({ hidden }) => hidden);
 
@@ -19,17 +19,17 @@ export default function RecipientBlock({
     <div className="invoice-recipient-fields">
       <input
         className="invoice-sender-line"
-        aria-label="Absenderzeile ueber Empfaengeradresse"
+        aria-label="Absenderzeile über Empfängeradresse"
         value={senderLine}
         onChange={(event) => onSenderLineChange(event.target.value)}
       />
       <input
-        aria-label="Empfaenger Firma"
+        aria-label="Empfänger Firma"
         value={recipient.company}
         onChange={(event) => onRecipientChange('company', event.target.value)}
       />
       {onToggleField && hiddenOptionalFields.length > 0 && (
-        <span className="invoice-field-actions invoice-recipient-hidden-actions" aria-label="Ausgeblendete Empfaengerfelder">
+        <span className="invoice-field-actions invoice-recipient-hidden-actions" aria-label="Ausgeblendete Empfängerfelder">
           {hiddenOptionalFields.map(({ field, label }) => (
             <button
               key={field}
@@ -45,7 +45,7 @@ export default function RecipientBlock({
       )}
       {!onToggleField && (
         <input
-          aria-label="Empfaenger Zusatz oder z. Hd."
+          aria-label="Empfänger Zusatz oder z. Hd."
           value={recipient.attention}
           onChange={(event) => onRecipientChange('attention', event.target.value)}
         />
@@ -53,11 +53,11 @@ export default function RecipientBlock({
       {onToggleField && !isAttentionHidden && (
         <div className="invoice-config-row invoice-recipient-config-row">
           <input
-            aria-label="Empfaenger Zusatz oder z. Hd."
+            aria-label="Empfänger Zusatz oder z. Hd."
             value={recipient.attention}
             onChange={(event) => onRecipientChange('attention', event.target.value)}
           />
-          <FieldActions label="Zusatz / zu Haenden" onToggle={() => onToggleField('attention')} />
+          <FieldActions label="Zusatz / zu Händen" onToggle={() => onToggleField('attention')} />
         </div>
       )}
       {!onToggleField && (
@@ -78,12 +78,12 @@ export default function RecipientBlock({
         </div>
       )}
       <input
-        aria-label="Empfaenger Strasse und Hausnummer"
+        aria-label="Empfänger Strasse und Hausnummer"
         value={recipient.street}
         onChange={(event) => onRecipientChange('street', event.target.value)}
       />
       <input
-        aria-label="Empfaenger PLZ und Stadt"
+        aria-label="Empfänger PLZ und Stadt"
         value={recipient.cityLine}
         onChange={(event) => onRecipientChange('cityLine', event.target.value)}
       />

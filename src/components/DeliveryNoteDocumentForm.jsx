@@ -39,9 +39,9 @@ const deliveryNoteFormDefaults = {
     customerReference: 'K-2048',
   },
   textBlocks: {
-    intro: 'gemaess Ihrer Bestellung liefern wir Ihnen die folgenden Positionen:',
+    intro: 'gemäß Ihrer Bestellung liefern wir Ihnen die folgenden Positionen:',
     closing:
-      'Bitte pruefen Sie die Lieferung nach Erhalt. Bei Rueckfragen oder Abweichungen freuen wir uns ueber Ihre kurze Nachricht.',
+      'Bitte prüfen Sie die Lieferung nach Erhalt. Bei Rückfragen oder Abweichungen freuen wir uns über Ihre kurze Nachricht.',
   },
   position: {
     quantity: '1',
@@ -63,7 +63,7 @@ const deliveryNoteFormDefaults = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -303,7 +303,7 @@ export default function DeliveryNoteDocumentForm({
     <section className="invoice-form-panel" aria-label="Lieferscheinformular">
       <button className="invoice-form-panel-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>
         <span className="invoice-form-panel-toggle-label">
-          {isOpen ? 'Formular schliessen' : 'Formular (optional) ausfuellen'}
+          {isOpen ? 'Formular schließen' : 'Formular (optional) ausfüllen'}
         </span>
         <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
           {isOpen ? '-' : '+'}
@@ -326,10 +326,10 @@ export default function DeliveryNoteDocumentForm({
             </div>
 
             <div className="invoice-panel-section">
-              <h3>Empfaenger</h3>
+              <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.companyName} onChange={(value) => updateRecipient('company', value)} />
-                <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Zusatz / zu Haenden" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
+                <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
                 <DeliveryNotePanelInput label="Strasse" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
                 <DeliveryNotePanelInput label="Hausnummer" name="recipient-house-code" value={recipient.address.houseNumber} onChange={(value) => updateRecipient('address', { ...recipient.address, houseNumber: value })} />
@@ -388,7 +388,7 @@ export default function DeliveryNoteDocumentForm({
                   <DeliveryNotePanelInput label="Einheit" name={`position-${index + 1}-unit`} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
                   <DeliveryNotePanelTextarea label="Beschreibung" name={`position-${index + 1}-description`} placeholder={deliveryNoteFormDefaults.position.description} value={position.description} onChange={(value) => updatePosition(position.id, 'description', value)} />
                   <div className="invoice-panel-position-actions">
-                    <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} loeschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
+                    <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
                       x
                     </button>
                     <button className="invoice-panel-move" type="button" aria-label={`Position ${index + 1} nach oben verschieben`} disabled={index === 0} onClick={() => movePosition(position.id, -1)}>
@@ -402,12 +402,12 @@ export default function DeliveryNoteDocumentForm({
               ))}
             </div>
             <button className="invoice-panel-add" type="button" onClick={addPosition}>
-              + Position hinzufuegen
+              + Position hinzufügen
             </button>
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
-            <h3>Fussdaten</h3>
+            <h3>Fußdaten</h3>
             <div className="offer-footer-form-columns">
               {[
                 {
@@ -427,7 +427,7 @@ export default function DeliveryNoteDocumentForm({
                     ['vatId', 'USt-IdNr.'],
                     ['taxNumber', 'Steuernummer'],
                     ['commercialRegister', 'Handelsregister'],
-                    ['managingDirector', 'Geschaeftsfuehrer'],
+                    ['managingDirector', 'Geschäftsführer'],
                   ],
                 },
                 {

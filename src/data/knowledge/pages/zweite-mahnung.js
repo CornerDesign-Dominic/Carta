@@ -4,19 +4,19 @@ const zweiteMahnung = {
   slug: "zweite-mahnung",
   category: "Mahnwesen",
   title: "2. Mahnung",
-  description: "Die zweite Mahnung erhoeht den Nachdruck bei weiterhin offener Zahlung.",
+  description: "Die zweite Mahnung erhöht den Nachdruck bei weiterhin offener Zahlung.",
   seo: {
-    title: "2. Mahnung einfach erklaert | Carta",
-    description: "Die zweite Mahnung erhoeht den Nachdruck bei weiterhin offener Zahlung.",
+    title: "2. Mahnung einfach erklärt | Carta",
+    description: "Die zweite Mahnung erhöht den Nachdruck bei weiterhin offener Zahlung.",
     canonicalPath: "/wissen/zweite-mahnung",
   },
   article: {
-    intro: "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf moegliche Folgen.",
+    intro: "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf mögliche Folgen.",
     sections: [
       {
         heading: "Was ist 2. Mahnung?",
         paragraphs: [
-          "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf moegliche Folgen.",
+          "Die 2. Mahnung wird versendet, wenn nach einer vorherigen Erinnerung oder Mahnung weiterhin keine Zahlung eingegangen ist. Sie ist deutlicher formuliert und verweist meist auf mögliche Folgen.",
         ],
       },
       {
@@ -41,7 +41,7 @@ const zweiteMahnung = {
       {
         heading: "Worauf sollte man achten?",
         paragraphs: [
-          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+          "Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.",
         ],
         list: [
           "kein Bezug zur vorherigen Mahnung",
@@ -55,7 +55,7 @@ const zweiteMahnung = {
   generator: {
     label: "Mahnung erstellen",
     href: "/dokumente",
-    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.",
+    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und übersichtlich zu erstellen.",
   },
   keyPoints: [
     "Bezug auf vorherige Mahnung",
@@ -81,7 +81,7 @@ const zweiteMahnung = {
     },
     {
       question: "Welche Folgen kann man ankündigen?",
-      answer: "Je nach Fall koennen weitere Mahnschritte, Verzugszinsen oder ein gerichtliches Mahnverfahren angekuendigt werden.",
+      answer: "Je nach Fall können weitere Mahnschritte, Verzugszinsen oder ein gerichtliches Mahnverfahren angekündigt werden.",
     },
   ],
   related: [

@@ -6,10 +6,10 @@ export default function KnowledgeLanding({ onSelect }) {
   return (
     <>
       <p className="eyebrow">WISSEN</p>
-      <h1 id="knowledge-title">Geschaeftliche Dokumente besser verstehen</h1>
+      <h1 id="knowledge-title">Geschäftliche Dokumente besser verstehen</h1>
       <p className="intro document-intro">
-        Der Wissensbereich erklaert zentrale Belege und Mahntexte. Die Inhalte
-        sind praktisch aufgebaut und fuehren bei Bedarf direkt zum passenden
+        Der Wissensbereich erklärt zentrale Belege und Mahntexte. Die Inhalte
+        sind praktisch aufgebaut und führen bei Bedarf direkt zum passenden
         Generator oder Tool.
       </p>
 
@@ -55,9 +55,9 @@ export default function KnowledgeLanding({ onSelect }) {
       </section>
 
       <p className="document-note">
-        Die Wissensseiten sind datengetrieben aufgebaut. Neue aktive Themen koennen
-        spaeter gezielt ueber Kategorien, Slugs, FAQ-Fragen und verwandte Seiten
-        ergaenzt werden.
+        Die Wissensseiten sind datengetrieben aufgebaut. Neue aktive Themen können
+        später gezielt über Kategorien, Slugs, FAQ-Fragen und verwandte Seiten
+        ergänzt werden.
       </p>
     </>
   );

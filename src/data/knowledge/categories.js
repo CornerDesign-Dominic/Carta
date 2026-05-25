@@ -2,7 +2,7 @@ export const knowledgeCategories = [
   {
     id: 'belege',
     title: 'Belege',
-    description: 'Grundlagen zu Rechnungen, Angeboten, Lieferscheinen und weiteren kaufmaennischen Belegen.',
+    description: 'Grundlagen zu Rechnungen, Angeboten, Lieferscheinen und weiteren kaufmännischen Belegen.',
     pages: [
       { slug: 'rechnung', title: 'Rechnung' },
       { slug: 'angebot', title: 'Angebot' },

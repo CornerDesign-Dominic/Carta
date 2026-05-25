@@ -17,7 +17,7 @@ const selfReceiptSchemaVersion = '1.0';
 
 const initialSelfReceiptLabels = {
   title: 'Eigenbeleg',
-  recipientTitle: 'Zahlungsempfaenger / Lieferant',
+  recipientTitle: 'Zahlungsempfänger / Lieferant',
   selfReceiptId: 'Belegkennung',
   receiptDate: 'Belegdatum',
   expenseDate: 'Ausgabendatum',
@@ -35,7 +35,7 @@ const initialSelfReceiptLabels = {
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Gesamtbetrag',
   occasion: 'Anlass der Ausgabe',
-  reason: 'Grund fuer Eigenbeleg / fehlenden Fremdbeleg',
+  reason: 'Grund für Eigenbeleg / fehlenden Fremdbeleg',
   settlementType: 'Zahlungsart',
   location: 'Ort der Ausgabe',
   contactEmail: 'E-Mail',
@@ -61,7 +61,7 @@ const selfReceiptMetaFields = [
 ];
 
 const selfReceiptRecipientOptionalFields = [
-  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'attention', label: 'Zusatz / zu Händen' },
   { field: 'name', label: 'Name / Abteilung' },
 ];
 
@@ -76,7 +76,7 @@ const selfReceiptFooterColumns = [
     { field: 'vatId', label: 'USt-IdNr.' },
     { field: 'taxNumber', label: 'Steuernummer' },
     { field: 'commercialRegister', label: 'Handelsregister' },
-    { field: 'managingDirector', label: 'Geschaeftsfuehrer' },
+    { field: 'managingDirector', label: 'Geschäftsführer' },
   ],
   [
     { field: 'bankName', label: 'Bankname' },
@@ -133,7 +133,7 @@ const defaultSelfReceiptData = {
       street: 'Lieferantenweg',
       houseNumber: '4',
       postalCode: '80331',
-      city: 'Muenchen',
+      city: 'München',
     },
   },
   details: {
@@ -147,9 +147,9 @@ const defaultSelfReceiptData = {
     costCenter: 'KST-200',
   },
   expenseInfo: {
-    occasion: 'Bewirtung waehrend eines kurzfristigen Projekttermins ohne ausgehaendigten Fremdbeleg.',
+    occasion: 'Bewirtung während eines kurzfristigen Projekttermins ohne ausgehändigten Fremdbeleg.',
     reason:
-      'Der urspruengliche Fremdbeleg wurde trotz Nachfrage nicht ausgehaendigt beziehungsweise war nachtraeglich nicht mehr beschaffbar.',
+      'Der ursprüngliche Fremdbeleg wurde trotz Nachfrage nicht ausgehändigt beziehungsweise war nachträglich nicht mehr beschaffbar.',
     settlementType: 'Bar',
     location: 'Berlin',
   },
@@ -168,7 +168,7 @@ const defaultSelfReceiptData = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -190,16 +190,16 @@ const defaultSelfReceiptTextBlocks = [
   },
   {
     id: 'declaration',
-    label: 'Erklaerung zur Richtigkeit',
+    label: 'Erklärung zur Richtigkeit',
     value:
-      'Ich versichere, dass die oben aufgefuehrten Angaben vollstaendig und nach bestem Wissen richtig sind. Die Ausgaben wurden betrieblich veranlasst und ein Fremdbeleg konnte nicht vorgelegt werden.',
+      'Ich versichere, dass die oben aufgeführten Angaben vollständig und nach bestem Wissen richtig sind. Die Ausgaben wurden betrieblich veranlasst und ein Fremdbeleg konnte nicht vorgelegt werden.',
     visible: true,
   },
 ];
 
 const selfReceiptDetailFields = [
   { field: 'occasion', labelField: 'occasion', type: 'textarea', ariaLabel: 'Anlass der Ausgabe' },
-  { field: 'reason', labelField: 'reason', type: 'textarea', ariaLabel: 'Grund fuer Eigenbeleg oder fehlenden Fremdbeleg' },
+  { field: 'reason', labelField: 'reason', type: 'textarea', ariaLabel: 'Grund für Eigenbeleg oder fehlenden Fremdbeleg' },
   { field: 'settlementType', labelField: 'settlementType', type: 'text', ariaLabel: 'Art der Ausgabeabwicklung' },
   { field: 'location', labelField: 'location', type: 'text', ariaLabel: 'Ort der Ausgabe' },
 ];
@@ -590,7 +590,7 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, textBlocks }) {
 
 function validateSelfReceiptTemplate(template) {
   if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gueltiger Eigenbeleg.');
+    throw new Error('Die JSON-Datei ist kein gültiger Eigenbeleg.');
   }
 
   if (template.documentType !== 'selfReceipt') {
@@ -598,11 +598,11 @@ function validateSelfReceiptTemplate(template) {
   }
 
   if (template.schemaVersion !== selfReceiptSchemaVersion) {
-    throw new Error('Diese Eigenbeleg-Version wird nicht unterstuetzt.');
+    throw new Error('Diese Eigenbeleg-Version wird nicht unterstützt.');
   }
 
   if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthaelt keine Eigenbelegdaten.');
+    throw new Error('Die JSON-Datei enthält keine Eigenbelegdaten.');
   }
 
   return template;
@@ -1192,7 +1192,7 @@ export default function SelfReceiptDocumentEditor() {
         />
 
         <button className="offer-add-position" type="button" onClick={addPosition}>
-          + Position hinzufuegen
+          + Position hinzufügen
         </button>
 
         <TotalsBox

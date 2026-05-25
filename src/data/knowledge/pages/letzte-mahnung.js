@@ -4,19 +4,19 @@ const letzteMahnung = {
   slug: "letzte-mahnung",
   category: "Mahnwesen",
   title: "Letzte Mahnung",
-  description: "Die letzte Mahnung ist die abschliessende Zahlungsaufforderung vor weiteren Schritten.",
+  description: "Die letzte Mahnung ist die abschließende Zahlungsaufforderung vor weiteren Schritten.",
   seo: {
-    title: "Letzte Mahnung einfach erklaert | Carta",
-    description: "Die letzte Mahnung ist die abschliessende Zahlungsaufforderung vor weiteren Schritten.",
+    title: "Letzte Mahnung einfach erklärt | Carta",
+    description: "Die letzte Mahnung ist die abschließende Zahlungsaufforderung vor weiteren Schritten.",
     canonicalPath: "/wissen/letzte-mahnung",
   },
   article: {
-    intro: "Die letzte Mahnung wird genutzt, wenn vorherige Zahlungsaufforderungen erfolglos geblieben sind. Sie setzt meist eine letzte Frist und kuendigt weitere Schritte an.",
+    intro: "Die letzte Mahnung wird genutzt, wenn vorherige Zahlungsaufforderungen erfolglos geblieben sind. Sie setzt meist eine letzte Frist und kündigt weitere Schritte an.",
     sections: [
       {
         heading: "Was ist Letzte Mahnung?",
         paragraphs: [
-          "Die letzte Mahnung wird genutzt, wenn vorherige Zahlungsaufforderungen erfolglos geblieben sind. Sie setzt meist eine letzte Frist und kuendigt weitere Schritte an.",
+          "Die letzte Mahnung wird genutzt, wenn vorherige Zahlungsaufforderungen erfolglos geblieben sind. Sie setzt meist eine letzte Frist und kündigt weitere Schritte an.",
         ],
       },
       {
@@ -26,7 +26,7 @@ const letzteMahnung = {
         ],
         list: [
           "klare Bezeichnung als letzte Mahnung",
-          "vollstaendige Rechnungs- und Forderungsdaten",
+          "vollständige Rechnungs- und Forderungsdaten",
           "letzte Zahlungsfrist",
           "deutlicher Hinweis auf weitere Schritte",
           "sachlicher Ton trotz Nachdruck",
@@ -36,19 +36,19 @@ const letzteMahnung = {
       {
         heading: "Praxis",
         paragraphs: [
-          "Eine letzte Mahnung wird eingesetzt, bevor weitere Massnahmen wie Inkasso, Verzugszinsen oder ein gerichtliches Mahnverfahren geprueft werden.",
+          "Eine letzte Mahnung wird eingesetzt, bevor weitere Massnahmen wie Inkasso, Verzugszinsen oder ein gerichtliches Mahnverfahren geprüft werden.",
         ],
       },
       {
         heading: "Worauf sollte man achten?",
         paragraphs: [
-          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+          "Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.",
         ],
         list: [
           "keine eindeutige letzte Frist",
-          "uebertriebene Drohungen",
+          "übertriebene Drohungen",
           "fehlende Forderungsaufstellung",
-          "unvollstaendige Zahlungsdaten",
+          "unvollständige Zahlungsdaten",
         ],
       },
     ],
@@ -56,11 +56,11 @@ const letzteMahnung = {
   generator: {
     label: "Mahnung erstellen",
     href: "/dokumente",
-    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.",
+    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und übersichtlich zu erstellen.",
   },
   keyPoints: [
     "klare Bezeichnung als letzte Mahnung",
-    "vollstaendige Rechnungs- und Forderungsdaten",
+    "vollständige Rechnungs- und Forderungsdaten",
     "letzte Zahlungsfrist",
     "deutlicher Hinweis auf weitere Schritte",
     "sachlicher Ton trotz Nachdruck",
@@ -68,22 +68,22 @@ const letzteMahnung = {
   ],
   commonMistakes: [
     "keine eindeutige letzte Frist",
-    "uebertriebene Drohungen",
+    "übertriebene Drohungen",
     "fehlende Forderungsaufstellung",
-    "unvollstaendige Zahlungsdaten",
+    "unvollständige Zahlungsdaten",
   ],
   faqs: [
     {
       question: "Was bedeutet letzte Mahnung?",
-      answer: "Sie ist die abschliessende Aufforderung zur Zahlung, bevor weitere Schritte eingeleitet oder geprueft werden.",
+      answer: "Sie ist die abschließende Aufforderung zur Zahlung, bevor weitere Schritte eingeleitet oder geprüft werden.",
     },
     {
       question: "Was sollte in einer letzten Mahnung stehen?",
-      answer: "Wichtig sind Rechnungsbezug, offener Betrag, letzte Zahlungsfrist, Zahlungsinformationen und ein sachlicher Hinweis auf moegliche weitere Schritte.",
+      answer: "Wichtig sind Rechnungsbezug, offener Betrag, letzte Zahlungsfrist, Zahlungsinformationen und ein sachlicher Hinweis auf mögliche weitere Schritte.",
     },
     {
       question: "Muss man vor weiteren Schritten immer mehrfach mahnen?",
-      answer: "Das haengt vom Einzelfall ab. Deshalb ist bei unsicheren oder strittigen Forderungen fachliche Beratung sinnvoll.",
+      answer: "Das hängt vom Einzelfall ab. Deshalb ist bei unsicheren oder strittigen Forderungen fachliche Beratung sinnvoll.",
     },
   ],
   related: [

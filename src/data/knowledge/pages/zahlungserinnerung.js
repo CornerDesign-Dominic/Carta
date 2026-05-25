@@ -6,7 +6,7 @@ const zahlungserinnerung = {
   title: "Zahlungserinnerung",
   description: "Eine Zahlungserinnerung weist freundlich auf eine noch offene Rechnung hin.",
   seo: {
-    title: "Zahlungserinnerung einfach erklaert | Carta",
+    title: "Zahlungserinnerung einfach erklärt | Carta",
     description: "Eine Zahlungserinnerung weist freundlich auf eine noch offene Rechnung hin.",
     canonicalPath: "/wissen/zahlungserinnerung",
   },
@@ -28,7 +28,7 @@ const zahlungserinnerung = {
           "Bezug zur offenen Rechnung",
           "Rechnungsnummer und Rechnungsdatum",
           "offener Betrag",
-          "urspruengliches Zahlungsziel",
+          "ursprüngliches Zahlungsziel",
           "neue Bitte um Zahlung",
           "Bankverbindung oder Zahlungsweg",
         ],
@@ -42,7 +42,7 @@ const zahlungserinnerung = {
       {
         heading: "Worauf sollte man achten?",
         paragraphs: [
-          "Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.",
+          "Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.",
         ],
         list: [
           "zu scharfer Ton beim ersten Hinweis",
@@ -58,7 +58,7 @@ const zahlungserinnerung = {
     "Bezug zur offenen Rechnung",
     "Rechnungsnummer und Rechnungsdatum",
     "offener Betrag",
-    "urspruengliches Zahlungsziel",
+    "ursprüngliches Zahlungsziel",
     "neue Bitte um Zahlung",
     "Bankverbindung oder Zahlungsweg",
   ],
@@ -71,11 +71,11 @@ const zahlungserinnerung = {
   faqs: [
     {
       question: "Wann schickt man eine Zahlungserinnerung?",
-      answer: "Eine Zahlungserinnerung wird meist verschickt, wenn eine Rechnung faellig ist und noch keine Zahlung eingegangen ist.",
+      answer: "Eine Zahlungserinnerung wird meist verschickt, wenn eine Rechnung fällig ist und noch keine Zahlung eingegangen ist.",
     },
     {
       question: "Ist eine Zahlungserinnerung schon eine Mahnung?",
-      answer: "Sie kann wie eine Mahnung wirken, ist aber oft bewusst freundlicher formuliert. In der Praxis dient sie haeufig als erster Schritt im Mahnwesen.",
+      answer: "Sie kann wie eine Mahnung wirken, ist aber oft bewusst freundlicher formuliert. In der Praxis dient sie häufig als erster Schritt im Mahnwesen.",
     },
     {
       question: "Was sollte in einer Zahlungserinnerung stehen?",

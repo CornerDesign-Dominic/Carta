@@ -35,9 +35,9 @@ const reminderFormDefaults = {
   },
   textBlocks: {
     intro:
-      'bei der Durchsicht unserer Unterlagen haben wir festgestellt, dass die unten aufgefuehrte Rechnung noch nicht ausgeglichen wurde. Bitte ueberweisen Sie den offenen Betrag innerhalb von 7 Tagen nach Erhalt dieser Mahnung.',
+      'bei der Durchsicht unserer Unterlagen haben wir festgestellt, dass die unten aufgeführte Rechnung noch nicht ausgeglichen wurde. Bitte überweisen Sie den offenen Betrag innerhalb von 7 Tagen nach Erhalt dieser Mahnung.',
     closing:
-      'Sollten Sie die Zahlung bereits veranlasst haben, betrachten Sie dieses Schreiben bitte als gegenstandslos. Vielen Dank fuer Ihre zeitnahe Rueckmeldung.',
+      'Sollten Sie die Zahlung bereits veranlasst haben, betrachten Sie dieses Schreiben bitte als gegenstandslos. Vielen Dank für Ihre zeitnahe Rückmeldung.',
   },
   openItem: {
     invoiceNumber: 'RE-2026-001',
@@ -335,7 +335,7 @@ export default function ReminderDocumentForm({
               <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.companyName} onChange={(value) => updateRecipient('company', value)} />
-                <ReminderPanelInput className="invoice-panel-field-wide" label="Zusatz / zu Haenden" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
+                <ReminderPanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <ReminderPanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
                 <ReminderPanelInput label="Straße" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
                 <ReminderPanelInput label="Hausnummer" name="recipient-house-number" value={recipient.address.houseNumber} onChange={(value) => updateRecipient('address', { ...recipient.address, houseNumber: value })} />
@@ -387,7 +387,7 @@ export default function ReminderDocumentForm({
                   <ReminderPanelInput inputMode="numeric" label="Verzugstage" name={`open-item-${index + 1}-overdue-days`} value={item.overdueDays} onChange={(value) => updateOpenItem(item.id, 'overdueDays', value)} />
                   <ReminderPanelInput inputMode="decimal" label="Betrag" name={`open-item-${index + 1}-amount`} value={item.amount} onChange={(value) => updateOpenItem(item.id, 'amount', value)} />
                   <div className="invoice-panel-position-actions">
-                    <button className="invoice-panel-remove" type="button" aria-label={`Offenen Posten ${index + 1} loeschen`} disabled={openItems.length === 1} onClick={() => removeOpenItem(item.id)}>
+                    <button className="invoice-panel-remove" type="button" aria-label={`Offenen Posten ${index + 1} löschen`} disabled={openItems.length === 1} onClick={() => removeOpenItem(item.id)}>
                       x
                     </button>
                     <button className="invoice-panel-move" type="button" aria-label={`Offenen Posten ${index + 1} nach oben verschieben`} disabled={index === 0} onClick={() => moveOpenItem(item.id, -1)}>
@@ -416,7 +416,7 @@ export default function ReminderDocumentForm({
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
-            <h3>Fussdaten</h3>
+            <h3>Fußdaten</h3>
             <div className="offer-footer-form-columns">
               {[
                 {

@@ -71,7 +71,7 @@ export default function ReceiptDocumentForm({
     <section className="invoice-form-panel" aria-label="Quittungsformular">
       <button className="invoice-form-panel-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>
         <span className="invoice-form-panel-toggle-label">
-          {isOpen ? 'Formular schliessen' : 'Formular (optional) ausfuellen'}
+          {isOpen ? 'Formular schließen' : 'Formular (optional) ausfüllen'}
         </span>
         <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
           {isOpen ? '-' : '+'}

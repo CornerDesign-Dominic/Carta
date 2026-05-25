@@ -37,9 +37,9 @@ const invoiceFormDefaults = {
     customerNumber: 'K-2048',
   },
   textBlocks: {
-    intro: 'vielen Dank fuer Ihren Auftrag. Fuer unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
+    intro: 'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
     closing:
-      'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank fuer die angenehme Zusammenarbeit.',
+      'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.',
   },
   position: {
     description: 'Leistung beschreiben',
@@ -334,7 +334,7 @@ export default function InvoiceDocumentForm({
               <h3>Empfänger</h3>
               <div className="invoice-panel-grid">
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.companyName} onChange={(value) => updateRecipient('company', value)} />
-                <InvoicePanelInput className="invoice-panel-field-wide" label="Zusatz / zu Haenden" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
+                <InvoicePanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <InvoicePanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
                 <InvoicePanelInput label="Straße" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
                 <InvoicePanelInput label="Hausnummer" name="recipient-house-number" value={recipient.address.houseNumber} onChange={(value) => updateRecipient('address', { ...recipient.address, houseNumber: value })} />
@@ -395,7 +395,7 @@ export default function InvoiceDocumentForm({
                   <InvoicePanelInput label="Einheit" name={`position-${index + 1}-unit`} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
                   <InvoicePanelInput inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
                   <div className="invoice-panel-position-actions">
-                    <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} loeschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
+                    <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
                       x
                     </button>
                     <button className="invoice-panel-move" type="button" aria-label={`Position ${index + 1} nach oben verschieben`} disabled={index === 0} onClick={() => movePosition(position.id, -1)}>
@@ -417,7 +417,7 @@ export default function InvoiceDocumentForm({
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
-            <h3>Fussdaten</h3>
+            <h3>Fußdaten</h3>
             <div className="offer-footer-form-columns">
               {[
                 {

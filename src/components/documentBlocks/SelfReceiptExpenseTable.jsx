@@ -48,7 +48,7 @@ export default function SelfReceiptExpenseTable({
               <td className="invoice-position-index-cell">
                 <span className="invoice-position-actions">
                   <button
-                    aria-label={`Position ${index + 1} loeschen`}
+                    aria-label={`Position ${index + 1} löschen`}
                     className="invoice-position-action invoice-position-delete"
                     type="button"
                     disabled={positions.length === 1}

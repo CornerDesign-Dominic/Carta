@@ -47,7 +47,7 @@ export default function OpenItemsTable({
               <td className="reminder-open-item-number-cell">
                 <span className="invoice-position-actions">
                   <button
-                    aria-label={`Offenen Posten ${index + 1} loeschen`}
+                    aria-label={`Offenen Posten ${index + 1} löschen`}
                     className="invoice-position-action invoice-position-delete"
                     type="button"
                     disabled={items.length === 1}

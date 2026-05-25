@@ -1,7 +1,7 @@
-export const featureDocuments = [
+﻿export const featureDocuments = [
   {
     title: 'Angebote',
-    text: 'Klar strukturierte Angebotsentwuerfe mit sauberem Aufbau fuer Produkte, Leistungen und Konditionen.',
+    text: 'Klar strukturierte AngebotsentwÃ¼rfe mit sauberem Aufbau fÃ¼r Produkte, Leistungen und Konditionen.',
   },
   {
     title: 'Lieferscheine',
@@ -9,7 +9,7 @@ export const featureDocuments = [
   },
   {
     title: 'Rechnungen',
-    text: 'Uebersichtliche Rechnungen mit Formular, Positionen, Steuerangaben, Vorlagen, PDF und Druck.',
+    text: 'Ãœbersichtliche Rechnungen mit Formular, Positionen, Steuerangaben, Vorlagen, PDF und Druck.',
   },
   {
     title: 'Gutschriften',
@@ -17,7 +17,7 @@ export const featureDocuments = [
   },
   {
     title: 'Mahnungen',
-    text: 'Ruhig formulierte Erinnerungen mit dem passenden Rahmen fuer Fristen, Betraege und offene Belege.',
+    text: 'Ruhig formulierte Erinnerungen mit dem passenden Rahmen fÃ¼r Fristen, BetrÃ¤ge und offene Belege.',
   },
   {
     title: 'Quittungen',
@@ -36,25 +36,25 @@ const allDocumentSections = [
       {
         heading: 'Was ist eine Rechnung?',
         paragraphs: [
-          'Eine Rechnung dokumentiert eine erbrachte Leistung oder gelieferte Ware und fordert den offenen Betrag beim Kunden an. Sie ist damit nicht nur Zahlungsaufforderung, sondern auch ein wichtiger Nachweis fuer Buchhaltung und Steuerunterlagen.',
+          'Eine Rechnung dokumentiert eine erbrachte Leistung oder gelieferte Ware und fordert den offenen Betrag beim Kunden an. Sie ist damit nicht nur Zahlungsaufforderung, sondern auch ein wichtiger Nachweis fÃ¼r Buchhaltung und Steuerunterlagen.',
         ],
       },
       {
-        heading: 'Welche Angaben gehoeren hinein?',
+        heading: 'Welche Angaben gehÃ¶ren hinein?',
         paragraphs: [
-          'Typische Rechnungen enthalten Absender, Empfaenger, Rechnungsnummer, Rechnungsdatum, Leistungszeitraum, Positionen, Betraege, Steuersaetze und Zahlungsinformationen. Je nach Unternehmen und Fall koennen zusaetzliche Hinweise oder Pflichtangaben erforderlich sein.',
+          'Typische Rechnungen enthalten Absender, EmpfÃ¤nger, Rechnungsnummer, Rechnungsdatum, Leistungszeitraum, Positionen, BetrÃ¤ge, SteuersÃ¤tze und Zahlungsinformationen. Je nach Unternehmen und Fall kÃ¶nnen zusÃ¤tzliche Hinweise oder Pflichtangaben erforderlich sein.',
         ],
       },
       {
         heading: 'Warum ist eine klare Struktur wichtig?',
         paragraphs: [
-          'Eine uebersichtliche Rechnung reduziert Rueckfragen und erleichtert die interne Pruefung beim Kunden. Klare Positionen, verstaendliche Summen und ein ruhiger Aufbau sorgen dafuer, dass das Dokument professionell wirkt und schneller verarbeitet werden kann.',
+          'Eine Ãœbersichtliche Rechnung reduziert RÃ¼ckfragen und erleichtert die interne PrÃ¼fung beim Kunden. Klare Positionen, verstÃ¤ndliche Summen und ein ruhiger Aufbau sorgen dafÃ¼r, dass das Dokument professionell wirkt und schneller verarbeitet werden kann.',
         ],
       },
       {
         heading: 'Digitale Rechnungserstellung im Browser',
         paragraphs: [
-          'Ein browserbasiertes Werkzeug kann helfen, Rechnungen ohne schwere Software vorzubereiten. Vorlagen, wiederkehrende Angaben und ein konsistentes Layout schaffen eine verlaessliche Grundlage fuer einen schnellen Dokumentenprozess.',
+          'Ein browserbasiertes Werkzeug kann helfen, Rechnungen ohne schwere Software vorzubereiten. Vorlagen, wiederkehrende Angaben und ein konsistentes Layout schaffen eine verlÃ¤ssliche Grundlage fÃ¼r einen schnellen Dokumentenprozess.',
         ],
       },
     ],
@@ -66,7 +66,7 @@ const allDocumentSections = [
         path: '/dokumente/rechnung',
         formType: 'invoice',
         description:
-          'Erstelle eine Rechnung direkt im A4-Dokument mit Absender, Empfaenger, Positionen, Steuern und Fussdaten.',
+          'Erstelle eine Rechnung direkt im A4-Dokument mit Absender, EmpfÃ¤nger, Positionen, Steuern und FuÃŸdaten.',
       },
     ],
   },
@@ -75,30 +75,30 @@ const allDocumentSections = [
     label: 'Angebote',
     title: 'Angebote',
     description:
-      'Erstelle eine saubere Grundlage fuer Angebote mit Leistungen, Konditionen und einem professionellen Aufbau fuer Kundenkommunikation.',
+      'Erstelle eine saubere Grundlage fÃ¼r Angebote mit Leistungen, Konditionen und einem professionellen Aufbau fÃ¼r Kundenkommunikation.',
     contentSections: [
       {
         heading: 'Was ist ein Angebot?',
         paragraphs: [
-          'Ein Angebot beschreibt Leistungen, Produkte, Preise und Rahmenbedingungen, bevor ein Auftrag zustande kommt. Es schafft eine verbindliche Gespraechsgrundlage und hilft beiden Seiten, Umfang und Erwartungen klar zu verstehen.',
+          'Ein Angebot beschreibt Leistungen, Produkte, Preise und Rahmenbedingungen, bevor ein Auftrag zustande kommt. Es schafft eine verbindliche GesprÃ¤chsgrundlage und hilft beiden Seiten, Umfang und Erwartungen klar zu verstehen.',
         ],
       },
       {
         heading: 'Welche Informationen sollten enthalten sein?',
         paragraphs: [
-          'Zu einem professionellen Angebot gehoeren Kontaktdaten, Angebotsdatum, Leistungsbeschreibung, Einzelpreise, Gesamtsumme, moegliche Steuern, Gueltigkeit und Zahlungs- oder Lieferbedingungen. Je genauer diese Angaben sind, desto belastbarer ist die Entscheidung des Kunden.',
+          'Zu einem professionellen Angebot gehÃ¶ren Kontaktdaten, Angebotsdatum, Leistungsbeschreibung, Einzelpreise, Gesamtsumme, mÃ¶gliche Steuern, GÃ¼ltigkeit und Zahlungs- oder Lieferbedingungen. Je genauer diese Angaben sind, desto belastbarer ist die Entscheidung des Kunden.',
         ],
       },
       {
         heading: 'Warum professionelle Angebote wichtig sind',
         paragraphs: [
-          'Ein gut strukturiertes Angebot vermittelt Verlaesslichkeit und erleichtert die Freigabe. Es zeigt, dass Leistungen nachvollziehbar kalkuliert wurden und schafft Vertrauen, bevor ein Projekt oder Auftrag beginnt.',
+          'Ein gut strukturiertes Angebot vermittelt VerlÃ¤sslichkeit und erleichtert die Freigabe. Es zeigt, dass Leistungen nachvollziehbar kalkuliert wurden und schafft Vertrauen, bevor ein Projekt oder Auftrag beginnt.',
         ],
       },
       {
         heading: 'Angebote schnell vorbereiten',
         paragraphs: [
-          'Mit einer digitalen Oberflaeche lassen sich Angebote wiederholbar und sauber aufbauen. Einheitliche Bausteine, klare Positionen und ein ruhiges Layout sparen Zeit und sorgen dafuer, dass auch einfache Angebote hochwertig wirken.',
+          'Mit einer digitalen OberflÃ¤che lassen sich Angebote wiederholbar und sauber aufbauen. Einheitliche Bausteine, klare Positionen und ein ruhiges Layout sparen Zeit und sorgen dafÃ¼r, dass auch einfache Angebote hochwertig wirken.',
         ],
       },
     ],
@@ -124,19 +124,19 @@ const allDocumentSections = [
       {
         heading: 'Was ist ein Lieferschein?',
         paragraphs: [
-          'Ein Lieferschein dokumentiert, welche Waren oder Leistungen an den Empfaenger uebergeben wurden. Er begleitet die Lieferung und hilft beiden Seiten, Umfang und Zeitpunkt der Uebergabe nachzuvollziehen.',
+          'Ein Lieferschein dokumentiert, welche Waren oder Leistungen an den EmpfÃ¤nger Ã¼bergeben wurden. Er begleitet die Lieferung und hilft beiden Seiten, Umfang und Zeitpunkt der Ãœbergabe nachzuvollziehen.',
         ],
       },
       {
         heading: 'Welche Angaben sollten enthalten sein?',
         paragraphs: [
-          'Typische Lieferscheine enthalten Absender, Empfaenger, Lieferscheinnummer, Lieferdatum, Bestelldatum, Referenzen sowie die einzelnen Positionen mit Menge, Einheit, Lieferdatum und Hinweis.',
+          'Typische Lieferscheine enthalten Absender, EmpfÃ¤nger, Lieferscheinnummer, Lieferdatum, Bestelldatum, Referenzen sowie die einzelnen Positionen mit Menge, Einheit, Lieferdatum und Hinweis.',
         ],
       },
       {
         heading: 'Warum ein klarer Aufbau wichtig ist',
         paragraphs: [
-          'Eine gut strukturierte Lieferdokumentation reduziert Rueckfragen im Wareneingang, erleichtert die Pruefung beim Kunden und schafft eine saubere Verbindung zwischen Bestellung, Lieferung und spaeterer Rechnung.',
+          'Eine gut strukturierte Lieferdokumentation reduziert RÃ¼ckfragen im Wareneingang, erleichtert die PrÃ¼fung beim Kunden und schafft eine saubere Verbindung zwischen Bestellung, Lieferung und spÃ¤terer Rechnung.',
         ],
       },
     ],
@@ -157,24 +157,24 @@ const allDocumentSections = [
     label: 'Gutschriften',
     title: 'Gutschriften',
     description:
-      'Erstelle Gutschriften mit klarer Struktur fuer Leistungspositionen, Steuerangaben, Vorlagen, PDF und Druck.',
+      'Erstelle Gutschriften mit klarer Struktur fÃ¼r Leistungspositionen, Steuerangaben, Vorlagen, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Gutschrift?',
         paragraphs: [
-          'Eine Gutschrift dokumentiert die Korrektur oder Rueckverguetung einer bereits erfassten Leistung oder Lieferung. Sie schafft Klarheit ueber Positionen, Steuern und den gutgeschriebenen Betrag.',
+          'Eine Gutschrift dokumentiert die Korrektur oder RÃ¼ckvergÃ¼tung einer bereits erfassten Leistung oder Lieferung. Sie schafft Klarheit Ã¼ber Positionen, Steuern und den gutgeschriebenen Betrag.',
         ],
       },
       {
         heading: 'Welche Angaben sollten enthalten sein?',
         paragraphs: [
-          'Typische Gutschriften enthalten Absender, Empfaenger, Gutschriftsnummer, Gutschriftsdatum, Leistungsdatum, Referenzen, Positionen, Steuersaetze und die abschliessende Gutschriftssumme.',
+          'Typische Gutschriften enthalten Absender, EmpfÃ¤nger, Gutschriftsnummer, Gutschriftsdatum, Leistungsdatum, Referenzen, Positionen, SteuersÃ¤tze und die abschlieÃŸende Gutschriftssumme.',
         ],
       },
       {
         heading: 'Warum ein sauberer Aufbau wichtig ist',
         paragraphs: [
-          'Eine klar gegliederte Gutschrift reduziert Rueckfragen und erleichtert die Pruefung in Buchhaltung und Kundenkommunikation. Deutliche Positionen und nachvollziehbare Summen helfen, den Vorgang schnell zuzuordnen.',
+          'Eine klar gegliederte Gutschrift reduziert RÃ¼ckfragen und erleichtert die PrÃ¼fung in Buchhaltung und Kundenkommunikation. Deutliche Positionen und nachvollziehbare Summen helfen, den Vorgang schnell zuzuordnen.',
         ],
       },
     ],
@@ -200,13 +200,13 @@ const allDocumentSections = [
       {
         heading: 'Was ist eine Mahnung?',
         paragraphs: [
-          'Eine Mahnung erinnert an eine offene Forderung und stellt den Bezug zur urspruenglichen Rechnung her. Sie sollte sachlich, nachvollziehbar und mit klarer Zahlungsfrist formuliert sein.',
+          'Eine Mahnung erinnert an eine offene Forderung und stellt den Bezug zur ursprÃ¼nglichen Rechnung her. Sie sollte sachlich, nachvollziehbar und mit klarer Zahlungsfrist formuliert sein.',
         ],
       },
       {
         heading: 'Welche Angaben sind wichtig?',
         paragraphs: [
-          'Typische Angaben sind Absender, Empfaenger, Mahnungsnummer, Rechnungsnummer, Rechnungsdatum, Faelligkeit, offener Betrag, moegliche Mahngebuehren und ein eindeutiger Zahlungshinweis.',
+          'Typische Angaben sind Absender, EmpfÃ¤nger, Mahnungsnummer, Rechnungsnummer, Rechnungsdatum, FÃ¤lligkeit, offener Betrag, mÃ¶gliche MahngebÃ¼hren und ein eindeutiger Zahlungshinweis.',
         ],
       },
     ],
@@ -232,13 +232,13 @@ const allDocumentSections = [
       {
         heading: 'Was ist eine Quittung?',
         paragraphs: [
-          'Eine Quittung bestaetigt den Erhalt eines Betrags oder einer Leistung und dient als nachvollziehbarer Beleg fuer beide Seiten.',
+          'Eine Quittung bestÃ¤tigt den Erhalt eines Betrags oder einer Leistung und dient als nachvollziehbarer Beleg fÃ¼r beide Seiten.',
         ],
       },
       {
         heading: 'Welche Angaben sind wichtig?',
         paragraphs: [
-          'Typische Angaben sind Aussteller, Empfaenger, Quittungskennung, Datum, Betrag, Steueranteil, Verwendungszweck, Ort und Unterschrift.',
+          'Typische Angaben sind Aussteller, EmpfÃ¤nger, Quittungskennung, Datum, Betrag, Steueranteil, Verwendungszweck, Ort und Unterschrift.',
         ],
       },
     ],
@@ -259,7 +259,7 @@ const allDocumentSections = [
     label: 'Eigenbelege',
     title: 'Eigenbelege',
     description:
-      'Erstelle Eigenbelege fuer Ausgaben ohne vorhandenen Fremdbeleg mit Formular, direkter Dokumentbearbeitung, Vorlagen, PDF und Druck.',
+      'Erstelle Eigenbelege fÃ¼r Ausgaben ohne vorhandenen Fremdbeleg mit Formular, direkter Dokumentbearbeitung, Vorlagen, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist ein Eigenbeleg?',
@@ -270,7 +270,7 @@ const allDocumentSections = [
       {
         heading: 'Welche Angaben sind wichtig?',
         paragraphs: [
-          'Typische Angaben sind Absender, Zahlungsempfaenger oder Lieferant, Belegkennung, Belegdatum, Ausgabendatum, Anlass, Begruendung fuer den fehlenden Fremdbeleg, Positionen, Steuern und Summen.',
+          'Typische Angaben sind Absender, ZahlungsempfÃ¤nger oder Lieferant, Belegkennung, Belegdatum, Ausgabendatum, Anlass, BegrÃ¼ndung fÃ¼r den fehlenden Fremdbeleg, Positionen, Steuern und Summen.',
         ],
       },
     ],
@@ -311,3 +311,4 @@ export function findDocumentItem(activeId) {
 
   return { item: documentSections[0], parentId: documentSections[0].id };
 }
+

@@ -73,7 +73,7 @@ const deliveryNoteMetaFields = [
 ];
 
 const deliveryNoteRecipientOptionalFields = [
-  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'attention', label: 'Zusatz / zu Händen' },
   { field: 'name', label: 'Name / Abteilung' },
 ];
 
@@ -88,7 +88,7 @@ const deliveryNoteFooterColumns = [
     { field: 'vatId', label: 'USt-IdNr.' },
     { field: 'taxNumber', label: 'Steuernummer' },
     { field: 'commercialRegister', label: 'Handelsregister' },
-    { field: 'managingDirector', label: 'Geschaeftsfuehrer' },
+    { field: 'managingDirector', label: 'Geschäftsführer' },
   ],
   [
     { field: 'bankName', label: 'Bankname' },
@@ -173,7 +173,7 @@ const defaultDeliveryNoteData = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -190,14 +190,14 @@ const defaultDeliveryNoteTextBlocks = [
   {
     id: 'intro',
     label: 'Einleitung',
-    value: 'gemaess Ihrer Bestellung liefern wir Ihnen die folgenden Positionen:',
+    value: 'gemäß Ihrer Bestellung liefern wir Ihnen die folgenden Positionen:',
     visible: true,
   },
   {
     id: 'closing',
     label: 'Schlusstext',
     value:
-      'Bitte pruefen Sie die Lieferung nach Erhalt. Bei Rueckfragen oder Abweichungen freuen wir uns ueber Ihre kurze Nachricht.',
+      'Bitte prüfen Sie die Lieferung nach Erhalt. Bei Rückfragen oder Abweichungen freuen wir uns über Ihre kurze Nachricht.',
     visible: true,
   },
 ];
@@ -507,7 +507,7 @@ function createDeliveryNotePrintItems({ positions, textBlocks }) {
 
 function validateDeliveryNoteTemplate(template) {
   if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gueltiger Lieferschein.');
+    throw new Error('Die JSON-Datei ist kein gültiger Lieferschein.');
   }
 
   if (template.documentType !== 'deliveryNote') {
@@ -515,11 +515,11 @@ function validateDeliveryNoteTemplate(template) {
   }
 
   if (template.schemaVersion !== deliveryNoteSchemaVersion) {
-    throw new Error('Diese Lieferscheinversion wird nicht unterstuetzt.');
+    throw new Error('Diese Lieferscheinversion wird nicht unterstützt.');
   }
 
   if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthaelt keine Lieferscheindaten.');
+    throw new Error('Die JSON-Datei enthält keine Lieferscheindaten.');
   }
 
   return template.data;
@@ -901,7 +901,7 @@ export default function DeliveryNoteDocumentEditor() {
     }
 
     if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswaehlen.');
+      window.alert('Bitte eine JSON-Datei auswählen.');
       return;
     }
 
@@ -935,7 +935,7 @@ export default function DeliveryNoteDocumentEditor() {
       });
     } catch (error) {
       window.alert(
-        `PDF konnte nicht erstellt werden. Pruefe bitte, ob die Vercel Function lokal oder auf Vercel verfuegbar ist.\n\n${error.message}`,
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
       );
     } finally {
       setIsExportRenderActive(false);
@@ -1107,7 +1107,7 @@ export default function DeliveryNoteDocumentEditor() {
         />
 
         <button className="offer-add-position" type="button" onClick={addPosition}>
-          + Position hinzufuegen
+          + Position hinzufügen
         </button>
 
         {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}

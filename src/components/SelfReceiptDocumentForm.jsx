@@ -59,9 +59,9 @@ const defaultDetails = {
 };
 
 const defaultExpenseInfo = {
-  occasion: 'Bewirtung waehrend eines kurzfristigen Projekttermins ohne ausgehaendigten Fremdbeleg.',
+  occasion: 'Bewirtung während eines kurzfristigen Projekttermins ohne ausgehändigten Fremdbeleg.',
   reason:
-    'Der urspruengliche Fremdbeleg wurde trotz Nachfrage nicht ausgehaendigt beziehungsweise war nachtraeglich nicht mehr beschaffbar.',
+    'Der ursprüngliche Fremdbeleg wurde trotz Nachfrage nicht ausgehändigt beziehungsweise war nachträglich nicht mehr beschaffbar.',
   settlementType: 'Bar',
   location: 'Berlin',
 };
@@ -88,7 +88,7 @@ const selfReceiptFormDefaults = {
     attention: 'Verkauf',
     name: 'Zentrale',
     street: 'Lieferantenweg 4',
-    cityLine: '80331 Muenchen',
+    cityLine: '80331 München',
   },
   details: defaultDetails,
   expenseInfo: defaultExpenseInfo,
@@ -107,7 +107,7 @@ const selfReceiptFormDefaults = {
       taxNumberLabel: 'Steuernummer:',
       taxNumber: '12/345/67890',
       commercialRegister: 'HRB 123456',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -121,7 +121,7 @@ const selfReceiptFormDefaults = {
   textBlocks: {
     intro: 'Hiermit wird folgender Aufwand ohne vorhandenen Fremdbeleg dokumentiert.',
     declaration:
-      'Ich versichere, dass die oben aufgefuehrten Angaben vollstaendig und nach bestem Wissen richtig sind. Die Ausgaben wurden betrieblich veranlasst und ein Fremdbeleg konnte nicht vorgelegt werden.',
+      'Ich versichere, dass die oben aufgeführten Angaben vollständig und nach bestem Wissen richtig sind. Die Ausgaben wurden betrieblich veranlasst und ein Fremdbeleg konnte nicht vorgelegt werden.',
   },
   position: defaultPosition,
 };
@@ -135,7 +135,7 @@ const defaultSenderAddress = {
 };
 
 const defaultRecipientStreet = { street: 'Lieferantenweg', houseNumber: '4' };
-const defaultRecipientCity = { postalCode: '80331', city: 'Muenchen' };
+const defaultRecipientCity = { postalCode: '80331', city: 'München' };
 
 const selfReceiptFooterLabelFields = {
   vatId: 'vatIdLabel',
@@ -363,7 +363,7 @@ export default function SelfReceiptDocumentForm({
     <section className="invoice-form-panel" aria-label="Eigenbelegformular">
       <button className="invoice-form-panel-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>
         <span className="invoice-form-panel-toggle-label">
-          {isOpen ? 'Formular schliessen' : 'Formular (optional) ausfuellen'}
+          {isOpen ? 'Formular schließen' : 'Formular (optional) ausfüllen'}
         </span>
         <span className="invoice-form-panel-toggle-mark" aria-hidden="true">
           {isOpen ? '-' : '+'}
@@ -419,7 +419,7 @@ export default function SelfReceiptDocumentForm({
             </div>
 
             <div className="invoice-panel-section">
-              <h3>Zahlungsempfaenger / Lieferant</h3>
+              <h3>Zahlungsempfänger / Lieferant</h3>
               <div className="invoice-panel-grid">
                 <SelfReceiptPanelInput
                   className="invoice-panel-field-wide"
@@ -430,7 +430,7 @@ export default function SelfReceiptDocumentForm({
                 />
                 <SelfReceiptPanelInput
                   className="invoice-panel-field-wide"
-                  label="Zusatz / zu Haenden"
+                  label="Zusatz / zu Händen"
                   name="recipient-attention"
                   value={recipient.attention}
                   onChange={(value) => updateRecipient('attention', value)}
@@ -587,7 +587,7 @@ export default function SelfReceiptDocumentForm({
                 onChange={(value) => updateExpenseInfo('occasion', value)}
               />
               <SelfReceiptPanelTextarea
-                label="Grund fuer Eigenbeleg / fehlenden Fremdbeleg"
+                label="Grund für Eigenbeleg / fehlenden Fremdbeleg"
                 name="expense-reason"
                 placeholder={selfReceiptFormDefaults.expenseInfo.reason}
                 value={expenseInfo.reason}
@@ -670,7 +670,7 @@ export default function SelfReceiptDocumentForm({
                     <button
                       className="invoice-panel-remove"
                       type="button"
-                      aria-label={`Position ${index + 1} loeschen`}
+                      aria-label={`Position ${index + 1} löschen`}
                       disabled={positions.length === 1}
                       onClick={() => removePosition(position.id)}
                     >
@@ -699,12 +699,12 @@ export default function SelfReceiptDocumentForm({
               ))}
             </div>
             <button className="invoice-panel-add" type="button" onClick={addPosition}>
-              + Position hinzufuegen
+              + Position hinzufügen
             </button>
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
-            <h3>Fussdaten</h3>
+            <h3>Fußdaten</h3>
             <div className="offer-footer-form-columns">
               {[
                 {
@@ -724,7 +724,7 @@ export default function SelfReceiptDocumentForm({
                     ['vatId', 'USt-IdNr.'],
                     ['taxNumber', 'Steuernummer'],
                     ['commercialRegister', 'Handelsregister'],
-                    ['managingDirector', 'Geschaeftsfuehrer'],
+                    ['managingDirector', 'Geschäftsführer'],
                   ],
                 },
                 {

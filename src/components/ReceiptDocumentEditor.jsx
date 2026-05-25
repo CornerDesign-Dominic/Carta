@@ -65,7 +65,7 @@ const receiptMetaFields = [
 ];
 
 const receiptRecipientOptionalFields = [
-  { field: 'attention', label: 'Zusatz / zu Haenden' },
+  { field: 'attention', label: 'Zusatz / zu Händen' },
   { field: 'name', label: 'Name / Abteilung' },
 ];
 
@@ -151,7 +151,7 @@ const defaultReceiptData = {
       vatId: 'DE123456789',
       taxIdLabel: 'Steuernummer:',
       taxId: '12/345/67890',
-      representation: 'Geschaeftsfuehrer: Max Mustermann',
+      representation: 'Geschäftsführer: Max Mustermann',
     },
     bank: {
       bankName: 'Musterbank',
@@ -221,7 +221,7 @@ const defaultReceiptTextBlocks = [
 ];
 
 const receiptTextDefaults = {
-  receiptText: 'Hiermit bestaetigen wir den Erhalt des unten genannten Betrags.',
+  receiptText: 'Hiermit bestätigen wir den Erhalt des unten genannten Betrags.',
   purpose: 'Leistung oder Verwendungszweck kurz beschreiben.',
 };
 
@@ -481,7 +481,7 @@ function normalizeTextBlocks(templateTextBlocks) {
 
 function validateReceiptTemplate(template) {
   if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist ungueltig.');
+    throw new Error('Die JSON-Datei ist ungültig.');
   }
 
   if (template.documentType !== 'receipt') {
@@ -489,11 +489,11 @@ function validateReceiptTemplate(template) {
   }
 
   if (template.schemaVersion !== receiptSchemaVersion) {
-    throw new Error('Diese Quittungsversion wird nicht unterstuetzt.');
+    throw new Error('Diese Quittungsversion wird nicht unterstützt.');
   }
 
   if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthaelt keine Quittungsdaten.');
+    throw new Error('Die JSON-Datei enthält keine Quittungsdaten.');
   }
 
   return template.data;
@@ -817,7 +817,7 @@ export default function ReceiptDocumentEditor() {
     }
 
     if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswaehlen.');
+      window.alert('Bitte eine JSON-Datei auswählen.');
       return;
     }
 
@@ -845,7 +845,7 @@ export default function ReceiptDocumentEditor() {
       });
     } catch (error) {
       window.alert(
-        `PDF konnte nicht erstellt werden. Pruefe bitte, ob die Vercel Function lokal oder auf Vercel verfuegbar ist.\n\n${error.message}`,
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
       );
     } finally {
       setIsExporting(false);
@@ -926,37 +926,33 @@ export default function ReceiptDocumentEditor() {
                 </span>
               </label>
               <label className="receipt-tax-line">
-                <span className="receipt-tax-rate-group">
-                  <input
-                    className="document-label-input"
-                    aria-label={`Beschriftung ${labels.taxRate}`}
-                    value={labels.taxRate}
-                    onChange={(event) => updateLabel('taxRate', event.target.value)}
-                  />
-                  <input
-                    aria-label={labels.taxRate}
-                    value={amount.taxRate}
-                    onChange={(event) => updateAmount('taxRate', event.target.value)}
-                  />
-                  <span className="receipt-amount-unit" aria-hidden="true">
-                    %
-                  </span>
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${labels.taxRate}`}
+                  value={labels.taxRate}
+                  onChange={(event) => updateLabel('taxRate', event.target.value)}
+                />
+                <input
+                  aria-label={labels.taxRate}
+                  value={amount.taxRate}
+                  onChange={(event) => updateAmount('taxRate', event.target.value)}
+                />
+                <span className="receipt-amount-unit" aria-hidden="true">
+                  %
                 </span>
-                <span className="receipt-tax-amount-group">
-                  <input
-                    className="document-label-input"
-                    aria-label={`Beschriftung ${labels.taxAmount}`}
-                    value={labels.taxAmount}
-                    onChange={(event) => updateLabel('taxAmount', event.target.value)}
-                  />
-                  <input
-                    aria-label={labels.taxAmount}
-                    value={amount.taxAmount}
-                    onChange={(event) => updateAmount('taxAmount', event.target.value)}
-                  />
-                  <span className="receipt-amount-unit" aria-hidden="true">
-                    {'\u20ac'}
-                  </span>
+                <input
+                  className="document-label-input"
+                  aria-label={`Beschriftung ${labels.taxAmount}`}
+                  value={labels.taxAmount}
+                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
+                />
+                <input
+                  aria-label={labels.taxAmount}
+                  value={amount.taxAmount}
+                  onChange={(event) => updateAmount('taxAmount', event.target.value)}
+                />
+                <span className="receipt-amount-unit" aria-hidden="true">
+                  {'\u20ac'}
                 </span>
               </label>
               <label className="is-emphasized">
@@ -1041,7 +1037,7 @@ export default function ReceiptDocumentEditor() {
           <label className="receipt-bottom-field receipt-receiver-signature">
             <input
               className="document-label-input"
-              aria-label="Beschriftung Empfaenger-Unterschrift"
+              aria-label="Beschriftung Empfänger-Unterschrift"
               value={labels.receiverSignature}
               onChange={(event) => updateLabel('receiverSignature', event.target.value)}
             />

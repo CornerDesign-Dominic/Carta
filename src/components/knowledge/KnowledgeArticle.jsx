@@ -58,7 +58,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
     },
     {
       heading: 'Worauf sollte man achten?',
-      paragraphs: ['Diese Fehler kommen in der Praxis haeufig vor und sollten vermieden werden.'],
+      paragraphs: ['Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.'],
       list: article.commonMistakes,
     },
   ].filter((section) => section.paragraphs?.length || section.list?.length);
@@ -105,7 +105,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
             <h2>Passenden Generator nutzen</h2>
             <p>
               {generator.text
-                ?? 'Nutze den passenden Carta-Generator, um dein Dokument schnell und uebersichtlich zu erstellen.'}
+                ?? 'Nutze den passenden Carta-Generator, um dein Dokument schnell und übersichtlich zu erstellen.'}
             </p>
           </div>
           <button type="button" onClick={() => onOpenTool(generator.href)}>
@@ -114,7 +114,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
         </section>
       )}
 
-      <section className="knowledge-faq-section" aria-label="Haeufige Fragen und Hinweise">
+      <section className="knowledge-faq-section" aria-label="Häufige Fragen und Hinweise">
         {faqs.length > 0 && (
           <div className="knowledge-faq-list">
             {faqs.map((faq) => (
