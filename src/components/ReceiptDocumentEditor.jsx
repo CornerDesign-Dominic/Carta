@@ -653,6 +653,7 @@ export default function ReceiptDocumentEditor() {
           joinPlaceDate(defaultReceiptViewData.details.place, defaultReceiptViewData.details.receiptDate),
         ),
         purpose: usesExampleValue(details.purpose, defaultReceiptViewData.details.purpose),
+        receiptDate: usesExampleValue(details.receiptDate, defaultReceiptViewData.details.receiptDate),
         receiptId: usesExampleValue(details.receiptId, defaultReceiptViewData.details.receiptId),
         receiverSignature: usesExampleValue(
           details.receiverSignature,
@@ -1165,7 +1166,7 @@ export default function ReceiptDocumentEditor() {
               />
               <span className={`receipt-date-field${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}>
                 <input
-                  className="receipt-line-value receipt-date-display-input"
+                  className={`receipt-line-value receipt-date-display-input${dataCheckState.details.receiptDate ? ' document-data-check-marker' : ''}`}
                   aria-hidden="true"
                   readOnly
                   tabIndex="-1"
