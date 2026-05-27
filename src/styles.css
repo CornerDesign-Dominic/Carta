@@ -1251,6 +1251,19 @@ h1 {
   color: var(--ink);
 }
 
+.visual-toolbar button.is-active {
+  border-color: rgba(45, 91, 83, 0.68);
+  background: var(--accent-deep);
+  color: #fffdfa;
+  box-shadow: 0 8px 18px rgba(45, 91, 83, 0.18);
+}
+
+.visual-toolbar button.is-active:hover {
+  border-color: rgba(45, 91, 83, 0.78);
+  background: #244d47;
+  color: #fffdfa;
+}
+
 .invoice-template-input {
   display: none;
 }

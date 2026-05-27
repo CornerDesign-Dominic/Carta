@@ -708,6 +708,7 @@ export default function OfferDocumentEditor() {
         positions: {},
         recipient: {},
         sender: {},
+        textBlocks: {},
       };
     }
 
@@ -781,14 +782,25 @@ export default function OfferDocumentEditor() {
       footerChecks[field] = usesOfferExampleValue(footerLines[field], defaultOfferViewData.footerLines[field]);
     });
 
+    const textBlockChecks = Object.fromEntries(
+      textBlocks
+        .filter((block) => block.visible)
+        .map((block) => {
+          const defaultBlock = defaultOfferTextBlocks.find(({ id }) => id === block.id);
+
+          return [block.id, usesOfferExampleValue(block.value, defaultBlock?.value)];
+        }),
+    );
+
     return {
       details: detailChecks,
       footerLines: footerChecks,
       positions: positionChecks,
       recipient: recipientChecks,
       sender: senderChecks,
+      textBlocks: textBlockChecks,
     };
-  }, [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender]);
+  }, [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender, textBlocks]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
 
@@ -808,12 +820,17 @@ export default function OfferDocumentEditor() {
     setLabels((current) => ({ ...current, [field]: value }));
   }
 
-  function disableDataCheckMode() {
+  function toggleEditableMode() {
     setIsDataCheckMode(false);
+    setHighlightFields((current) => !current);
+  }
+
+  function toggleDataCheckMode() {
+    setHighlightFields(false);
+    setIsDataCheckMode((current) => !current);
   }
 
   function updateSender(field, value) {
-    disableDataCheckMode();
     setOfferData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -856,7 +873,6 @@ export default function OfferDocumentEditor() {
   }
 
   function updateRecipient(field, value) {
-    disableDataCheckMode();
     setOfferData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -907,7 +923,6 @@ export default function OfferDocumentEditor() {
   }
 
   function updateDetail(field, value) {
-    disableDataCheckMode();
     setOfferData((current) => {
       if (['internalNumber', 'externalNumber', 'customerNumber'].includes(field)) {
         return { ...current, references: { ...current.references, [field]: value } };
@@ -918,7 +933,6 @@ export default function OfferDocumentEditor() {
   }
 
   function updateFooterLine(field, value) {
-    disableDataCheckMode();
     setOfferData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -965,7 +979,6 @@ export default function OfferDocumentEditor() {
   }
 
   function updatePosition(positionId, field, value) {
-    disableDataCheckMode();
     setPositions((current) =>
       current.map((position) =>
         position.id === positionId ? { ...position, [field]: value } : position,
@@ -974,7 +987,6 @@ export default function OfferDocumentEditor() {
   }
 
   function movePosition(positionId, direction) {
-    disableDataCheckMode();
     setPositions((current) => {
       const index = current.findIndex((position) => position.id === positionId);
       const targetIndex = index + direction;
@@ -1059,12 +1071,10 @@ export default function OfferDocumentEditor() {
   }
 
   function addPosition() {
-    disableDataCheckMode();
     setPositions((current) => [...current, createOfferPosition()]);
   }
 
   function removePosition(positionId) {
-    disableDataCheckMode();
     setPositions((current) =>
       current.length === 1 ? current : current.filter((position) => position.id !== positionId),
     );
@@ -1215,6 +1225,7 @@ export default function OfferDocumentEditor() {
             textBlockRefs.current[block.id] = element;
           }}
           ariaLabel={block.label}
+          className={dataCheckState.textBlocks[block.id] ? 'document-data-check-marker' : ''}
           value={block.value}
           onChange={(value, event) => {
             updateTextBlock(block.id, { value });
@@ -1270,8 +1281,8 @@ export default function OfferDocumentEditor() {
         onLoadJson={handleLoadJson}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
-        onToggleDataCheck={() => setIsDataCheckMode((current) => !current)}
-        onToggleEditable={() => setHighlightFields((current) => !current)}
+        onToggleDataCheck={toggleDataCheckMode}
+        onToggleEditable={toggleEditableMode}
       />
 
       <A4Page
