@@ -381,6 +381,26 @@ function createOfferPosition() {
   };
 }
 
+const defaultOfferViewData = createOfferViewData(defaultOfferData);
+const defaultOfferPositionForCheck = {
+  description: 'Leistung beschreiben',
+  unitPrice: '0',
+  quantity: '1',
+  unit: 'Stk.',
+  taxRate: '19',
+};
+
+function trimCheckValue(value) {
+  return String(value ?? '').trim();
+}
+
+function usesOfferExampleValue(value, defaultValue) {
+  const current = trimCheckValue(value);
+  const expected = trimCheckValue(defaultValue);
+
+  return expected !== '' && (current === '' || current === expected);
+}
+
 function createFieldConfig(fields) {
   return {
     hidden: [],
@@ -616,6 +636,7 @@ function validateOfferTemplate(template) {
 
 export default function OfferDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialOfferLabels);
@@ -679,6 +700,95 @@ export default function OfferDocumentEditor() {
     () => createOfferPrintItems({ positions, textBlocks }),
     [positions, textBlocks],
   );
+  const dataCheckState = useMemo(() => {
+    if (!isDataCheckMode) {
+      return {
+        details: {},
+        footerLines: {},
+        positions: {},
+        recipient: {},
+        sender: {},
+      };
+    }
+
+    const visibleContactFields = getOrderedDefinitions('contact', offerContactFields).filter(
+      ({ field }) => !fieldConfig.contact.hidden.includes(field),
+    );
+    const visibleDetailFields = getOrderedDefinitions('details', offerMetaFields).filter(
+      ({ field }) => !fieldConfig.details.hidden.includes(field),
+    );
+    const visibleFooterMiddleFields = getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
+      ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+    );
+    const isRecipientFieldVisible = (field) => !fieldConfig.recipient.hidden.includes(field);
+
+    const senderChecks = {
+      company: usesOfferExampleValue(sender.company, defaultOfferViewData.sender.company),
+      senderLine: usesOfferExampleValue(sender.senderLine, defaultOfferViewData.sender.senderLine),
+    };
+
+    visibleContactFields.forEach(({ field }) => {
+      senderChecks[field] = usesOfferExampleValue(sender[field], defaultOfferViewData.sender[field]);
+    });
+
+    const recipientChecks = {
+      company: usesOfferExampleValue(recipient.company, defaultOfferViewData.recipient.company),
+      street: usesOfferExampleValue(recipient.street, defaultOfferViewData.recipient.street),
+      cityLine: usesOfferExampleValue(recipient.cityLine, defaultOfferViewData.recipient.cityLine),
+    };
+
+    if (isRecipientFieldVisible('attention')) {
+      recipientChecks.attention = usesOfferExampleValue(
+        recipient.attention,
+        defaultOfferViewData.recipient.attention,
+      );
+    }
+
+    if (isRecipientFieldVisible('name')) {
+      recipientChecks.name = usesOfferExampleValue(recipient.name, defaultOfferViewData.recipient.name);
+    }
+
+    const detailChecks = {};
+    visibleDetailFields.forEach(({ field }) => {
+      detailChecks[field] = usesOfferExampleValue(details[field], defaultOfferViewData.details[field]);
+    });
+
+    const positionChecks = Object.fromEntries(
+      positions.map((position) => [
+        position.id,
+        {
+          description: usesOfferExampleValue(position.description, defaultOfferPositionForCheck.description),
+          unitPrice: usesOfferExampleValue(position.unitPrice, defaultOfferPositionForCheck.unitPrice),
+          quantity: usesOfferExampleValue(position.quantity, defaultOfferPositionForCheck.quantity),
+          unit: usesOfferExampleValue(position.unit, defaultOfferPositionForCheck.unit),
+          taxRate: usesOfferExampleValue(position.taxRate, defaultOfferPositionForCheck.taxRate),
+        },
+      ]),
+    );
+
+    const footerChecks = {
+      companyName: usesOfferExampleValue(footerLines.companyName, defaultOfferViewData.footerLines.companyName),
+      companyStreet: usesOfferExampleValue(footerLines.companyStreet, defaultOfferViewData.footerLines.companyStreet),
+      companyCity: usesOfferExampleValue(footerLines.companyCity, defaultOfferViewData.footerLines.companyCity),
+      companyExtra: usesOfferExampleValue(footerLines.companyExtra, defaultOfferViewData.footerLines.companyExtra),
+      bankName: usesOfferExampleValue(footerLines.bankName, defaultOfferViewData.footerLines.bankName),
+      iban: usesOfferExampleValue(footerLines.iban, defaultOfferViewData.footerLines.iban),
+      bic: usesOfferExampleValue(footerLines.bic, defaultOfferViewData.footerLines.bic),
+      bankExtra: usesOfferExampleValue(footerLines.bankExtra, defaultOfferViewData.footerLines.bankExtra),
+    };
+
+    visibleFooterMiddleFields.forEach(({ field }) => {
+      footerChecks[field] = usesOfferExampleValue(footerLines[field], defaultOfferViewData.footerLines[field]);
+    });
+
+    return {
+      details: detailChecks,
+      footerLines: footerChecks,
+      positions: positionChecks,
+      recipient: recipientChecks,
+      sender: senderChecks,
+    };
+  }, [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
 
@@ -698,7 +808,12 @@ export default function OfferDocumentEditor() {
     setLabels((current) => ({ ...current, [field]: value }));
   }
 
+  function disableDataCheckMode() {
+    setIsDataCheckMode(false);
+  }
+
   function updateSender(field, value) {
+    disableDataCheckMode();
     setOfferData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -741,6 +856,7 @@ export default function OfferDocumentEditor() {
   }
 
   function updateRecipient(field, value) {
+    disableDataCheckMode();
     setOfferData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -791,6 +907,7 @@ export default function OfferDocumentEditor() {
   }
 
   function updateDetail(field, value) {
+    disableDataCheckMode();
     setOfferData((current) => {
       if (['internalNumber', 'externalNumber', 'customerNumber'].includes(field)) {
         return { ...current, references: { ...current.references, [field]: value } };
@@ -801,6 +918,7 @@ export default function OfferDocumentEditor() {
   }
 
   function updateFooterLine(field, value) {
+    disableDataCheckMode();
     setOfferData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -847,6 +965,7 @@ export default function OfferDocumentEditor() {
   }
 
   function updatePosition(positionId, field, value) {
+    disableDataCheckMode();
     setPositions((current) =>
       current.map((position) =>
         position.id === positionId ? { ...position, [field]: value } : position,
@@ -855,6 +974,7 @@ export default function OfferDocumentEditor() {
   }
 
   function movePosition(positionId, direction) {
+    disableDataCheckMode();
     setPositions((current) => {
       const index = current.findIndex((position) => position.id === positionId);
       const targetIndex = index + direction;
@@ -939,10 +1059,12 @@ export default function OfferDocumentEditor() {
   }
 
   function addPosition() {
+    disableDataCheckMode();
     setPositions((current) => [...current, createOfferPosition()]);
   }
 
   function removePosition(positionId) {
+    disableDataCheckMode();
     setPositions((current) =>
       current.length === 1 ? current : current.filter((position) => position.id !== positionId),
     );
@@ -1003,6 +1125,7 @@ export default function OfferDocumentEditor() {
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
@@ -1139,6 +1262,7 @@ export default function OfferDocumentEditor() {
 
       <DocumentToolbar
         ariaLabel="Angebot Werkzeuge"
+        isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
         jsonInputRef={jsonInputRef}
@@ -1146,17 +1270,19 @@ export default function OfferDocumentEditor() {
         onLoadJson={handleLoadJson}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
+        onToggleDataCheck={() => setIsDataCheckMode((current) => !current)}
         onToggleEditable={() => setHighlightFields((current) => !current)}
       />
 
       <A4Page
         ref={sheetRef}
         ariaLabel="Editierbares Angebot"
-        className="offer-sheet invoice-sheet"
+        className={`offer-sheet invoice-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
         <SenderBlock
           contactFields={getOrderedDefinitions('contact', offerContactFields)}
+          dataCheckFields={dataCheckState.sender}
           hiddenFields={getHiddenFields('contact', offerContactFields)}
           labels={labels}
           sender={sender}
@@ -1168,6 +1294,7 @@ export default function OfferDocumentEditor() {
 
         <section className="invoice-address-row">
           <RecipientBlock
+            dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
             hiddenFields={getHiddenFields('recipient', offerRecipientOptionalFields)}
             recipient={recipient}
             senderLine={sender.senderLine}
@@ -1177,6 +1304,7 @@ export default function OfferDocumentEditor() {
           />
 
           <DocumentMetaBlock
+            dataCheckFields={dataCheckState.details}
             dateInputRefs={dateInputRefs}
             details={details}
             emphasizedField="offerNumber"
@@ -1204,6 +1332,7 @@ export default function OfferDocumentEditor() {
 
         <PositionTable
           calculatePosition={calculatePosition}
+          dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
           labels={labels}
           positions={positions}
@@ -1235,6 +1364,7 @@ export default function OfferDocumentEditor() {
             getOrderedDefinitions('footerMiddle', offerFooterColumns[1]),
             offerFooterColumns[2],
           ]}
+          dataCheckFields={dataCheckState.footerLines}
           footerLines={footerLines}
           formatFooterLine={(field, value) => formatOfferFooterLine(field, value, footerLines)}
           hiddenFields={getHiddenFields('footerMiddle', offerFooterColumns[1])}

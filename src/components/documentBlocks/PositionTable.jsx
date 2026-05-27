@@ -2,6 +2,7 @@ import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
 
 export default function PositionTable({
   calculatePosition,
+  dataCheckPositions = {},
   formatCurrency,
   labels,
   onLabelChange,
@@ -78,6 +79,7 @@ export default function PositionTable({
               </td>
               <td>
                 <input
+                  className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
                   aria-label={`Beschreibung Position ${index + 1}`}
                   value={position.description}
                   onChange={(event) => onPositionChange(position.id, 'description', event.target.value)}
@@ -85,6 +87,7 @@ export default function PositionTable({
               </td>
               <td>
                 <input
+                  className={dataCheckPositions[position.id]?.unitPrice ? 'document-data-check-marker' : undefined}
                   aria-label={`Einzelpreis Position ${index + 1}`}
                   inputMode="decimal"
                   type="text"
@@ -94,6 +97,7 @@ export default function PositionTable({
               </td>
               <td>
                 <input
+                  className={dataCheckPositions[position.id]?.quantity ? 'document-data-check-marker' : undefined}
                   aria-label={`Anzahl Position ${index + 1}`}
                   inputMode="decimal"
                   type="text"
@@ -103,6 +107,7 @@ export default function PositionTable({
               </td>
               <td>
                 <input
+                  className={dataCheckPositions[position.id]?.unit ? 'document-data-check-marker' : undefined}
                   aria-label={`Einheit Position ${index + 1}`}
                   value={position.unit}
                   onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
@@ -111,6 +116,7 @@ export default function PositionTable({
               <td>
                 <span className="invoice-tax-rate-cell">
                   <input
+                    className={dataCheckPositions[position.id]?.taxRate ? 'document-data-check-marker' : undefined}
                     aria-label={`Umsatzsteuer Position ${index + 1}`}
                     inputMode="decimal"
                     type="text"

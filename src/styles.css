@@ -1447,6 +1447,27 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   background: #f7fbfb;
 }
 
+.offer-sheet.is-data-check-mode input.document-data-check-marker,
+.offer-sheet.is-data-check-mode textarea.document-data-check-marker,
+.offer-sheet.is-data-check-mode select.document-data-check-marker {
+  border-color: rgba(201, 124, 36, 0.46);
+  background: rgba(255, 214, 120, 0.32);
+  box-shadow: inset 0 0 0 1px rgba(201, 124, 36, 0.16);
+}
+
+.offer-sheet.is-data-check-mode .invoice-date-field.document-data-check-marker .invoice-date-display {
+  border-radius: 3px;
+  background: rgba(255, 214, 120, 0.32);
+  box-shadow: inset 0 0 0 1px rgba(201, 124, 36, 0.16);
+}
+
+.offer-sheet.is-export-mode .document-data-check-marker,
+.offer-sheet.is-export-mode .invoice-date-field.document-data-check-marker .invoice-date-display {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
 .offer-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 230px;
@@ -5497,6 +5518,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   .offer-sheet.is-highlight-mode input,
   .offer-sheet.is-highlight-mode textarea,
   .offer-sheet.is-highlight-mode select,
+  .offer-sheet.is-data-check-mode input,
+  .offer-sheet.is-data-check-mode textarea,
+  .offer-sheet.is-data-check-mode select,
   .offer-sheet.is-export-mode input,
   .offer-sheet.is-export-mode textarea,
   .offer-sheet.is-export-mode select {
@@ -5508,6 +5532,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
   .offer-sheet select {
     appearance: none;
+  }
+
+  .offer-sheet.is-data-check-mode .invoice-date-field.document-data-check-marker .invoice-date-display {
+    background: transparent;
+    box-shadow: none;
   }
 
   .receipt-sheet input,

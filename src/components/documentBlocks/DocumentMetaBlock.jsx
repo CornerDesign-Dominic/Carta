@@ -7,6 +7,7 @@ function formatGermanDate(value) {
 }
 
 export default function DocumentMetaBlock({
+  dataCheckFields = {},
   dateInputRefs,
   details,
   emphasizedField,
@@ -33,7 +34,7 @@ export default function DocumentMetaBlock({
               onChange={(event) => onLabelChange(field, event.target.value)}
             />
             {type === 'date' ? (
-              <span className="invoice-date-field">
+              <span className={`invoice-date-field${dataCheckFields[field] ? ' document-data-check-marker' : ''}`}>
                 <span className="invoice-date-display" aria-hidden="true">
                   {formatGermanDate(details[field])}
                 </span>
@@ -58,6 +59,7 @@ export default function DocumentMetaBlock({
               </span>
             ) : (
               <input
+                className={dataCheckFields[field] ? 'document-data-check-marker' : undefined}
                 aria-label={ariaLabel}
                 autoComplete={autoComplete ?? 'off'}
                 inputMode="text"

@@ -15,9 +15,11 @@ export default function DocumentToolbar({
   editLabel = 'Bearbeiten',
   exportingLabel = 'PDF wird erstellt',
   isEditable,
+  isDataCheckActive = false,
   isExporting,
   jsonInputRef,
   onCreatePdf,
+  onToggleDataCheck,
   onLoadJson,
   onPrint,
   onSaveJson,
@@ -55,6 +57,21 @@ export default function DocumentToolbar({
         >
           {isEditable ? previewLabel : editLabel}
         </button>
+        {onToggleDataCheck && (
+          <button
+            className={isDataCheckActive ? 'is-active' : undefined}
+            type="button"
+            title="Beispieldaten im Dokument markieren"
+            aria-label="Beispieldaten im Dokument markieren"
+            aria-pressed={isDataCheckActive}
+            onClick={() => {
+              trackDocumentAction('toggle_data_check');
+              onToggleDataCheck?.();
+            }}
+          >
+            Daten prüfen
+          </button>
+        )}
       </div>
       <div className="visual-toolbar-group">
         <button
