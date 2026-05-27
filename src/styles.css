@@ -2504,18 +2504,27 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   height: 26px;
   min-height: 26px;
   align-self: end;
-  transform: translateY(-3px);
+  transform: none;
 }
 
 .receipt-date-field .invoice-date-display {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  align-items: flex-end;
+  justify-content: flex-end;
   align-self: end;
   width: 100%;
-  padding-bottom: 7px;
+  height: 26px;
+  padding: 0 0 7px;
   font-size: 0.86rem;
   line-height: 1.25;
+  text-align: right;
 }
 
 .receipt-date-field .invoice-date-input {
+  grid-column: 1 / -1;
+  grid-row: 1;
   height: 26px;
   min-height: 26px;
 }
@@ -2528,7 +2537,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   grid-column: 1;
   grid-row: 1;
   align-self: end;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   transform: none;
 }
 
