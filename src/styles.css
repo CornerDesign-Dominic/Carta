@@ -2478,8 +2478,47 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   align-self: end;
 }
 
-.receipt-place-date-line .receipt-line-value {
+.receipt-place-date-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(118px, 0.38fr);
+  gap: 12px;
+  align-items: end;
+  width: 100%;
+  min-width: 0;
+}
+
+.receipt-place-date-fields .receipt-line-value {
+  height: 26px;
+  padding: 0 0 7px !important;
+}
+
+.receipt-place-date-fields .receipt-place-input {
   text-align: right;
+}
+
+.receipt-date-field {
+  width: 100%;
+  height: 26px;
+  min-height: 26px;
+  align-self: end;
+}
+
+.receipt-date-field .invoice-date-display {
+  align-self: end;
+  width: 100%;
+  padding-bottom: 7px;
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.receipt-date-field .invoice-date-input {
+  height: 26px;
+  min-height: 26px;
+}
+
+.receipt-date-field .invoice-date-picker {
+  right: 0;
+  left: auto;
 }
 
 .receipt-bottom-row {
@@ -2831,7 +2870,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .invoice-sheet:hover .invoice-icon-action,
 .invoice-sheet:focus-within .invoice-icon-action,
-.invoice-sheet.is-highlight-mode .invoice-icon-action {
+.invoice-sheet.is-highlight-mode .invoice-icon-action,
+.receipt-sheet:hover .invoice-icon-action,
+.receipt-sheet:focus-within .invoice-icon-action,
+.receipt-sheet.is-highlight-mode .invoice-icon-action {
   opacity: 1;
 }
 

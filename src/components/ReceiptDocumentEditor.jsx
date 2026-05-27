@@ -623,6 +623,7 @@ export default function ReceiptDocumentEditor() {
   });
   const sheetRef = useRef(null);
   const jsonInputRef = useRef(null);
+  const dateInputRefs = useRef({});
   const { sender, details, amount } = useMemo(
     () => createViewData(receiptData),
     [receiptData],
@@ -679,6 +680,12 @@ export default function ReceiptDocumentEditor() {
   function toggleDataCheckMode() {
     setHighlightFields(false);
     setIsDataCheckMode((current) => !current);
+  }
+
+  function openDatePicker(field) {
+    const dateInput = dateInputRefs.current[field];
+    dateInput?.showPicker?.();
+    dateInput?.focus();
   }
 
   function updateSender(field, value) {
@@ -1149,16 +1156,37 @@ export default function ReceiptDocumentEditor() {
               value={labels.placeDate}
               onChange={(event) => updateLabel('placeDate', event.target.value)}
             />
-            <input
-              className={`receipt-line-value${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}
-              aria-label={labels.placeDate}
-              value={joinPlaceDate(details.place, details.receiptDate)}
-              onChange={(event) => {
-                const [place, ...dateParts] = event.target.value.split(',');
-                updateDetail('place', place.trim());
-                updateDetail('receiptDate', dateParts.join(',').trim());
-              }}
-            />
+            <span className="receipt-place-date-fields">
+              <input
+                className={`receipt-line-value receipt-place-input${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}
+                aria-label="Ort"
+                value={details.place}
+                onChange={(event) => updateDetail('place', event.target.value)}
+              />
+              <span className={`invoice-date-field receipt-date-field${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}>
+                <span className="invoice-date-display" aria-hidden="true">
+                  {formatGermanDate(details.receiptDate)}
+                </span>
+                <input
+                  ref={(element) => {
+                    dateInputRefs.current.receiptDate = element;
+                  }}
+                  className="invoice-date-input"
+                  aria-label="Datum"
+                  type="date"
+                  value={details.receiptDate}
+                  onChange={(event) => updateDetail('receiptDate', event.target.value)}
+                />
+                <button
+                  className="invoice-icon-action invoice-date-picker"
+                  type="button"
+                  aria-label="Datum auswählen"
+                  onClick={() => openDatePicker('receiptDate')}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              </span>
+            </span>
           </label>
         </section>
 
