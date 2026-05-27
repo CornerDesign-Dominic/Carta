@@ -383,7 +383,12 @@ function createViewData(data) {
       netAmount: firstFilled(data.amount.netAmount, defaultReceiptData.amount.netAmount),
       taxRate: firstFilled(data.amount.taxRate, defaultReceiptData.amount.taxRate),
       taxAmount: firstFilled(data.amount.taxAmount, defaultReceiptData.amount.taxAmount),
-      grossAmount: firstFilled(data.amount.grossAmount, defaultReceiptData.amount.grossAmount),
+      grossAmount: calculateReceiptGrossAmount({
+        netAmount: firstFilled(data.amount.netAmount, defaultReceiptData.amount.netAmount),
+        taxRate: firstFilled(data.amount.taxRate, defaultReceiptData.amount.taxRate),
+        taxAmount: firstFilled(data.amount.taxAmount, defaultReceiptData.amount.taxAmount),
+        grossAmount: firstFilled(data.amount.grossAmount, defaultReceiptData.amount.grossAmount),
+      }),
       amountInWords: firstFilled(data.amount.amountInWords, defaultReceiptData.amount.amountInWords),
       settlementMethod: firstFilled(data.amount.settlementMethod, defaultReceiptData.amount.settlementMethod),
     },
@@ -418,6 +423,56 @@ function formatGermanDate(value) {
 
 function joinPlaceDate(place, date) {
   return [String(place ?? '').trim(), formatGermanDate(date)].filter(Boolean).join(', ');
+}
+
+function parseReceiptAmount(value) {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value)
+    .trim()
+    .replace(/\s/g, '')
+    .replace(/\./g, '')
+    .replace(',', '.');
+  if (!normalized) return null;
+  const parsed = Number.parseFloat(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function formatReceiptAmount(value) {
+  return new Intl.NumberFormat('de-DE', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+function calculateReceiptGrossAmount(amount) {
+  const netAmount = parseReceiptAmount(amount.netAmount);
+
+  if (netAmount === null) {
+    return String(amount.grossAmount ?? '');
+  }
+
+  const taxAmount = parseReceiptAmount(amount.taxAmount);
+  if (taxAmount !== null) {
+    return formatReceiptAmount(netAmount + taxAmount);
+  }
+
+  const taxRate = parseReceiptAmount(amount.taxRate);
+  if (taxRate !== null) {
+    return formatReceiptAmount(netAmount + netAmount * (taxRate / 100));
+  }
+
+  return String(amount.grossAmount ?? '');
+}
+
+function calculateReceiptTaxAmount(amount) {
+  const netAmount = parseReceiptAmount(amount.netAmount);
+  const taxRate = parseReceiptAmount(amount.taxRate);
+
+  if (netAmount === null || taxRate === null) {
+    return null;
+  }
+
+  return formatReceiptAmount(netAmount * (taxRate / 100));
 }
 
 function createPdfFileName(title, receiptId) {
@@ -572,6 +627,10 @@ export default function ReceiptDocumentEditor() {
     () => createViewData(receiptData),
     [receiptData],
   );
+  const formAmount = useMemo(
+    () => ({ ...receiptData.amount, grossAmount: amount.grossAmount }),
+    [amount.grossAmount, receiptData.amount],
+  );
   const dataCheckState = useMemo(() => {
     if (!isDataCheckMode) {
       return { amount: {}, details: {}, sender: {} };
@@ -723,10 +782,26 @@ export default function ReceiptDocumentEditor() {
   }
 
   function updateAmount(field, value) {
-    setReceiptData((current) => ({
-      ...current,
-      amount: { ...current.amount, [field]: value },
-    }));
+    setReceiptData((current) => {
+      const nextAmount = { ...current.amount, [field]: value };
+
+      if (field === 'netAmount' || field === 'taxRate') {
+        const taxAmount = calculateReceiptTaxAmount({
+          ...nextAmount,
+          netAmount: firstFilled(nextAmount.netAmount, defaultReceiptData.amount.netAmount),
+          taxRate: firstFilled(nextAmount.taxRate, defaultReceiptData.amount.taxRate),
+        });
+
+        if (taxAmount !== null) {
+          nextAmount.taxAmount = taxAmount;
+        }
+      }
+
+      return {
+        ...current,
+        amount: nextAmount,
+      };
+    });
   }
 
   function updateFooterLabel(field, value) {
@@ -851,6 +926,7 @@ export default function ReceiptDocumentEditor() {
       data: {
         labels,
         ...receiptData,
+        amount: { ...receiptData.amount, grossAmount: amount.grossAmount },
         textBlocks,
         fieldConfig,
       },
@@ -922,7 +998,7 @@ export default function ReceiptDocumentEditor() {
   return (
     <div className="visual-editor invoice-visual-editor receipt-visual-editor">
       <ReceiptDocumentForm
-        amount={receiptData.amount}
+        amount={formAmount}
         defaults={{ ...defaultReceiptData, textBlocks: receiptTextDefaults }}
         details={{ ...receiptData.details, ...receiptData.references }}
         isOpen={isFormPanelOpen}
@@ -1027,7 +1103,7 @@ export default function ReceiptDocumentEditor() {
                   className={dataCheckState.amount.grossAmount ? 'document-data-check-marker' : undefined}
                   aria-label={labels.grossAmount}
                   value={amount.grossAmount}
-                  onChange={(event) => updateAmount('grossAmount', event.target.value)}
+                  readOnly
                 />
                 <span className="receipt-amount-unit" aria-hidden="true">
                   {'\u20ac'}

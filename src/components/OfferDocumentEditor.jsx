@@ -782,23 +782,13 @@ export default function OfferDocumentEditor() {
       footerChecks[field] = usesOfferExampleValue(footerLines[field], defaultOfferViewData.footerLines[field]);
     });
 
-    const textBlockChecks = Object.fromEntries(
-      textBlocks
-        .filter((block) => block.visible)
-        .map((block) => {
-          const defaultBlock = defaultOfferTextBlocks.find(({ id }) => id === block.id);
-
-          return [block.id, usesOfferExampleValue(block.value, defaultBlock?.value)];
-        }),
-    );
-
     return {
       details: detailChecks,
       footerLines: footerChecks,
       positions: positionChecks,
       recipient: recipientChecks,
       sender: senderChecks,
-      textBlocks: textBlockChecks,
+      textBlocks: {},
     };
   }, [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender, textBlocks]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
