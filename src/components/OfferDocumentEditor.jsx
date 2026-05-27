@@ -803,6 +803,11 @@ export default function OfferDocumentEditor() {
   }, [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender, textBlocks]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+  const viewModeHint = isDataCheckMode
+    ? 'Ansichtsmodus: Beispieldaten hervorheben & bearbeiten'
+    : highlightFields
+      ? 'Ansichtsmodus: Felder hervorheben & bearbeiten'
+      : 'Ansichtsmodus: Vorschau & Bearbeiten';
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -1284,6 +1289,8 @@ export default function OfferDocumentEditor() {
         onToggleDataCheck={toggleDataCheckMode}
         onToggleEditable={toggleEditableMode}
       />
+
+      <p className="document-mode-hint">{viewModeHint}</p>
 
       <A4Page
         ref={sheetRef}

@@ -1264,6 +1264,21 @@ h1 {
   color: #fffdfa;
 }
 
+.document-mode-hint {
+  margin: -18px auto -8px;
+  width: min(100%, 794px);
+  padding: 9px 12px;
+  border: 1px solid rgba(201, 196, 186, 0.62);
+  border-radius: 6px;
+  background: rgba(255, 253, 249, 0.78);
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(36, 35, 31, 0.025);
+}
+
 .invoice-template-input {
   display: none;
 }
@@ -5377,6 +5392,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   body.document-print-mode .feedback-widget,
   body.document-print-mode .invoice-form-panel,
   body.document-print-mode .visual-toolbar {
+    display: none;
+  }
+
+  body.document-print-mode .document-mode-hint {
     display: none;
   }
 
