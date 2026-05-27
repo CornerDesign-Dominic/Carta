@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
+import { getDocumentModeHint, usesExampleValue } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const receiptSchemaVersion = '1.0';
@@ -407,6 +408,8 @@ function createViewData(data) {
   };
 }
 
+const defaultReceiptViewData = createViewData(defaultReceiptData);
+
 function formatGermanDate(value) {
   const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
 
@@ -500,6 +503,7 @@ function validateReceiptTemplate(template) {
 }
 
 function ReceiptHeaderAddress({
+  dataCheckFields = {},
   onSenderChange,
   sender,
 }) {
@@ -507,17 +511,20 @@ function ReceiptHeaderAddress({
     <div className="receipt-header-address">
       <div className="editable-group">
         <input
+          className={dataCheckFields.company ? 'document-data-check-marker' : undefined}
           aria-label="Aussteller Firmenname"
           value={sender.company}
           onChange={(event) => onSenderChange('company', event.target.value)}
         />
       </div>
       <input
+        className={dataCheckFields.streetLine ? 'document-data-check-marker' : undefined}
         aria-label="Aussteller Strasse und Hausnummer"
         value={sender.streetLine}
         onChange={(event) => onSenderChange('address', splitStreetLine(event.target.value))}
       />
       <input
+        className={dataCheckFields.cityLine ? 'document-data-check-marker' : undefined}
         aria-label="Aussteller PLZ und Stadt"
         value={sender.cityLine}
         onChange={(event) => onSenderChange('address', splitCityLine(event.target.value))}
@@ -526,7 +533,7 @@ function ReceiptHeaderAddress({
   );
 }
 
-function ReceiptLineField({ label, onLabelChange, value, onChange, valueClassName = '' }) {
+function ReceiptLineField({ dataCheck = false, label, onLabelChange, value, onChange, valueClassName = '' }) {
   return (
     <label className="receipt-line-field">
       <input
@@ -536,7 +543,7 @@ function ReceiptLineField({ label, onLabelChange, value, onChange, valueClassNam
         onChange={(event) => onLabelChange(event.target.value)}
       />
       <input
-        className={['receipt-line-value', valueClassName].filter(Boolean).join(' ')}
+        className={['receipt-line-value', valueClassName, dataCheck ? 'document-data-check-marker' : ''].filter(Boolean).join(' ')}
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -547,6 +554,7 @@ function ReceiptLineField({ label, onLabelChange, value, onChange, valueClassNam
 
 export default function ReceiptDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialReceiptLabels);
@@ -564,9 +572,54 @@ export default function ReceiptDocumentEditor() {
     () => createViewData(receiptData),
     [receiptData],
   );
+  const dataCheckState = useMemo(() => {
+    if (!isDataCheckMode) {
+      return { amount: {}, details: {}, sender: {} };
+    }
+
+    return {
+      amount: {
+        netAmount: usesExampleValue(amount.netAmount, defaultReceiptViewData.amount.netAmount),
+        taxRate: usesExampleValue(amount.taxRate, defaultReceiptViewData.amount.taxRate),
+        taxAmount: usesExampleValue(amount.taxAmount, defaultReceiptViewData.amount.taxAmount),
+        grossAmount: usesExampleValue(amount.grossAmount, defaultReceiptViewData.amount.grossAmount),
+        amountInWords: usesExampleValue(amount.amountInWords, defaultReceiptViewData.amount.amountInWords),
+      },
+      details: {
+        bookingNote: usesExampleValue(details.bookingNote, defaultReceiptViewData.details.bookingNote),
+        from: usesExampleValue(details.from, defaultReceiptViewData.details.from),
+        placeDate: usesExampleValue(
+          joinPlaceDate(details.place, details.receiptDate),
+          joinPlaceDate(defaultReceiptViewData.details.place, defaultReceiptViewData.details.receiptDate),
+        ),
+        purpose: usesExampleValue(details.purpose, defaultReceiptViewData.details.purpose),
+        receiptId: usesExampleValue(details.receiptId, defaultReceiptViewData.details.receiptId),
+        receiverSignature: usesExampleValue(
+          details.receiverSignature,
+          defaultReceiptViewData.details.receiverSignature,
+        ),
+      },
+      sender: {
+        cityLine: usesExampleValue(sender.cityLine, defaultReceiptViewData.sender.cityLine),
+        company: usesExampleValue(sender.company, defaultReceiptViewData.sender.company),
+        streetLine: usesExampleValue(sender.streetLine, defaultReceiptViewData.sender.streetLine),
+      },
+    };
+  }, [amount, details, isDataCheckMode, sender]);
+  const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
+  }
+
+  function toggleEditableMode() {
+    setIsDataCheckMode(false);
+    setHighlightFields((current) => !current);
+  }
+
+  function toggleDataCheckMode() {
+    setHighlightFields(false);
+    setIsDataCheckMode((current) => !current);
   }
 
   function updateSender(field, value) {
@@ -829,6 +882,7 @@ export default function ReceiptDocumentEditor() {
       setReceiptData(mergeWithDefaults(data));
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
@@ -881,6 +935,7 @@ export default function ReceiptDocumentEditor() {
 
       <DocumentToolbar
         ariaLabel="Quittung Werkzeuge"
+        isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
         jsonInputRef={jsonInputRef}
@@ -888,17 +943,20 @@ export default function ReceiptDocumentEditor() {
         onLoadJson={handleLoadJson}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
-        onToggleEditable={() => setHighlightFields((current) => !current)}
+        onToggleDataCheck={toggleDataCheckMode}
+        onToggleEditable={toggleEditableMode}
       />
+
+      <p className="document-mode-hint">{viewModeHint}</p>
 
       <A5LandscapePage
         ref={sheetRef}
         ariaLabel="Editierbare Quittung"
-        className="receipt-sheet"
+        className={`receipt-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
         <header className="receipt-header">
-          <ReceiptHeaderAddress sender={sender} onSenderChange={updateSender} />
+          <ReceiptHeaderAddress dataCheckFields={dataCheckState.sender} sender={sender} onSenderChange={updateSender} />
           <div className="receipt-header-summary">
             <h2 className="invoice-document-title receipt-document-title">
               <input
@@ -917,6 +975,7 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateLabel('netAmount', event.target.value)}
                 />
                 <input
+                  className={dataCheckState.amount.netAmount ? 'document-data-check-marker' : undefined}
                   aria-label={labels.netAmount}
                   value={amount.netAmount}
                   onChange={(event) => updateAmount('netAmount', event.target.value)}
@@ -933,6 +992,7 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateLabel('taxRate', event.target.value)}
                 />
                 <input
+                  className={dataCheckState.amount.taxRate ? 'document-data-check-marker' : undefined}
                   aria-label={labels.taxRate}
                   value={amount.taxRate}
                   onChange={(event) => updateAmount('taxRate', event.target.value)}
@@ -947,6 +1007,7 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateLabel('taxAmount', event.target.value)}
                 />
                 <input
+                  className={dataCheckState.amount.taxAmount ? 'document-data-check-marker' : undefined}
                   aria-label={labels.taxAmount}
                   value={amount.taxAmount}
                   onChange={(event) => updateAmount('taxAmount', event.target.value)}
@@ -963,6 +1024,7 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateLabel('grossAmount', event.target.value)}
                 />
                 <input
+                  className={dataCheckState.amount.grossAmount ? 'document-data-check-marker' : undefined}
                   aria-label={labels.grossAmount}
                   value={amount.grossAmount}
                   onChange={(event) => updateAmount('grossAmount', event.target.value)}
@@ -977,24 +1039,28 @@ export default function ReceiptDocumentEditor() {
 
         <section className="receipt-lines" aria-label="Quittungsangaben">
           <ReceiptLineField
+            dataCheck={dataCheckState.details.receiptId}
             label={labels.receiptId}
             onLabelChange={(value) => updateLabel('receiptId', value)}
             value={details.receiptId}
             onChange={(value) => updateDetail('receiptId', value)}
           />
           <ReceiptLineField
+            dataCheck={dataCheckState.amount.amountInWords}
             label={labels.amountInWords}
             onLabelChange={(value) => updateLabel('amountInWords', value)}
             value={amount.amountInWords}
             onChange={(value) => updateAmount('amountInWords', value)}
           />
           <ReceiptLineField
+            dataCheck={dataCheckState.details.from}
             label={labels.from}
             onLabelChange={(value) => updateLabel('from', value)}
             value={details.from}
             onChange={(value) => updateDetail('from', value)}
           />
           <ReceiptLineField
+            dataCheck={dataCheckState.details.purpose}
             label={labels.purpose}
             onLabelChange={(value) => updateLabel('purpose', value)}
             value={details.purpose}
@@ -1008,7 +1074,7 @@ export default function ReceiptDocumentEditor() {
               onChange={(event) => updateLabel('placeDate', event.target.value)}
             />
             <input
-              className="receipt-line-value"
+              className={`receipt-line-value${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}
               aria-label={labels.placeDate}
               value={joinPlaceDate(details.place, details.receiptDate)}
               onChange={(event) => {
@@ -1029,6 +1095,7 @@ export default function ReceiptDocumentEditor() {
               onChange={(event) => updateLabel('bookingNote', event.target.value)}
             />
             <textarea
+              className={dataCheckState.details.bookingNote ? 'document-data-check-marker' : undefined}
               aria-label={labels.bookingNote}
               value={details.bookingNote}
               onChange={(event) => updateDetail('bookingNote', event.target.value)}
@@ -1042,6 +1109,7 @@ export default function ReceiptDocumentEditor() {
               onChange={(event) => updateLabel('receiverSignature', event.target.value)}
             />
             <textarea
+              className={dataCheckState.details.receiverSignature ? 'document-data-check-marker' : undefined}
               aria-label={labels.receiverSignature}
               value={details.receiverSignature}
               onChange={(event) => updateDetail('receiverSignature', event.target.value)}

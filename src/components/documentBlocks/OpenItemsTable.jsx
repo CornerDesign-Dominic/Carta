@@ -7,6 +7,7 @@ function formatGermanDate(value) {
 }
 
 export default function OpenItemsTable({
+  dataCheckItems = {},
   dateInputRefs,
   items,
   labels,
@@ -79,6 +80,7 @@ export default function OpenItemsTable({
                   )}
                 </span>
                 <input
+                  className={dataCheckItems[item.id]?.invoiceNumber ? 'document-data-check-marker' : undefined}
                   aria-label={`Rechnungsnummer ${index + 1}`}
                   value={item.invoiceNumber}
                   onChange={(event) => onItemChange(item.id, 'invoiceNumber', event.target.value)}
@@ -86,13 +88,14 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <input
+                  className={dataCheckItems[item.id]?.externalNumber ? 'document-data-check-marker' : undefined}
                   aria-label={`Externe Nummer ${index + 1}`}
                   value={item.externalNumber}
                   onChange={(event) => onItemChange(item.id, 'externalNumber', event.target.value)}
                 />
               </td>
               <td>
-                <span className="invoice-date-field">
+                <span className={`invoice-date-field${dataCheckItems[item.id]?.dueDate ? ' document-data-check-marker' : ''}`}>
                   <span className="invoice-date-display" aria-hidden="true">
                     {formatGermanDate(item.dueDate)}
                   </span>
@@ -118,6 +121,7 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <input
+                  className={dataCheckItems[item.id]?.overdueDays ? 'document-data-check-marker' : undefined}
                   aria-label={`Verzugstage ${index + 1}`}
                   inputMode="numeric"
                   type="text"
@@ -127,6 +131,7 @@ export default function OpenItemsTable({
               </td>
               <td>
                 <input
+                  className={dataCheckItems[item.id]?.amount ? 'document-data-check-marker' : undefined}
                   aria-label={`Rechnungsbetrag ${index + 1}`}
                   inputMode="decimal"
                   type="text"

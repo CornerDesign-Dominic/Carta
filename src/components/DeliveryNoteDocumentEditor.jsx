@@ -10,6 +10,10 @@ import SenderBlock from './documentBlocks/SenderBlock.jsx';
 import TextBlock from './documentBlocks/TextBlock.jsx';
 import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
+import {
+  createDocumentDataCheckState,
+  getDocumentModeHint,
+} from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const deliveryNoteSchemaVersion = '1.0';
@@ -399,6 +403,13 @@ function createDeliveryNotePosition() {
   };
 }
 
+const defaultDeliveryNoteViewData = createDeliveryNoteViewData(defaultDeliveryNoteData);
+const defaultDeliveryNotePositionForCheck = {
+  quantity: '1',
+  unit: 'Stk.',
+  description: 'Artikel oder Leistung beschreiben',
+};
+
 function normalizePositions(templatePositions) {
   if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
     return [createDeliveryNotePosition()];
@@ -566,6 +577,7 @@ function downloadJson(data, filename) {
 
 export default function DeliveryNoteDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialDeliveryNoteLabels);
@@ -603,6 +615,32 @@ export default function DeliveryNoteDocumentEditor() {
     () => createDeliveryNotePrintItems({ positions, textBlocks }),
     [positions, textBlocks],
   );
+  const dataCheckState = useMemo(
+    () =>
+      createDocumentDataCheckState({
+        defaultPosition: defaultDeliveryNotePositionForCheck,
+        defaultViewData: defaultDeliveryNoteViewData,
+        details,
+        footerLines,
+        isActive: isDataCheckMode,
+        positions,
+        positionFields: ['quantity', 'unit', 'description'],
+        recipient,
+        recipientHiddenFields: fieldConfig.recipient.hidden,
+        sender,
+        visibleContactFields: getOrderedDefinitions('contact', deliveryNoteContactFields).filter(
+          ({ field }) => !fieldConfig.contact.hidden.includes(field),
+        ),
+        visibleDetailFields: getOrderedDefinitions('details', deliveryNoteMetaFields).filter(
+          ({ field }) => !fieldConfig.details.hidden.includes(field),
+        ),
+        visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', deliveryNoteFooterColumns[1]).filter(
+          ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+        ),
+      }),
+    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+  );
+  const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -618,6 +656,16 @@ export default function DeliveryNoteDocumentEditor() {
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
+  }
+
+  function toggleEditableMode() {
+    setIsDataCheckMode(false);
+    setHighlightFields((current) => !current);
+  }
+
+  function toggleDataCheckMode() {
+    setHighlightFields(false);
+    setIsDataCheckMode((current) => !current);
   }
 
   function updateSender(field, value) {
@@ -917,6 +965,7 @@ export default function DeliveryNoteDocumentEditor() {
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
@@ -1027,6 +1076,7 @@ export default function DeliveryNoteDocumentEditor() {
 
       <DocumentToolbar
         ariaLabel="Lieferschein Werkzeuge"
+        isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
         jsonInputRef={jsonInputRef}
@@ -1034,17 +1084,21 @@ export default function DeliveryNoteDocumentEditor() {
         onLoadJson={handleLoadJson}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
-        onToggleEditable={() => setHighlightFields((current) => !current)}
+        onToggleDataCheck={toggleDataCheckMode}
+        onToggleEditable={toggleEditableMode}
       />
+
+      <p className="document-mode-hint">{viewModeHint}</p>
 
       <A4Page
         ref={sheetRef}
         ariaLabel="Editierbarer Lieferschein"
-        className="offer-sheet invoice-sheet delivery-note-sheet"
+        className={`offer-sheet invoice-sheet delivery-note-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
         <SenderBlock
           contactFields={getOrderedDefinitions('contact', deliveryNoteContactFields)}
+          dataCheckFields={dataCheckState.sender}
           hiddenFields={getHiddenFields('contact', deliveryNoteContactFields)}
           labels={labels}
           sender={sender}
@@ -1056,6 +1110,7 @@ export default function DeliveryNoteDocumentEditor() {
 
         <section className="invoice-address-row">
           <RecipientBlock
+            dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
             hiddenFields={getHiddenFields('recipient', deliveryNoteRecipientOptionalFields)}
             recipient={recipient}
             senderLine={sender.senderLine}
@@ -1065,6 +1120,7 @@ export default function DeliveryNoteDocumentEditor() {
           />
 
           <DocumentMetaBlock
+            dataCheckFields={dataCheckState.details}
             dateInputRefs={dateInputRefs}
             details={{
               ...details,
@@ -1098,6 +1154,7 @@ export default function DeliveryNoteDocumentEditor() {
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <DeliveryNoteTable
+          dataCheckPositions={dataCheckState.positions}
           labels={labels}
           onLabelChange={updateLabel}
           onMovePosition={movePosition}
@@ -1118,6 +1175,7 @@ export default function DeliveryNoteDocumentEditor() {
             getOrderedDefinitions('footerMiddle', deliveryNoteFooterColumns[1]),
             deliveryNoteFooterColumns[2],
           ]}
+          dataCheckFields={dataCheckState.footerLines}
           footerLines={footerLines}
           formatFooterLine={(field, value) => formatFooterLine(field, value, footerLines)}
           hiddenFields={getHiddenFields('footerMiddle', deliveryNoteFooterColumns[1])}

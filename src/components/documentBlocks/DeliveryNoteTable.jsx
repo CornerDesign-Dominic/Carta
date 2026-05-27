@@ -11,6 +11,7 @@ function resizeTextarea(textarea) {
 }
 
 export default function DeliveryNoteTable({
+  dataCheckPositions = {},
   labels,
   onLabelChange,
   onMovePosition,
@@ -83,6 +84,7 @@ export default function DeliveryNoteTable({
             </td>
             <td>
               <input
+                className={dataCheckPositions[position.id]?.quantity ? 'document-data-check-marker' : undefined}
                 aria-label={`Menge Position ${index + 1}`}
                 inputMode="decimal"
                 type="text"
@@ -92,6 +94,7 @@ export default function DeliveryNoteTable({
             </td>
             <td>
               <input
+                className={dataCheckPositions[position.id]?.unit ? 'document-data-check-marker' : undefined}
                 aria-label={`Einheit Position ${index + 1}`}
                 value={position.unit}
                 onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
@@ -102,7 +105,7 @@ export default function DeliveryNoteTable({
                 ref={(element) => {
                   textareaRefs.current[`description-${position.id}`] = element;
                 }}
-                className="invoice-position-description delivery-note-position-description"
+                className={`invoice-position-description delivery-note-position-description${dataCheckPositions[position.id]?.description ? ' document-data-check-marker' : ''}`}
                 aria-label={`Beschreibung Position ${index + 1}`}
                 rows={1}
                 value={position.description}

@@ -10,6 +10,11 @@ import TextBlock from './documentBlocks/TextBlock.jsx';
 import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import ReminderDocumentForm from './ReminderDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
+import {
+  createDocumentDataCheckState,
+  getDocumentModeHint,
+  usesExampleValue,
+} from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const reminderSchemaVersion = '1.0';
@@ -258,6 +263,16 @@ function calculateOverdueDays(dueDate) {
   return String(Math.max(0, dayDifference));
 }
 
+const defaultReminderViewData = createReminderViewData(defaultReminderData);
+const defaultOpenItemForCheck = {
+  invoiceNumber: 'RE-2026-001',
+  externalNumber: 'EXT-4711',
+  dueDate: '2026-04-24',
+  overdueDays: calculateOverdueDays('2026-04-24'),
+  amount: '595.00',
+};
+const defaultReminderCharges = { interest: '0', reminderFee: '5.00' };
+
 function createFieldConfig(fields) {
   return {
     hidden: [],
@@ -488,6 +503,7 @@ function createReminderPrintItems({ openItems, textBlocks }) {
 
 export default function ReminderDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialReminderLabels);
@@ -537,8 +553,53 @@ export default function ReminderDocumentEditor() {
     () => createReminderPrintItems({ openItems, textBlocks }),
     [openItems, textBlocks],
   );
+  const dataCheckState = useMemo(() => {
+    const state = createDocumentDataCheckState({
+      defaultViewData: defaultReminderViewData,
+      details,
+      footerLines,
+      isActive: isDataCheckMode,
+      recipient,
+      recipientHiddenFields: fieldConfig.recipient.hidden,
+      sender,
+      visibleContactFields: getOrderedDefinitions('contact', reminderContactFields).filter(
+        ({ field }) => !fieldConfig.contact.hidden.includes(field),
+      ),
+      visibleDetailFields: getOrderedDefinitions('details', reminderMetaFields).filter(
+        ({ field }) => !fieldConfig.details.hidden.includes(field),
+      ),
+      visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', reminderFooterColumns[1]).filter(
+        ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+      ),
+    });
+
+    if (!isDataCheckMode) {
+      return { ...state, charges: {}, openItems: {} };
+    }
+
+    return {
+      ...state,
+      charges: {
+        interest: usesExampleValue(charges.interest, defaultReminderCharges.interest),
+        reminderFee: usesExampleValue(charges.reminderFee, defaultReminderCharges.reminderFee),
+      },
+      openItems: Object.fromEntries(
+        openItems.map((item) => [
+          item.id,
+          {
+            invoiceNumber: usesExampleValue(item.invoiceNumber, defaultOpenItemForCheck.invoiceNumber),
+            externalNumber: usesExampleValue(item.externalNumber, defaultOpenItemForCheck.externalNumber),
+            dueDate: usesExampleValue(item.dueDate, defaultOpenItemForCheck.dueDate),
+            overdueDays: usesExampleValue(item.overdueDays, defaultOpenItemForCheck.overdueDays),
+            amount: usesExampleValue(item.amount, defaultOpenItemForCheck.amount),
+          },
+        ]),
+      ),
+    };
+  }, [charges, details, fieldConfig, footerLines, isDataCheckMode, openItems, recipient, sender]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+  const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -554,6 +615,16 @@ export default function ReminderDocumentEditor() {
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
+  }
+
+  function toggleEditableMode() {
+    setIsDataCheckMode(false);
+    setHighlightFields((current) => !current);
+  }
+
+  function toggleDataCheckMode() {
+    setHighlightFields(false);
+    setIsDataCheckMode((current) => !current);
   }
 
   function updateSender(field, value) {
@@ -800,6 +871,7 @@ export default function ReminderDocumentEditor() {
       setCharges({ interest: '0', reminderFee: '5.00', ...(data.charges ?? {}) });
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
@@ -913,6 +985,7 @@ export default function ReminderDocumentEditor() {
 
       <DocumentToolbar
         ariaLabel="Mahnung Werkzeuge"
+        isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
         jsonInputRef={jsonInputRef}
@@ -920,17 +993,21 @@ export default function ReminderDocumentEditor() {
         onLoadJson={handleLoadJson}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
-        onToggleEditable={() => setHighlightFields((current) => !current)}
+        onToggleDataCheck={toggleDataCheckMode}
+        onToggleEditable={toggleEditableMode}
       />
+
+      <p className="document-mode-hint">{viewModeHint}</p>
 
       <A4Page
         ref={sheetRef}
         ariaLabel="Editierbare Mahnung"
-        className="offer-sheet invoice-sheet reminder-sheet"
+        className={`offer-sheet invoice-sheet reminder-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
         <SenderBlock
           contactFields={getOrderedDefinitions('contact', reminderContactFields)}
+          dataCheckFields={dataCheckState.sender}
           hiddenFields={getHiddenFields('contact', reminderContactFields)}
           labels={labels}
           sender={sender}
@@ -942,6 +1019,7 @@ export default function ReminderDocumentEditor() {
 
         <section className="invoice-address-row">
           <RecipientBlock
+            dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
             hiddenFields={getHiddenFields('recipient', reminderRecipientOptionalFields)}
             recipient={recipient}
             senderLine={sender.senderLine}
@@ -951,6 +1029,7 @@ export default function ReminderDocumentEditor() {
           />
 
           <DocumentMetaBlock
+            dataCheckFields={dataCheckState.details}
             dateInputRefs={dateInputRefs}
             details={details}
             emphasizedField="reminderNumber"
@@ -977,6 +1056,7 @@ export default function ReminderDocumentEditor() {
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <OpenItemsTable
+          dataCheckItems={dataCheckState.openItems}
           dateInputRefs={dateInputRefs}
           items={openItems}
           labels={labels}
@@ -988,7 +1068,14 @@ export default function ReminderDocumentEditor() {
           onRemoveItem={removeOpenItem}
         />
 
-        <ReminderSummary labels={labels} totals={totals} charges={charges} updateCharge={updateCharge} updateLabel={updateLabel} />
+        <ReminderSummary
+          charges={charges}
+          dataCheckFields={dataCheckState.charges}
+          labels={labels}
+          totals={totals}
+          updateCharge={updateCharge}
+          updateLabel={updateLabel}
+        />
 
         {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}
 
@@ -998,6 +1085,7 @@ export default function ReminderDocumentEditor() {
             getOrderedDefinitions('footerMiddle', reminderFooterColumns[1]),
             reminderFooterColumns[2],
           ]}
+          dataCheckFields={dataCheckState.footerLines}
           footerLines={footerLines}
           formatFooterLine={(field, value) => formatReminderFooterLine(field, value, footerLines)}
           hiddenFields={getHiddenFields('footerMiddle', reminderFooterColumns[1])}
@@ -1039,7 +1127,7 @@ export default function ReminderDocumentEditor() {
   );
 }
 
-function ReminderSummary({ charges, labels, totals, updateCharge, updateLabel }) {
+function ReminderSummary({ charges, dataCheckFields = {}, labels, totals, updateCharge, updateLabel }) {
   return (
     <aside className="offer-summary invoice-document-summary reminder-document-summary" aria-label="Mahnungssummen">
       <div>
@@ -1048,11 +1136,11 @@ function ReminderSummary({ charges, labels, totals, updateCharge, updateLabel })
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Zinsen" value={labels.interest} onChange={(event) => updateLabel('interest', event.target.value)} />
-        <input className="reminder-summary-value" aria-label="Zinsen" inputMode="decimal" type="text" value={charges.interest} onChange={(event) => updateCharge('interest', event.target.value)} />
+        <input className={`reminder-summary-value${dataCheckFields.interest ? ' document-data-check-marker' : ''}`} aria-label="Zinsen" inputMode="decimal" type="text" value={charges.interest} onChange={(event) => updateCharge('interest', event.target.value)} />
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Mahngebühr" value={labels.reminderFee} onChange={(event) => updateLabel('reminderFee', event.target.value)} />
-        <input className="reminder-summary-value" aria-label="Mahngebühr" inputMode="decimal" type="text" value={charges.reminderFee} onChange={(event) => updateCharge('reminderFee', event.target.value)} />
+        <input className={`reminder-summary-value${dataCheckFields.reminderFee ? ' document-data-check-marker' : ''}`} aria-label="Mahngebühr" inputMode="decimal" type="text" value={charges.reminderFee} onChange={(event) => updateCharge('reminderFee', event.target.value)} />
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Gesamt zu zahlender Betrag" value={labels.grandTotal} onChange={(event) => updateLabel('grandTotal', event.target.value)} />

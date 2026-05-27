@@ -11,6 +11,10 @@ import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import CreditNoteDocumentForm from './CreditNoteDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
+import {
+  createDocumentDataCheckState,
+  getDocumentModeHint,
+} from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const initialCreditNoteLabels = {
@@ -381,6 +385,15 @@ function createCreditNotePosition() {
   };
 }
 
+const defaultCreditNoteViewData = createOfferViewData(defaultOfferData);
+const defaultCreditNotePositionForCheck = {
+  description: 'Leistung beschreiben',
+  unitPrice: '0',
+  quantity: '1',
+  unit: 'Stk.',
+  taxRate: '19',
+};
+
 function createFieldConfig(fields) {
   return {
     hidden: [],
@@ -616,6 +629,7 @@ function validateOfferTemplate(template) {
 
 export default function CreditNoteDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialCreditNoteLabels);
@@ -679,8 +693,33 @@ export default function CreditNoteDocumentEditor() {
     () => createOfferPrintItems({ positions, textBlocks }),
     [positions, textBlocks],
   );
+  const dataCheckState = useMemo(
+    () =>
+      createDocumentDataCheckState({
+        defaultPosition: defaultCreditNotePositionForCheck,
+        defaultViewData: defaultCreditNoteViewData,
+        details,
+        footerLines,
+        isActive: isDataCheckMode,
+        positions,
+        recipient,
+        recipientHiddenFields: fieldConfig.recipient.hidden,
+        sender,
+        visibleContactFields: getOrderedDefinitions('contact', offerContactFields).filter(
+          ({ field }) => !fieldConfig.contact.hidden.includes(field),
+        ),
+        visibleDetailFields: getOrderedDefinitions('details', offerMetaFields).filter(
+          ({ field }) => !fieldConfig.details.hidden.includes(field),
+        ),
+        visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
+          ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+        ),
+      }),
+    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+  );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+  const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -696,6 +735,16 @@ export default function CreditNoteDocumentEditor() {
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
+  }
+
+  function toggleEditableMode() {
+    setIsDataCheckMode(false);
+    setHighlightFields((current) => !current);
+  }
+
+  function toggleDataCheckMode() {
+    setHighlightFields(false);
+    setIsDataCheckMode((current) => !current);
   }
 
   function updateSender(field, value) {
@@ -1003,6 +1052,7 @@ export default function CreditNoteDocumentEditor() {
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
@@ -1139,6 +1189,7 @@ export default function CreditNoteDocumentEditor() {
 
       <DocumentToolbar
         ariaLabel="Gutschrift Werkzeuge"
+        isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
         jsonInputRef={jsonInputRef}
@@ -1146,17 +1197,21 @@ export default function CreditNoteDocumentEditor() {
         onLoadJson={handleLoadJson}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
-        onToggleEditable={() => setHighlightFields((current) => !current)}
+        onToggleDataCheck={toggleDataCheckMode}
+        onToggleEditable={toggleEditableMode}
       />
+
+      <p className="document-mode-hint">{viewModeHint}</p>
 
       <A4Page
         ref={sheetRef}
         ariaLabel="Editierbare Gutschrift"
-        className="offer-sheet invoice-sheet"
+        className={`offer-sheet invoice-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
         <SenderBlock
           contactFields={getOrderedDefinitions('contact', offerContactFields)}
+          dataCheckFields={dataCheckState.sender}
           hiddenFields={getHiddenFields('contact', offerContactFields)}
           labels={labels}
           sender={sender}
@@ -1168,6 +1223,7 @@ export default function CreditNoteDocumentEditor() {
 
         <section className="invoice-address-row">
           <RecipientBlock
+            dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
             hiddenFields={getHiddenFields('recipient', offerRecipientOptionalFields)}
             recipient={recipient}
             senderLine={sender.senderLine}
@@ -1177,6 +1233,7 @@ export default function CreditNoteDocumentEditor() {
           />
 
           <DocumentMetaBlock
+            dataCheckFields={dataCheckState.details}
             dateInputRefs={dateInputRefs}
             details={details}
             emphasizedField="creditNoteNumber"
@@ -1204,6 +1261,7 @@ export default function CreditNoteDocumentEditor() {
 
         <PositionTable
           calculatePosition={calculatePosition}
+          dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
           labels={labels}
           positions={positions}
@@ -1235,6 +1293,7 @@ export default function CreditNoteDocumentEditor() {
             getOrderedDefinitions('footerMiddle', offerFooterColumns[1]),
             offerFooterColumns[2],
           ]}
+          dataCheckFields={dataCheckState.footerLines}
           footerLines={footerLines}
           formatFooterLine={(field, value) => formatOfferFooterLine(field, value, footerLines)}
           hiddenFields={getHiddenFields('footerMiddle', offerFooterColumns[1])}
