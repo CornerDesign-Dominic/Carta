@@ -2504,6 +2504,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   height: 26px;
   min-height: 26px;
   align-self: end;
+  transform: translateY(-3px);
 }
 
 .receipt-date-field .invoice-date-display {
