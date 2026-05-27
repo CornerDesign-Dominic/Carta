@@ -2480,8 +2480,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-place-date-fields {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(118px, 0.38fr);
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 18px 118px;
+  gap: 6px;
   align-items: end;
   width: 100%;
   min-width: 0;
@@ -2501,6 +2501,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   height: 26px;
   min-height: 26px;
   align-self: end;
+  grid-template-columns: 18px minmax(0, 1fr);
 }
 
 .receipt-date-field .invoice-date-display {
@@ -2517,8 +2518,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-date-field .invoice-date-picker {
-  right: 0;
+  position: relative;
+  top: auto;
   left: auto;
+  right: auto;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  margin-bottom: 4px;
+  transform: none;
 }
 
 .receipt-bottom-row {
