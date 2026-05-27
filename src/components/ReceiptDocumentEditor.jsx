@@ -1163,15 +1163,19 @@ export default function ReceiptDocumentEditor() {
                 value={details.place}
                 onChange={(event) => updateDetail('place', event.target.value)}
               />
-              <span className={`invoice-date-field receipt-date-field${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}>
-                <span className="invoice-date-display" aria-hidden="true">
-                  {formatGermanDate(details.receiptDate)}
-                </span>
+              <span className={`receipt-date-field${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}>
+                <input
+                  className="receipt-line-value receipt-date-display-input"
+                  aria-hidden="true"
+                  readOnly
+                  tabIndex="-1"
+                  value={formatGermanDate(details.receiptDate)}
+                />
                 <input
                   ref={(element) => {
                     dateInputRefs.current.receiptDate = element;
                   }}
-                  className="invoice-date-input"
+                  className="receipt-date-native-input"
                   aria-label="Datum"
                   type="date"
                   value={details.receiptDate}
