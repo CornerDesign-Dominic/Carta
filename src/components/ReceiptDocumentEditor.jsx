@@ -3,7 +3,7 @@ import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
 import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
-import { getDocumentModeHint, usesExampleValue } from '../utils/documentDataCheck.js';
+import { getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const receiptSchemaVersion = '1.0';
@@ -280,8 +280,8 @@ function normalizeFieldConfigBlock(config, fallback) {
   };
 }
 
-function firstFilled(value, fallback) {
-  return String(value ?? '').trim() ? value : fallback;
+function viewValue(value) {
+  return value ?? '';
 }
 
 function joinLine(...parts) {
@@ -349,80 +349,69 @@ function createViewData(data) {
 
   return {
     sender: {
-      company: firstFilled(senderData.companyName, defaultReceiptData.sender.companyName),
-      senderLine: firstFilled(senderData.returnAddress, defaultReceiptData.sender.returnAddress),
-      streetLine: firstFilled(
-        joinLine(senderData.address.street, senderData.address.houseNumber),
-        joinLine(defaultReceiptData.sender.address.street, defaultReceiptData.sender.address.houseNumber),
-      ),
-      cityLine: firstFilled(
-        joinLine(senderData.address.postalCode, senderData.address.city),
-        joinLine(defaultReceiptData.sender.address.postalCode, defaultReceiptData.sender.address.city),
-      ),
-      email: firstFilled(senderData.contact.email, defaultReceiptData.sender.contact.email),
-      phone: firstFilled(senderData.contact.phone, defaultReceiptData.sender.contact.phone),
-      website: firstFilled(senderData.contact.website, defaultReceiptData.sender.contact.website),
+      company: viewValue(senderData.companyName),
+      senderLine: viewValue(senderData.returnAddress),
+      streetLine: joinLine(senderData.address.street, senderData.address.houseNumber),
+      cityLine: joinLine(senderData.address.postalCode, senderData.address.city),
+      email: viewValue(senderData.contact.email),
+      phone: viewValue(senderData.contact.phone),
+      website: viewValue(senderData.contact.website),
     },
     recipient: {
-      company: firstFilled(recipientData.companyName, defaultReceiptData.recipient.companyName),
-      attention: firstFilled(recipientData.attention, defaultReceiptData.recipient.attention),
-      name: firstFilled(recipientData.name, defaultReceiptData.recipient.name),
-      street: firstFilled(
-        joinLine(recipientData.address.street, recipientData.address.houseNumber),
-        joinLine(defaultReceiptData.recipient.address.street, defaultReceiptData.recipient.address.houseNumber),
-      ),
-      cityLine: firstFilled(
-        joinLine(recipientData.address.postalCode, recipientData.address.city),
-        joinLine(defaultReceiptData.recipient.address.postalCode, defaultReceiptData.recipient.address.city),
-      ),
+      company: viewValue(recipientData.companyName),
+      attention: viewValue(recipientData.attention),
+      name: viewValue(recipientData.name),
+      street: joinLine(recipientData.address.street, recipientData.address.houseNumber),
+      cityLine: joinLine(recipientData.address.postalCode, recipientData.address.city),
     },
     details: {
-      receiptId: firstFilled(data.details.receiptId, defaultReceiptData.details.receiptId),
-      receiptDate: firstFilled(data.details.receiptDate, defaultReceiptData.details.receiptDate),
-      paymentDate: firstFilled(data.details.paymentDate, defaultReceiptData.details.paymentDate),
-      place: firstFilled(data.details.place, defaultReceiptData.details.place),
-      from: firstFilled(data.details.from, defaultReceiptData.details.from),
-      purpose: firstFilled(data.details.purpose, defaultReceiptData.details.purpose),
-      bookingNote: firstFilled(data.details.bookingNote, defaultReceiptData.details.bookingNote),
-      receiverSignature: firstFilled(data.details.receiverSignature, defaultReceiptData.details.receiverSignature),
-      internalReference: firstFilled(data.references.internalReference, defaultReceiptData.references.internalReference),
-      externalReference: firstFilled(data.references.externalReference, defaultReceiptData.references.externalReference),
+      receiptId: viewValue(data.details.receiptId),
+      receiptDate: viewValue(data.details.receiptDate),
+      paymentDate: viewValue(data.details.paymentDate),
+      place: viewValue(data.details.place),
+      from: viewValue(data.details.from),
+      purpose: viewValue(data.details.purpose),
+      bookingNote: viewValue(data.details.bookingNote),
+      receiverSignature: viewValue(data.details.receiverSignature),
+      internalReference: viewValue(data.references.internalReference),
+      externalReference: viewValue(data.references.externalReference),
     },
     amount: {
-      netAmount: firstFilled(data.amount.netAmount, defaultReceiptData.amount.netAmount),
-      taxRate: firstFilled(data.amount.taxRate, defaultReceiptData.amount.taxRate),
-      taxAmount: firstFilled(data.amount.taxAmount, defaultReceiptData.amount.taxAmount),
+      netAmount: viewValue(data.amount.netAmount),
+      taxRate: viewValue(data.amount.taxRate),
+      taxAmount: viewValue(data.amount.taxAmount),
       grossAmount: calculateReceiptGrossAmount({
-        netAmount: firstFilled(data.amount.netAmount, defaultReceiptData.amount.netAmount),
-        taxRate: firstFilled(data.amount.taxRate, defaultReceiptData.amount.taxRate),
-        taxAmount: firstFilled(data.amount.taxAmount, defaultReceiptData.amount.taxAmount),
-        grossAmount: firstFilled(data.amount.grossAmount, defaultReceiptData.amount.grossAmount),
+        netAmount: data.amount.netAmount,
+        taxRate: data.amount.taxRate,
+        taxAmount: data.amount.taxAmount,
+        grossAmount: data.amount.grossAmount,
       }),
-      amountInWords: firstFilled(data.amount.amountInWords, defaultReceiptData.amount.amountInWords),
-      settlementMethod: firstFilled(data.amount.settlementMethod, defaultReceiptData.amount.settlementMethod),
+      amountInWords: viewValue(data.amount.amountInWords),
+      settlementMethod: viewValue(data.amount.settlementMethod),
     },
     footerLines: {
-      companyName: firstFilled(footerData.company.companyName, defaultReceiptData.footer.company.companyName),
-      companyStreet: firstFilled(
-        joinLine(footerData.company.street, footerData.company.houseNumber),
-        joinLine(defaultReceiptData.footer.company.street, defaultReceiptData.footer.company.houseNumber),
-      ),
-      companyCity: firstFilled(
-        joinLine(footerData.company.postalCode, footerData.company.city),
-        joinLine(defaultReceiptData.footer.company.postalCode, defaultReceiptData.footer.company.city),
-      ),
-      companyExtra: firstFilled(footerData.company.extra, defaultReceiptData.footer.company.extra),
-      vatId: firstFilled(footerData.tax.vatId, defaultReceiptData.footer.tax.vatId),
-      taxId: firstFilled(footerData.tax.taxId, defaultReceiptData.footer.tax.taxId),
-      representation: firstFilled(footerData.tax.representation, defaultReceiptData.footer.tax.representation),
-      bankName: firstFilled(footerData.bank.bankName, defaultReceiptData.footer.bank.bankName),
-      iban: firstFilled(footerData.bank.iban, defaultReceiptData.footer.bank.iban),
-      bic: firstFilled(footerData.bank.bic, defaultReceiptData.footer.bank.bic),
+      companyName: viewValue(footerData.company.companyName),
+      companyStreet: joinLine(footerData.company.street, footerData.company.houseNumber),
+      companyCity: joinLine(footerData.company.postalCode, footerData.company.city),
+      companyExtra: viewValue(footerData.company.extra),
+      vatId: viewValue(footerData.tax.vatId),
+      taxId: viewValue(footerData.tax.taxId),
+      representation: viewValue(footerData.tax.representation),
+      bankName: viewValue(footerData.bank.bankName),
+      iban: viewValue(footerData.bank.iban),
+      bic: viewValue(footerData.bank.bic),
     },
   };
 }
 
 const defaultReceiptViewData = createViewData(defaultReceiptData);
+
+function usesReceiptExampleValue(value, defaultValue) {
+  const current = String(value ?? '').trim();
+  const expected = String(defaultValue ?? '').trim();
+
+  return current !== '' && expected !== '' && current === expected;
+}
 
 function formatGermanDate(value) {
   const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -457,7 +446,7 @@ function calculateReceiptGrossAmount(amount) {
   const netAmount = parseReceiptAmount(amount.netAmount);
 
   if (netAmount === null) {
-    return String(amount.grossAmount ?? '');
+    return '';
   }
 
   const taxAmount = parseReceiptAmount(amount.taxAmount);
@@ -470,7 +459,7 @@ function calculateReceiptGrossAmount(amount) {
     return formatReceiptAmount(netAmount + netAmount * (taxRate / 100));
   }
 
-  return String(amount.grossAmount ?? '');
+  return '';
 }
 
 function calculateReceiptTaxAmount(amount) {
@@ -482,6 +471,16 @@ function calculateReceiptTaxAmount(amount) {
   }
 
   return formatReceiptAmount(netAmount * (taxRate / 100));
+}
+
+function limitReceiptTaxRate(value) {
+  const parsed = parseReceiptAmount(value);
+
+  if (parsed === null || parsed < 1000) {
+    return value;
+  }
+
+  return '999';
 }
 
 function createPdfFileName(title, receiptId) {
@@ -677,28 +676,28 @@ export default function ReceiptDocumentEditor() {
 
     return {
       amount: {
-        netAmount: usesExampleValue(amount.netAmount, defaultReceiptViewData.amount.netAmount),
-        taxRate: usesExampleValue(amount.taxRate, defaultReceiptViewData.amount.taxRate),
-        amountInWords: usesExampleValue(amount.amountInWords, defaultReceiptViewData.amount.amountInWords),
+        netAmount: usesReceiptExampleValue(amount.netAmount, defaultReceiptViewData.amount.netAmount),
+        taxRate: usesReceiptExampleValue(amount.taxRate, defaultReceiptViewData.amount.taxRate),
+        amountInWords: usesReceiptExampleValue(amount.amountInWords, defaultReceiptViewData.amount.amountInWords),
       },
       details: {
-        from: usesExampleValue(details.from, defaultReceiptViewData.details.from),
-        placeDate: usesExampleValue(
+        from: usesReceiptExampleValue(details.from, defaultReceiptViewData.details.from),
+        placeDate: usesReceiptExampleValue(
           joinPlaceDate(details.place, details.receiptDate),
           joinPlaceDate(defaultReceiptViewData.details.place, defaultReceiptViewData.details.receiptDate),
         ),
-        purpose: usesExampleValue(details.purpose, defaultReceiptViewData.details.purpose),
-        receiptDate: usesExampleValue(details.receiptDate, defaultReceiptViewData.details.receiptDate),
-        receiptId: usesExampleValue(details.receiptId, defaultReceiptViewData.details.receiptId),
-        receiverSignature: usesExampleValue(
+        purpose: usesReceiptExampleValue(details.purpose, defaultReceiptViewData.details.purpose),
+        receiptDate: usesReceiptExampleValue(details.receiptDate, defaultReceiptViewData.details.receiptDate),
+        receiptId: usesReceiptExampleValue(details.receiptId, defaultReceiptViewData.details.receiptId),
+        receiverSignature: usesReceiptExampleValue(
           details.receiverSignature,
           defaultReceiptViewData.details.receiverSignature,
         ),
       },
       sender: {
-        cityLine: usesExampleValue(sender.cityLine, defaultReceiptViewData.sender.cityLine),
-        company: usesExampleValue(sender.company, defaultReceiptViewData.sender.company),
-        streetLine: usesExampleValue(sender.streetLine, defaultReceiptViewData.sender.streetLine),
+        cityLine: usesReceiptExampleValue(sender.cityLine, defaultReceiptViewData.sender.cityLine),
+        company: usesReceiptExampleValue(sender.company, defaultReceiptViewData.sender.company),
+        streetLine: usesReceiptExampleValue(sender.streetLine, defaultReceiptViewData.sender.streetLine),
       },
     };
   }, [amount, details, isDataCheckMode, sender]);
@@ -826,18 +825,12 @@ export default function ReceiptDocumentEditor() {
 
   function updateAmount(field, value) {
     setReceiptData((current) => {
-      const nextAmount = { ...current.amount, [field]: value };
+      const nextValue = field === 'taxRate' ? limitReceiptTaxRate(value) : value;
+      const nextAmount = { ...current.amount, [field]: nextValue };
 
       if (field === 'netAmount' || field === 'taxRate') {
-        const taxAmount = calculateReceiptTaxAmount({
-          ...nextAmount,
-          netAmount: firstFilled(nextAmount.netAmount, defaultReceiptData.amount.netAmount),
-          taxRate: firstFilled(nextAmount.taxRate, defaultReceiptData.amount.taxRate),
-        });
-
-        if (taxAmount !== null) {
-          nextAmount.taxAmount = taxAmount;
-        }
+        const taxAmount = calculateReceiptTaxAmount(nextAmount);
+        nextAmount.taxAmount = taxAmount ?? '';
       }
 
       return {
