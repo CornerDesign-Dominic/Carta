@@ -2363,7 +2363,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: 50px 18px 8px minmax(0, 1fr) 84px max-content;
+  grid-template-columns: 50px 18px 8px minmax(0, 1fr) 59px max-content;
   column-gap: 4px;
 }
 
