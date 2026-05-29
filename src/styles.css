@@ -1422,6 +1422,15 @@ h1 {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
 }
 
+.receipt-sheet.is-highlight-mode input.receipt-readonly-amount,
+.receipt-sheet.is-highlight-mode input.receipt-readonly-amount:focus,
+.receipt-sheet.is-data-check-mode input.receipt-readonly-amount {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
 .receipt-sheet.is-export-mode input,
 .receipt-sheet.is-export-mode textarea,
 .receipt-sheet.is-export-mode select,
@@ -2257,12 +2266,20 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   text-align: left;
 }
 
+.receipt-header-row {
+  position: relative;
+  display: grid;
+  justify-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
 .receipt-header-address .editable-group {
   justify-items: stretch;
   width: 100%;
 }
 
-.receipt-header-address input {
+.receipt-header-row input {
   width: 100%;
   min-width: 0;
   min-height: 16px;
@@ -2273,12 +2290,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   text-align: left;
 }
 
-.receipt-header-address .editable-group input:first-child {
+.receipt-header-address .editable-group input {
   min-height: 20px;
   color: #000000;
   font-size: 0.92rem;
   font-weight: 760;
   line-height: 1.18;
+}
+
+.receipt-header-hidden-fields {
+  height: 0;
+  min-height: 0;
 }
 
 .receipt-document-title {

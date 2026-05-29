@@ -112,7 +112,7 @@ export default function ReceiptDocumentForm({
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
                 <ReceiptPanelInput inputMode="decimal" label="Netto Betrag" name="receipt-net-amount" placeholder={defaults.amount.netAmount} value={amount.netAmount} onChange={(value) => updateAmount('netAmount', value)} />
                 <ReceiptPanelInput inputMode="decimal" label="USt.-Satz" name="receipt-tax-rate" placeholder={defaults.amount.taxRate} value={amount.taxRate} onChange={(value) => updateAmount('taxRate', value)} />
-                <ReceiptPanelInput inputMode="decimal" label="USt.-Betrag" name="receipt-tax-amount" placeholder={defaults.amount.taxAmount} value={amount.taxAmount} onChange={(value) => updateAmount('taxAmount', value)} />
+                <ReceiptPanelInput inputMode="decimal" label="USt.-Betrag" name="receipt-tax-amount" placeholder={defaults.amount.taxAmount} readOnly value={amount.taxAmount} onChange={() => {}} />
                 <ReceiptPanelInput inputMode="decimal" label="Brutto Gesamtbetrag / Betrag in Zahlen" name="receipt-gross-amount" placeholder={defaults.amount.grossAmount} readOnly value={amount.grossAmount} onChange={() => {}} />
                 <ReceiptPanelInput label="Betrag in Worten" name="receipt-amount-words" placeholder={defaults.amount.amountInWords} value={amount.amountInWords} onChange={(value) => updateAmount('amountInWords', value)} />
               </div>

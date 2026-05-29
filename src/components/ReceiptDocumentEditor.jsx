@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
+import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
 import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
 import { getDocumentModeHint, usesExampleValue } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
@@ -70,6 +71,12 @@ const receiptRecipientOptionalFields = [
   { field: 'name', label: 'Name / Abteilung' },
 ];
 
+const receiptHeaderFields = [
+  { field: 'company', label: 'Firma' },
+  { field: 'streetLine', label: 'Strasse und Hausnummer' },
+  { field: 'cityLine', label: 'PLZ und Stadt' },
+];
+
 const receiptFooterColumns = [
   [
     { field: 'companyName', label: 'Firma' },
@@ -123,7 +130,7 @@ const defaultReceiptData = {
     place: 'Berlin',
     from: 'Beispielkunde GmbH',
     purpose: 'Leistung oder Verwendungszweck kurz beschreiben',
-    bookingNote: 'Kasse',
+    bookingNote: '',
     receiverSignature: '',
   },
   references: {
@@ -237,6 +244,7 @@ function normalizeFieldConfig(config) {
   const fallback = {
     contact: createFieldConfig(receiptContactFields),
     details: createFieldConfig(receiptMetaFields),
+    header: createFieldConfig(receiptHeaderFields),
     recipient: createFieldConfig(receiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(receiptFooterColumns[1]),
   };
@@ -248,6 +256,7 @@ function normalizeFieldConfig(config) {
   return {
     contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
     details: normalizeFieldConfigBlock(config.details, fallback.details),
+    header: normalizeFieldConfigBlock(config.header, fallback.header),
     recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
     footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
   };
@@ -559,31 +568,59 @@ function validateReceiptTemplate(template) {
 
 function ReceiptHeaderAddress({
   dataCheckFields = {},
+  hiddenFields = [],
   onSenderChange,
+  onToggleField,
   sender,
 }) {
+  const rows = [
+    {
+      className: 'editable-group',
+      field: 'company',
+      label: 'Firma',
+      value: sender.company,
+      onChange: (value) => onSenderChange('company', value),
+      ariaLabel: 'Aussteller Firmenname',
+    },
+    {
+      field: 'streetLine',
+      label: 'Strasse und Hausnummer',
+      value: sender.streetLine,
+      onChange: (value) => onSenderChange('address', splitStreetLine(value)),
+      ariaLabel: 'Aussteller Strasse und Hausnummer',
+    },
+    {
+      field: 'cityLine',
+      label: 'PLZ und Stadt',
+      value: sender.cityLine,
+      onChange: (value) => onSenderChange('address', splitCityLine(value)),
+      ariaLabel: 'Aussteller PLZ und Stadt',
+    },
+  ];
+
   return (
     <div className="receipt-header-address">
-      <div className="editable-group">
-        <input
-          className={dataCheckFields.company ? 'document-data-check-marker' : undefined}
-          aria-label="Aussteller Firmenname"
-          value={sender.company}
-          onChange={(event) => onSenderChange('company', event.target.value)}
+      {rows
+        .filter(({ field }) => !hiddenFields.includes(field))
+        .map(({ ariaLabel, className = '', field, label, onChange, value }) => (
+          <div className={`receipt-header-row${className ? ` ${className}` : ''}`} key={field}>
+            <input
+              className={dataCheckFields[field] ? 'document-data-check-marker' : undefined}
+              aria-label={ariaLabel}
+              value={value}
+              onChange={(event) => onChange(event.target.value)}
+            />
+            {onToggleField && <FieldActions label={label} onToggle={() => onToggleField(field)} />}
+          </div>
+        ))}
+      {onToggleField && (
+        <HiddenFieldActions
+          className="receipt-header-hidden-fields"
+          definitions={receiptHeaderFields}
+          hiddenFields={hiddenFields}
+          onToggle={onToggleField}
         />
-      </div>
-      <input
-        className={dataCheckFields.streetLine ? 'document-data-check-marker' : undefined}
-        aria-label="Aussteller Strasse und Hausnummer"
-        value={sender.streetLine}
-        onChange={(event) => onSenderChange('address', splitStreetLine(event.target.value))}
-      />
-      <input
-        className={dataCheckFields.cityLine ? 'document-data-check-marker' : undefined}
-        aria-label="Aussteller PLZ und Stadt"
-        value={sender.cityLine}
-        onChange={(event) => onSenderChange('address', splitCityLine(event.target.value))}
-      />
+      )}
     </div>
   );
 }
@@ -618,6 +655,7 @@ export default function ReceiptDocumentEditor() {
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(receiptContactFields),
     details: createFieldConfig(receiptMetaFields),
+    header: createFieldConfig(receiptHeaderFields),
     recipient: createFieldConfig(receiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(receiptFooterColumns[1]),
   });
@@ -641,12 +679,9 @@ export default function ReceiptDocumentEditor() {
       amount: {
         netAmount: usesExampleValue(amount.netAmount, defaultReceiptViewData.amount.netAmount),
         taxRate: usesExampleValue(amount.taxRate, defaultReceiptViewData.amount.taxRate),
-        taxAmount: usesExampleValue(amount.taxAmount, defaultReceiptViewData.amount.taxAmount),
-        grossAmount: usesExampleValue(amount.grossAmount, defaultReceiptViewData.amount.grossAmount),
         amountInWords: usesExampleValue(amount.amountInWords, defaultReceiptViewData.amount.amountInWords),
       },
       details: {
-        bookingNote: usesExampleValue(details.bookingNote, defaultReceiptViewData.details.bookingNote),
         from: usesExampleValue(details.from, defaultReceiptViewData.details.from),
         placeDate: usesExampleValue(
           joinPlaceDate(details.place, details.receiptDate),
@@ -1040,7 +1075,13 @@ export default function ReceiptDocumentEditor() {
         editable={highlightFields}
       >
         <header className="receipt-header">
-          <ReceiptHeaderAddress dataCheckFields={dataCheckState.sender} sender={sender} onSenderChange={updateSender} />
+          <ReceiptHeaderAddress
+            dataCheckFields={dataCheckState.sender}
+            hiddenFields={getHiddenFields('header', receiptHeaderFields)}
+            onSenderChange={updateSender}
+            onToggleField={(field) => toggleConfiguredField('header', field)}
+            sender={sender}
+          />
           <div className="receipt-header-summary">
             <h2 className="invoice-document-title receipt-document-title">
               <input
@@ -1091,10 +1132,10 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateLabel('taxAmount', event.target.value)}
                 />
                 <input
-                  className={dataCheckState.amount.taxAmount ? 'document-data-check-marker' : undefined}
+                  className="receipt-readonly-amount"
                   aria-label={labels.taxAmount}
                   value={amount.taxAmount}
-                  onChange={(event) => updateAmount('taxAmount', event.target.value)}
+                  readOnly
                 />
                 <span className="receipt-amount-unit" aria-hidden="true">
                   {'\u20ac'}
@@ -1108,7 +1149,7 @@ export default function ReceiptDocumentEditor() {
                   onChange={(event) => updateLabel('grossAmount', event.target.value)}
                 />
                 <input
-                  className={dataCheckState.amount.grossAmount ? 'document-data-check-marker' : undefined}
+                  className="receipt-readonly-amount"
                   aria-label={labels.grossAmount}
                   value={amount.grossAmount}
                   readOnly
@@ -1204,7 +1245,6 @@ export default function ReceiptDocumentEditor() {
               onChange={(event) => updateLabel('bookingNote', event.target.value)}
             />
             <textarea
-              className={dataCheckState.details.bookingNote ? 'document-data-check-marker' : undefined}
               aria-label={labels.bookingNote}
               value={details.bookingNote}
               onChange={(event) => updateDetail('bookingNote', event.target.value)}
