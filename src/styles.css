@@ -2323,6 +2323,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   align-items: end;
   gap: 4px;
   box-sizing: border-box;
+  width: 100%;
   min-width: 0;
   min-height: 26px;
   padding: 5px 0;
@@ -2337,7 +2338,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .document-label-input {
+  box-sizing: border-box;
   width: 100%;
+  min-width: 0;
   color: #000000;
   font-size: 0.62rem;
   font-weight: 720;
@@ -2346,7 +2349,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box input:not(.document-label-input) {
+  box-sizing: border-box;
   width: 100%;
+  min-width: 0;
   min-height: 18px;
   padding-right: 0;
   padding-left: 0;
@@ -2358,21 +2363,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: max-content 20px max-content minmax(76px, 1fr) 64px max-content;
+  grid-template-columns: max-content 18px 8px minmax(0, 1fr) 84px max-content;
   column-gap: 4px;
-}
-
-.receipt-amount-box .receipt-tax-line input:nth-child(2) {
-  transform: translateX(-2px);
-}
-
-.receipt-amount-box .receipt-tax-line .receipt-amount-unit:first-of-type {
-  transform: translateX(-4px);
 }
 
 .receipt-tax-line .document-label-input {
   box-sizing: border-box;
-  width: auto;
   min-width: 0;
   padding-right: 0;
   padding-left: 0;
@@ -2387,7 +2383,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-tax-line input:nth-child(2) {
-  text-align: left;
+  text-align: right;
 }
 
 .receipt-tax-line input:nth-child(4) {
