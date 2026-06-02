@@ -17,7 +17,7 @@ const rechnung = {
       {
         heading: "Pflichtangaben einer Rechnung",
         paragraphs: [
-          "Damit eine Rechnung rechtlich gültig ist, muss diese bestimmte Pflichtangaben nach UStG §14 (Ausstellung von Rechnungen) enthalten ",
+          "Damit eine Rechnung rechtlich gültig ist, muss diese bestimmte Pflichtangaben nach UStG §14 (Ausstellung von Rechnungen) enthalten.",
         ],
         list: [
           "Name und Anschrift des Rechnungsausstellers",
@@ -61,7 +61,7 @@ const rechnung = {
       {
         heading: "Die E-Rechnung",
         paragraphs: [
-          "Eine E-Rechnung ist keine einfache elektronische Rechnung, sondern eine Rechnung in einem strukturierten elektronischen Format. Dadurch kann sie elektronisch empfangen, verarbeitet und archiviert werden. Bekannte Formate sind zum Beispiel XRechnung und ZUGFeRD.",
+          "Eine E-Rechnung ist keine einfache elektronische Rechnung, sondern ein für Maschinen lesbares elektronisches Format. Dadurch kann sie elektronisch empfangen, verarbeitet und archiviert werden. Bekannte Formate sind zum Beispiel XRechnung und ZUGFeRD.",
           "Seit 2025 müssen Unternehmen in Deutschland grundsätzlich in der Lage sein, E-Rechnungen im Geschäftsverkehr zwischen Unternehmen (B2B) zu empfangen. Für die Ausstellung von E-Rechnungen gelten Übergangsregelungen. Inhaltlich müssen E-Rechnungen dieselben Pflichtangaben enthalten wie andere Rechnungen.",
           "Wichtig ist: Auch E-Rechnungen müssen während der Aufbewahrungsfrist lesbar, vollständig und unverändert verfügbar bleiben."
         ],
@@ -91,18 +91,14 @@ const rechnung = {
     "fehlende Angaben zur Kleinunternehmerregelung",
     "keine klare Zahlungsfrist",
   ],
-  faqs: [
+  faqs: [    
     {
-      question: "Was muss in eine Rechnung?",
-      answer: "Eine Rechnung sollte alle wichtigen Angaben enthalten, damit sie eindeutig, nachvollziehbar und buchhalterisch nutzbar ist. Dazu gehören unter anderem Name und Anschrift von Anbieter und Kunde, Rechnungsdatum, Rechnungsnummer, Leistungsdatum, Beschreibung der Leistung, Betrag, Umsatzsteuer und Zahlungsinformationen.",
+      question: "Wann schreibe ich eine Rechnung?",
+      answer: "Eine Rechnung wird in der Regel erstellt, wenn eine Lieferung oder Leistung abgeschlossen ist und man zur Zahlung auffordert.",
     },
     {
-      question: "Wann muss ich eine Rechnung schreiben?",
-      answer: "Eine Rechnung wird in der Regel erstellt, wenn eine Lieferung oder Leistung gegenüber einem Kunden abgerechnet werden soll. Besonders im geschäftlichen Bereich ist sie wichtig für Zahlung, Buchhaltung und Nachweis.",
-    },
-    {
-      question: "Was ist eine Rechnungsnummer?",
-      answer: "Die Rechnungsnummer ist eine eindeutige Nummer, mit der eine Rechnung identifiziert werden kann. Sie sollte fortlaufend und nachvollziehbar vergeben werden.",
+      question: "Wie muss die Rechnungsnummer aufgebaut sein",
+      answer: "Jede Rechnungsnummer muss einmalige sein. Sie solte fortlaufend und nachvollziehbar vergeben werden. Sie darf Zahlen und Buchstaben enthalten. Häufig wird die Rechnungsnummer mit dem Datum kombiniert, zum Beispiel: 05-2026-1234.",       
     },
     {
       question: "Was ist das Leistungsdatum?",
@@ -114,11 +110,11 @@ const rechnung = {
     },
     {
       question: "Was ist eine Kleinunternehmerrechnung?",
-      answer: "Bei einer Kleinunternehmerrechnung wird keine Umsatzsteuer ausgewiesen. Stattdessen enthält die Rechnung einen Hinweis auf die Anwendung der Kleinunternehmerregelung.",
+      answer: "Bei einer Kleinunternehmerrechnung wird keine Umsatzsteuer ausgewiesen. Stattdessen enthält die Rechnung einen Hinweis auf die Anwendung der Kleinunternehmerregelung. Diese werden erstellt von Kleinunternehmern, welche unter das UStG §19 fallen und ein Jährlichen Gesamtumsatz von 25.000 Euro und im laufenden Kalenderjahr 100.000 Euro nicht überschreiten.",
     },
     {
       question: "Was ist das Reverse-Charge-Verfahren?",
-      answer: "Beim Reverse-Charge-Verfahren schuldet nicht der leistende Unternehmer die Umsatzsteuer, sondern der Leistungsempfänger. Das betrifft vor allem bestimmte grenzüberschreitende oder besondere geschäftliche Leistungen.",
+      answer: "Das Reverse-Charge-Verfahren betrifft vor allem grenzüberschreitende Lieferungen und Leistungen. Hier schuldet nicht der leistende Unternehmer die Umsatzsteuer, sondern der Empfänger.",
     },
     {
       question: "Was passiert, wenn eine Rechnung nicht bezahlt wird?",
