@@ -3,11 +3,11 @@ import { defaultDisclaimer } from '../shared.js';
 const ersteMahnung = {
   slug: "erste-mahnung",
   category: "Mahnwesen",
-  title: "1. Mahnung",
-  description: "Die erste Mahnung erinnert sachlich an eine fällige offene Forderung.",
+  title: "Mahnverfahren",
+  description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen.",
   seo: {
-    title: "1. Mahnung einfach erklärt | Carta",
-    description: "Die erste Mahnung erinnert sachlich an eine fällige offene Forderung.",
+    title: "Mahnverfahren einfach erklärt | Carta",
+    description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen.",
     canonicalPath: "/wissen/erste-mahnung",
   },
   article: {

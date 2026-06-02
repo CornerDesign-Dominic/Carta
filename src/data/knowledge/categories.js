@@ -16,7 +16,7 @@ export const knowledgeCategories = [
     description: 'Wissen zu Zahlungserinnerungen, Mahnstufen, Verzug und offenen Forderungen.',
     pages: [
       { slug: 'zahlungserinnerung', title: 'Zahlungserinnerung' },
-      { slug: 'erste-mahnung', title: '1. Mahnung' },
+      { slug: 'erste-mahnung', title: 'Mahnverfahren' },
       { slug: 'zweite-mahnung', title: '2. Mahnung' },
       { slug: 'letzte-mahnung', title: 'Letzte Mahnung' },
     ],
