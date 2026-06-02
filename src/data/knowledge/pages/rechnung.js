@@ -129,8 +129,8 @@ const rechnung = {
     "erste-mahnung",
   ],
   sources: [],
-  updatedAt: "2026-05-12",
-  reviewedAt: "2026-05-12",
+  updatedAt: "2026-06-03",
+  reviewedAt: "2026-06-03",
   disclaimer: defaultDisclaimer,
 };
 
