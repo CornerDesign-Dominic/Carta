@@ -16,7 +16,7 @@ import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
 import { documentSections } from './data/documents.js';
 
-const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE === 'true';
+const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE !== 'false';
 const generatorPathById = new Map(
   documentSections.flatMap((section) =>
     (section.children ?? [])
