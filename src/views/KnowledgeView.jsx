@@ -3,6 +3,16 @@ import KnowledgeLanding from '../components/knowledge/KnowledgeLanding.jsx';
 import KnowledgeSidebar from '../components/knowledge/KnowledgeSidebar.jsx';
 
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
+  const documentIdByToolLink = {
+    '/dokumente/rechnung': 'write-invoice',
+    '/dokumente/angebot': 'write-offer',
+    '/dokumente/lieferschein': 'write-delivery-note',
+    '/dokumente/gutschrift': 'write-credit-note',
+    '/dokumente/mahnung': 'write-reminder',
+    '/dokumente/quittung': 'write-receipt',
+    '/dokumente/eigenbeleg': 'write-self-receipt',
+  };
+
   function handleSelectSlug(slug) {
     onSelectSlug(slug);
   }
@@ -12,8 +22,10 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
   }
 
   function handleOpenTool(toolLink) {
-    if (toolLink === '/dokumente/rechnung') {
-      onNavigate({ view: 'documents', documentId: 'write-invoice', path: toolLink });
+    const documentId = documentIdByToolLink[toolLink];
+
+    if (documentId) {
+      onNavigate({ view: 'documents', documentId, path: toolLink });
       return;
     }
 

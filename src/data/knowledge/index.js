@@ -3,6 +3,7 @@ import rechnung from './pages/rechnung.js';
 import angebot from './pages/angebot.js';
 import lieferschein from './pages/lieferschein.js';
 import gutschrift from './pages/gutschrift.js';
+import quittung from './pages/quittung.js';
 import zahlungserinnerung from './pages/zahlungserinnerung.js';
 import ersteMahnung from './pages/erste-mahnung.js';
 import zweiteMahnung from './pages/zweite-mahnung.js';
@@ -16,6 +17,7 @@ export const knowledgePages = {
   'angebot': angebot,
   'lieferschein': lieferschein,
   'gutschrift': gutschrift,
+  'quittung': quittung,
   'zahlungserinnerung': zahlungserinnerung,
   'erste-mahnung': ersteMahnung,
   'zweite-mahnung': zweiteMahnung,
