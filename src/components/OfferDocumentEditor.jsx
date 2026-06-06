@@ -12,6 +12,7 @@ import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import OfferDocumentForm from './OfferDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const initialOfferLabels = {
   title: 'Angebot',
@@ -1240,31 +1241,33 @@ export default function OfferDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      <OfferDocumentForm
-        addPosition={addPosition}
-        details={offerData.details}
-        footerLines={footerLines}
-        footerData={offerData.footer}
-        formatCurrency={formatCurrency}
-        formatPercent={formatPercent}
-        isOpen={isFormPanelOpen}
-        movePosition={movePosition}
-        onToggle={() => setIsFormPanelOpen((current) => !current)}
-        positions={positions}
-        recipient={offerData.recipient}
-        references={offerData.references}
-        removePosition={removePosition}
-        sender={offerData.sender}
-        textBlocks={textBlocks}
-        toggleTextBlockVisibility={toggleTextBlockVisibility}
-        totals={totals}
-        updateDetail={updateDetail}
-        updateFooterLine={updateFooterLine}
-        updatePosition={updatePosition}
-        updateRecipient={updateRecipient}
-        updateSender={updateSender}
-        updateTextBlock={updateTextBlock}
-      />
+      {SHOW_DOCUMENT_FORM_PANEL && (
+        <OfferDocumentForm
+          addPosition={addPosition}
+          details={offerData.details}
+          footerLines={footerLines}
+          footerData={offerData.footer}
+          formatCurrency={formatCurrency}
+          formatPercent={formatPercent}
+          isOpen={isFormPanelOpen}
+          movePosition={movePosition}
+          onToggle={() => setIsFormPanelOpen((current) => !current)}
+          positions={positions}
+          recipient={offerData.recipient}
+          references={offerData.references}
+          removePosition={removePosition}
+          sender={offerData.sender}
+          textBlocks={textBlocks}
+          toggleTextBlockVisibility={toggleTextBlockVisibility}
+          totals={totals}
+          updateDetail={updateDetail}
+          updateFooterLine={updateFooterLine}
+          updatePosition={updatePosition}
+          updateRecipient={updateRecipient}
+          updateSender={updateSender}
+          updateTextBlock={updateTextBlock}
+        />
+      )}
 
       <DocumentToolbar
         ariaLabel="Angebot Werkzeuge"

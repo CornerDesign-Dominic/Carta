@@ -16,6 +16,7 @@ import {
   getDocumentModeHint,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const invoiceSchemaVersion = '1.0';
 
@@ -937,30 +938,32 @@ export default function InvoiceDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      <InvoiceDocumentForm
-        addPosition={addPosition}
-        details={invoiceData.details}
-        footerLines={footerLines}
-        formatCurrency={formatCurrency}
-        formatPercent={formatPercent}
-        isOpen={isFormPanelOpen}
-        movePosition={movePosition}
-        onToggle={() => setIsFormPanelOpen((current) => !current)}
-        positions={positions}
-        recipient={invoiceData.recipient}
-        references={invoiceData.references}
-        removePosition={removePosition}
-        sender={invoiceData.sender}
-        textBlocks={textBlocks}
-        toggleTextBlockVisibility={toggleTextBlockVisibility}
-        totals={totals}
-        updateDetail={updateDetail}
-        updateFooterLine={updateFooterLine}
-        updatePosition={updatePosition}
-        updateRecipient={updateRecipient}
-        updateSender={updateSender}
-        updateTextBlock={updateTextBlock}
-      />
+      {SHOW_DOCUMENT_FORM_PANEL && (
+        <InvoiceDocumentForm
+          addPosition={addPosition}
+          details={invoiceData.details}
+          footerLines={footerLines}
+          formatCurrency={formatCurrency}
+          formatPercent={formatPercent}
+          isOpen={isFormPanelOpen}
+          movePosition={movePosition}
+          onToggle={() => setIsFormPanelOpen((current) => !current)}
+          positions={positions}
+          recipient={invoiceData.recipient}
+          references={invoiceData.references}
+          removePosition={removePosition}
+          sender={invoiceData.sender}
+          textBlocks={textBlocks}
+          toggleTextBlockVisibility={toggleTextBlockVisibility}
+          totals={totals}
+          updateDetail={updateDetail}
+          updateFooterLine={updateFooterLine}
+          updatePosition={updatePosition}
+          updateRecipient={updateRecipient}
+          updateSender={updateSender}
+          updateTextBlock={updateTextBlock}
+        />
+      )}
 
       <DocumentToolbar
         ariaLabel="Rechnung Werkzeuge"

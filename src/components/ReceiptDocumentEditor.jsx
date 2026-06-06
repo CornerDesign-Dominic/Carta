@@ -5,6 +5,7 @@ import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.
 import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
 import { getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const receiptSchemaVersion = '1.0';
 
@@ -1033,17 +1034,19 @@ export default function ReceiptDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor receipt-visual-editor">
-      <ReceiptDocumentForm
-        amount={formAmount}
-        defaults={{ ...defaultReceiptData, textBlocks: receiptTextDefaults }}
-        details={{ ...receiptData.details, ...receiptData.references }}
-        isOpen={isFormPanelOpen}
-        onToggle={() => setIsFormPanelOpen((current) => !current)}
-        sender={receiptData.sender}
-        updateAmount={updateAmount}
-        updateDetail={updateDetail}
-        updateSender={updateSender}
-      />
+      {SHOW_DOCUMENT_FORM_PANEL && (
+        <ReceiptDocumentForm
+          amount={formAmount}
+          defaults={{ ...defaultReceiptData, textBlocks: receiptTextDefaults }}
+          details={{ ...receiptData.details, ...receiptData.references }}
+          isOpen={isFormPanelOpen}
+          onToggle={() => setIsFormPanelOpen((current) => !current)}
+          sender={receiptData.sender}
+          updateAmount={updateAmount}
+          updateDetail={updateDetail}
+          updateSender={updateSender}
+        />
+      )}
 
       <DocumentToolbar
         ariaLabel="Quittung Werkzeuge"

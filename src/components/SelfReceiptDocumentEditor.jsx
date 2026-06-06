@@ -12,6 +12,7 @@ import SelfReceiptDocumentForm from './SelfReceiptDocumentForm.jsx';
 import SelfReceiptExpenseTable from './documentBlocks/SelfReceiptExpenseTable.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const selfReceiptSchemaVersion = '1.0';
 
@@ -1081,30 +1082,32 @@ export default function SelfReceiptDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      <SelfReceiptDocumentForm
-        addPosition={addPosition}
-        details={selfReceiptData.details}
-        expenseInfo={selfReceiptData.expenseInfo}
-        footerLines={footerLines}
-        isOpen={isFormPanelOpen}
-        movePosition={movePosition}
-        moveTextBlock={moveTextBlock}
-        onToggle={() => setIsFormPanelOpen((current) => !current)}
-        positions={positions}
-        recipient={selfReceiptData.recipient}
-        references={selfReceiptData.references}
-        removePosition={removePosition}
-        sender={selfReceiptData.sender}
-        textBlocks={textBlocks}
-        toggleTextBlockVisibility={toggleTextBlockVisibility}
-        updateDetail={updateDetail}
-        updateExpenseInfo={updateExpenseInfo}
-        updateFooterLine={updateFooterLine}
-        updatePosition={updatePosition}
-        updateRecipient={updateRecipient}
-        updateSender={updateSender}
-        updateTextBlock={updateTextBlock}
-      />
+      {SHOW_DOCUMENT_FORM_PANEL && (
+        <SelfReceiptDocumentForm
+          addPosition={addPosition}
+          details={selfReceiptData.details}
+          expenseInfo={selfReceiptData.expenseInfo}
+          footerLines={footerLines}
+          isOpen={isFormPanelOpen}
+          movePosition={movePosition}
+          moveTextBlock={moveTextBlock}
+          onToggle={() => setIsFormPanelOpen((current) => !current)}
+          positions={positions}
+          recipient={selfReceiptData.recipient}
+          references={selfReceiptData.references}
+          removePosition={removePosition}
+          sender={selfReceiptData.sender}
+          textBlocks={textBlocks}
+          toggleTextBlockVisibility={toggleTextBlockVisibility}
+          updateDetail={updateDetail}
+          updateExpenseInfo={updateExpenseInfo}
+          updateFooterLine={updateFooterLine}
+          updatePosition={updatePosition}
+          updateRecipient={updateRecipient}
+          updateSender={updateSender}
+          updateTextBlock={updateTextBlock}
+        />
+      )}
 
       <DocumentToolbar
         ariaLabel="Eigenbeleg Werkzeuge"

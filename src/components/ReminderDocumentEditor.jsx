@@ -16,6 +16,7 @@ import {
   usesExampleValue,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const reminderSchemaVersion = '1.0';
 
@@ -958,30 +959,32 @@ export default function ReminderDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      <ReminderDocumentForm
-        addOpenItem={addOpenItem}
-        charges={charges}
-        details={reminderData.details}
-        footerLines={footerLines}
-        formatCurrency={formatCurrency}
-        isOpen={isFormPanelOpen}
-        moveOpenItem={moveOpenItem}
-        onToggle={() => setIsFormPanelOpen((current) => !current)}
-        openItems={openItems}
-        recipient={reminderData.recipient}
-        removeOpenItem={removeOpenItem}
-        sender={reminderData.sender}
-        textBlocks={textBlocks}
-        toggleTextBlockVisibility={toggleTextBlockVisibility}
-        totals={totals}
-        updateCharge={updateCharge}
-        updateDetail={updateDetail}
-        updateFooterLine={updateFooterLine}
-        updateOpenItem={updateOpenItem}
-        updateRecipient={updateRecipient}
-        updateSender={updateSender}
-        updateTextBlock={updateTextBlock}
-      />
+      {SHOW_DOCUMENT_FORM_PANEL && (
+        <ReminderDocumentForm
+          addOpenItem={addOpenItem}
+          charges={charges}
+          details={reminderData.details}
+          footerLines={footerLines}
+          formatCurrency={formatCurrency}
+          isOpen={isFormPanelOpen}
+          moveOpenItem={moveOpenItem}
+          onToggle={() => setIsFormPanelOpen((current) => !current)}
+          openItems={openItems}
+          recipient={reminderData.recipient}
+          removeOpenItem={removeOpenItem}
+          sender={reminderData.sender}
+          textBlocks={textBlocks}
+          toggleTextBlockVisibility={toggleTextBlockVisibility}
+          totals={totals}
+          updateCharge={updateCharge}
+          updateDetail={updateDetail}
+          updateFooterLine={updateFooterLine}
+          updateOpenItem={updateOpenItem}
+          updateRecipient={updateRecipient}
+          updateSender={updateSender}
+          updateTextBlock={updateTextBlock}
+        />
+      )}
 
       <DocumentToolbar
         ariaLabel="Mahnung Werkzeuge"

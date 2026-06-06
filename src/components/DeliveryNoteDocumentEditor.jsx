@@ -15,6 +15,7 @@ import {
   getDocumentModeHint,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const deliveryNoteSchemaVersion = '1.0';
 
@@ -1052,27 +1053,29 @@ export default function DeliveryNoteDocumentEditor() {
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      <DeliveryNoteDocumentForm
-        addPosition={addPosition}
-        details={deliveryNoteData.details}
-        footerLines={footerLines}
-        isOpen={isFormPanelOpen}
-        movePosition={movePosition}
-        onToggle={() => setIsFormPanelOpen((current) => !current)}
-        positions={positions}
-        recipient={deliveryNoteData.recipient}
-        references={deliveryNoteData.references}
-        removePosition={removePosition}
-        sender={deliveryNoteData.sender}
-        textBlocks={textBlocks}
-        toggleTextBlockVisibility={toggleTextBlockVisibility}
-        updateDetail={updateDetail}
-        updateFooterLine={updateFooterLine}
-        updatePosition={updatePosition}
-        updateRecipient={updateRecipient}
-        updateSender={updateSender}
-        updateTextBlock={updateTextBlock}
-      />
+      {SHOW_DOCUMENT_FORM_PANEL && (
+        <DeliveryNoteDocumentForm
+          addPosition={addPosition}
+          details={deliveryNoteData.details}
+          footerLines={footerLines}
+          isOpen={isFormPanelOpen}
+          movePosition={movePosition}
+          onToggle={() => setIsFormPanelOpen((current) => !current)}
+          positions={positions}
+          recipient={deliveryNoteData.recipient}
+          references={deliveryNoteData.references}
+          removePosition={removePosition}
+          sender={deliveryNoteData.sender}
+          textBlocks={textBlocks}
+          toggleTextBlockVisibility={toggleTextBlockVisibility}
+          updateDetail={updateDetail}
+          updateFooterLine={updateFooterLine}
+          updatePosition={updatePosition}
+          updateRecipient={updateRecipient}
+          updateSender={updateSender}
+          updateTextBlock={updateTextBlock}
+        />
+      )}
 
       <DocumentToolbar
         ariaLabel="Lieferschein Werkzeuge"
