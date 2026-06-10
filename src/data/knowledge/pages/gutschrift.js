@@ -12,9 +12,7 @@ const gutschrift = {
   },
   article: {
     intro: "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll.",
-    sections: [w
-      
-        
+    sections: [
       {
         heading: "Wichtige Punkte",
         paragraphs: [
