@@ -12,7 +12,15 @@ const gutschrift = {
   },
   article: {
     intro: "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll.",
-    sections: [
+    sections: [      
+
+     {
+      heading: "Wann eine Gutschrift erstellt wird",
+        paragraphs: [
+          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Rücksendungen, Preisnachlässen oder Rechnungskorrekturen eingesetzt werden.",
+        ],
+      },
+
       {
         heading: "Wichtige Punkte",
         paragraphs: [
@@ -29,33 +37,33 @@ const gutschrift = {
         ],
       },
 
-     {
-      heading: "Was ist Gutschrift?",
+      {
+        heading: "Form einer Gutschrift",
         paragraphs: [
-          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Rücksendungen, Preisnachlässen oder Rechnungskorrekturen eingesetzt werden.",
-        ],
+          "Eine Gutschrift ist im Grunde eine umgekehrte Rechnung. Bei der Erstellung belastet der Gutschriftsausstellende den Betrag an sich selbst.",
+          "Je nach Anliegen wird grundsätzlich zwischen zwei Hauptformen unterschieden.",
+        ], 
+          list: [
+            "Kaufmännische Gutschrift (Rechnungskorrektur & Stornorechnung)"
+          ],
+          paragraphs:[
+            "Diese Belege werden vom Leistungsbringer erstellt und korrigieren eine Rechnung. Der Betrag wird vollständig oder teilweise reduziert."
+          ],
+          list: [
+            "Umsatzsteuerliche Gutschrift (Gutschriftsverfahren)"
+          ],
+          paragraphs:[
+            "Dieser Beleg wird vom Leistungsempfänger ausgestellt und ersetzt eine Rechnung. Diese Gutschrift muss die selben Anforderungen wie eine Rechnungen erfüllen. Der Beleg muss zwingend den Dokumentnamen Gutschrift haben. Des Weiteren muss dem Gutschriftsverfahren von beiden Parteien zugestimmt werden."
+          ],
       },
-
-
 
       {
-        heading: "Praxis",
+        heading: "Allgemeines",
         paragraphs: [
-          "Eine Gutschrift wird häufig erstellt, wenn eine Rechnung teilweise oder vollständig korrigiert werden muss, Ware zurückgegeben wurde oder ein Preisnachlass nachträglich gewährt wird.",
+          ".",
         ],
       },
-      {
-        heading: "Worauf sollte man achten?",
-        paragraphs: [
-          "Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.",
-        ],
-        list: [
-          "kein Bezug zur ursprünglichen Rechnung",
-          "unklarer Grund der Gutschrift",
-          "falsche Steuerangaben",
-          "Verwechslung von Gutschrift und Stornorechnung",
-        ],
-      },
+      
     ],
   },
   generator: null,
