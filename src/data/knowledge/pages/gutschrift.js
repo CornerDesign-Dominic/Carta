@@ -65,15 +65,35 @@ const gutschrift = {
   faqs: [
     {
       question: "Wann wird eine Gutschrift erstellt?",
-      answer: "Eine Gutschrift wird erstellt, wenn ein Kunde oder Geschaeftspartner einen Betrag gutgeschrieben bekommt, etwa wegen Rueckgabe, Korrektur oder Preisnachlass.",
+      answer: "Eine Gutschrift wird erstellt, wenn einem Kunden ein Betrag gutgeschrieben wird, zum Beispiel wegen einer Rückgabe, einer Korrektur oder eines nachträglichen Preisnachlasses. Außerdem kann eine Gutschrift im Gutschriftsverfahren eingesetzt werden: Dabei erstellt der Leistungsempfänger die Abrechnung für eine erhaltene Leistung. Dieses Verfahren muss jedoch vorher zwischen beiden Parteien vereinbart werden.",
     },
     {
-      question: "Was muss in einer Gutschrift stehen?",
-      answer: "Wichtig sind die beteiligten Parteien, Datum, Nummer, Bezug zur urspruenglichen Rechnung, Grund der Gutschrift und der gutgeschriebene Betrag.",
+      question: "Was muss in einer Gutschrift im Gutschriftsverfahren stehen?",
+      answer: "Eine Gutschrift im Gutschriftsverfahren ersetzt die Rechnung des Leistungserbringers. Deshalb muss sie grundsätzlich dieselben Angaben enthalten wie eine Rechnung, zum Beispiel die beteiligten Parteien, Datum, fortlaufende Nummer, Leistungsbeschreibung, Betrag, Steuerangaben und Gesamtsumme. Außerdem muss der Beleg ausdrücklich als „Gutschrift“ bezeichnet werden.",
     },
     {
       question: "Ist eine Gutschrift dasselbe wie eine Rechnung?",
-      answer: "Nein. Eine Rechnung fordert eine Zahlung an. Eine Gutschrift reduziert, korrigiert oder verrechnet einen Betrag.",
+      answer: "Nicht immer. Eine kaufmännische Gutschrift dient meist dazu, einen Betrag zu reduzieren, zu korrigieren oder gutzuschreiben. Eine Gutschrift im Gutschriftsverfahren kann dagegen eine Rechnung ersetzen, weil der Leistungsempfänger die Abrechnung für eine erhaltene Leistung erstellt. Deshalb kommt es darauf an, welche Art von Gutschrift gemeint ist.",
+    },
+    {
+      question: "Kann ich dem Gutschriftsverfahren widersprechen?",
+      answer: "Ja. Dem Gutschriftsverfahren kann widersprochen werden. Da dieses Verfahren grundsätzlich zwischen beiden Parteien vereinbart sein muss, sollte ein Widerspruch klar und nachvollziehbar erklärt werden. Wird der Gutschrift widersprochen, kann sie ihre Wirkung als Abrechnung verlieren und der Leistungserbringer muss die Abrechnung gegebenenfalls selbst durch eine Rechnung vornehmen.",
+    },
+    {
+      question: "Was tun, wenn eine Gutschrift nicht bezahlt wird?",
+      answer: "Wenn eine Gutschrift nicht ausgezahlt oder verrechnet wird, sollte der Vorgang zuerst geprüft und schriftlich geklärt werden. Wichtig ist, ob die Gutschrift eine Rückzahlung auslöst oder nur mit offenen Beträgen verrechnet werden soll. Bleibt die Zahlung aus, kann der gutgeschriebene Betrag angemahnt und eine klare Frist zur Auszahlung oder Verrechnung gesetzt werden.",
+    },
+    {
+      question: "Warum wird das Gutschriftsverfahren angewendet?",
+      answer: "Das Gutschriftsverfahren wird angewendet, wenn nicht der Leistungserbringer, sondern der Leistungsempfänger die Abrechnung erstellt. Das kann zum Beispiel sinnvoll sein, wenn der Leistungsempfänger die erbrachte Leistung, Mengen, Provisionen oder Abrechnungsdaten besser erfassen kann. Wichtig ist, dass beide Parteien dem Verfahren zustimmen und die Gutschrift die Anforderungen an eine Rechnung erfüllt.",
+    },
+    {
+      question: "Ist eine Stornorechnung eine Gutschrift?",
+      answer: "Ja, eine Stornorechnung ist eine Form der Gutschrift. Sie reduziert den in Rechnung gestellten Betrag vollständig und schreibt diesen entsprechend gut. Wurde die ursprüngliche Rechnung bereits beglichen, kann durch die Stornorechnung eine Rückabwicklung eingeleitet werden.",
+    },
+    {
+      question: "Was ist der Unterschied zwischen Rechnungskorrektur und Gutschrift?",
+      answer: "Eine Rechnungskorrektur bezieht sich immer auf eine bereits gestellte Rechnung des Leistungsbringers. Eine Gutschrift bezieht sich ebenfalls auf eine Leistung oder einen Betrag, muss aber nicht zwingend eine bereits ausgestellte Rechnung zur Grundlage haben. Damit kann eine Rechnungskorrektur eine Form der Gutschrift sein. Eine Gutschrift ist jedoch nicht automatisch eine Rechnungskorrektur, weil sie zwar einen Betrag gutschreibt, aber nicht immer eine bestehende Rechnung reduziert.",
     },
   ],
   related: [
