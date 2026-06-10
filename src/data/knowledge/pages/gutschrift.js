@@ -11,14 +11,10 @@ const gutschrift = {
     canonicalPath: "/wissen/gutschrift",
   },
   article: {
-    intro: "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Rücksendungen, Preisnachlässen oder Rechnungskorrekturen eingesetzt werden.",
-    sections: [
-      {
-        heading: "Was ist Gutschrift?",
-        paragraphs: [
-          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Rücksendungen, Preisnachlässen oder Rechnungskorrekturen eingesetzt werden.",
-        ],
-      },
+    intro: "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll.",
+    sections: [w
+      
+        
       {
         heading: "Wichtige Punkte",
         paragraphs: [
@@ -34,6 +30,16 @@ const gutschrift = {
           "klare Verrechnung oder Auszahlung",
         ],
       },
+
+     {
+      heading: "Was ist Gutschrift?",
+        paragraphs: [
+          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Rücksendungen, Preisnachlässen oder Rechnungskorrekturen eingesetzt werden.",
+        ],
+      },
+
+
+
       {
         heading: "Praxis",
         paragraphs: [

@@ -19,11 +19,7 @@ function DocumentOverview() {
     {
       title: 'Direkt im Dokument',
       text:
-        'Einfach auf „Bearbeiten“ klicken und Sie sehen, was alles bearbeitet werden kann. Egal ob in der Vorschau oder im Bearbeitungsmodus: Sie können nahezu alles individuell anpassen.',
-    },
-    {
-      title: 'Im Formular',
-      text: 'Hier können Sie schnell gespeicherte Daten per Autofill ausfüllen.',
+        'Einfach loslegen. Klicken Sie auf „Bearbeiten“, um zu sehen, was alles bearbeitet werden kann.',
     },
     {
       title: 'Optionale Felder',
@@ -38,12 +34,12 @@ function DocumentOverview() {
     {
       title: 'Vorlagen',
       text:
-        'Wenn Sie die Grunddaten speichern wollen, können Sie eine Datei erstellen, welche die eingegebenen Daten beinhaltet. Diese können Sie beim nächsten Mal durch Hochladen direkt wieder verwenden.',
+        'Beim Erstellen werden die Daten aus dem Dokument in einer JSON-Datei gespeichert. Diese kann anschließend immer wieder als Vorlage hochgeladen und verwendet werden.',
     },
     {
       title: 'Hinweis zur Prüfung',
       text:
-        'Vor dem Erstellen eines Dokumentes sollten alle Angaben sorgfältig geprüft werden. So vermeidet man Beispieldaten, Tippfehler oder unvollständige Angaben.',
+        'Beispieldaten können mit unserem Daten-Prüfer erkannt und hervorgehoben werden. Vor dem Erstellen eines Dokumentes sollten diese Daten angepasst sowie Tippfehler und unvollständige Angaben ergänzt werden.',
     },
   ];
 
