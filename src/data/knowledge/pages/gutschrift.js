@@ -22,22 +22,6 @@ const gutschrift = {
       },
 
       {
-        heading: "Wichtige Punkte",
-        paragraphs: [
-          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-        ],
-        list: [
-          "Name und Anschrift der beteiligten Parteien",
-          "Gutschriftsdatum",
-          "Gutschriftsnummer",
-          "Bezug zur ursprünglichen Rechnung oder Lieferung",
-          "Grund der Gutschrift",
-          "Betrag, Steuer und Gesamtsumme",
-          "klare Verrechnung oder Auszahlung",
-        ],
-      },
-
-      {
         heading: "Form einer Gutschrift",
         paragraphs: [
           "Eine Gutschrift ist im Grunde eine umgekehrte Rechnung. Bei der Erstellung belastet der Gutschriftsausstellende den Betrag an sich selbst.",
@@ -55,13 +39,6 @@ const gutschrift = {
           paragraphs:[
             "Dieser Beleg wird vom Leistungsempfänger ausgestellt und ersetzt eine Rechnung. Diese Gutschrift muss die selben Anforderungen wie eine Rechnungen erfüllen. Der Beleg muss zwingend den Dokumentnamen Gutschrift haben. Des Weiteren muss dem Gutschriftsverfahren von beiden Parteien zugestimmt werden."
           ],
-      },
-
-      {
-        heading: "Allgemeines",
-        paragraphs: [
-          ".",
-        ],
       },
       
     ],
