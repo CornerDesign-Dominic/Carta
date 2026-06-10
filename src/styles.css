@@ -6042,17 +6042,30 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.32;
 }
 
+.knowledge-article-subsections {
+  display: grid;
+  gap: 14px;
+  margin-top: 12px;
+}
+
 .knowledge-article-subsection {
   display: grid;
   gap: 10px;
-  margin-top: 6px;
+  padding: 14px 0 14px 18px;
+  border-left: 2px solid rgba(53, 107, 102, 0.16);
+  background: linear-gradient(90deg, rgba(223, 236, 232, 0.32), rgba(223, 236, 232, 0));
 }
 
 .knowledge-article-subsection h3 {
   margin: 0;
   color: var(--ink);
-  font-size: 1rem;
-  line-height: 1.4;
+  font-size: 0.96rem;
+  font-weight: 720;
+  line-height: 1.38;
+}
+
+.knowledge-article-subsection p {
+  max-width: 720px;
 }
 
 .knowledge-article-section p {

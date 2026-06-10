@@ -88,14 +88,18 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
             {section.paragraphs?.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
-            {section.subsections?.map((subsection) => (
-              <div className="knowledge-article-subsection" key={subsection.heading}>
-                <h3>{subsection.heading}</h3>
-                {subsection.paragraphs?.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
+            {section.subsections?.length > 0 && (
+              <div className="knowledge-article-subsections">
+                {section.subsections.map((subsection) => (
+                  <div className="knowledge-article-subsection" key={subsection.heading}>
+                    <h3>{subsection.heading}</h3>
+                    {subsection.paragraphs?.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
+            )}
             {section.list?.length > 0 && (
               <ul>
                 {section.list.map((item) => (

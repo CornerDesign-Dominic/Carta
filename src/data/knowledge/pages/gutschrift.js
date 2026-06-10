@@ -4,10 +4,10 @@ const gutschrift = {
   slug: "gutschrift",
   category: "Belege",
   title: "Gutschrift",
-  description: "Eine Gutschrift korrigiert oder verrechnet BetrÃ¤ge zugunsten eines Kunden oder GeschÃ¤ftspartners.",
+  description: "Eine Gutschrift korrigiert oder verrechnet Betraege zugunsten eines Kunden oder Geschaeftspartners.",
   seo: {
-    title: "Gutschrift einfach erklÃ¤rt | Carta",
-    description: "Eine Gutschrift korrigiert oder verrechnet BetrÃ¤ge zugunsten eines Kunden oder GeschÃ¤ftspartners.",
+    title: "Gutschrift einfach erklaert | Carta",
+    description: "Eine Gutschrift korrigiert oder verrechnet Betraege zugunsten eines Kunden oder Geschaeftspartners.",
     canonicalPath: "/wissen/gutschrift",
   },
   article: {
@@ -16,77 +16,48 @@ const gutschrift = {
       {
         heading: "Wann eine Gutschrift erstellt wird",
         paragraphs: [
-          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei RÃ¼cksendungen, PreisnachlÃ¤ssen oder Rechnungskorrekturen eingesetzt werden.",
+          "Eine Gutschrift wird genutzt, wenn ein Betrag gutgeschrieben, korrigiert oder verrechnet werden soll. Sie kann zum Beispiel bei Ruecksendungen, Preisnachlaessen oder Rechnungskorrekturen eingesetzt werden.",
         ],
       },
       {
         heading: "Form einer Gutschrift",
         paragraphs: [
-          "Eine Gutschrift ist im Grunde eine umgekehrte Rechnung. Bei der Erstellung schreibt der Gutschriftsausstellende dem EmpfÃ¤nger einen Betrag gut.",
-          "Je nach Anliegen wird grundsÃ¤tzlich zwischen zwei Hauptformen unterschieden.",
+          "Eine Gutschrift ist im Grunde eine umgekehrte Rechnung. Bei der Erstellung schreibt der Gutschriftsausstellende dem Empfaenger einen Betrag gut.",
+          "Je nach Anliegen wird grundsaetzlich zwischen zwei Hauptformen unterschieden.",
         ],
         subsections: [
           {
-            heading: "KaufmÃ¤nnische Gutschrift",
+            heading: "Kaufmaennische Gutschrift",
             paragraphs: [
-              "Diese Form wird vom Leistungsbringer erstellt und dient dazu, eine Rechnung zu korrigieren oder zu stornieren. Der Betrag wird dabei vollstÃ¤ndig oder teilweise reduziert.",
+              "Diese Form wird vom Leistungsbringer erstellt und dient dazu, eine Rechnung zu korrigieren oder zu stornieren. Der Betrag wird dabei vollstaendig oder teilweise reduziert.",
             ],
           },
           {
             heading: "Umsatzsteuerliche Gutschrift",
             paragraphs: [
-              "Diese Form wird vom LeistungsempfÃ¤nger ausgestellt und kann eine Rechnung ersetzen. Sie muss dieselben Anforderungen wie eine Rechnung erfÃ¼llen, ausdrÃ¼cklich als Gutschrift bezeichnet sein und von beiden Parteien vereinbart werden.",
+              "Diese Form wird vom Leistungsempfaenger ausgestellt und kann eine Rechnung ersetzen. Sie muss dieselben Anforderungen wie eine Rechnung erfuellen, ausdruecklich als Gutschrift bezeichnet sein und von beiden Parteien vereinbart werden.",
             ],
           },
         ],
       },
-      {
-        heading: "Wichtige Punkte",
-        paragraphs: [
-          "Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.",
-        ],
-        list: [
-          "Name und Anschrift der beteiligten Parteien",
-          "Gutschriftsdatum",
-          "Gutschriftsnummer",
-          "Bezug zur ursprÃ¼nglichen Rechnung oder Lieferung",
-          "Grund der Gutschrift",
-          "Betrag, Steuer und Gesamtsumme",
-          "klare Verrechnung oder Auszahlung",
-        ],
-      },
-      {
-        heading: "Praxis",
-        paragraphs: [
-          "Eine Gutschrift wird hÃ¤ufig erstellt, wenn eine Rechnung teilweise oder vollstÃ¤ndig korrigiert werden muss, Ware zurÃ¼ckgegeben wurde oder ein Preisnachlass nachtrÃ¤glich gewÃ¤hrt wird.",
-        ],
-      },
-      {
-        heading: "Worauf sollte man achten?",
-        paragraphs: [
-          "Diese Fehler kommen in der Praxis hÃ¤ufig vor und sollten vermieden werden.",
-        ],
-        list: [
-          "kein Bezug zur ursprÃ¼nglichen Rechnung",
-          "unklarer Grund der Gutschrift",
-          "falsche Steuerangaben",
-          "Verwechslung von Gutschrift und Stornorechnung",
-        ],
-      },
     ],
   },
-  generator: null,
+  generator: {
+    label: "Gutschrift erstellen",
+    href: "/dokumente/gutschrift",
+    text: "Nutze unseren kostenlosen, werbefreien und unbegrenzten interaktiven Generator, um deine individuelle Gutschrift schnell und einfach zu erstellen.",
+  },
   keyPoints: [
     "Name und Anschrift der beteiligten Parteien",
     "Gutschriftsdatum",
     "Gutschriftsnummer",
-    "Bezug zur ursprÃ¼nglichen Rechnung oder Lieferung",
+    "Bezug zur urspruenglichen Rechnung oder Lieferung",
     "Grund der Gutschrift",
     "Betrag, Steuer und Gesamtsumme",
     "klare Verrechnung oder Auszahlung",
   ],
   commonMistakes: [
-    "kein Bezug zur ursprÃ¼nglichen Rechnung",
+    "kein Bezug zur urspruenglichen Rechnung",
     "unklarer Grund der Gutschrift",
     "falsche Steuerangaben",
     "Verwechslung von Gutschrift und Stornorechnung",
@@ -94,11 +65,11 @@ const gutschrift = {
   faqs: [
     {
       question: "Wann wird eine Gutschrift erstellt?",
-      answer: "Eine Gutschrift wird erstellt, wenn ein Kunde oder GeschÃ¤ftspartner einen Betrag gutgeschrieben bekommt, etwa wegen RÃ¼ckgabe, Korrektur oder Preisnachlass.",
+      answer: "Eine Gutschrift wird erstellt, wenn ein Kunde oder Geschaeftspartner einen Betrag gutgeschrieben bekommt, etwa wegen Rueckgabe, Korrektur oder Preisnachlass.",
     },
     {
       question: "Was muss in einer Gutschrift stehen?",
-      answer: "Wichtig sind die beteiligten Parteien, Datum, Nummer, Bezug zur ursprÃ¼nglichen Rechnung, Grund der Gutschrift und der gutgeschriebene Betrag.",
+      answer: "Wichtig sind die beteiligten Parteien, Datum, Nummer, Bezug zur urspruenglichen Rechnung, Grund der Gutschrift und der gutgeschriebene Betrag.",
     },
     {
       question: "Ist eine Gutschrift dasselbe wie eine Rechnung?",
