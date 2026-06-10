@@ -21,6 +21,29 @@ const gutschrift = {
         ],
       },
 
+      
+  {
+  heading: "Form einer Gutschrift",
+  paragraphs: [
+    "Eine Gutschrift ist im Grunde eine umgekehrte Rechnung. Bei der Erstellung schreibt der Gutschriftsausstellende dem Empfänger einen Betrag gut.",
+    "Je nach Anliegen wird grundsätzlich zwischen zwei Hauptformen unterschieden.",
+  ],
+  subsections: [
+    {
+      heading: "Kaufmännische Gutschrift",
+      paragraphs: [
+        "Diese Form wird vom Leistungsbringer erstellt und dient dazu, eine Rechnung zu korrigieren oder zu stornieren. Der Betrag wird dabei vollständig oder teilweise reduziert.",
+      ],
+    },
+    {
+      heading: "Umsatzsteuerliche Gutschrift",
+      paragraphs: [
+        "Diese Form wird vom Leistungsempfänger ausgestellt und kann eine Rechnung ersetzen. Sie muss dieselben Anforderungen wie eine Rechnung erfüllen, ausdrücklich als Gutschrift bezeichnet sein und von beiden Parteien vereinbart werden.",
+      ],
+    },
+  ],
+},
+
       {
         heading: "Form einer Gutschrift",
         paragraphs: [
