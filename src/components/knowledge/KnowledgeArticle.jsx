@@ -61,7 +61,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
       paragraphs: ['Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.'],
       list: article.commonMistakes,
     },
-  ].filter((section) => section.paragraphs?.length || section.list?.length);
+  ].filter((section) => section.paragraphs?.length || section.list?.length || section.subsections?.length);
   const generator = article.generator ?? (
     article.toolLabel || article.toolLink || article.ctaText
       ? {
@@ -87,6 +87,14 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
             <h2>{section.heading}</h2>
             {section.paragraphs?.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
+            ))}
+            {section.subsections?.map((subsection) => (
+              <div className="knowledge-article-subsection" key={subsection.heading}>
+                <h3>{subsection.heading}</h3>
+                {subsection.paragraphs?.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             ))}
             {section.list?.length > 0 && (
               <ul>

@@ -6042,6 +6042,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.32;
 }
 
+.knowledge-article-subsection {
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.knowledge-article-subsection h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
 .knowledge-article-section p {
   max-width: 760px;
   margin: 0;
