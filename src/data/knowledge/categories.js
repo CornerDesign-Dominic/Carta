@@ -16,10 +16,15 @@ export const knowledgeCategories = [
     title: 'Mahnwesen',
     description: 'Wissen zu Zahlungserinnerungen, Mahnstufen, Verzug und offenen Forderungen.',
     pages: [
-      { slug: 'zahlungserinnerung', title: 'Zahlungserinnerung' },
-      { slug: 'erste-mahnung', title: 'Mahnverfahren' },
-      { slug: 'zweite-mahnung', title: '2. Mahnung' },
-      { slug: 'letzte-mahnung', title: 'Letzte Mahnung' },
+      { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+    ],
+  },
+  {
+    id: 'gruendung',
+    title: 'Gründung',
+    description: 'Grundlagen für Selbstständige, Gründer und kleine Unternehmen.',
+    pages: [
+      { slug: 'businessplan', title: 'Businessplan' },
     ],
   },
 ];

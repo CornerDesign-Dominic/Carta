@@ -4,10 +4,8 @@ import angebot from './pages/angebot.js';
 import lieferschein from './pages/lieferschein.js';
 import gutschrift from './pages/gutschrift.js';
 import quittung from './pages/quittung.js';
-import zahlungserinnerung from './pages/zahlungserinnerung.js';
-import ersteMahnung from './pages/erste-mahnung.js';
-import zweiteMahnung from './pages/zweite-mahnung.js';
-import letzteMahnung from './pages/letzte-mahnung.js';
+import mahnverfahren from './pages/mahnverfahren.js';
+import businessplan from './pages/businessplan.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -18,10 +16,8 @@ export const knowledgePages = {
   'lieferschein': lieferschein,
   'gutschrift': gutschrift,
   'quittung': quittung,
-  'zahlungserinnerung': zahlungserinnerung,
-  'erste-mahnung': ersteMahnung,
-  'zweite-mahnung': zweiteMahnung,
-  'letzte-mahnung': letzteMahnung,
+  'mahnverfahren': mahnverfahren,
+  'businessplan': businessplan,
 };
 
 export function findKnowledgePage(slug) {

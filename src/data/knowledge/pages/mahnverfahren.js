@@ -1,14 +1,14 @@
 import { defaultDisclaimer } from '../shared.js';
 
-const ersteMahnung = {
-  slug: "Mahnung",
+const mahnverfahren = {
+  slug: "mahnverfahren",
   category: "Mahnwesen",
   title: "Mahnverfahren",
-  description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen.",
+  description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen und möglichen nächsten Schritten.",
   seo: {
     title: "Mahnverfahren einfach erklärt | Carta",
-    description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen.",
-    canonicalPath: "/wissen/erste-mahnung",
+    description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen und möglichen nächsten Schritten.",
+    canonicalPath: "/wissen/mahnverfahren",
   },
   article: {
   intro: "Eine Mahnung fordert zur Zahlung eines offenen oder fälligen Betrags auf. Sie nennt die Forderung, setzt eine klare Frist und macht deutlich, welche Schritte folgen können, wenn die Zahlung weiter ausbleibt.",
@@ -176,15 +176,12 @@ const ersteMahnung = {
 ],
 
   related: [
-    "zahlungserinnerung",
-    "zweite-mahnung",
-    "letzte-mahnung",
     "rechnung",
   ],
   sources: [],
-  updatedAt: "2026-05-12",
-  reviewedAt: "2026-05-12",
+  updatedAt: "2026-07-01",
+  reviewedAt: "2026-07-01",
   disclaimer: defaultDisclaimer,
 };
 
-export default ersteMahnung;
+export default mahnverfahren;

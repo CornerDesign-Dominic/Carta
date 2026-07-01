@@ -1,6 +1,6 @@
 import { knowledgeCategories } from '../../data/knowledgePages.js';
 
-const visibleKnowledgeSlugs = ['rechnung', 'gutschrift', 'quittung', 'erste-mahnung'];
+const visibleKnowledgeSlugs = ['rechnung', 'gutschrift', 'quittung', 'mahnverfahren', 'businessplan'];
 
 export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }) {
   const visiblePages = knowledgeCategories
