@@ -3,7 +3,7 @@ import { defaultDisclaimer } from '../shared.js';
 const rechnung = {
   slug: "rechnung",
   category: "Belege",
-  title: "Die Rechnung",
+  title: "Rechnung",
   description: "Eine Rechnung dokumentiert eine Lieferung oder Leistung und fordert den Empfänger zur Zahlung auf.",
   seo: {
     title: "Rechnung einfach erklärt | Carta",
