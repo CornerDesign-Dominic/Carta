@@ -141,25 +141,40 @@ const ersteMahnung = {
     "unklare Forderungshöhe",
   ],
   faqs: [
-    {
-      question: "Wann ist eine erste Mahnung sinnvoll?",
-      answer: "Sie ist sinnvoll, wenn eine Rechnung fällig ist und der Kunde trotz Zahlungsziel noch nicht bezahlt hat.",
-    },
-    {
-      question: "Welche Frist setzt man in einer ersten Mahnung?",
-      answer: "Häufig wird eine kurze, klare Zahlungsfrist gesetzt. Die passende Frist hängt vom Einzelfall und der bisherigen Kommunikation ab.",
-    },
-    {
-      question: "Wie sollte eine erste Mahnung klingen?",
-      answer: "Sie sollte sachlich, bestimmt und nachvollziehbar sein. Ein ruhiger Ton hilft, die Geschäftsbeziehung nicht unnötig zu belasten.",
-    },
+  {
+    question: "Wann ist eine Mahnung sinnvoll?",
+    answer: "Eine Mahnung ist sinnvoll, wenn eine Rechnung fällig ist und der offene Betrag trotz Zahlungsziel nicht bezahlt wurde.",
+  },
+  {
+    question: "Muss vor der ersten Mahnung eine Zahlungserinnerung geschickt werden?",
+    answer: "Nein, das ist nicht zwingend nötig. In der Praxis wird oft direkt mit der ersten Mahnung gestartet. Eine Zahlungserinnerung kann aber sinnvoll sein, wenn man den Kunden zunächst freundlich erinnern möchte.",
+  },
+  {
+    question: "Welche Frist setzt man in einer Mahnung?",
+    answer: "Häufig wird eine kurze und klare Zahlungsfrist gesetzt. Wichtig ist, dass der Empfänger eindeutig erkennt, bis wann der offene Betrag bezahlt werden soll.",
+  },
+  {
+    question: "Wie sollte eine Mahnung formuliert sein?",
+    answer: "Eine Mahnung sollte sachlich, bestimmt und nachvollziehbar sein. Sie sollte Rechnung, Betrag, Fälligkeit, neue Zahlungsfrist und mögliche weitere Schritte klar nennen.",
+  },
+  {
+    question: "Wie viele Mahnungen sollte man schicken?",
+    answer: "Eine feste Anzahl gibt es nicht. Häufig werden bis zu drei Mahnungen verschickt. Je nach Fall kann aber auch früher ein nächster Schritt folgen.",
+  },
+  {
+    question: "Muss ich noch mahnen, wenn ich weiß, dass der Rechnungsempfänger nicht zahlen wird?",
+    answer: "Eine Mahnung kann trotzdem sinnvoll sein, um die Forderung und den weiteren Ablauf zu dokumentieren. Sie schafft eine nachvollziehbare Grundlage für spätere Schritte wie Inkasso oder ein gerichtliches Mahnverfahren.",
+  },
+  {
+    question: "Was passiert nach der letzten Mahnung?",
+    answer: "Bleibt die Zahlung weiter aus, können weitere Schritte folgen. Dazu gehören zum Beispiel Inkasso, eine anwaltliche Zahlungsaufforderung, das gerichtliche Mahnverfahren oder ein Gerichtsprozess.",
+  },
+  {
+    question: "Was ist der Unterschied zwischen Mahnung und gerichtlichem Mahnverfahren?",
+    answer: "Eine Mahnung ist eine direkte Zahlungsaufforderung des Gläubigers. Das gerichtliche Mahnverfahren läuft über das zuständige Mahngericht und kann zu einem Vollstreckungstitel führen.",
+  },
+],
 
-    {
-      question: "Muss ich noch mahnen, wenn ich weiß, dass der Rechnungsempfänger nicht Zahlen wird?",
-      answer: "Auch wenn klar ist, das nach einer Mahnung die Rechnung nicht bezahlt wird, sollte eine Geschrieben werden um formell einen Nachweis und Grundlage für weitere Schritte zu haben.",
-    },
-
-  ],
   related: [
     "zahlungserinnerung",
     "zweite-mahnung",
