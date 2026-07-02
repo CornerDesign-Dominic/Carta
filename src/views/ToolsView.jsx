@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import A4Page from '../components/documentBlocks/A4Page.jsx';
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
 import { findToolItem, toolItems } from '../data/tools.js';
 
@@ -23,11 +24,24 @@ const maxInterestCalculations = 10;
 function createInterestCalculation(id) {
   return {
     id,
-    initialCapital: '1000',
-    finalCapital: '1050',
-    interestRate: '5',
-    durationYears: '1',
-    durationMonths: '0',
+    isCollapsed: false,
+    initialCapital: '',
+    finalCapital: '',
+    interestRate: '',
+    durationYears: '',
+    durationMonths: '',
+  };
+}
+
+function clearInterestCalculation(calculation, isCollapsed = calculation.isCollapsed) {
+  return {
+    ...calculation,
+    isCollapsed,
+    initialCapital: '',
+    finalCapital: '',
+    interestRate: '',
+    durationYears: '',
+    durationMonths: '',
   };
 }
 
@@ -82,7 +96,7 @@ function calculateInterestResult(calculation, calculationMode) {
       ? parsedDurationYears + parsedDurationMonths / 12
       : null;
 
-  function invalid(message = 'Bitte fülle alle benötigten Felder mit gültigen Werten aus.') {
+  function invalid(message = 'Bitte fülle alle benötigten Felder aus.') {
     return { status: 'invalid', message };
   }
 
@@ -222,7 +236,15 @@ function ToolOverview({ onSelect }) {
   );
 }
 
-function InterestCalculationCard({ calculation, calculationMode, index, canRemove, onChange, onRemove }) {
+function InterestCalculationCard({
+  calculation,
+  calculationMode,
+  index,
+  canRemove,
+  onChange,
+  onRemove,
+  onToggleCollapse,
+}) {
   const result = useMemo(
     () => calculateInterestResult(calculation, calculationMode),
     [calculation, calculationMode],
@@ -233,6 +255,16 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
       const nextValue = event.target.value;
 
       if (nextValue === '' || Number(nextValue) >= 0) {
+        setValue(nextValue);
+      }
+    };
+  }
+
+  function handleIntegerChange(setValue) {
+    return (event) => {
+      const nextValue = event.target.value;
+
+      if (nextValue === '' || /^\d+$/.test(nextValue)) {
         setValue(nextValue);
       }
     };
@@ -267,12 +299,18 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
       <div className="tools-calculation-header">
         <h2 id={`interest-calculation-${calculation.id}`}>Berechnung {index + 1}</h2>
         {canRemove && (
-          <button className="tools-remove-calculation" type="button" onClick={onRemove}>
-            Vergleich entfernen
-          </button>
+          <div className="tools-calculation-actions">
+            <button className="tools-toggle-calculation" type="button" onClick={onToggleCollapse}>
+              {calculation.isCollapsed ? 'Vergleich anzeigen' : 'Vergleich einklappen'}
+            </button>
+            <button className="tools-remove-calculation" type="button" onClick={onRemove}>
+              Vergleich entfernen
+            </button>
+          </div>
         )}
       </div>
 
+      {!calculation.isCollapsed && (
       <div className="tools-calculator-layout">
         <section className="tools-calculator-panel" aria-label="Eingaben">
           <h2>Eingaben</h2>
@@ -284,6 +322,7 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
                   min="0"
                   inputMode="decimal"
                   type="number"
+                  placeholder="1.000"
                   value={calculation.initialCapital}
                   onChange={handleNumberChange((value) => onChange('initialCapital', value))}
                 />
@@ -297,6 +336,7 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
                   min="0"
                   inputMode="decimal"
                   type="number"
+                  placeholder="5"
                   value={calculation.interestRate}
                   onChange={handleNumberChange((value) => onChange('interestRate', value))}
                 />
@@ -304,29 +344,36 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
             )}
 
             {calculationMode !== 'duration' && (
-              <>
-                <label>
-                  <span>Laufzeit in Jahren</span>
-                  <input
-                    min="0"
-                    inputMode="decimal"
-                    type="number"
-                    value={calculation.durationYears}
-                    onChange={handleNumberChange((value) => onChange('durationYears', value))}
-                  />
-                </label>
+              <div className="tools-duration-field">
+                <span>Laufzeit</span>
+                <div className="tools-duration-inputs">
+                  <label>
+                    <span>Jahre</span>
+                    <input
+                      min="0"
+                      step="1"
+                      inputMode="numeric"
+                      type="number"
+                      placeholder="1"
+                      value={calculation.durationYears}
+                      onChange={handleIntegerChange((value) => onChange('durationYears', value))}
+                    />
+                  </label>
 
-                <label>
-                  <span>Laufzeit in Monaten</span>
-                  <input
-                    min="0"
-                    inputMode="decimal"
-                    type="number"
-                    value={calculation.durationMonths}
-                    onChange={handleNumberChange((value) => onChange('durationMonths', value))}
-                  />
-                </label>
-              </>
+                  <label>
+                    <span>Monate</span>
+                    <input
+                      min="0"
+                      step="1"
+                      inputMode="numeric"
+                      type="number"
+                      placeholder="0"
+                      value={calculation.durationMonths}
+                      onChange={handleIntegerChange((value) => onChange('durationMonths', value))}
+                    />
+                  </label>
+                </div>
+              </div>
             )}
 
             {calculationMode !== 'finalCapital' && (
@@ -336,6 +383,7 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
                   min="0"
                   inputMode="decimal"
                   type="number"
+                  placeholder="1.050"
                   value={calculation.finalCapital}
                   onChange={handleNumberChange((value) => onChange('finalCapital', value))}
                 />
@@ -381,6 +429,7 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
           )}
         </section>
       </div>
+      )}
     </section>
   );
 }
@@ -406,7 +455,7 @@ function InterestCalculator() {
 
     setCalculations((currentCalculations) => [
       ...currentCalculations,
-      createInterestCalculation(nextCalculationId),
+      { ...createInterestCalculation(nextCalculationId), isCollapsed: false },
     ]);
     setNextCalculationId((currentId) => currentId + 1);
   }
@@ -415,6 +464,21 @@ function InterestCalculator() {
     setCalculations((currentCalculations) => currentCalculations.filter(
       (calculation) => calculation.id !== calculationId,
     ));
+  }
+
+  function toggleCalculation(calculationId) {
+    setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
+      calculation.id === calculationId
+        ? { ...calculation, isCollapsed: !calculation.isCollapsed }
+        : calculation
+    )));
+  }
+
+  function handleCalculationModeChange(nextCalculationMode) {
+    setCalculationMode(nextCalculationMode);
+    setCalculations((currentCalculations) => currentCalculations.map((calculation, index) => (
+      clearInterestCalculation(calculation, index > 0)
+    )));
   }
 
   return (
@@ -428,7 +492,7 @@ function InterestCalculator() {
             className={calculationMode === mode.value ? 'is-active' : undefined}
             type="button"
             aria-pressed={calculationMode === mode.value}
-            onClick={() => setCalculationMode(mode.value)}
+            onClick={() => handleCalculationModeChange(mode.value)}
             key={mode.value}
           >
             {mode.label}
@@ -445,6 +509,7 @@ function InterestCalculator() {
             canRemove={index > 0}
             onChange={(field, value) => updateCalculation(calculation.id, field, value)}
             onRemove={() => removeCalculation(calculation.id)}
+            onToggleCollapse={() => toggleCalculation(calculation.id)}
             key={calculation.id}
           />
         ))}
@@ -459,6 +524,17 @@ function InterestCalculator() {
           <p>Maximal 10 Vergleichsberechnungen möglich.</p>
         )}
       </div>
+
+      <section className="tools-document-preview-section" aria-label="Dokumentvorschau">
+        <div className="tools-document-preview-divider" aria-hidden="true" />
+        <div className="tools-document-preview">
+          <A4Page
+            ariaLabel="Leerer Dokumentbereich"
+            className="offer-sheet invoice-sheet tools-empty-a4-page"
+            editable
+          />
+        </div>
+      </section>
     </>
   );
 }

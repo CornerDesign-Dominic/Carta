@@ -6661,13 +6661,18 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.32;
 }
 
+.tools-calculation-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tools-toggle-calculation,
 .tools-remove-calculation {
   flex: 0 0 auto;
-  border: 1px solid rgba(133, 74, 60, 0.28);
   border-radius: 5px;
   padding: 8px 11px;
   background: rgba(255, 254, 252, 0.86);
-  color: var(--seal);
   font-size: 0.86rem;
   font-weight: 680;
   line-height: 1.2;
@@ -6675,6 +6680,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     background-color 160ms ease,
     border-color 160ms ease,
     color 160ms ease;
+}
+
+.tools-toggle-calculation {
+  border: 1px solid rgba(79, 111, 104, 0.28);
+  color: var(--accent-deep);
+}
+
+.tools-toggle-calculation:hover {
+  border-color: rgba(79, 111, 104, 0.44);
+  background: rgba(245, 250, 248, 0.96);
+  color: var(--ink);
+}
+
+.tools-remove-calculation {
+  border: 1px solid rgba(133, 74, 60, 0.28);
+  color: var(--seal);
 }
 
 .tools-remove-calculation:hover {
@@ -6715,6 +6736,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: var(--muted);
   font-size: 0.92rem;
   line-height: 1.55;
+}
+
+.tools-document-preview-section {
+  max-width: 900px;
+  margin-top: 34px;
+}
+
+.tools-document-preview-divider {
+  height: 1px;
+  margin-bottom: 34px;
+  background: rgba(206, 200, 188, 0.58);
+}
+
+.tools-document-preview {
+  overflow-x: auto;
+  padding: 0 0 24px;
+}
+
+.tools-empty-a4-page {
+  transform-origin: top center;
 }
 
 .tools-calculator-layout {
@@ -6762,6 +6803,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 0.9rem;
   font-weight: 650;
   line-height: 1.35;
+}
+
+.tools-duration-field {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.tools-duration-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tools-duration-inputs label {
+  gap: 6px;
+  font-size: 0.84rem;
 }
 
 .tools-form-grid input,
@@ -6902,6 +6963,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     flex-direction: column;
   }
 
+  .tools-calculation-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tools-duration-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-toggle-calculation,
   .tools-remove-calculation {
     width: 100%;
   }
