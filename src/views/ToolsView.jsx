@@ -555,15 +555,6 @@ function InterestCalculator() {
         ))}
       </div>
 
-      <DocumentToolbar
-        ariaLabel="Zinsberechnung Werkzeuge"
-        isDataCheckActive={isDataCheckActive}
-        isEditable={isDocumentEditable}
-        isExporting={false}
-        onToggleDataCheck={() => setIsDataCheckActive((current) => !current)}
-        onToggleEditable={() => setIsDocumentEditable((current) => !current)}
-      />
-
       <div className="tools-calculation-list">
         {calculations.map((calculation, index) => (
           <InterestCalculationCard
@@ -591,6 +582,14 @@ function InterestCalculator() {
 
       <section className="tools-document-preview-section" aria-label="Dokumentvorschau">
         <div className="tools-document-preview-divider" aria-hidden="true" />
+        <DocumentToolbar
+          ariaLabel="Zinsberechnung Werkzeuge"
+          isDataCheckActive={isDataCheckActive}
+          isEditable={isDocumentEditable}
+          isExporting={false}
+          onToggleDataCheck={() => setIsDataCheckActive((current) => !current)}
+          onToggleEditable={() => setIsDocumentEditable((current) => !current)}
+        />
         <div className="tools-document-preview">
           <A4Page
             ariaLabel="Dokumentvorschau Zinsberechnung"

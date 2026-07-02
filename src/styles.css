@@ -6751,7 +6751,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-document-preview {
   overflow-x: auto;
-  padding: 0 0 24px;
+  padding: 32px 0 78px;
 }
 
 .tools-empty-a4-page {
