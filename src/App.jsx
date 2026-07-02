@@ -14,7 +14,9 @@ import HomeView from './views/HomeView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
+import ToolsView from './views/ToolsView.jsx';
 import { documentSections } from './data/documents.js';
+import { findToolItemByPath } from './data/tools.js';
 
 const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE !== 'false';
 const generatorPathById = new Map(
@@ -55,6 +57,20 @@ function routeFromLocation() {
     };
   }
 
+  if (path === '/tools') {
+    return { view: 'tools', knowledgeSlug: null, documentId: 'overview', toolId: null };
+  }
+
+  if (path.startsWith('/tools/')) {
+    const toolItem = findToolItemByPath(path);
+
+    if (toolItem) {
+      return { view: 'tools', knowledgeSlug: null, documentId: 'overview', toolId: toolItem.id };
+    }
+
+    return { view: 'not-found', knowledgeSlug: null, documentId: 'overview', toolId: null };
+  }
+
   const generatorDocumentId = generatorIdByPath.get(path);
   if (generatorDocumentId) {
     return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId };
@@ -92,6 +108,10 @@ function pathForNavigation(item) {
     return item.slug ? `/wissen/${item.slug}` : '/wissen';
   }
 
+  if (item.view === 'tools') {
+    return item.toolPath ?? (item.toolId ? `/tools/${item.toolId}` : '/tools');
+  }
+
   if (item.view === 'documents') {
     return generatorPathById.get(item.documentId) ?? '/dokumente';
   }
@@ -121,6 +141,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState(initialRoute.view);
   const [currentKnowledgeSlug, setCurrentKnowledgeSlug] = useState(initialRoute.knowledgeSlug);
   const [currentDocumentId, setCurrentDocumentId] = useState(initialRoute.documentId);
+  const [currentToolId, setCurrentToolId] = useState(initialRoute.toolId ?? null);
   const [documentsViewKey, setDocumentsViewKey] = useState(0);
   const [consent, setConsent] = useState(initialConsent ?? createDefaultConsent());
   const [hasResolvedConsent, setHasResolvedConsent] = useState(initialConsent !== null);
@@ -130,6 +151,7 @@ export default function App() {
     setCurrentView(route.view);
     setCurrentKnowledgeSlug(route.knowledgeSlug);
     setCurrentDocumentId(route.documentId);
+    setCurrentToolId(route.toolId ?? null);
   }
 
   useEffect(() => {
@@ -157,6 +179,7 @@ export default function App() {
     setCurrentView(item.view);
     setCurrentKnowledgeSlug(item.slug ?? null);
     setCurrentDocumentId(item.documentId ?? 'overview');
+    setCurrentToolId(item.toolId ?? null);
 
     const nextPath = pathForNavigation(item);
     if (!options.replace && window.location.pathname !== nextPath) {
@@ -172,6 +195,12 @@ export default function App() {
     }
 
     handleNavigate({ view: 'knowledge', slug });
+  }
+
+  function handleToolChange(toolId) {
+    const toolPath = toolId ? `/tools/${toolId}` : '/tools';
+
+    handleNavigate({ view: 'tools', toolId, toolPath });
   }
 
   function saveConsent(nextConsent) {
@@ -218,6 +247,12 @@ export default function App() {
             activeSlug={currentKnowledgeSlug}
             onNavigate={handleNavigate}
             onSelectSlug={handleKnowledgeSlugChange}
+          />
+        )}
+        {currentView === 'tools' && (
+          <ToolsView
+            activeToolId={currentToolId}
+            onSelectTool={handleToolChange}
           />
         )}
         {currentView === 'home' && <HomeView onNavigate={handleNavigate} />}

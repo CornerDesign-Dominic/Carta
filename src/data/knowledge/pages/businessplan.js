@@ -150,11 +150,7 @@ const businessplan = {
       },
     ],
   },
-  generator: {
-    label: "Businessplan erstellen",
-    href: "/dokumente",
-    text: "Nutze den passenden Carta-Generator, um deinen Businessplan strukturiert zu erstellen.",
-  },
+ 
   keyPoints: [
     "klare Geschäftsidee",
     "konkrete Zielgruppe",
