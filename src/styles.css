@@ -6641,10 +6641,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   box-shadow: 0 10px 24px rgba(31, 38, 37, 0.045);
 }
 
-.tools-calculation-card .tools-mode-selector {
-  margin-top: 18px;
-}
-
 .tools-calculation-card-header {
   display: flex;
   align-items: center;

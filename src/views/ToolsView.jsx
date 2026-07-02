@@ -23,7 +23,6 @@ const maxInterestCalculations = 10;
 function createInterestCalculation(id) {
   return {
     id,
-    calculationMode: 'finalCapital',
     initialCapital: '1000',
     finalCapital: '1050',
     interestRate: '5',
@@ -72,7 +71,7 @@ function formatDuration(durationInYears) {
   return parts.join(' und ');
 }
 
-function calculateInterestResult(calculation) {
+function calculateInterestResult(calculation, calculationMode) {
   const parsedInitialCapital = parsePositiveNumber(calculation.initialCapital);
   const parsedFinalCapital = parsePositiveNumber(calculation.finalCapital);
   const parsedInterestRate = parsePositiveNumber(calculation.interestRate);
@@ -101,7 +100,7 @@ function calculateInterestResult(calculation) {
     return { status: 'success', ...values };
   }
 
-  if (calculation.calculationMode === 'finalCapital') {
+  if (calculationMode === 'finalCapital') {
     if (parsedInitialCapital === null || parsedInterestRate === null || durationInYears === null) {
       return invalid();
     }
@@ -119,7 +118,7 @@ function calculateInterestResult(calculation) {
     });
   }
 
-  if (calculation.calculationMode === 'initialCapital') {
+  if (calculationMode === 'initialCapital') {
     if (parsedFinalCapital === null || parsedInterestRate === null || durationInYears === null) {
       return invalid();
     }
@@ -142,7 +141,7 @@ function calculateInterestResult(calculation) {
     });
   }
 
-  if (calculation.calculationMode === 'interestRate') {
+  if (calculationMode === 'interestRate') {
     if (parsedInitialCapital === null || parsedFinalCapital === null || durationInYears === null) {
       return invalid();
     }
@@ -168,7 +167,7 @@ function calculateInterestResult(calculation) {
     });
   }
 
-  if (calculation.calculationMode === 'duration') {
+  if (calculationMode === 'duration') {
     if (parsedInitialCapital === null || parsedFinalCapital === null || parsedInterestRate === null) {
       return invalid();
     }
@@ -223,8 +222,11 @@ function ToolOverview({ onSelect }) {
   );
 }
 
-function InterestCalculationCard({ calculation, index, canRemove, onChange, onRemove }) {
-  const result = useMemo(() => calculateInterestResult(calculation), [calculation]);
+function InterestCalculationCard({ calculation, calculationMode, index, canRemove, onChange, onRemove }) {
+  const result = useMemo(
+    () => calculateInterestResult(calculation, calculationMode),
+    [calculation, calculationMode],
+  );
 
   function handleNumberChange(setValue) {
     return (event) => {
@@ -237,7 +239,7 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
   }
 
   function getResultLabel() {
-    return calculationModes.find((mode) => mode.value === calculation.calculationMode)?.label ?? 'Ergebnis';
+    return calculationModes.find((mode) => mode.value === calculationMode)?.label ?? 'Ergebnis';
   }
 
   function formatMainResult() {
@@ -245,15 +247,15 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
       return null;
     }
 
-    if (calculation.calculationMode === 'initialCapital') {
+    if (calculationMode === 'initialCapital') {
       return euroFormatter.format(result.calculatedValue);
     }
 
-    if (calculation.calculationMode === 'interestRate') {
+    if (calculationMode === 'interestRate') {
       return formatPercent(result.calculatedValue);
     }
 
-    if (calculation.calculationMode === 'duration') {
+    if (calculationMode === 'duration') {
       return formatDuration(result.calculatedValue);
     }
 
@@ -271,25 +273,11 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
         )}
       </div>
 
-      <div className="tools-mode-selector" aria-label="Berechnungsart auswählen">
-        {calculationModes.map((mode) => (
-          <button
-            className={calculation.calculationMode === mode.value ? 'is-active' : undefined}
-            type="button"
-            aria-pressed={calculation.calculationMode === mode.value}
-            onClick={() => onChange('calculationMode', mode.value)}
-            key={mode.value}
-          >
-            {mode.label}
-          </button>
-        ))}
-      </div>
-
       <div className="tools-calculator-layout">
         <section className="tools-calculator-panel" aria-label="Eingaben">
           <h2>Eingaben</h2>
           <div className="tools-form-grid">
-            {calculation.calculationMode !== 'initialCapital' && (
+            {calculationMode !== 'initialCapital' && (
               <label>
                 <span>Anfangskapital</span>
                 <input
@@ -302,7 +290,7 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
               </label>
             )}
 
-            {calculation.calculationMode !== 'interestRate' && (
+            {calculationMode !== 'interestRate' && (
               <label>
                 <span>Zinssatz pro Jahr in %</span>
                 <input
@@ -315,7 +303,7 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
               </label>
             )}
 
-            {calculation.calculationMode !== 'duration' && (
+            {calculationMode !== 'duration' && (
               <>
                 <label>
                   <span>Laufzeit in Jahren</span>
@@ -341,7 +329,7 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
               </>
             )}
 
-            {calculation.calculationMode !== 'finalCapital' && (
+            {calculationMode !== 'finalCapital' && (
               <label>
                 <span>Endkapital</span>
                 <input
@@ -398,6 +386,7 @@ function InterestCalculationCard({ calculation, index, canRemove, onChange, onRe
 }
 
 function InterestCalculator() {
+  const [calculationMode, setCalculationMode] = useState('finalCapital');
   const [nextCalculationId, setNextCalculationId] = useState(2);
   const [calculations, setCalculations] = useState([createInterestCalculation(1)]);
   const canAddCalculation = calculations.length < maxInterestCalculations;
@@ -433,10 +422,25 @@ function InterestCalculator() {
       <p className="eyebrow">WERKZEUGE</p>
       <h1 id="tools-title">Zinsrechner</h1>
 
+      <div className="tools-mode-selector" aria-label="Berechnungsart auswählen">
+        {calculationModes.map((mode) => (
+          <button
+            className={calculationMode === mode.value ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={calculationMode === mode.value}
+            onClick={() => setCalculationMode(mode.value)}
+            key={mode.value}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
+
       <div className="tools-calculation-list">
         {calculations.map((calculation, index) => (
           <InterestCalculationCard
             calculation={calculation}
+            calculationMode={calculationMode}
             index={index}
             canRemove={index > 0}
             onChange={(field, value) => updateCalculation(calculation.id, field, value)}
