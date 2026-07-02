@@ -6627,6 +6627,94 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: #fffdfa;
 }
 
+.tools-calculation-list {
+  display: grid;
+  gap: 26px;
+  margin-top: 28px;
+}
+
+.tools-calculation-card {
+  padding: 22px;
+  border: 1px solid rgba(206, 200, 188, 0.7);
+  border-radius: 8px;
+  background: rgba(255, 253, 249, 0.68);
+  box-shadow: 0 10px 24px rgba(31, 38, 37, 0.045);
+}
+
+.tools-calculation-card .tools-mode-selector {
+  margin-top: 18px;
+}
+
+.tools-calculation-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tools-calculation-card-header h2 {
+  margin: 0;
+  color: var(--accent-deep);
+  font-size: 1.04rem;
+  line-height: 1.32;
+}
+
+.tools-remove-calculation {
+  flex: 0 0 auto;
+  border: 1px solid rgba(133, 74, 60, 0.28);
+  border-radius: 5px;
+  padding: 8px 11px;
+  background: rgba(255, 254, 252, 0.86);
+  color: var(--seal);
+  font-size: 0.86rem;
+  font-weight: 680;
+  line-height: 1.2;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.tools-remove-calculation:hover {
+  border-color: rgba(133, 74, 60, 0.44);
+  background: rgba(255, 248, 244, 0.96);
+  color: #743f35;
+}
+
+.tools-add-calculation {
+  max-width: 900px;
+  margin-top: 24px;
+}
+
+.tools-add-calculation button {
+  width: 100%;
+  border: 1px solid rgba(79, 111, 104, 0.46);
+  border-radius: 6px;
+  padding: 12px 14px;
+  background: var(--accent);
+  color: #fffefd;
+  font-weight: 720;
+  line-height: 1.2;
+  box-shadow: 0 10px 20px rgba(36, 35, 31, 0.08);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.tools-add-calculation button:hover {
+  background: #455f5a;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(36, 35, 31, 0.1);
+}
+
+.tools-add-calculation p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
 .tools-calculator-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
@@ -6707,6 +6795,27 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   margin: 0;
 }
 
+.tools-result-highlight {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid rgba(79, 111, 104, 0.18);
+}
+
+.tools-result-highlight span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 680;
+  line-height: 1.3;
+}
+
+.tools-result-highlight strong {
+  color: var(--accent-deep);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1.1;
+}
+
 .tools-result-panel dl div {
   display: flex;
   align-items: baseline;
@@ -6782,6 +6891,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     gap: 16px;
     margin-top: 28px;
     padding-top: 24px;
+  }
+
+  .tools-calculation-card {
+    padding: 18px;
+  }
+
+  .tools-calculation-card-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tools-remove-calculation {
+    width: 100%;
   }
 
   .tools-result-panel dl div {
