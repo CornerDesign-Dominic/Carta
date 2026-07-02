@@ -6758,41 +6758,72 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   transform-origin: top center;
 }
 
-.tools-letter-recipient {
-  display: grid;
-  gap: 2px;
-  width: 310px;
-  min-height: 96px;
-  margin: 98px 0 42px;
-  color: #36342f;
-  font-size: 11pt;
-  line-height: 1.32;
-}
-
-.tools-letter-recipient p,
-.tools-letter-intro {
-  margin: 0;
+.tools-letter-address-row {
+  margin-top: 42px;
 }
 
 .tools-letter-subject {
-  margin: 0 0 22px;
-  color: #232320;
-  font-size: 15pt;
-  font-weight: 760;
-  line-height: 1.35;
+  margin-top: 22px;
 }
 
 .tools-letter-intro {
-  max-width: 620px;
-  color: #36342f;
-  font-size: 11pt;
-  line-height: 1.55;
+  width: calc(100% - var(--invoice-right-safe-offset));
 }
 
-.tools-letter-content-placeholder {
-  min-height: 300px;
+.tools-letter-result-summary {
+  display: grid;
+  gap: 18px;
+  width: calc(100% - var(--invoice-right-safe-offset));
   margin-top: 34px;
+  padding-top: 18px;
   border-top: 1px solid rgba(214, 209, 200, 0.82);
+  color: #36342f;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+
+.tools-letter-result-summary > div {
+  display: grid;
+  gap: 6px;
+}
+
+.tools-letter-result-summary span {
+  color: #67645e;
+  font-size: 9pt;
+  font-weight: 680;
+}
+
+.tools-letter-result-summary strong {
+  color: #232320;
+  font-size: 18pt;
+  line-height: 1.15;
+}
+
+.tools-letter-result-summary dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.tools-letter-result-summary dl div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.tools-letter-result-summary dt,
+.tools-letter-result-summary dd,
+.tools-letter-result-summary p {
+  margin: 0;
+}
+
+.tools-letter-result-summary dt {
+  color: #67645e;
+}
+
+.tools-letter-result-summary dd {
+  color: #232320;
+  font-weight: 680;
 }
 
 .tools-calculator-layout {

@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import A4Page from '../components/documentBlocks/A4Page.jsx';
+import DocumentToolbar from '../components/documentBlocks/DocumentToolbar.jsx';
+import RecipientBlock from '../components/documentBlocks/RecipientBlock.jsx';
+import TextBlock from '../components/documentBlocks/TextBlock.jsx';
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
 import { findToolItem, toolItems } from '../data/tools.js';
 
@@ -28,6 +31,19 @@ const interestExampleValues = {
   durationYears: '1',
   durationMonths: '0',
 };
+
+const defaultInterestDocumentRecipient = {
+  company: 'Max Mustermann',
+  attention: '',
+  name: '',
+  street: 'Musterstraße 12',
+  cityLine: '12345 Musterstadt',
+};
+
+const defaultInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+
+const defaultInterestDocumentIntro =
+  'Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.';
 
 function createInterestCalculation(id) {
   return {
@@ -95,6 +111,26 @@ function formatDuration(durationInYears) {
   }
 
   return parts.join(' und ');
+}
+
+function formatCalculatedValue(calculationMode, result) {
+  if (result.status !== 'success') {
+    return null;
+  }
+
+  if (calculationMode === 'initialCapital') {
+    return euroFormatter.format(result.calculatedValue);
+  }
+
+  if (calculationMode === 'interestRate') {
+    return formatPercent(result.calculatedValue);
+  }
+
+  if (calculationMode === 'duration') {
+    return formatDuration(result.calculatedValue);
+  }
+
+  return euroFormatter.format(result.calculatedValue);
 }
 
 function calculateInterestResult(calculation, calculationMode) {
@@ -302,23 +338,7 @@ function InterestCalculationCard({
   }
 
   function formatMainResult() {
-    if (result.status !== 'success') {
-      return null;
-    }
-
-    if (calculationMode === 'initialCapital') {
-      return euroFormatter.format(result.calculatedValue);
-    }
-
-    if (calculationMode === 'interestRate') {
-      return formatPercent(result.calculatedValue);
-    }
-
-    if (calculationMode === 'duration') {
-      return formatDuration(result.calculatedValue);
-    }
-
-    return euroFormatter.format(result.calculatedValue);
+    return formatCalculatedValue(calculationMode, result);
   }
 
   return (
@@ -455,7 +475,18 @@ function InterestCalculator() {
   const [calculationMode, setCalculationMode] = useState('finalCapital');
   const [nextCalculationId, setNextCalculationId] = useState(2);
   const [calculations, setCalculations] = useState([createInterestCalculation(1)]);
+  const [isDocumentEditable, setIsDocumentEditable] = useState(false);
+  const [isDataCheckActive, setIsDataCheckActive] = useState(false);
+  const [documentRecipient, setDocumentRecipient] = useState(defaultInterestDocumentRecipient);
+  const [documentSenderLine, setDocumentSenderLine] = useState(defaultInterestDocumentSenderLine);
+  const [documentIntro, setDocumentIntro] = useState(defaultInterestDocumentIntro);
   const canAddCalculation = calculations.length < maxInterestCalculations;
+  const previewResult = useMemo(
+    () => calculateInterestResult(calculations[0] ?? createInterestCalculation(1), calculationMode),
+    [calculationMode, calculations],
+  );
+  const previewResultLabel = calculationModes.find((mode) => mode.value === calculationMode)?.label ?? 'Ergebnis';
+  const previewResultValue = formatCalculatedValue(calculationMode, previewResult);
 
   function updateCalculation(calculationId, field, value) {
     setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
@@ -498,6 +529,13 @@ function InterestCalculator() {
     )));
   }
 
+  function updateDocumentRecipient(field, value) {
+    setDocumentRecipient((currentRecipient) => ({
+      ...currentRecipient,
+      [field]: value,
+    }));
+  }
+
   return (
     <>
       <p className="eyebrow">WERKZEUGE</p>
@@ -516,6 +554,15 @@ function InterestCalculator() {
           </button>
         ))}
       </div>
+
+      <DocumentToolbar
+        ariaLabel="Zinsberechnung Werkzeuge"
+        isDataCheckActive={isDataCheckActive}
+        isEditable={isDocumentEditable}
+        isExporting={false}
+        onToggleDataCheck={() => setIsDataCheckActive((current) => !current)}
+        onToggleEditable={() => setIsDocumentEditable((current) => !current)}
+      />
 
       <div className="tools-calculation-list">
         {calculations.map((calculation, index) => (
@@ -547,22 +594,58 @@ function InterestCalculator() {
         <div className="tools-document-preview">
           <A4Page
             ariaLabel="Dokumentvorschau Zinsberechnung"
-            className="offer-sheet invoice-sheet tools-empty-a4-page"
-            editable
+            className={`offer-sheet invoice-sheet tools-empty-a4-page${isDataCheckActive ? ' is-data-check-mode' : ''}`}
+            editable={isDocumentEditable}
           >
-            <div className="tools-letter-recipient" aria-label="Anschrift">
-              <p>Max Mustermann</p>
-              <p>Musterstraße 12</p>
-              <p>12345 Musterstadt</p>
+            <div className="invoice-address-row tools-letter-address-row">
+              <RecipientBlock
+                dataCheckFields={isDataCheckActive ? {
+                  company: true,
+                  senderLine: true,
+                  street: true,
+                  cityLine: true,
+                } : {}}
+                recipient={documentRecipient}
+                senderLine={documentSenderLine}
+                onRecipientChange={updateDocumentRecipient}
+                onSenderLineChange={setDocumentSenderLine}
+              />
+              <div aria-hidden="true" />
             </div>
 
-            <h2 className="tools-letter-subject">Zinsberechnung</h2>
+            <h2 className="invoice-document-title tools-letter-subject">Zinsberechnung</h2>
 
-            <p className="tools-letter-intro">
-              Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.
-            </p>
+            <TextBlock
+              ariaLabel="Vorlauftext Zinsberechnung"
+              className="tools-letter-intro"
+              value={documentIntro}
+              onChange={setDocumentIntro}
+            />
 
-            <div className="tools-letter-content-placeholder" aria-label="Bereich für spätere Zinsübersicht" />
+            <section className="tools-letter-result-summary" aria-label="Zinsberechnung Ergebnis">
+              {previewResult.status === 'success' ? (
+                <>
+                  <div>
+                    <span>{previewResultLabel}</span>
+                    <strong>{previewResultValue}</strong>
+                  </div>
+                  <dl>
+                    {calculationMode !== 'duration' && (
+                      <div>
+                        <dt>Laufzeit</dt>
+                        <dd>{formatDuration(previewResult.durationInYears)}</dd>
+                      </div>
+                    )}
+                    <div>
+                      <dt>Berechnete Zinsen</dt>
+                      <dd>{euroFormatter.format(previewResult.interest)}</dd>
+                    </div>
+                  </dl>
+                </>
+              ) : (
+                <p>{previewResult.message}</p>
+              )}
+            </section>
           </A4Page>
         </div>
       </section>
