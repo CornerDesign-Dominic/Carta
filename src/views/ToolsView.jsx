@@ -21,6 +21,14 @@ const calculationModes = [
 
 const maxInterestCalculations = 10;
 
+const interestExampleValues = {
+  initialCapital: '1000',
+  finalCapital: '1050',
+  interestRate: '5',
+  durationYears: '1',
+  durationMonths: '0',
+};
+
 function createInterestCalculation(id) {
   return {
     id,
@@ -60,6 +68,10 @@ function parsePositiveNumber(value) {
   return parsed;
 }
 
+function parsePositiveNumberWithFallback(value, fallbackValue) {
+  return parsePositiveNumber(String(value).trim() === '' ? fallbackValue : value);
+}
+
 function formatPercent(value) {
   return `${percentFormatter.format(value)} %`;
 }
@@ -86,11 +98,26 @@ function formatDuration(durationInYears) {
 }
 
 function calculateInterestResult(calculation, calculationMode) {
-  const parsedInitialCapital = parsePositiveNumber(calculation.initialCapital);
-  const parsedFinalCapital = parsePositiveNumber(calculation.finalCapital);
-  const parsedInterestRate = parsePositiveNumber(calculation.interestRate);
-  const parsedDurationYears = parsePositiveNumber(calculation.durationYears);
-  const parsedDurationMonths = parsePositiveNumber(calculation.durationMonths);
+  const parsedInitialCapital = parsePositiveNumberWithFallback(
+    calculation.initialCapital,
+    interestExampleValues.initialCapital,
+  );
+  const parsedFinalCapital = parsePositiveNumberWithFallback(
+    calculation.finalCapital,
+    interestExampleValues.finalCapital,
+  );
+  const parsedInterestRate = parsePositiveNumberWithFallback(
+    calculation.interestRate,
+    interestExampleValues.interestRate,
+  );
+  const parsedDurationYears = parsePositiveNumberWithFallback(
+    calculation.durationYears,
+    interestExampleValues.durationYears,
+  );
+  const parsedDurationMonths = parsePositiveNumberWithFallback(
+    calculation.durationMonths,
+    interestExampleValues.durationMonths,
+  );
   const durationInYears =
     parsedDurationYears !== null && parsedDurationMonths !== null
       ? parsedDurationYears + parsedDurationMonths / 12
@@ -336,7 +363,7 @@ function InterestCalculationCard({
                   min="0"
                   inputMode="decimal"
                   type="number"
-                  placeholder="5"
+                  placeholder={interestExampleValues.interestRate}
                   value={calculation.interestRate}
                   onChange={handleNumberChange((value) => onChange('interestRate', value))}
                 />
@@ -354,7 +381,7 @@ function InterestCalculationCard({
                       step="1"
                       inputMode="numeric"
                       type="number"
-                      placeholder="1"
+                      placeholder={interestExampleValues.durationYears}
                       value={calculation.durationYears}
                       onChange={handleIntegerChange((value) => onChange('durationYears', value))}
                     />
@@ -367,7 +394,7 @@ function InterestCalculationCard({
                       step="1"
                       inputMode="numeric"
                       type="number"
-                      placeholder="0"
+                      placeholder={interestExampleValues.durationMonths}
                       value={calculation.durationMonths}
                       onChange={handleIntegerChange((value) => onChange('durationMonths', value))}
                     />
@@ -402,25 +429,15 @@ function InterestCalculationCard({
               </div>
 
               <dl>
-                <div>
-                  <dt>Anfangskapital</dt>
-                  <dd>{euroFormatter.format(result.initialCapital)}</dd>
-                </div>
-                <div>
-                  <dt>Zinssatz</dt>
-                  <dd>{formatPercent(result.interestRate)} p.a.</dd>
-                </div>
-                <div>
-                  <dt>Laufzeit</dt>
-                  <dd>{formatDuration(result.durationInYears)}</dd>
-                </div>
+                {calculationMode !== 'duration' && (
+                  <div>
+                    <dt>Laufzeit</dt>
+                    <dd>{formatDuration(result.durationInYears)}</dd>
+                  </div>
+                )}
                 <div>
                   <dt>Berechnete Zinsen</dt>
                   <dd>{euroFormatter.format(result.interest)}</dd>
-                </div>
-                <div className="tools-result-total">
-                  <dt>Endkapital</dt>
-                  <dd>{euroFormatter.format(result.finalCapital)}</dd>
                 </div>
               </dl>
             </>
