@@ -263,8 +263,8 @@ function InterestCalculationCard({ calculation, calculationMode, index, canRemov
   }
 
   return (
-    <section className="tools-calculation-card" aria-labelledby={`interest-calculation-${calculation.id}`}>
-      <div className="tools-calculation-card-header">
+    <section className="tools-calculation-section" aria-labelledby={`interest-calculation-${calculation.id}`}>
+      <div className="tools-calculation-header">
         <h2 id={`interest-calculation-${calculation.id}`}>Berechnung {index + 1}</h2>
         {canRemove && (
           <button className="tools-remove-calculation" type="button" onClick={onRemove}>
