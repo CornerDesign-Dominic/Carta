@@ -11,6 +11,13 @@ const percentFormatter = new Intl.NumberFormat('de-DE', {
   maximumFractionDigits: 2,
 });
 
+const calculationModes = [
+  { value: 'initialCapital', label: 'Anfangskapital' },
+  { value: 'interestRate', label: 'Zinssatz' },
+  { value: 'duration', label: 'Laufzeit' },
+  { value: 'finalCapital', label: 'Endkapital' },
+];
+
 function parsePositiveNumber(value) {
   if (String(value).trim() === '') {
     return null;
@@ -53,6 +60,7 @@ function ToolOverview({ onSelect }) {
 }
 
 function InterestCalculator() {
+  const [calculationMode, setCalculationMode] = useState('finalCapital');
   const [capital, setCapital] = useState('1000');
   const [interestRate, setInterestRate] = useState('5');
   const [duration, setDuration] = useState('12');
@@ -93,10 +101,20 @@ function InterestCalculator() {
     <>
       <p className="eyebrow">WERKZEUGE</p>
       <h1 id="tools-title">Zinsrechner</h1>
-      <p className="intro document-intro">
-        Berechne einfache Zinsen und erhalte eine schnelle Orientierung für Kapital,
-        Zinssatz und Laufzeit.
-      </p>
+
+      <div className="tools-mode-selector" aria-label="Berechnungsart auswählen">
+        {calculationModes.map((mode) => (
+          <button
+            className={calculationMode === mode.value ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={calculationMode === mode.value}
+            onClick={() => setCalculationMode(mode.value)}
+            key={mode.value}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
 
       <div className="tools-calculator-layout">
         <section className="tools-calculator-panel" aria-label="Eingaben">
@@ -147,7 +165,11 @@ function InterestCalculator() {
 
         <section className="tools-result-panel" aria-label="Ergebnis">
           <h2>Ergebnis</h2>
-          {result ? (
+          {calculationMode !== 'finalCapital' ? (
+            <p className="tools-result-empty">
+              Diese Berechnungsart ist vorbereitet. Die Endkapital-Berechnung ist bereits aktiv nutzbar.
+            </p>
+          ) : result ? (
             <dl>
               <div>
                 <dt>Eingegebenes Kapital</dt>

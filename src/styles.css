@@ -6577,6 +6577,56 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   cursor: pointer;
 }
 
+.tools-mode-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 760px;
+  margin-top: 24px;
+  padding: 9px;
+  border: 1px solid rgba(201, 196, 186, 0.66);
+  border-radius: 6px;
+  background: rgba(248, 248, 245, 0.92);
+  box-shadow: 0 10px 26px rgba(36, 35, 31, 0.035);
+}
+
+.tools-mode-selector button {
+  flex: 1 1 130px;
+  min-height: 38px;
+  border: 1px solid rgba(201, 196, 186, 0.72);
+  border-radius: 5px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 253, 0.86);
+  color: var(--accent-deep);
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.2;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.tools-mode-selector button:hover {
+  border-color: rgba(169, 163, 152, 0.72);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.tools-mode-selector button.is-active {
+  border-color: rgba(45, 91, 83, 0.68);
+  background: var(--accent-deep);
+  color: #fffdfa;
+  box-shadow: 0 8px 18px rgba(45, 91, 83, 0.18);
+}
+
+.tools-mode-selector button.is-active:hover {
+  border-color: rgba(45, 91, 83, 0.78);
+  background: #244d47;
+  color: #fffdfa;
+}
+
 .tools-calculator-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
