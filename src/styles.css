@@ -6758,6 +6758,43 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   transform-origin: top center;
 }
 
+.tools-letter-recipient {
+  display: grid;
+  gap: 2px;
+  width: 310px;
+  min-height: 96px;
+  margin: 98px 0 42px;
+  color: #36342f;
+  font-size: 11pt;
+  line-height: 1.32;
+}
+
+.tools-letter-recipient p,
+.tools-letter-intro {
+  margin: 0;
+}
+
+.tools-letter-subject {
+  margin: 0 0 22px;
+  color: #232320;
+  font-size: 15pt;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.tools-letter-intro {
+  max-width: 620px;
+  color: #36342f;
+  font-size: 11pt;
+  line-height: 1.55;
+}
+
+.tools-letter-content-placeholder {
+  min-height: 300px;
+  margin-top: 34px;
+  border-top: 1px solid rgba(214, 209, 200, 0.82);
+}
+
 .tools-calculator-layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

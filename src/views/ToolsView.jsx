@@ -546,10 +546,24 @@ function InterestCalculator() {
         <div className="tools-document-preview-divider" aria-hidden="true" />
         <div className="tools-document-preview">
           <A4Page
-            ariaLabel="Leerer Dokumentbereich"
+            ariaLabel="Dokumentvorschau Zinsberechnung"
             className="offer-sheet invoice-sheet tools-empty-a4-page"
             editable
-          />
+          >
+            <div className="tools-letter-recipient" aria-label="Anschrift">
+              <p>Max Mustermann</p>
+              <p>Musterstraße 12</p>
+              <p>12345 Musterstadt</p>
+            </div>
+
+            <h2 className="tools-letter-subject">Zinsberechnung</h2>
+
+            <p className="tools-letter-intro">
+              Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.
+            </p>
+
+            <div className="tools-letter-content-placeholder" aria-label="Bereich für spätere Zinsübersicht" />
+          </A4Page>
         </div>
       </section>
     </>
