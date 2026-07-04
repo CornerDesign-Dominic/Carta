@@ -6765,7 +6765,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tools-letter-company-field {
   align-self: start;
   justify-self: end;
-  width: 230px;
+  width: 66.666%;
 }
 
 .tools-letter-company-field input {
@@ -6774,7 +6774,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 1.22rem;
   font-weight: 760;
   line-height: 1.28;
-  text-align: right;
+  text-align: left;
 }
 
 .tools-letter-address-row {
@@ -6784,6 +6784,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tools-letter-recipient-reserved {
   position: relative;
   min-height: 98px;
+}
+
+.tools-letter-recipient-reserved .invoice-sender-line {
+  display: none;
 }
 
 .tools-letter-subject {
