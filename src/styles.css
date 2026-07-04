@@ -6667,7 +6667,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   gap: 8px;
 }
 
-.tools-toggle-calculation,
 .tools-remove-calculation {
   flex: 0 0 auto;
   border-radius: 5px;
@@ -6680,17 +6679,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     background-color 160ms ease,
     border-color 160ms ease,
     color 160ms ease;
-}
-
-.tools-toggle-calculation {
-  border: 1px solid rgba(79, 111, 104, 0.28);
-  color: var(--accent-deep);
-}
-
-.tools-toggle-calculation:hover {
-  border-color: rgba(79, 111, 104, 0.44);
-  background: rgba(245, 250, 248, 0.96);
-  color: var(--ink);
 }
 
 .tools-remove-calculation {
@@ -6759,17 +6747,25 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-letter-header {
+  grid-template-columns: minmax(0, 1fr);
   margin-bottom: 24px;
 }
 
 .tools-letter-company-field {
   align-self: start;
   justify-self: start;
+  display: block;
   width: 66.666%;
+  max-width: 66.666%;
+  min-width: 0;
 }
 
 .tools-letter-company-field input {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  inline-size: 100%;
   color: #232320;
   font-size: 1.22rem;
   font-weight: 760;
@@ -7002,7 +6998,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-result-panel {
   padding: 22px;
-  background: linear-gradient(180deg, rgba(223, 236, 232, 0.58), rgba(255, 253, 249, 0.78));
+  background: rgba(223, 236, 232, 0.58);
 }
 
 .tools-calculator-panel h2,
@@ -7226,7 +7222,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     grid-template-columns: 1fr;
   }
 
-  .tools-toggle-calculation,
   .tools-remove-calculation {
     width: 100%;
   }

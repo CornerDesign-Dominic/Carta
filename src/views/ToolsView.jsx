@@ -18,10 +18,10 @@ const percentFormatter = new Intl.NumberFormat('de-DE', {
 });
 
 const calculationModes = [
+  { value: 'finalCapital', label: 'Endkapital' },
   { value: 'initialCapital', label: 'Anfangskapital' },
   { value: 'interestRate', label: 'Zinssatz' },
   { value: 'duration', label: 'Laufzeit' },
-  { value: 'finalCapital', label: 'Endkapital' },
 ];
 
 const maxInterestCalculations = 10;
@@ -57,7 +57,6 @@ const toolsPrintLayout = {
 function createInterestCalculation(id) {
   return {
     id,
-    isCollapsed: false,
     initialCapital: '',
     finalCapital: '',
     interestRate: '',
@@ -66,10 +65,9 @@ function createInterestCalculation(id) {
   };
 }
 
-function clearInterestCalculation(calculation, isCollapsed = calculation.isCollapsed) {
+function clearInterestCalculation(calculation) {
   return {
     ...calculation,
-    isCollapsed,
     initialCapital: '',
     finalCapital: '',
     interestRate: '',
@@ -380,7 +378,6 @@ function InterestCalculationCard({
   canRemove,
   onChange,
   onRemove,
-  onToggleCollapse,
 }) {
   const result = useMemo(
     () => calculateInterestResult(calculation, calculationMode),
@@ -421,9 +418,6 @@ function InterestCalculationCard({
         <h2 id={`interest-calculation-${calculation.id}`}>Berechnung {index + 1}</h2>
         {canRemove && (
           <div className="tools-calculation-actions">
-            <button className="tools-toggle-calculation" type="button" onClick={onToggleCollapse}>
-              {calculation.isCollapsed ? 'Vergleich anzeigen' : 'Vergleich einklappen'}
-            </button>
             <button className="tools-remove-calculation" type="button" onClick={onRemove}>
               Vergleich entfernen
             </button>
@@ -431,7 +425,6 @@ function InterestCalculationCard({
         )}
       </div>
 
-      {!calculation.isCollapsed && (
       <div className="tools-calculator-layout">
         <section className="tools-calculator-panel" aria-label="Eingaben">
           <h2>Eingaben</h2>
@@ -540,7 +533,6 @@ function InterestCalculationCard({
           )}
         </section>
       </div>
-      )}
     </section>
   );
 }
@@ -609,7 +601,7 @@ function InterestCalculator() {
 
     setCalculations((currentCalculations) => [
       ...currentCalculations,
-      { ...createInterestCalculation(nextCalculationId), isCollapsed: false },
+      createInterestCalculation(nextCalculationId),
     ]);
     setNextCalculationId((currentId) => currentId + 1);
   }
@@ -620,18 +612,10 @@ function InterestCalculator() {
     ));
   }
 
-  function toggleCalculation(calculationId) {
-    setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
-      calculation.id === calculationId
-        ? { ...calculation, isCollapsed: !calculation.isCollapsed }
-        : calculation
-    )));
-  }
-
   function handleCalculationModeChange(nextCalculationMode) {
     setCalculationMode(nextCalculationMode);
-    setCalculations((currentCalculations) => currentCalculations.map((calculation, index) => (
-      clearInterestCalculation(calculation, index > 0)
+    setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
+      clearInterestCalculation(calculation)
     )));
   }
 
@@ -714,7 +698,6 @@ function InterestCalculator() {
             canRemove={index > 0}
             onChange={(field, value) => updateCalculation(calculation.id, field, value)}
             onRemove={() => removeCalculation(calculation.id)}
-            onToggleCollapse={() => toggleCalculation(calculation.id)}
             key={calculation.id}
           />
         ))}
