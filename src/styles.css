@@ -6637,12 +6637,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-calculation-section {
   padding: 0 0 34px;
-  border-bottom: 1px solid rgba(206, 200, 188, 0.58);
   margin-bottom: 34px;
 }
 
 .tools-calculation-section:last-child {
-  border-bottom: 0;
   margin-bottom: 0;
   padding-bottom: 0;
 }
