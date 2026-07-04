@@ -152,15 +152,19 @@ function formatDocumentCalculatedValue(calculationMode, result) {
   return formatCalculatedValue(calculationMode, result);
 }
 
-function getCalculationTitle(calculationMode, index) {
-  const titleByMode = {
-    initialCapital: 'Anfangskapital',
-    interestRate: 'Zinssatz',
-    duration: 'Laufzeit',
-    finalCapital: 'Endbetrag',
+function getCalculationTitle(index) {
+  return `${index + 1}.`;
+}
+
+function getCalculationModeHint(calculationMode) {
+  const hintByMode = {
+    initialCapital: 'Die folgenden Berechnungen ermitteln das Anfangskapital.',
+    interestRate: 'Die folgenden Berechnungen ermitteln den Zinssatz.',
+    duration: 'Die folgenden Berechnungen ermitteln die Laufzeit.',
+    finalCapital: 'Die folgenden Berechnungen ermitteln den Endbetrag.',
   };
 
-  return `${titleByMode[calculationMode] ?? 'Ergebnis'} Berechnung ${index + 1}`;
+  return hintByMode[calculationMode] ?? '';
 }
 
 function getCalculationInputSummary(calculationMode, result) {
@@ -194,9 +198,10 @@ function getCalculationInputSummary(calculationMode, result) {
   return inputSummaryByMode[calculationMode] ?? [];
 }
 
-function createInterestPrintItems({ blocks, intro }) {
+function createInterestPrintItems({ blocks, hint, intro }) {
   return [
     { id: 'intro', text: intro, type: 'text' },
+    { id: 'mode-hint', text: hint, type: 'text' },
     ...blocks.map((block) => ({ block, id: block.id, type: 'calculation' })),
   ].filter((item) => item.type !== 'text' || String(item.text || '').trim());
 }
@@ -564,14 +569,19 @@ function InterestCalculator() {
         inputSummary: getCalculationInputSummary(calculationMode, result),
         result,
         resultValue: formatDocumentCalculatedValue(calculationMode, result),
-        title: getCalculationTitle(calculationMode, index),
+        title: getCalculationTitle(index),
       };
     }),
     [calculationMode, calculations],
   );
+  const documentCalculationHint = getCalculationModeHint(calculationMode);
   const printItems = useMemo(
-    () => createInterestPrintItems({ blocks: documentCalculationBlocks, intro: documentIntro }),
-    [documentCalculationBlocks, documentIntro],
+    () => createInterestPrintItems({
+      blocks: documentCalculationBlocks,
+      hint: documentCalculationHint,
+      intro: documentIntro,
+    }),
+    [documentCalculationBlocks, documentCalculationHint, documentIntro],
   );
 
   async function refreshPrintPages() {
@@ -774,6 +784,8 @@ function InterestCalculator() {
               value={documentIntro}
               onChange={setDocumentIntro}
             />
+
+            <p className="tools-letter-mode-hint">{documentCalculationHint}</p>
 
             <section className="tools-letter-result-summary" aria-label="Zinsberechnung Ergebnis">
               {documentCalculationBlocks.map((block) => (

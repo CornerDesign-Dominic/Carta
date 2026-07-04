@@ -6794,12 +6794,20 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: calc(100% - var(--invoice-right-safe-offset));
 }
 
+.tools-letter-mode-hint {
+  width: calc(100% - var(--invoice-right-safe-offset));
+  margin: 14px 0 0;
+  color: #5f5e59;
+  font-size: 10pt;
+  line-height: 1.42;
+}
+
 .tools-letter-result-summary {
   display: grid;
   gap: 0;
   width: calc(100% - var(--invoice-right-safe-offset));
   margin-top: 30px;
-  padding-top: 16px;
+  padding-top: 0;
   border-top: 1px solid rgba(214, 209, 200, 0.82);
   color: #36342f;
   font-size: 9.4pt;
