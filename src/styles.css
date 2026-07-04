@@ -6758,8 +6758,32 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   transform-origin: top center;
 }
 
+.tools-letter-header {
+  margin-bottom: 24px;
+}
+
+.tools-letter-company-field {
+  align-self: start;
+  justify-self: end;
+  width: 230px;
+}
+
+.tools-letter-company-field input {
+  width: 100%;
+  color: #232320;
+  font-size: 1.22rem;
+  font-weight: 760;
+  line-height: 1.28;
+  text-align: right;
+}
+
 .tools-letter-address-row {
-  margin-top: 42px;
+  margin-top: 0;
+}
+
+.tools-letter-recipient-reserved {
+  position: relative;
+  min-height: 98px;
 }
 
 .tools-letter-subject {

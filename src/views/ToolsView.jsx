@@ -33,12 +33,14 @@ const interestExampleValues = {
 };
 
 const defaultInterestDocumentRecipient = {
-  company: 'Max Mustermann',
-  attention: '',
-  name: '',
+  company: 'Max Mustermann GmbH',
+  attention: 'z. H. Max Mustermann',
+  name: 'Buchhaltung',
   street: 'Musterstraße 12',
   cityLine: '12345 Musterstadt',
 };
+
+const defaultInterestSenderCompanyName = 'Belege24 Muster GmbH';
 
 const defaultInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
 
@@ -477,7 +479,9 @@ function InterestCalculator() {
   const [calculations, setCalculations] = useState([createInterestCalculation(1)]);
   const [isDocumentEditable, setIsDocumentEditable] = useState(false);
   const [isDataCheckActive, setIsDataCheckActive] = useState(false);
+  const [senderCompanyName, setSenderCompanyName] = useState(defaultInterestSenderCompanyName);
   const [documentRecipient, setDocumentRecipient] = useState(defaultInterestDocumentRecipient);
+  const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultInterestDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultInterestDocumentIntro);
   const canAddCalculation = calculations.length < maxInterestCalculations;
@@ -534,6 +538,14 @@ function InterestCalculator() {
       ...currentRecipient,
       [field]: value,
     }));
+  }
+
+  function toggleRecipientField(field) {
+    setRecipientHiddenFields((currentHiddenFields) => (
+      currentHiddenFields.includes(field)
+        ? currentHiddenFields.filter((hiddenField) => hiddenField !== field)
+        : [...currentHiddenFields, field]
+    ));
   }
 
   return (
@@ -596,19 +608,37 @@ function InterestCalculator() {
             className={`offer-sheet invoice-sheet tools-empty-a4-page${isDataCheckActive ? ' is-data-check-mode' : ''}`}
             editable={isDocumentEditable}
           >
+            <header className="invoice-document-header tools-letter-header">
+              <div aria-hidden="true" />
+              <div className="editable-group tools-letter-company-field">
+                <input
+                  className={isDataCheckActive ? 'document-data-check-marker' : undefined}
+                  aria-label="Eigener Firmenname"
+                  value={senderCompanyName}
+                  onChange={(event) => setSenderCompanyName(event.target.value)}
+                />
+              </div>
+            </header>
+
             <div className="invoice-address-row tools-letter-address-row">
-              <RecipientBlock
-                dataCheckFields={isDataCheckActive ? {
-                  company: true,
-                  senderLine: true,
-                  street: true,
-                  cityLine: true,
-                } : {}}
-                recipient={documentRecipient}
-                senderLine={documentSenderLine}
-                onRecipientChange={updateDocumentRecipient}
-                onSenderLineChange={setDocumentSenderLine}
-              />
+              <div className="tools-letter-recipient-reserved">
+                <RecipientBlock
+                  dataCheckFields={isDataCheckActive ? {
+                    attention: true,
+                    company: true,
+                    name: true,
+                    senderLine: true,
+                    street: true,
+                    cityLine: true,
+                  } : {}}
+                  hiddenFields={recipientHiddenFields}
+                  recipient={documentRecipient}
+                  senderLine={documentSenderLine}
+                  onRecipientChange={updateDocumentRecipient}
+                  onSenderLineChange={setDocumentSenderLine}
+                  onToggleField={toggleRecipientField}
+                />
+              </div>
               <div aria-hidden="true" />
             </div>
 
