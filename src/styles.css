@@ -6832,8 +6832,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-letter-calculation-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(118px, 0.88fr) minmax(118px, 0.85fr);
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.48fr);
+  gap: 16px;
   align-items: start;
 }
 
@@ -6851,13 +6851,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-letter-calculation-inputs dt,
 .tools-letter-calculation-inputs dd,
-.tools-letter-calculation-formula,
 .tools-letter-calculation-block p {
   margin: 0;
 }
 
 .tools-letter-calculation-inputs dt,
-.tools-letter-calculation-formula,
 .tools-letter-calculation-result span {
   color: #67645e;
 }
@@ -6865,11 +6863,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tools-letter-calculation-inputs dd {
   color: #232320;
   font-weight: 680;
-}
-
-.tools-letter-calculation-formula {
-  font-size: 8.7pt;
-  line-height: 1.35;
 }
 
 .tools-letter-calculation-result {
@@ -6888,6 +6881,104 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: #232320;
   font-size: 13.5pt;
   line-height: 1.1;
+}
+
+.tools-print-page {
+  --offer-print-content-max-height: 788px;
+}
+
+.tools-print-page.is-first-page {
+  --offer-print-content-max-height: 558px;
+}
+
+.tools-print-header {
+  margin-bottom: 28px;
+}
+
+.tools-print-address-row {
+  margin-bottom: 34px;
+}
+
+.tools-print-calculation-block {
+  display: grid;
+  gap: 8px;
+  width: calc(100% - var(--invoice-right-safe-offset));
+  padding: 10px 0 12px;
+  border-top: 1px solid rgba(214, 209, 200, 0.82);
+  color: #36342f;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.tools-print-calculation-block h3 {
+  margin: 0;
+  color: #232320;
+  font-size: 10.5pt;
+  font-weight: 760;
+  line-height: 1.25;
+}
+
+.tools-print-calculation-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.48fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tools-print-calculation-inputs {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  font-size: 9.4pt;
+  line-height: 1.32;
+}
+
+.tools-print-calculation-inputs div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 6px;
+}
+
+.tools-print-calculation-inputs dt,
+.tools-print-calculation-inputs dd,
+.tools-print-calculation-result span,
+.tools-print-calculation-block p {
+  margin: 0;
+}
+
+.tools-print-calculation-inputs dt,
+.tools-print-calculation-result span {
+  color: #67645e;
+}
+
+.tools-print-calculation-inputs dd {
+  color: #232320;
+  font-weight: 680;
+}
+
+.tools-print-calculation-result {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  text-align: right;
+}
+
+.tools-print-calculation-result span {
+  font-size: 8.5pt;
+  font-weight: 680;
+}
+
+.tools-print-calculation-result strong {
+  color: #232320;
+  font-size: 13.5pt;
+  line-height: 1.1;
+}
+
+.tools-print-footer {
+  min-height: 0;
+  padding-top: 0;
+  border-top: 0;
+  visibility: hidden;
 }
 
 .tools-calculator-layout {

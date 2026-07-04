@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import A4Page from '../components/documentBlocks/A4Page.jsx';
 import DocumentToolbar from '../components/documentBlocks/DocumentToolbar.jsx';
 import RecipientBlock from '../components/documentBlocks/RecipientBlock.jsx';
 import TextBlock from '../components/documentBlocks/TextBlock.jsx';
+import { paginateMeasuredItems, takeMeasuredText } from '../components/documentExport/MeasuredPaginator.jsx';
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
 import { findToolItem, toolItems } from '../data/tools.js';
+import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 
 const euroFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
@@ -46,6 +48,11 @@ const defaultInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 101
 
 const defaultInterestDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.';
+
+const toolsPrintLayout = {
+  blockGap: 24,
+  smallSafetyBuffer: 16,
+};
 
 function createInterestCalculation(id) {
   return {
@@ -158,17 +165,6 @@ function getCalculationTitle(calculationMode, index) {
   return `${titleByMode[calculationMode] ?? 'Ergebnis'} Berechnung ${index + 1}`;
 }
 
-function getCalculationFormula(calculationMode) {
-  const formulaByMode = {
-    initialCapital: 'Endkapital / (1 + Zinssatz x Laufzeit / 100)',
-    interestRate: '((Endkapital / Anfangskapital - 1) / Laufzeit) x 100',
-    duration: '((Endkapital / Anfangskapital - 1) / Zinssatz) x 100',
-    finalCapital: 'Anfangskapital x (1 + Zinssatz x Laufzeit / 100)',
-  };
-
-  return formulaByMode[calculationMode] ?? '';
-}
-
 function getCalculationInputSummary(calculationMode, result) {
   if (result.status !== 'success') {
     return [];
@@ -198,6 +194,17 @@ function getCalculationInputSummary(calculationMode, result) {
   };
 
   return inputSummaryByMode[calculationMode] ?? [];
+}
+
+function createInterestPrintItems({ blocks, intro }) {
+  return [
+    { id: 'intro', text: intro, type: 'text' },
+    ...blocks.map((block) => ({ block, id: block.id, type: 'calculation' })),
+  ].filter((item) => item.type !== 'text' || String(item.text || '').trim());
+}
+
+function createInterestPdfFileName() {
+  return 'zinsberechnung.pdf';
 }
 
 function calculateInterestResult(calculation, calculationMode) {
@@ -539,11 +546,17 @@ function InterestCalculationCard({
 }
 
 function InterestCalculator() {
+  const sheetRef = useRef(null);
+  const paginatorRef = useRef(null);
+  const printPagesRef = useRef(null);
   const [calculationMode, setCalculationMode] = useState('finalCapital');
   const [nextCalculationId, setNextCalculationId] = useState(2);
   const [calculations, setCalculations] = useState([createInterestCalculation(1)]);
   const [isDocumentEditable, setIsDocumentEditable] = useState(false);
   const [isDataCheckActive, setIsDataCheckActive] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+  const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [senderCompanyName, setSenderCompanyName] = useState(defaultInterestSenderCompanyName);
   const [documentRecipient, setDocumentRecipient] = useState(defaultInterestDocumentRecipient);
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
@@ -556,7 +569,6 @@ function InterestCalculator() {
 
       return {
         id: calculation.id,
-        formula: getCalculationFormula(calculationMode),
         inputSummary: getCalculationInputSummary(calculationMode, result),
         result,
         resultValue: formatDocumentCalculatedValue(calculationMode, result),
@@ -565,6 +577,22 @@ function InterestCalculator() {
     }),
     [calculationMode, calculations],
   );
+  const printItems = useMemo(
+    () => createInterestPrintItems({ blocks: documentCalculationBlocks, intro: documentIntro }),
+    [documentCalculationBlocks, documentIntro],
+  );
+
+  async function refreshPrintPages() {
+    setIsExportRenderActive(true);
+    await waitForNextFrame();
+
+    const nextPages = paginatorRef.current?.measureNow();
+
+    if (nextPages) {
+      setPrintPages(nextPages);
+      await waitForNextFrame();
+    }
+  }
 
   function updateCalculation(calculationId, field, value) {
     setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
@@ -622,6 +650,42 @@ function InterestCalculator() {
     ));
   }
 
+  async function handleCreatePdf() {
+    setIsExporting(true);
+
+    try {
+      await refreshPrintPages();
+      await requestPdfDownload({
+        sheet: sheetRef.current,
+        exportRoot: printPagesRef.current,
+        documentType: 'interestCalculation',
+        filename: createInterestPdfFileName(),
+      });
+    } catch (error) {
+      window.alert(
+        `PDF konnte nicht erstellt werden. PrÃ¼fe bitte, ob die Vercel Function lokal oder auf Vercel verfÃ¼gbar ist.\n\n${error.message}`,
+      );
+    } finally {
+      setIsExportRenderActive(false);
+      setIsExporting(false);
+    }
+  }
+
+  async function handlePrint() {
+    await refreshPrintPages();
+    document.body.classList.add('document-print-mode');
+    window.print();
+
+    const cleanup = () => {
+      document.body.classList.remove('document-print-mode');
+      setIsExportRenderActive(false);
+      window.removeEventListener('afterprint', cleanup);
+    };
+
+    window.addEventListener('afterprint', cleanup);
+    window.setTimeout(cleanup, 1200);
+  }
+
   return (
     <>
       <p className="eyebrow">WERKZEUGE</p>
@@ -672,12 +736,15 @@ function InterestCalculator() {
           ariaLabel="Zinsberechnung Werkzeuge"
           isDataCheckActive={isDataCheckActive}
           isEditable={isDocumentEditable}
-          isExporting={false}
+          isExporting={isExporting}
+          onCreatePdf={handleCreatePdf}
+          onPrint={handlePrint}
           onToggleDataCheck={() => setIsDataCheckActive((current) => !current)}
           onToggleEditable={() => setIsDocumentEditable((current) => !current)}
         />
         <div className="tools-document-preview">
           <A4Page
+            ref={sheetRef}
             ariaLabel="Dokumentvorschau Zinsberechnung"
             className={`offer-sheet invoice-sheet tools-empty-a4-page${isDataCheckActive ? ' is-data-check-mode' : ''}`}
             editable={isDocumentEditable}
@@ -739,7 +806,6 @@ function InterestCalculator() {
                           </div>
                         ))}
                       </dl>
-                      <p className="tools-letter-calculation-formula">{block.formula}</p>
                       <div className="tools-letter-calculation-result">
                         <span>Ergebnis</span>
                         <strong>{block.resultValue}</strong>
@@ -754,8 +820,251 @@ function InterestCalculator() {
           </A4Page>
         </div>
       </section>
+
+      {isExportRenderActive ? (
+        <>
+          <MeasuredInterestPaginator ref={paginatorRef} items={printItems} />
+          <InterestPrintPages
+            ref={printPagesRef}
+            companyName={senderCompanyName}
+            hiddenRecipientFields={recipientHiddenFields}
+            pages={printPages}
+            recipient={documentRecipient}
+          />
+        </>
+      ) : null}
     </>
   );
+}
+
+const MeasuredInterestPaginator = forwardRef(function MeasuredInterestPaginator({ items }, ref) {
+  const measureRootRef = useRef(null);
+
+  function measureNow() {
+    return measureInterestPages(measureRootRef.current, items);
+  }
+
+  useImperativeHandle(ref, () => ({ measureNow }), [items]);
+
+  return (
+    <div className="offer-measure-root" ref={measureRootRef} aria-hidden="true">
+      <div className="invoice-print-page offer-print-page is-first-page">
+        <div className="invoice-print-page-content" data-measure-first-content />
+      </div>
+      <div className="invoice-print-page offer-print-page is-follow-page">
+        <div className="invoice-print-page-content" data-measure-follow-content />
+      </div>
+      <div className="offer-measure-content">
+        <p className="invoice-print-flow-text" data-measure-text-probe />
+        {items
+          .filter((item) => item.type === 'calculation')
+          .map((item) => (
+            <InterestPrintCalculationBlock block={item.block} dataMeasureCalculation={String(item.id)} key={item.id} />
+          ))}
+      </div>
+    </div>
+  );
+});
+
+function measureInterestPages(measureRoot, items) {
+  if (!measureRoot) {
+    return null;
+  }
+
+  const firstContent = measureRoot.querySelector('[data-measure-first-content]');
+  const followContent = measureRoot.querySelector('[data-measure-follow-content]');
+  const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
+  const calculationBlocks = new Map(
+    [...measureRoot.querySelectorAll('[data-measure-calculation]')].map((block) => [
+      block.dataset.measureCalculation,
+      getOuterHeight(block),
+    ]),
+  );
+
+  if (!firstContent || !followContent || !textProbe) {
+    return null;
+  }
+
+  const firstPageCapacity = firstContent.getBoundingClientRect().height - toolsPrintLayout.smallSafetyBuffer;
+  const followPageCapacity = followContent.getBoundingClientRect().height - toolsPrintLayout.smallSafetyBuffer;
+  const blockGap =
+    parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || toolsPrintLayout.blockGap;
+
+  function measureTextHeight(text) {
+    textProbe.textContent = String(text || '').trim();
+    return getOuterHeight(textProbe);
+  }
+
+  function getItemHeight(item) {
+    if (item.type === 'text') {
+      return measureTextHeight(item.text);
+    }
+
+    if (item.type === 'calculation') {
+      return calculationBlocks.get(String(item.id)) || 0;
+    }
+
+    return 0;
+  }
+
+  function getItemGap(page) {
+    return page.items.length > 0 ? blockGap : 0;
+  }
+
+  return paginateMeasuredItems({
+    items,
+    firstPageCapacity,
+    followPageCapacity,
+    getItemHeight,
+    getItemGap,
+    splitTextItem: (item, availableHeight) => takeMeasuredText(item.text, availableHeight, measureTextHeight),
+  });
+}
+
+const InterestPrintPages = forwardRef(function InterestPrintPages(
+  { companyName, hiddenRecipientFields, pages, recipient },
+  ref,
+) {
+  const totalPages = pages.length;
+
+  return (
+    <div className="invoice-print-pages offer-print-pages tools-print-pages" ref={ref} aria-hidden="true">
+      {pages.map((page) => (
+        <article
+          className={`invoice-print-page offer-print-page tools-print-page${
+            page.pageNumber === 1 ? ' is-first-page' : ' is-follow-page'
+          }`}
+          key={page.pageNumber}
+        >
+          {page.pageNumber === 1 ? (
+            <InterestPrintFirstPageHeader
+              companyName={companyName}
+              hiddenRecipientFields={hiddenRecipientFields}
+              recipient={recipient}
+            />
+          ) : (
+            <InterestPrintContinuationHeader companyName={companyName} />
+          )}
+
+          <div className="invoice-print-page-content">
+            <InterestPrintPageItems items={page.items} />
+          </div>
+
+          <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
+            {totalPages > 1 ? `${page.pageNumber}/${totalPages}` : ''}
+          </p>
+
+          <footer className="invoice-print-footer tools-print-footer" aria-hidden="true" />
+        </article>
+      ))}
+    </div>
+  );
+});
+
+function InterestPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient }) {
+  const recipientLines = [
+    recipient.company,
+    hiddenRecipientFields.includes('attention') ? '' : recipient.attention,
+    hiddenRecipientFields.includes('name') ? '' : recipient.name,
+    recipient.street,
+    recipient.cityLine,
+  ];
+
+  return (
+    <div className="offer-print-first-page-header">
+      <header className="invoice-print-header tools-print-header">
+        <div>
+          <p className="invoice-print-company-name">{companyName}</p>
+        </div>
+        <div aria-hidden="true" />
+      </header>
+
+      <section className="invoice-print-address-row tools-print-address-row">
+        <div className="invoice-print-recipient">
+          {recipientLines.filter(Boolean).map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+        <div aria-hidden="true" />
+      </section>
+
+      <h2 className="invoice-print-title">Zinsberechnung</h2>
+    </div>
+  );
+}
+
+function InterestPrintContinuationHeader({ companyName }) {
+  return (
+    <header className="invoice-print-header invoice-print-continuation-header">
+      <p className="invoice-print-company-name">{companyName}</p>
+    </header>
+  );
+}
+
+function InterestPrintPageItems({ items }) {
+  return items.map((item, index) => {
+    if (item.type === 'text') {
+      return (
+        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
+          {item.text}
+        </p>
+      );
+    }
+
+    if (item.type === 'calculation') {
+      return <InterestPrintCalculationBlock block={item.block} key={item.id} />;
+    }
+
+    return null;
+  });
+}
+
+function InterestPrintCalculationBlock({ block, dataMeasureCalculation }) {
+  const measureProps = dataMeasureCalculation ? { 'data-measure-calculation': dataMeasureCalculation } : {};
+
+  return (
+    <article className="tools-print-calculation-block" {...measureProps}>
+      <h3>{block.title}</h3>
+      {block.result.status === 'success' ? (
+        <div className="tools-print-calculation-grid">
+          <dl className="tools-print-calculation-inputs">
+            {block.inputSummary.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="tools-print-calculation-result">
+            <span>Ergebnis</span>
+            <strong>{block.resultValue}</strong>
+          </div>
+        </div>
+      ) : (
+        <p className="invoice-print-flow-text">{block.result.message}</p>
+      )}
+    </article>
+  );
+}
+
+function getOuterHeight(element) {
+  if (!element) {
+    return 0;
+  }
+
+  const styles = window.getComputedStyle(element);
+  const marginTop = parseFloat(styles.marginTop) || 0;
+  const marginBottom = parseFloat(styles.marginBottom) || 0;
+
+  return element.getBoundingClientRect().height + marginTop + marginBottom;
+}
+
+function waitForNextFrame() {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(resolve);
+    });
+  });
 }
 
 export default function ToolsView({ activeToolId, onSelectTool }) {

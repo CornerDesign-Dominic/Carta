@@ -85,6 +85,7 @@ export default async function handler(request, response) {
         'deliveryNote',
         'selfReceipt',
         'receipt',
+        'interestCalculation',
       ].includes(documentType)
     ) {
       response.status(400).json({ error: 'Invalid documentType.' });
