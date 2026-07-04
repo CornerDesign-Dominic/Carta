@@ -115,6 +115,10 @@ function formatDuration(durationInYears) {
   return parts.join(' und ');
 }
 
+function formatCompactDuration(durationInYears) {
+  return formatDuration(durationInYears)?.replace(' und ', ', ');
+}
+
 function formatCalculatedValue(calculationMode, result) {
   if (result.status !== 'success') {
     return null;
@@ -133,6 +137,67 @@ function formatCalculatedValue(calculationMode, result) {
   }
 
   return euroFormatter.format(result.calculatedValue);
+}
+
+function formatDocumentCalculatedValue(calculationMode, result) {
+  if (calculationMode === 'duration' && result.status === 'success') {
+    return formatCompactDuration(result.calculatedValue);
+  }
+
+  return formatCalculatedValue(calculationMode, result);
+}
+
+function getCalculationTitle(calculationMode, index) {
+  const titleByMode = {
+    initialCapital: 'Anfangskapital',
+    interestRate: 'Zinssatz',
+    duration: 'Laufzeit',
+    finalCapital: 'Endbetrag',
+  };
+
+  return `${titleByMode[calculationMode] ?? 'Ergebnis'} Berechnung ${index + 1}`;
+}
+
+function getCalculationFormula(calculationMode) {
+  const formulaByMode = {
+    initialCapital: 'Endkapital / (1 + Zinssatz x Laufzeit / 100)',
+    interestRate: '((Endkapital / Anfangskapital - 1) / Laufzeit) x 100',
+    duration: '((Endkapital / Anfangskapital - 1) / Zinssatz) x 100',
+    finalCapital: 'Anfangskapital x (1 + Zinssatz x Laufzeit / 100)',
+  };
+
+  return formulaByMode[calculationMode] ?? '';
+}
+
+function getCalculationInputSummary(calculationMode, result) {
+  if (result.status !== 'success') {
+    return [];
+  }
+
+  const inputSummaryByMode = {
+    initialCapital: [
+      ['Endkapital', euroFormatter.format(result.finalCapital)],
+      ['Zinssatz', `${formatPercent(result.interestRate)} p.a.`],
+      ['Laufzeit', formatCompactDuration(result.durationInYears)],
+    ],
+    interestRate: [
+      ['Anfangskapital', euroFormatter.format(result.initialCapital)],
+      ['Endkapital', euroFormatter.format(result.finalCapital)],
+      ['Laufzeit', formatCompactDuration(result.durationInYears)],
+    ],
+    duration: [
+      ['Anfangskapital', euroFormatter.format(result.initialCapital)],
+      ['Endkapital', euroFormatter.format(result.finalCapital)],
+      ['Zinssatz', `${formatPercent(result.interestRate)} p.a.`],
+    ],
+    finalCapital: [
+      ['Anfangskapital', euroFormatter.format(result.initialCapital)],
+      ['Zinssatz', `${formatPercent(result.interestRate)} p.a.`],
+      ['Laufzeit', formatCompactDuration(result.durationInYears)],
+    ],
+  };
+
+  return inputSummaryByMode[calculationMode] ?? [];
 }
 
 function calculateInterestResult(calculation, calculationMode) {
@@ -485,12 +550,21 @@ function InterestCalculator() {
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultInterestDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultInterestDocumentIntro);
   const canAddCalculation = calculations.length < maxInterestCalculations;
-  const previewResult = useMemo(
-    () => calculateInterestResult(calculations[0] ?? createInterestCalculation(1), calculationMode),
+  const documentCalculationBlocks = useMemo(
+    () => calculations.map((calculation, index) => {
+      const result = calculateInterestResult(calculation, calculationMode);
+
+      return {
+        id: calculation.id,
+        formula: getCalculationFormula(calculationMode),
+        inputSummary: getCalculationInputSummary(calculationMode, result),
+        result,
+        resultValue: formatDocumentCalculatedValue(calculationMode, result),
+        title: getCalculationTitle(calculationMode, index),
+      };
+    }),
     [calculationMode, calculations],
   );
-  const previewResultLabel = calculationModes.find((mode) => mode.value === calculationMode)?.label ?? 'Ergebnis';
-  const previewResultValue = formatCalculatedValue(calculationMode, previewResult);
 
   function updateCalculation(calculationId, field, value) {
     setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
@@ -609,7 +683,6 @@ function InterestCalculator() {
             editable={isDocumentEditable}
           >
             <header className="invoice-document-header tools-letter-header">
-              <div aria-hidden="true" />
               <div className="editable-group tools-letter-company-field">
                 <input
                   className={isDataCheckActive ? 'document-data-check-marker' : undefined}
@@ -618,6 +691,7 @@ function InterestCalculator() {
                   onChange={(event) => setSenderCompanyName(event.target.value)}
                 />
               </div>
+              <div aria-hidden="true" />
             </header>
 
             <div className="invoice-address-row tools-letter-address-row">
@@ -652,28 +726,30 @@ function InterestCalculator() {
             />
 
             <section className="tools-letter-result-summary" aria-label="Zinsberechnung Ergebnis">
-              {previewResult.status === 'success' ? (
-                <>
-                  <div>
-                    <span>{previewResultLabel}</span>
-                    <strong>{previewResultValue}</strong>
-                  </div>
-                  <dl>
-                    {calculationMode !== 'duration' && (
-                      <div>
-                        <dt>Laufzeit</dt>
-                        <dd>{formatDuration(previewResult.durationInYears)}</dd>
+              {documentCalculationBlocks.map((block) => (
+                <article className="tools-letter-calculation-block" key={block.id}>
+                  <h3>{block.title}</h3>
+                  {block.result.status === 'success' ? (
+                    <div className="tools-letter-calculation-grid">
+                      <dl className="tools-letter-calculation-inputs">
+                        {block.inputSummary.map(([label, value]) => (
+                          <div key={label}>
+                            <dt>{label}</dt>
+                            <dd>{value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <p className="tools-letter-calculation-formula">{block.formula}</p>
+                      <div className="tools-letter-calculation-result">
+                        <span>Ergebnis</span>
+                        <strong>{block.resultValue}</strong>
                       </div>
-                    )}
-                    <div>
-                      <dt>Berechnete Zinsen</dt>
-                      <dd>{euroFormatter.format(previewResult.interest)}</dd>
                     </div>
-                  </dl>
-                </>
-              ) : (
-                <p>{previewResult.message}</p>
-              )}
+                  ) : (
+                    <p>{block.result.message}</p>
+                  )}
+                </article>
+              ))}
             </section>
           </A4Page>
         </div>
