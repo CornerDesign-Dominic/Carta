@@ -435,9 +435,9 @@ function InterestCalculationCard({
       <div className="tools-calculator-layout">
         <section className="tools-calculator-panel" aria-label="Eingaben">
           <h2>Eingaben</h2>
-          <div className="tools-form-grid">
+          <div className={`tools-form-grid tools-form-grid-${calculationMode}`}>
             {calculationMode !== 'initialCapital' && (
-              <label>
+              <label className="tools-field-initial-capital">
                 <span>Anfangskapital</span>
                 <input
                   min="0"
@@ -451,7 +451,7 @@ function InterestCalculationCard({
             )}
 
             {calculationMode !== 'interestRate' && (
-              <label>
+              <label className="tools-field-interest-rate">
                 <span>Zinssatz pro Jahr in %</span>
                 <input
                   min="0"
@@ -465,7 +465,7 @@ function InterestCalculationCard({
             )}
 
             {calculationMode !== 'duration' && (
-              <div className="tools-duration-field">
+              <div className="tools-duration-field tools-field-duration">
                 <span>Laufzeit</span>
                 <div className="tools-duration-inputs">
                   <label>
@@ -498,7 +498,7 @@ function InterestCalculationCard({
             )}
 
             {calculationMode !== 'finalCapital' && (
-              <label>
+              <label className="tools-field-final-capital">
                 <span>Endkapital</span>
                 <input
                   min="0"

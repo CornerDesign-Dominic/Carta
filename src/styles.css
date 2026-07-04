@@ -6997,7 +6997,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-calculator-panel {
-  padding: 22px;
+  padding: 18px;
 }
 
 .tools-result-panel {
@@ -7013,26 +7013,32 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.32;
 }
 
+.tools-calculator-panel h2 {
+  margin-bottom: 14px;
+}
+
 .tools-form-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
 }
 
 .tools-form-grid label {
   display: grid;
-  gap: 7px;
+  gap: 5px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 650;
   line-height: 1.35;
 }
 
 .tools-duration-field {
   display: grid;
-  gap: 7px;
+  grid-column: 1 / -1;
+  gap: 5px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 650;
   line-height: 1.35;
 }
@@ -7044,17 +7050,42 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-duration-inputs label {
-  gap: 6px;
-  font-size: 0.84rem;
+  gap: 5px;
+  font-size: 0.82rem;
+}
+
+.tools-form-grid-finalCapital .tools-field-initial-capital,
+.tools-form-grid-interestRate .tools-field-initial-capital,
+.tools-form-grid-duration .tools-field-initial-capital {
+  order: 1;
+}
+
+.tools-form-grid-finalCapital .tools-field-interest-rate,
+.tools-form-grid-initialCapital .tools-field-interest-rate,
+.tools-form-grid-duration .tools-field-interest-rate {
+  order: 2;
+}
+
+.tools-form-grid-initialCapital .tools-field-final-capital,
+.tools-form-grid-interestRate .tools-field-final-capital {
+  order: 1;
+}
+
+.tools-form-grid-duration .tools-field-final-capital {
+  order: 3;
+}
+
+.tools-field-duration {
+  order: 4;
 }
 
 .tools-form-grid input,
 .tools-form-grid select {
   width: 100%;
-  min-height: 42px;
+  min-height: 38px;
   border: 1px solid rgba(190, 181, 167, 0.9);
   border-radius: 6px;
-  padding: 9px 10px;
+  padding: 7px 10px;
   background: rgba(255, 254, 252, 0.94);
   color: var(--ink);
   font: inherit;
