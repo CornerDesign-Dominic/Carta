@@ -7398,7 +7398,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-print-title {
-  margin: 0 0 15px;
+  margin: 0 0 18px;
   color: #232320;
   font-size: 13pt;
   font-weight: 760;
@@ -7409,7 +7409,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: grid;
   align-self: stretch;
   align-content: start;
-  gap: 10px;
+  gap: 13px;
   height: var(--tool-print-content-max-height);
   max-height: var(--tool-print-content-max-height);
   min-height: 0;
@@ -7475,7 +7475,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   inline-size: 100%;
   color: #232320;
   font-family: inherit;
-  font-size: 1.16rem;
+  font-size: 1.55rem;
   font-weight: 760;
   line-height: 1.2;
   text-align: left;
@@ -7742,11 +7742,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-vat-print-page .tool-print-address-row {
-  margin-bottom: 37px;
+  margin-bottom: 42px;
 }
 
 .tools-vat-print-page .tool-print-title {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .tools-print-header {
@@ -7762,7 +7762,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-print-address-row {
-  margin-bottom: 37px;
+  margin-bottom: 42px;
 }
 
 .tools-print-calculation-block {
@@ -7783,7 +7783,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-print-flow-text + .tools-print-calculation-block {
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .tools-print-calculation-block h3 {
