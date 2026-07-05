@@ -20,6 +20,10 @@ export default function VatCalculationCard({
     () => calculateVatResult(calculation, calculationMode),
     [calculation, calculationMode],
   );
+  const resultDetails = useMemo(
+    () => getResultDetails(calculationMode, result),
+    [calculationMode, result],
+  );
 
   function handleNumberChange(setValue) {
     return (event) => {
@@ -104,18 +108,12 @@ export default function VatCalculationCard({
               </div>
 
               <dl>
-                <div>
-                  <dt>Nettobetrag</dt>
-                  <dd>{formatCurrency(result.netAmount)}</dd>
-                </div>
-                <div>
-                  <dt>Umsatzsteuer</dt>
-                  <dd>{formatCurrency(result.vatAmount)}</dd>
-                </div>
-                <div>
-                  <dt>Bruttobetrag</dt>
-                  <dd>{formatCurrency(result.grossAmount)}</dd>
-                </div>
+                {resultDetails.map(([label, value]) => (
+                  <div key={label}>
+                    <dt>{label}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
               </dl>
             </>
           ) : (
@@ -125,4 +123,16 @@ export default function VatCalculationCard({
       </div>
     </section>
   );
+}
+
+function getResultDetails(calculationMode, result) {
+  if (result.status !== 'success') {
+    return [];
+  }
+
+  if (calculationMode === 'tax') {
+    return [['Bruttobetrag', formatCurrency(result.grossAmount)]];
+  }
+
+  return [['Umsatzsteuerbetrag', formatCurrency(result.vatAmount)]];
 }
