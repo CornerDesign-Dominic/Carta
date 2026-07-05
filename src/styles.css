@@ -7256,9 +7256,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: calc(100% - var(--tool-document-right-safe-offset));
   margin: 0 0 14px;
   color: #232320;
-  font-size: 1.08rem;
-  font-weight: 760;
-  line-height: 1.25;
+  font-family: inherit;
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.22;
 }
 
 .tool-document-text {
@@ -7583,12 +7584,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-calculation-label {
+  appearance: none;
   display: block;
   width: 100%;
   min-width: 0;
   color: #232320;
+  font-family: inherit;
   font-size: 10.5pt;
-  font-weight: 760;
+  font-weight: 800;
   line-height: 1.25;
 }
 
