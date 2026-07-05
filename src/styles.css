@@ -7516,6 +7516,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   align-items: start;
 }
 
+.tools-compound-calculation-grid {
+  grid-template-columns: minmax(0, 0.9fr) minmax(150px, 1fr) minmax(118px, 0.5fr);
+  gap: 14px;
+}
+
 .tools-letter-calculation-inputs {
   display: grid;
   gap: 3px;
@@ -7549,6 +7554,34 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   gap: 4px;
   justify-items: end;
   text-align: right;
+}
+
+.tools-letter-compound-composition,
+.tools-print-compound-composition {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: #232320;
+}
+
+.tools-letter-compound-composition span,
+.tools-print-compound-composition span {
+  color: #67645e;
+  font-size: 8.5pt;
+  font-weight: 680;
+}
+
+.tools-letter-compound-composition p,
+.tools-print-compound-composition p {
+  margin: 0;
+  font-size: 9pt;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.tools-letter-compound-composition strong,
+.tools-print-compound-composition strong {
+  font-weight: 780;
 }
 
 .tools-letter-calculation-result span {
@@ -7602,6 +7635,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   grid-template-columns: minmax(0, 1fr) minmax(132px, 0.48fr);
   gap: 16px;
   align-items: start;
+}
+
+.tools-print-compound-calculation-grid {
+  grid-template-columns: minmax(0, 0.9fr) minmax(150px, 1fr) minmax(118px, 0.5fr);
+  gap: 14px;
 }
 
 .tools-print-calculation-inputs {

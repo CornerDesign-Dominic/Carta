@@ -310,7 +310,7 @@ function CompoundInterestDocumentCalculationBlock({ block }) {
     <article className="tools-letter-calculation-block">
       <h3>{block.title}</h3>
       {block.result.status === 'success' ? (
-        <div className="tools-letter-calculation-grid">
+        <div className="tools-letter-calculation-grid tools-compound-calculation-grid">
           <dl className="tools-letter-calculation-inputs">
             {block.inputSummary.map(([label, value]) => (
               <div key={label}>
@@ -319,6 +319,7 @@ function CompoundInterestDocumentCalculationBlock({ block }) {
               </div>
             ))}
           </dl>
+          <CompoundInterestComposition className="tools-letter-compound-composition" result={block.result} />
           <div className="tools-letter-calculation-result">
             <span>Endkapital</span>
             <strong>{block.resultValue}</strong>
@@ -522,7 +523,7 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
     <article className="tools-print-calculation-block" {...measureProps}>
       <h3>{block.title}</h3>
       {block.result.status === 'success' ? (
-        <div className="tools-print-calculation-grid">
+        <div className="tools-print-calculation-grid tools-print-compound-calculation-grid">
           <dl className="tools-print-calculation-inputs">
             {block.inputSummary.map(([label, value]) => (
               <div key={label}>
@@ -531,6 +532,7 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
               </div>
             ))}
           </dl>
+          <CompoundInterestComposition className="tools-print-compound-composition" result={block.result} />
           <div className="tools-print-calculation-result">
             <span>Endkapital</span>
             <strong>{block.resultValue}</strong>
@@ -540,6 +542,23 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
         <p className="tool-print-flow-text">{block.result.message}</p>
       )}
     </article>
+  );
+}
+
+function CompoundInterestComposition({ className, result }) {
+  return (
+    <div className={className} aria-label="Zusammensetzung des Endkapitals">
+      <span>Zusammensetzung</span>
+      <p>
+        {formatCurrency(result.initialCapital)}
+        {' + '}
+        {formatCurrency(result.contributedCapital)}
+        {' + '}
+        {formatCurrency(result.interestReturn)}
+        {' = '}
+        <strong>{formatCurrency(result.finalCapital)}</strong>
+      </p>
+    </div>
   );
 }
 

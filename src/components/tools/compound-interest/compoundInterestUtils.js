@@ -2,6 +2,7 @@ export const maxCompoundInterestCalculations = 5;
 
 export const compoundInterestIntervals = [
   { value: 'monthly', label: 'monatlich' },
+  { value: 'quarterly', label: 'pro Quartal' },
   { value: 'yearly', label: 'jährlich' },
 ];
 
@@ -104,7 +105,9 @@ export function calculateCompoundInterestResult(calculation) {
   const interestRate = parsePositiveNumber(calculation.interestRate);
   const durationYears = parsePositiveInteger(calculation.durationYears);
   const durationMonths = parsePositiveInteger(calculation.durationMonths);
-  const interestInterval = calculation.interestInterval === 'yearly' ? 'yearly' : 'monthly';
+  const interestInterval = ['monthly', 'quarterly', 'yearly'].includes(calculation.interestInterval)
+    ? calculation.interestInterval
+    : 'monthly';
 
   function invalid(message = 'Bitte fülle alle benötigten Felder aus.') {
     return { status: 'invalid', message };
@@ -126,10 +129,20 @@ export function calculateCompoundInterestResult(calculation) {
     return invalid('Bitte gib eine Laufzeit von mindestens einem Monat ein.');
   }
 
-  const finalCapital = interestInterval === 'monthly'
-    ? calculateMonthlyCompounding({ initialCapital, interestRate, monthlyRate, totalMonths })
-    : calculateYearlyCompounding({ initialCapital, interestRate, monthlyRate, totalMonths });
-  const paidInCapital = initialCapital + monthlyRate * totalMonths;
+  const compoundingPeriodMonthsByInterval = {
+    monthly: 1,
+    quarterly: 3,
+    yearly: 12,
+  };
+  const finalCapital = calculatePeriodicCompounding({
+    initialCapital,
+    interestRate,
+    monthlyRate,
+    periodMonths: compoundingPeriodMonthsByInterval[interestInterval],
+    totalMonths,
+  });
+  const contributedCapital = monthlyRate * totalMonths;
+  const paidInCapital = initialCapital + contributedCapital;
   const interestReturn = finalCapital - paidInCapital;
 
   if (
@@ -144,6 +157,7 @@ export function calculateCompoundInterestResult(calculation) {
     status: 'success',
     initialCapital,
     monthlyRate,
+    contributedCapital,
     interestRate,
     durationInMonths: totalMonths,
     interestInterval,
@@ -153,35 +167,26 @@ export function calculateCompoundInterestResult(calculation) {
   };
 }
 
-function calculateMonthlyCompounding({ initialCapital, interestRate, monthlyRate, totalMonths }) {
+function calculatePeriodicCompounding({ initialCapital, interestRate, monthlyRate, periodMonths, totalMonths }) {
   const monthlyInterestRate = interestRate / 100 / 12;
   let capital = initialCapital;
-
-  for (let month = 0; month < totalMonths; month += 1) {
-    capital += monthlyRate;
-    capital *= 1 + monthlyInterestRate;
-  }
-
-  return capital;
-}
-
-function calculateYearlyCompounding({ initialCapital, interestRate, monthlyRate, totalMonths }) {
-  const yearlyInterestRate = interestRate / 100;
-  let capital = initialCapital;
+  let accruedInterest = 0;
   let monthsSinceInterest = 0;
 
   for (let month = 0; month < totalMonths; month += 1) {
     capital += monthlyRate;
+    accruedInterest += capital * monthlyInterestRate;
     monthsSinceInterest += 1;
 
-    if (monthsSinceInterest === 12) {
-      capital *= 1 + yearlyInterestRate;
+    if (monthsSinceInterest === periodMonths) {
+      capital += accruedInterest;
+      accruedInterest = 0;
       monthsSinceInterest = 0;
     }
   }
 
   if (monthsSinceInterest > 0) {
-    capital *= 1 + yearlyInterestRate * (monthsSinceInterest / 12);
+    capital += accruedInterest;
   }
 
   return capital;
