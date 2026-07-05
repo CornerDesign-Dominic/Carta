@@ -12,6 +12,14 @@ function ToolFieldActions({ label, onToggle }) {
   );
 }
 
+const recipientFieldDefinitions = [
+  { ariaLabel: 'Empfänger Firma oder Name', dataCheckField: 'company', field: 'company', label: 'Firma / Name' },
+  { ariaLabel: 'Empfänger Zusatz oder z. H.', dataCheckField: 'attention', field: 'attention', label: 'z. H.' },
+  { ariaLabel: 'Empfänger Abteilung', dataCheckField: 'name', field: 'name', label: 'Abteilung' },
+  { ariaLabel: 'Empfänger Straße und Hausnummer', dataCheckField: 'street', field: 'street', label: 'Straße' },
+  { ariaLabel: 'Empfänger PLZ und Ort', dataCheckField: 'cityLine', field: 'cityLine', label: 'PLZ / Ort' },
+];
+
 export default function ToolRecipientBlock({
   dataCheckFields = {},
   hiddenFields = [],
@@ -21,12 +29,7 @@ export default function ToolRecipientBlock({
   recipient,
   senderLine,
 }) {
-  const isAttentionHidden = hiddenFields.includes('attention');
-  const isNameHidden = hiddenFields.includes('name');
-  const hiddenOptionalFields = [
-    { field: 'attention', hidden: isAttentionHidden, label: 'Zusatz / zu Händen' },
-    { field: 'name', hidden: isNameHidden, label: 'Name / Abteilung' },
-  ].filter(({ hidden }) => hidden);
+  const hiddenRecipientFields = recipientFieldDefinitions.filter(({ field }) => hiddenFields.includes(field));
 
   return (
     <div className="tool-document-recipient-fields">
@@ -36,15 +39,10 @@ export default function ToolRecipientBlock({
         value={senderLine}
         onChange={(event) => onSenderLineChange(event.target.value)}
       />
-      <input
-        aria-label="Empfänger Firma"
-        className={dataCheckFields.company ? 'tool-document-data-check-marker' : undefined}
-        value={recipient.company}
-        onChange={(event) => onRecipientChange('company', event.target.value)}
-      />
-      {onToggleField && hiddenOptionalFields.length > 0 && (
+
+      {onToggleField && hiddenRecipientFields.length > 0 && (
         <span className="tool-document-hidden-field-actions tool-document-recipient-hidden-actions" aria-label="Ausgeblendete Empfängerfelder">
-          {hiddenOptionalFields.map(({ field, label }) => (
+          {hiddenRecipientFields.map(({ field, label }) => (
             <button
               key={field}
               type="button"
@@ -57,40 +55,20 @@ export default function ToolRecipientBlock({
           ))}
         </span>
       )}
-      {onToggleField && !isAttentionHidden && (
-        <div className="tool-document-config-row tool-document-recipient-config-row">
-          <input
-            aria-label="Empfänger Zusatz oder z. Hd."
-            className={dataCheckFields.attention ? 'tool-document-data-check-marker' : undefined}
-            value={recipient.attention}
-            onChange={(event) => onRecipientChange('attention', event.target.value)}
-          />
-          <ToolFieldActions label="Zusatz / zu Händen" onToggle={() => onToggleField('attention')} />
-        </div>
-      )}
-      {onToggleField && !isNameHidden && (
-        <div className="tool-document-config-row tool-document-recipient-config-row">
-          <input
-            aria-label="Ansprechpartner oder Name"
-            className={dataCheckFields.name ? 'tool-document-data-check-marker' : undefined}
-            value={recipient.name}
-            onChange={(event) => onRecipientChange('name', event.target.value)}
-          />
-          <ToolFieldActions label="Name / Abteilung" onToggle={() => onToggleField('name')} />
-        </div>
-      )}
-      <input
-        aria-label="Empfänger Straße und Hausnummer"
-        className={dataCheckFields.street ? 'tool-document-data-check-marker' : undefined}
-        value={recipient.street}
-        onChange={(event) => onRecipientChange('street', event.target.value)}
-      />
-      <input
-        aria-label="Empfänger PLZ und Stadt"
-        className={dataCheckFields.cityLine ? 'tool-document-data-check-marker' : undefined}
-        value={recipient.cityLine}
-        onChange={(event) => onRecipientChange('cityLine', event.target.value)}
-      />
+
+      {recipientFieldDefinitions.map(({ ariaLabel, dataCheckField, field, label }) => (
+        hiddenFields.includes(field) ? null : (
+          <div className="tool-document-config-row tool-document-recipient-config-row" key={field}>
+            <input
+              aria-label={ariaLabel}
+              className={dataCheckFields[dataCheckField] ? 'tool-document-data-check-marker' : undefined}
+              value={recipient[field]}
+              onChange={(event) => onRecipientChange(field, event.target.value)}
+            />
+            {onToggleField && <ToolFieldActions label={label} onToggle={() => onToggleField(field)} />}
+          </div>
+        )
+      ))}
     </div>
   );
 }

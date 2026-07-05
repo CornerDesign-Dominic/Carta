@@ -1,6 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { requestPdfDownload } from '../../../utils/requestPdfDownload.js';
 import ToolA4Page from '../document/ToolA4Page.jsx';
+import ToolDocumentHeader, {
+  createTodayDateValue,
+  formatToolDocumentDate,
+} from '../document/ToolDocumentHeader.jsx';
+import ToolDocumentTitle from '../document/ToolDocumentTitle.jsx';
 import ToolRecipientBlock from '../document/ToolRecipientBlock.jsx';
 import ToolTextBlock from '../document/ToolTextBlock.jsx';
 import ToolToolbar from '../document/ToolToolbar.jsx';
@@ -33,6 +38,7 @@ const defaultVatSenderCompanyName = 'Belege24 Muster GmbH';
 const defaultVatDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
 const defaultVatDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Umsatzsteuerbeträge auf Grundlage der angegebenen Werte.';
+const defaultVatDocumentTitle = 'Umsatzsteuerberechnung';
 
 const toolsPrintLayout = {
   blockGap: 10,
@@ -62,10 +68,12 @@ export default function VatCalculator() {
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [senderCompanyName, setSenderCompanyName] = useState(defaultVatSenderCompanyName);
+  const [documentDate, setDocumentDate] = useState(createTodayDateValue);
   const [documentRecipient, setDocumentRecipient] = useState(defaultVatDocumentRecipient);
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultVatDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultVatDocumentIntro);
+  const [documentTitle, setDocumentTitle] = useState(defaultVatDocumentTitle);
   const canAddCalculation = calculations.length < maxVatCalculations;
   const documentCalculationBlocks = useMemo(
     () => calculations.map((calculation, index) => {
@@ -262,16 +270,13 @@ export default function VatCalculator() {
             className={isDataCheckActive ? 'is-data-check-mode' : ''}
             editable={isDocumentEditable}
           >
-            <header className="tool-document-header tools-letter-header">
-              <div className="tool-document-editable-group tools-letter-company-field">
-                <input
-                  className={isDataCheckActive ? 'tool-document-data-check-marker' : undefined}
-                  aria-label="Eigener Firmenname"
-                  value={senderCompanyName}
-                  onChange={(event) => setSenderCompanyName(event.target.value)}
-                />
-              </div>
-            </header>
+            <ToolDocumentHeader
+              dataCheckActive={isDataCheckActive}
+              date={documentDate}
+              senderCompanyName={senderCompanyName}
+              onCompanyNameChange={setSenderCompanyName}
+              onDateChange={setDocumentDate}
+            />
 
             <div className="tool-document-address-row tools-letter-address-row">
               <div className="tools-letter-recipient-reserved">
@@ -294,7 +299,7 @@ export default function VatCalculator() {
               </div>
             </div>
 
-            <h2 className="tool-document-title tools-letter-subject">Umsatzsteuerberechnung</h2>
+            <ToolDocumentTitle value={documentTitle} onChange={setDocumentTitle} />
 
             <ToolTextBlock
               ref={documentIntroRef}
@@ -324,6 +329,8 @@ export default function VatCalculator() {
           <VatPrintPages
             ref={printPagesRef}
             companyName={senderCompanyName}
+            documentDate={documentDate}
+            documentTitle={documentTitle}
             hiddenRecipientFields={recipientHiddenFields}
             pages={printPages}
             recipient={documentRecipient}
@@ -447,7 +454,7 @@ function measureVatPages(measureRoot, items) {
 }
 
 const VatPrintPages = forwardRef(function VatPrintPages(
-  { companyName, hiddenRecipientFields, pages, recipient },
+  { companyName, documentDate, documentTitle, hiddenRecipientFields, pages, recipient },
   ref,
 ) {
   const totalPages = pages.length;
@@ -464,11 +471,13 @@ const VatPrintPages = forwardRef(function VatPrintPages(
           {page.pageNumber === 1 ? (
             <VatPrintFirstPageHeader
               companyName={companyName}
+              documentDate={documentDate}
+              documentTitle={documentTitle}
               hiddenRecipientFields={hiddenRecipientFields}
               recipient={recipient}
             />
           ) : (
-            <VatPrintContinuationHeader companyName={companyName} />
+            <VatPrintContinuationHeader companyName={companyName} documentDate={documentDate} />
           )}
 
           <div className="tool-print-page-content">
@@ -486,13 +495,13 @@ const VatPrintPages = forwardRef(function VatPrintPages(
   );
 });
 
-function VatPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient }) {
+function VatPrintFirstPageHeader({ companyName, documentDate, documentTitle, hiddenRecipientFields, recipient }) {
   const recipientLines = [
-    recipient.company,
+    hiddenRecipientFields.includes('company') ? '' : recipient.company,
     hiddenRecipientFields.includes('attention') ? '' : recipient.attention,
     hiddenRecipientFields.includes('name') ? '' : recipient.name,
-    recipient.street,
-    recipient.cityLine,
+    hiddenRecipientFields.includes('street') ? '' : recipient.street,
+    hiddenRecipientFields.includes('cityLine') ? '' : recipient.cityLine,
   ];
 
   return (
@@ -501,6 +510,7 @@ function VatPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient
         <div>
           <p className="tool-print-company-name">{companyName}</p>
         </div>
+        <p className="tool-print-date">{formatToolDocumentDate(documentDate)}</p>
       </header>
 
       <section className="tool-print-address-row tools-print-address-row">
@@ -511,15 +521,16 @@ function VatPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient
         </div>
       </section>
 
-      <h2 className="tool-print-title">Umsatzsteuerberechnung</h2>
+      <h2 className="tool-print-title">{documentTitle}</h2>
     </div>
   );
 }
 
-function VatPrintContinuationHeader({ companyName }) {
+function VatPrintContinuationHeader({ companyName, documentDate }) {
   return (
     <header className="tool-print-header tool-print-continuation-header">
       <p className="tool-print-company-name">{companyName}</p>
+      <p className="tool-print-date">{formatToolDocumentDate(documentDate)}</p>
     </header>
   );
 }

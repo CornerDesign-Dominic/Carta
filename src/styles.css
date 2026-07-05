@@ -7009,6 +7009,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   outline: none;
 }
 
+.tool-document-a4.is-highlight-mode input,
+.tool-document-a4.is-highlight-mode textarea,
+.tool-document-a4.is-highlight-mode select {
+  border-color: rgba(79, 111, 104, 0.28);
+  background: rgba(247, 250, 245, 0.76);
+  box-shadow: inset 0 0 0 1px rgba(79, 111, 104, 0.08);
+}
+
+.tool-document-a4.is-highlight-mode input:focus,
+.tool-document-a4.is-highlight-mode textarea:focus,
+.tool-document-a4.is-highlight-mode select:focus {
+  border-color: rgba(79, 111, 104, 0.52);
+  background: #fffefa;
+  box-shadow: 0 0 0 3px rgba(79, 111, 104, 0.12);
+}
+
 .tool-document-a4.is-export-mode input,
 .tool-document-a4.is-export-mode textarea,
 .tool-document-a4.is-export-mode select {
@@ -7236,9 +7252,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-document-title {
+  display: block;
+  width: calc(100% - var(--tool-document-right-safe-offset));
   margin: 0 0 14px;
   color: #232320;
   font-size: 1.55rem;
+  font-weight: 760;
   line-height: 1.2;
 }
 
@@ -7335,7 +7354,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-print-continuation-header {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 24px;
   min-height: 74px;
 }
 
@@ -7419,7 +7440,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-letter-header {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(118px, 150px);
+  gap: 24px;
   margin-bottom: 24px;
 }
 
@@ -7443,6 +7465,39 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-weight: 760;
   line-height: 1.28;
   text-align: left;
+}
+
+.tool-document-date-field {
+  display: grid;
+  gap: 4px;
+  justify-self: end;
+  width: 100%;
+  max-width: 150px;
+  color: #67645e;
+  font-size: 0.72rem;
+  font-weight: 680;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.tool-document-date-field input {
+  width: 100%;
+  min-width: 0;
+  color: #232320;
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: right;
+}
+
+.tool-print-date {
+  justify-self: end;
+  margin: 0;
+  color: #36342f;
+  font-size: 10pt;
+  font-weight: 650;
+  line-height: 1.25;
+  text-align: right;
 }
 
 .tools-letter-address-row {

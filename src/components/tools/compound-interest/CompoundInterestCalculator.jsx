@@ -1,6 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { requestPdfDownload } from '../../../utils/requestPdfDownload.js';
 import ToolA4Page from '../document/ToolA4Page.jsx';
+import ToolDocumentHeader, {
+  createTodayDateValue,
+  formatToolDocumentDate,
+} from '../document/ToolDocumentHeader.jsx';
+import ToolDocumentTitle from '../document/ToolDocumentTitle.jsx';
 import ToolRecipientBlock from '../document/ToolRecipientBlock.jsx';
 import ToolTextBlock from '../document/ToolTextBlock.jsx';
 import ToolToolbar from '../document/ToolToolbar.jsx';
@@ -31,6 +36,7 @@ const defaultCompoundInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg
 
 const defaultCompoundInterestDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Zinseszinsentwicklung auf Grundlage der angegebenen Werte.';
+const defaultCompoundInterestDocumentTitle = 'Zinseszinsberechnung';
 
 const compoundInterestDocumentHint = 'Die folgenden Berechnungen zeigen Endkapital, eingezahltes Kapital und Zinsertrag.';
 
@@ -61,10 +67,12 @@ export default function CompoundInterestCalculator() {
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [senderCompanyName, setSenderCompanyName] = useState(defaultCompoundInterestSenderCompanyName);
+  const [documentDate, setDocumentDate] = useState(createTodayDateValue);
   const [documentRecipient, setDocumentRecipient] = useState(defaultCompoundInterestDocumentRecipient);
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultCompoundInterestDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultCompoundInterestDocumentIntro);
+  const [documentTitle, setDocumentTitle] = useState(defaultCompoundInterestDocumentTitle);
   const canAddCalculation = calculations.length < maxCompoundInterestCalculations;
   const documentCalculationBlocks = useMemo(
     () => calculations.map((calculation, index) => {
@@ -233,16 +241,13 @@ export default function CompoundInterestCalculator() {
             className={isDataCheckActive ? 'is-data-check-mode' : ''}
             editable={isDocumentEditable}
           >
-            <header className="tool-document-header tools-letter-header">
-              <div className="tool-document-editable-group tools-letter-company-field">
-                <input
-                  className={isDataCheckActive ? 'tool-document-data-check-marker' : undefined}
-                  aria-label="Eigener Firmenname"
-                  value={senderCompanyName}
-                  onChange={(event) => setSenderCompanyName(event.target.value)}
-                />
-              </div>
-            </header>
+            <ToolDocumentHeader
+              dataCheckActive={isDataCheckActive}
+              date={documentDate}
+              senderCompanyName={senderCompanyName}
+              onCompanyNameChange={setSenderCompanyName}
+              onDateChange={setDocumentDate}
+            />
 
             <div className="tool-document-address-row tools-letter-address-row">
               <div className="tools-letter-recipient-reserved">
@@ -265,7 +270,7 @@ export default function CompoundInterestCalculator() {
               </div>
             </div>
 
-            <h2 className="tool-document-title tools-letter-subject">Zinseszinsberechnung</h2>
+            <ToolDocumentTitle value={documentTitle} onChange={setDocumentTitle} />
 
             <ToolTextBlock
               ref={documentIntroRef}
@@ -295,6 +300,8 @@ export default function CompoundInterestCalculator() {
           <CompoundInterestPrintPages
             ref={printPagesRef}
             companyName={senderCompanyName}
+            documentDate={documentDate}
+            documentTitle={documentTitle}
             hiddenRecipientFields={recipientHiddenFields}
             pages={printPages}
             recipient={documentRecipient}
@@ -423,7 +430,7 @@ function measureCompoundInterestPages(measureRoot, items) {
 }
 
 const CompoundInterestPrintPages = forwardRef(function CompoundInterestPrintPages(
-  { companyName, hiddenRecipientFields, pages, recipient },
+  { companyName, documentDate, documentTitle, hiddenRecipientFields, pages, recipient },
   ref,
 ) {
   const totalPages = pages.length;
@@ -440,11 +447,13 @@ const CompoundInterestPrintPages = forwardRef(function CompoundInterestPrintPage
           {page.pageNumber === 1 ? (
             <CompoundInterestPrintFirstPageHeader
               companyName={companyName}
+              documentDate={documentDate}
+              documentTitle={documentTitle}
               hiddenRecipientFields={hiddenRecipientFields}
               recipient={recipient}
             />
           ) : (
-            <CompoundInterestPrintContinuationHeader companyName={companyName} />
+            <CompoundInterestPrintContinuationHeader companyName={companyName} documentDate={documentDate} />
           )}
 
           <div className="tool-print-page-content">
@@ -462,13 +471,13 @@ const CompoundInterestPrintPages = forwardRef(function CompoundInterestPrintPage
   );
 });
 
-function CompoundInterestPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient }) {
+function CompoundInterestPrintFirstPageHeader({ companyName, documentDate, documentTitle, hiddenRecipientFields, recipient }) {
   const recipientLines = [
-    recipient.company,
+    hiddenRecipientFields.includes('company') ? '' : recipient.company,
     hiddenRecipientFields.includes('attention') ? '' : recipient.attention,
     hiddenRecipientFields.includes('name') ? '' : recipient.name,
-    recipient.street,
-    recipient.cityLine,
+    hiddenRecipientFields.includes('street') ? '' : recipient.street,
+    hiddenRecipientFields.includes('cityLine') ? '' : recipient.cityLine,
   ];
 
   return (
@@ -477,6 +486,7 @@ function CompoundInterestPrintFirstPageHeader({ companyName, hiddenRecipientFiel
         <div>
           <p className="tool-print-company-name">{companyName}</p>
         </div>
+        <p className="tool-print-date">{formatToolDocumentDate(documentDate)}</p>
       </header>
 
       <section className="tool-print-address-row tools-print-address-row">
@@ -487,15 +497,16 @@ function CompoundInterestPrintFirstPageHeader({ companyName, hiddenRecipientFiel
         </div>
       </section>
 
-      <h2 className="tool-print-title">Zinseszinsberechnung</h2>
+      <h2 className="tool-print-title">{documentTitle}</h2>
     </div>
   );
 }
 
-function CompoundInterestPrintContinuationHeader({ companyName }) {
+function CompoundInterestPrintContinuationHeader({ companyName, documentDate }) {
   return (
     <header className="tool-print-header tool-print-continuation-header">
       <p className="tool-print-company-name">{companyName}</p>
+      <p className="tool-print-date">{formatToolDocumentDate(documentDate)}</p>
     </header>
   );
 }
