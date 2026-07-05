@@ -593,7 +593,7 @@ function InterestPrintCalculationBlock({ block, dataMeasureCalculation }) {
   return (
     <article className="tools-print-calculation-block" {...measureProps}>
       <div className="tools-interest-calculation-heading">
-        <h3>{block.title}</h3>
+        <h3 className="tool-print-calculation-label">{block.title}</h3>
         <h3>{block.resultTitle}</h3>
       </div>
       {block.result.status === 'success' ? (

@@ -7256,9 +7256,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: calc(100% - var(--tool-document-right-safe-offset));
   margin: 0 0 14px;
   color: #232320;
-  font-size: 1.72rem;
-  font-weight: 820;
-  line-height: 1.16;
+  font-size: 1.88rem;
+  font-weight: 860;
+  line-height: 1.12;
 }
 
 .tool-document-text {
@@ -7390,7 +7390,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tool-print-title {
   margin: 0 0 14px;
   color: #232320;
-  font-size: 1.55rem;
+  font-size: 1.72rem;
+  font-weight: 820;
   line-height: 1.2;
 }
 
@@ -7440,6 +7441,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-letter-header {
+  position: relative;
   grid-template-columns: minmax(0, 1fr) minmax(118px, 150px);
   gap: 24px;
   margin-bottom: 24px;
@@ -7468,12 +7470,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-document-date-field {
-  align-self: start;
+  position: absolute;
+  top: calc(100% + 24px);
+  right: 0;
   display: block;
-  justify-self: end;
   width: 100%;
   max-width: 118px;
-  margin-top: 76px;
+  margin-top: 0;
   color: #67645e;
   direction: rtl;
 }
@@ -7585,7 +7588,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   min-width: 0;
   color: #232320;
   font-size: 10.5pt;
-  font-weight: 760;
+  font-weight: 820;
   line-height: 1.25;
 }
 
@@ -7706,6 +7709,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-vat-print-page .tool-print-header {
+  --tool-print-date-top-offset: 18px;
   min-height: 76px;
   margin-bottom: 18px;
 }
@@ -7724,7 +7728,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-print-header {
+  --tool-print-date-top-offset: 28px;
+  position: relative;
   margin-bottom: 28px;
+}
+
+.tool-print-first-page-header .tools-print-header .tool-print-date {
+  position: absolute;
+  top: calc(100% + var(--tool-print-date-top-offset));
+  right: 0;
 }
 
 .tools-print-address-row {
@@ -7754,6 +7766,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 10.5pt;
   font-weight: 760;
   line-height: 1.25;
+}
+
+.tools-print-calculation-block .tool-print-calculation-label {
+  font-weight: 820;
 }
 
 .tools-print-calculation-grid {

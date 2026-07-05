@@ -565,7 +565,7 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
     <article className="tools-print-calculation-block" {...measureProps}>
       {block.result.status === 'success' ? (
         <div className="tools-print-calculation-grid tools-print-compound-calculation-grid">
-          <h3>{block.title}</h3>
+          <h3 className="tool-print-calculation-label">{block.title}</h3>
           <h3>Zusammensetzung</h3>
           <h3>Endkapital</h3>
           <dl className="tools-print-calculation-inputs">
