@@ -7470,7 +7470,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: calc(100% - var(--tool-document-right-safe-offset));
   margin-top: 30px;
   padding-top: 0;
-  border-top: 1px solid rgba(214, 209, 200, 0.82);
+  border-top: 1px solid rgba(214, 209, 200, 0.72);
   color: #36342f;
   font-size: 9.4pt;
   line-height: 1.32;
@@ -7480,7 +7480,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: grid;
   gap: 8px;
   padding: 10px 0 12px;
-  border-bottom: 1px solid rgba(214, 209, 200, 0.58);
+  border-bottom: 1px solid rgba(214, 209, 200, 0.72);
 }
 
 .tools-letter-calculation-block:last-child {
@@ -7511,8 +7511,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-letter-calculation-inputs div {
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
-  gap: 6px;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 12px;
 }
 
 .tools-letter-calculation-inputs dt,
@@ -7570,7 +7570,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   gap: 8px;
   width: calc(100% - var(--tool-document-right-safe-offset));
   padding: 10px 0 12px;
-  border-top: 1px solid rgba(214, 209, 200, 0.82);
+  border-top: 1px solid rgba(214, 209, 200, 0.72);
   color: #36342f;
   break-inside: avoid;
   page-break-inside: avoid;
@@ -7601,8 +7601,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-print-calculation-inputs div {
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
-  gap: 6px;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 12px;
 }
 
 .tools-print-calculation-inputs dt,
