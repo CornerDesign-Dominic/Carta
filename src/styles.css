@@ -5740,6 +5740,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     padding: 0;
   }
 
+  body.document-print-mode .tools-paper > :not(.tool-print-pages) {
+    display: none !important;
+  }
+
+  body.document-print-mode .tools-paper > .tool-print-pages {
+    display: block !important;
+  }
+
   body.document-print-mode .offer-measure-root {
     display: none;
   }
@@ -5783,6 +5791,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     border: 0;
     box-shadow: none;
     overflow: hidden;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  body.document-print-mode .tool-print-page:last-child {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
   }
 
   body.document-print-mode .offer-print-page {
@@ -7367,19 +7382,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tool-print-page-number {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
   align-self: end;
   justify-self: center;
   width: 100%;
   height: var(--tool-print-page-number-height);
   margin: 0;
-  padding-top: 1mm;
   color: #77736b;
   font-size: 9px;
   line-height: 1;
   text-align: center;
-  transform: translateY(-30px);
 }
 
 .tool-print-page-number.is-empty {
