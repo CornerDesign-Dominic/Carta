@@ -6,6 +6,7 @@ import ToolToolbar from '../document/ToolToolbar.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from '../document/toolPagination.js';
 import { requestPdfDownload } from '../../../utils/requestPdfDownload.js';
 import InterestCalculationCard from './InterestCalculationCard.jsx';
+import ToolCalculationLabel from '../document/ToolCalculationLabel.jsx';
 import ToolDocumentHeader, {
   createTodayDateValue,
   formatToolDocumentDate,
@@ -59,6 +60,7 @@ function resizeToolsTextarea(textarea) {
 export default function InterestCalculator() {
   const sheetRef = useRef(null);
   const documentIntroRef = useRef(null);
+  const documentHintRef = useRef(null);
   const paginatorRef = useRef(null);
   const printPagesRef = useRef(null);
   const [calculationMode, setCalculationMode] = useState('finalCapital');
@@ -75,6 +77,8 @@ export default function InterestCalculator() {
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultInterestDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultInterestDocumentIntro);
+  const [documentCalculationHint, setDocumentCalculationHint] = useState(() => getCalculationModeHint('finalCapital'));
+  const [calculationLabels, setCalculationLabels] = useState({});
   const [documentTitle, setDocumentTitle] = useState(defaultInterestDocumentTitle);
   const canAddCalculation = calculations.length < maxInterestCalculations;
   const documentCalculationBlocks = useMemo(
@@ -87,12 +91,12 @@ export default function InterestCalculator() {
         result,
         resultValue: formatDocumentCalculatedValue(calculationMode, result),
         resultTitle: getCalculationDocumentResultTitle(calculationMode),
-        title: getCalculationTitle(index),
+        onTitleChange: (value) => updateCalculationLabel(calculation.id, value),
+        title: calculationLabels[calculation.id] ?? getCalculationTitle(index),
       };
     }),
-    [calculationMode, calculations],
+    [calculationLabels, calculationMode, calculations],
   );
-  const documentCalculationHint = getCalculationModeHint(calculationMode);
   const printItems = useMemo(
     () => createInterestPrintItems({
       blocks: documentCalculationBlocks,
@@ -105,6 +109,14 @@ export default function InterestCalculator() {
   useEffect(() => {
     resizeToolsTextarea(documentIntroRef.current);
   }, [documentIntro]);
+
+  useEffect(() => {
+    setDocumentCalculationHint(getCalculationModeHint(calculationMode));
+  }, [calculationMode]);
+
+  useEffect(() => {
+    resizeToolsTextarea(documentHintRef.current);
+  }, [documentCalculationHint]);
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -126,6 +138,13 @@ export default function InterestCalculator() {
     )));
   }
 
+  function updateCalculationLabel(calculationId, value) {
+    setCalculationLabels((currentLabels) => ({
+      ...currentLabels,
+      [calculationId]: value,
+    }));
+  }
+
   function addCalculation() {
     if (!canAddCalculation) {
       return;
@@ -145,6 +164,10 @@ export default function InterestCalculator() {
       }
 
       return currentCalculations.filter((calculation) => calculation.id !== calculationId);
+    });
+    setCalculationLabels((currentLabels) => {
+      const { [calculationId]: _removedLabel, ...remainingLabels } = currentLabels;
+      return remainingLabels;
     });
   }
 
@@ -314,7 +337,16 @@ export default function InterestCalculator() {
               }}
             />
 
-            <p className="tools-letter-mode-hint">{documentCalculationHint}</p>
+            <ToolTextBlock
+              ref={documentHintRef}
+              ariaLabel="Hinweistext Zinsberechnung"
+              className="tools-letter-mode-hint"
+              value={documentCalculationHint}
+              onChange={(value, event) => {
+                setDocumentCalculationHint(value);
+                resizeToolsTextarea(event.target);
+              }}
+            />
 
             <section className="tools-letter-result-summary" aria-label="Zinsberechnung Ergebnis">
               {documentCalculationBlocks.map((block) => (
@@ -347,7 +379,7 @@ function InterestDocumentCalculationBlock({ block }) {
   return (
     <article className="tools-letter-calculation-block">
       <div className="tools-interest-calculation-heading">
-        <h3>{block.title}</h3>
+        <ToolCalculationLabel value={block.title} onChange={(value) => block.onTitleChange?.(value)} />
         <h3>{block.resultTitle}</h3>
       </div>
       {block.result.status === 'success' ? (

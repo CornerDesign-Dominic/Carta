@@ -35,7 +35,6 @@ export default function ToolDocumentHeader({
       </div>
 
       <label className="tool-document-date-field">
-        <span>Datum</span>
         <input
           className={dataCheckActive ? 'tool-document-data-check-marker' : undefined}
           type="date"

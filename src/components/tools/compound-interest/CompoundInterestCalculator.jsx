@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { requestPdfDownload } from '../../../utils/requestPdfDownload.js';
 import ToolA4Page from '../document/ToolA4Page.jsx';
+import ToolCalculationLabel from '../document/ToolCalculationLabel.jsx';
 import ToolDocumentHeader, {
   createTodayDateValue,
   formatToolDocumentDate,
@@ -57,6 +58,7 @@ function resizeToolsTextarea(textarea) {
 export default function CompoundInterestCalculator() {
   const sheetRef = useRef(null);
   const documentIntroRef = useRef(null);
+  const documentHintRef = useRef(null);
   const paginatorRef = useRef(null);
   const printPagesRef = useRef(null);
   const [nextCalculationId, setNextCalculationId] = useState(2);
@@ -72,6 +74,8 @@ export default function CompoundInterestCalculator() {
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultCompoundInterestDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultCompoundInterestDocumentIntro);
+  const [documentCalculationHint, setDocumentCalculationHint] = useState(compoundInterestDocumentHint);
+  const [calculationLabels, setCalculationLabels] = useState({});
   const [documentTitle, setDocumentTitle] = useState(defaultCompoundInterestDocumentTitle);
   const canAddCalculation = calculations.length < maxCompoundInterestCalculations;
   const documentCalculationBlocks = useMemo(
@@ -81,25 +85,30 @@ export default function CompoundInterestCalculator() {
       return {
         id: calculation.id,
         inputSummary: getCompoundInterestInputSummary(result),
+        onTitleChange: (value) => updateCalculationLabel(calculation.id, value),
         result,
         resultValue: result.status === 'success' ? formatCurrency(result.finalCapital) : null,
-        title: getCompoundInterestTitle(index),
+        title: calculationLabels[calculation.id] ?? getCompoundInterestTitle(index),
       };
     }),
-    [calculations],
+    [calculationLabels, calculations],
   );
   const printItems = useMemo(
     () => createCompoundInterestPrintItems({
       blocks: documentCalculationBlocks,
-      hint: compoundInterestDocumentHint,
+      hint: documentCalculationHint,
       intro: documentIntro,
     }),
-    [documentCalculationBlocks, documentIntro],
+    [documentCalculationBlocks, documentCalculationHint, documentIntro],
   );
 
   useEffect(() => {
     resizeToolsTextarea(documentIntroRef.current);
   }, [documentIntro]);
+
+  useEffect(() => {
+    resizeToolsTextarea(documentHintRef.current);
+  }, [documentCalculationHint]);
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -121,6 +130,13 @@ export default function CompoundInterestCalculator() {
     )));
   }
 
+  function updateCalculationLabel(calculationId, value) {
+    setCalculationLabels((currentLabels) => ({
+      ...currentLabels,
+      [calculationId]: value,
+    }));
+  }
+
   function addCalculation() {
     if (!canAddCalculation) {
       return;
@@ -140,6 +156,10 @@ export default function CompoundInterestCalculator() {
       }
 
       return currentCalculations.filter((calculation) => calculation.id !== calculationId);
+    });
+    setCalculationLabels((currentLabels) => {
+      const { [calculationId]: _removedLabel, ...remainingLabels } = currentLabels;
+      return remainingLabels;
     });
   }
 
@@ -283,7 +303,16 @@ export default function CompoundInterestCalculator() {
               }}
             />
 
-            <p className="tools-letter-mode-hint">{compoundInterestDocumentHint}</p>
+            <ToolTextBlock
+              ref={documentHintRef}
+              ariaLabel="Hinweistext Zinseszinsberechnung"
+              className="tools-letter-mode-hint"
+              value={documentCalculationHint}
+              onChange={(value, event) => {
+                setDocumentCalculationHint(value);
+                resizeToolsTextarea(event.target);
+              }}
+            />
 
             <section className="tools-letter-result-summary" aria-label="Zinseszinsberechnung Ergebnis">
               {documentCalculationBlocks.map((block) => (
@@ -317,7 +346,7 @@ function CompoundInterestDocumentCalculationBlock({ block }) {
     <article className="tools-letter-calculation-block">
       {block.result.status === 'success' ? (
         <div className="tools-letter-calculation-grid tools-compound-calculation-grid">
-          <h3>{block.title}</h3>
+          <ToolCalculationLabel value={block.title} onChange={(value) => block.onTitleChange?.(value)} />
           <h3>Zusammensetzung</h3>
           <h3>Endkapital</h3>
           <dl className="tools-letter-calculation-inputs">

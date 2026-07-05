@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { requestPdfDownload } from '../../../utils/requestPdfDownload.js';
 import ToolA4Page from '../document/ToolA4Page.jsx';
+import ToolCalculationLabel from '../document/ToolCalculationLabel.jsx';
 import ToolDocumentHeader, {
   createTodayDateValue,
   formatToolDocumentDate,
@@ -57,6 +58,7 @@ function resizeToolsTextarea(textarea) {
 export default function VatCalculator() {
   const sheetRef = useRef(null);
   const documentIntroRef = useRef(null);
+  const documentHintRef = useRef(null);
   const paginatorRef = useRef(null);
   const printPagesRef = useRef(null);
   const [calculationMode, setCalculationMode] = useState('gross');
@@ -73,6 +75,8 @@ export default function VatCalculator() {
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
   const [documentSenderLine, setDocumentSenderLine] = useState(defaultVatDocumentSenderLine);
   const [documentIntro, setDocumentIntro] = useState(defaultVatDocumentIntro);
+  const [documentCalculationHint, setDocumentCalculationHint] = useState(() => getVatDocumentHint('gross'));
+  const [calculationLabels, setCalculationLabels] = useState({});
   const [documentTitle, setDocumentTitle] = useState(defaultVatDocumentTitle);
   const canAddCalculation = calculations.length < maxVatCalculations;
   const documentCalculationBlocks = useMemo(
@@ -82,15 +86,15 @@ export default function VatCalculator() {
       return {
         id: calculation.id,
         inputSummary: getVatInputSummary(calculationMode, result),
+        onTitleChange: (value) => updateCalculationLabel(calculation.id, value),
         result,
         resultTitle: getVatResultTitle(calculationMode),
         resultValue: formatVatCalculatedValue(calculationMode, result),
-        title: getVatCalculationTitle(index),
+        title: calculationLabels[calculation.id] ?? getVatCalculationTitle(index),
       };
     }),
-    [calculationMode, calculations],
+    [calculationLabels, calculationMode, calculations],
   );
-  const documentCalculationHint = getVatDocumentHint(calculationMode);
   const printItems = useMemo(
     () => createVatPrintItems({
       blocks: documentCalculationBlocks,
@@ -103,6 +107,14 @@ export default function VatCalculator() {
   useEffect(() => {
     resizeToolsTextarea(documentIntroRef.current);
   }, [documentIntro]);
+
+  useEffect(() => {
+    setDocumentCalculationHint(getVatDocumentHint(calculationMode));
+  }, [calculationMode]);
+
+  useEffect(() => {
+    resizeToolsTextarea(documentHintRef.current);
+  }, [documentCalculationHint]);
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -124,6 +136,13 @@ export default function VatCalculator() {
     )));
   }
 
+  function updateCalculationLabel(calculationId, value) {
+    setCalculationLabels((currentLabels) => ({
+      ...currentLabels,
+      [calculationId]: value,
+    }));
+  }
+
   function addCalculation() {
     if (!canAddCalculation) {
       return;
@@ -143,6 +162,10 @@ export default function VatCalculator() {
       }
 
       return currentCalculations.filter((calculation) => calculation.id !== calculationId);
+    });
+    setCalculationLabels((currentLabels) => {
+      const { [calculationId]: _removedLabel, ...remainingLabels } = currentLabels;
+      return remainingLabels;
     });
   }
 
@@ -312,7 +335,16 @@ export default function VatCalculator() {
               }}
             />
 
-            <p className="tools-letter-mode-hint">{documentCalculationHint}</p>
+            <ToolTextBlock
+              ref={documentHintRef}
+              ariaLabel="Hinweistext Umsatzsteuerberechnung"
+              className="tools-letter-mode-hint"
+              value={documentCalculationHint}
+              onChange={(value, event) => {
+                setDocumentCalculationHint(value);
+                resizeToolsTextarea(event.target);
+              }}
+            />
 
             <section className="tools-letter-result-summary" aria-label="Umsatzsteuerberechnung Ergebnis">
               {documentCalculationBlocks.map((block) => (
@@ -345,7 +377,7 @@ function VatDocumentCalculationBlock({ block }) {
   return (
     <article className="tools-letter-calculation-block tools-vat-calculation-block">
       <div className="tools-interest-calculation-heading">
-        <h3>{block.title}</h3>
+        <ToolCalculationLabel value={block.title} onChange={(value) => block.onTitleChange?.(value)} />
         <h3>{block.resultTitle}</h3>
       </div>
       {block.result.status === 'success' ? (
