@@ -7442,10 +7442,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-letter-header {
+  --tool-document-recipient-offset: 24px;
   position: relative;
   grid-template-columns: minmax(0, 1fr) minmax(118px, 150px);
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: var(--tool-document-recipient-offset);
 }
 
 .tools-letter-company-field {
@@ -7472,7 +7473,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tool-document-date-field {
   position: absolute;
-  top: calc(100% + 24px);
+  top: calc(100% + var(--tool-document-recipient-offset));
   right: 0;
   display: block;
   width: 100%;
@@ -7712,9 +7713,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-vat-print-page .tool-print-header {
-  --tool-print-date-top-offset: 18px;
-  min-height: 76px;
-  margin-bottom: 18px;
+  min-height: 112px;
+  margin-bottom: var(--tool-document-recipient-offset);
 }
 
 .tools-vat-print-page .tool-print-continuation-header {
@@ -7731,14 +7731,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-print-header {
-  --tool-print-date-top-offset: 28px;
+  --tool-document-recipient-offset: 24px;
   position: relative;
-  margin-bottom: 28px;
+  margin-bottom: var(--tool-document-recipient-offset);
 }
 
 .tool-print-first-page-header .tools-print-header .tool-print-date {
   position: absolute;
-  top: calc(100% + var(--tool-print-date-top-offset));
+  top: calc(100% + var(--tool-document-recipient-offset));
   right: 0;
 }
 
