@@ -36,7 +36,7 @@ const defaultInterestDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.';
 
 const toolsPrintLayout = {
-  blockGap: 24,
+  blockGap: 10,
   smallSafetyBuffer: 16,
 };
 

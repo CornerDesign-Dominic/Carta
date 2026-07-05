@@ -7364,7 +7364,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: grid;
   align-self: stretch;
   align-content: start;
-  gap: 24px;
+  gap: 10px;
   height: var(--tool-print-content-max-height);
   max-height: var(--tool-print-content-max-height);
   min-height: 0;
