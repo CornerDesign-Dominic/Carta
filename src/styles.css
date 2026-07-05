@@ -7393,6 +7393,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 9px;
   line-height: 1;
   text-align: center;
+  transform: translateY(10mm);
 }
 
 .tool-print-page-number.is-empty {
