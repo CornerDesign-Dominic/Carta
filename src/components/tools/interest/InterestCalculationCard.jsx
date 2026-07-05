@@ -69,7 +69,7 @@ export default function InterestCalculationCard({
                   min="0"
                   inputMode="decimal"
                   type="number"
-                  placeholder="1.000"
+                  placeholder={interestExampleValues.initialCapital}
                   value={calculation.initialCapital}
                   onChange={handleNumberChange((value) => onChange('initialCapital', value))}
                 />
@@ -130,7 +130,7 @@ export default function InterestCalculationCard({
                   min="0"
                   inputMode="decimal"
                   type="number"
-                  placeholder="1.050"
+                  placeholder={interestExampleValues.finalCapital}
                   value={calculation.finalCapital}
                   onChange={handleNumberChange((value) => onChange('finalCapital', value))}
                 />

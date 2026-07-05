@@ -27,11 +27,11 @@ const percentFormatter = new Intl.NumberFormat('de-DE', {
 export function createInterestCalculation(id) {
   return {
     id,
-    initialCapital: '',
-    finalCapital: '',
-    interestRate: '',
-    durationYears: '',
-    durationMonths: '',
+    initialCapital: interestExampleValues.initialCapital,
+    finalCapital: interestExampleValues.finalCapital,
+    interestRate: interestExampleValues.interestRate,
+    durationYears: interestExampleValues.durationYears,
+    durationMonths: interestExampleValues.durationMonths,
   };
 }
 
@@ -166,26 +166,11 @@ export function createInterestPdfFileName() {
 }
 
 export function calculateInterestResult(calculation, calculationMode) {
-  const parsedInitialCapital = parsePositiveNumberWithFallback(
-    calculation.initialCapital,
-    interestExampleValues.initialCapital,
-  );
-  const parsedFinalCapital = parsePositiveNumberWithFallback(
-    calculation.finalCapital,
-    interestExampleValues.finalCapital,
-  );
-  const parsedInterestRate = parsePositiveNumberWithFallback(
-    calculation.interestRate,
-    interestExampleValues.interestRate,
-  );
-  const parsedDurationYears = parsePositiveNumberWithFallback(
-    calculation.durationYears,
-    interestExampleValues.durationYears,
-  );
-  const parsedDurationMonths = parsePositiveNumberWithFallback(
-    calculation.durationMonths,
-    interestExampleValues.durationMonths,
-  );
+  const parsedInitialCapital = parsePositiveNumber(calculation.initialCapital);
+  const parsedFinalCapital = parsePositiveNumber(calculation.finalCapital);
+  const parsedInterestRate = parsePositiveNumber(calculation.interestRate);
+  const parsedDurationYears = parsePositiveNumber(calculation.durationYears);
+  const parsedDurationMonths = parsePositiveNumber(calculation.durationMonths);
   const durationInYears =
     parsedDurationYears !== null && parsedDurationMonths !== null
       ? parsedDurationYears + parsedDurationMonths / 12
@@ -318,8 +303,4 @@ function parsePositiveNumber(value) {
   }
 
   return parsed;
-}
-
-function parsePositiveNumberWithFallback(value, fallbackValue) {
-  return parsePositiveNumber(String(value).trim() === '' ? fallbackValue : value);
 }
