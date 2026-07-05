@@ -308,9 +308,11 @@ export default function CompoundInterestCalculator() {
 function CompoundInterestDocumentCalculationBlock({ block }) {
   return (
     <article className="tools-letter-calculation-block">
-      <h3>{block.title}</h3>
       {block.result.status === 'success' ? (
         <div className="tools-letter-calculation-grid tools-compound-calculation-grid">
+          <h3>{block.title}</h3>
+          <h3>Zusammensetzung</h3>
+          <h3>Endkapital</h3>
           <dl className="tools-letter-calculation-inputs">
             {block.inputSummary.map(([label, value]) => (
               <div key={label}>
@@ -521,9 +523,11 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
 
   return (
     <article className="tools-print-calculation-block" {...measureProps}>
-      <h3>{block.title}</h3>
       {block.result.status === 'success' ? (
         <div className="tools-print-calculation-grid tools-print-compound-calculation-grid">
+          <h3>{block.title}</h3>
+          <h3>Zusammensetzung</h3>
+          <h3>Endkapital</h3>
           <dl className="tools-print-calculation-inputs">
             {block.inputSummary.map(([label, value]) => (
               <div key={label}>
@@ -546,19 +550,22 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
 }
 
 function CompoundInterestComposition({ className, result }) {
+  const compositionRows = [
+    ['Startkapital', formatCurrency(result.initialCapital)],
+    ['Einzahlungen', formatCurrency(result.contributedCapital)],
+    ['Zinsertrag', formatCurrency(result.interestReturn)],
+    ['Endkapital', formatCurrency(result.finalCapital)],
+  ];
+
   return (
-    <div className={className} aria-label="Zusammensetzung des Endkapitals">
-      <span>Zusammensetzung</span>
-      <p>
-        {formatCurrency(result.initialCapital)}
-        {' + '}
-        {formatCurrency(result.contributedCapital)}
-        {' + '}
-        {formatCurrency(result.interestReturn)}
-        {' = '}
-        <strong>{formatCurrency(result.finalCapital)}</strong>
-      </p>
-    </div>
+    <dl className={className} aria-label="Zusammensetzung des Endkapitals">
+      {compositionRows.map(([label, value]) => (
+        <div key={label}>
+          <dt>{label}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
