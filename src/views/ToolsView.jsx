@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 import CompoundInterestCalculator from '../components/tools/compound-interest/CompoundInterestCalculator.jsx';
+import DefaultInterestCalculator from '../components/tools/default-interest/DefaultInterestCalculator.jsx';
+import DueDateCalculator from '../components/tools/due-date/DueDateCalculator.jsx';
+import HourlyWageCalculator from '../components/tools/hourly-wage/HourlyWageCalculator.jsx';
 import InterestCalculator from '../components/tools/interest/InterestCalculator.jsx';
 import VatCalculator from '../components/tools/vat/VatCalculator.jsx';
 import WorkingTimeCalculator from '../components/tools/working-time/WorkingTimeCalculator.jsx';
@@ -68,6 +71,18 @@ export default function ToolsView({ activeToolId, onSelectTool }) {
 
     if (activeToolId === 'arbeitszeitrechner') {
       return <WorkingTimeCalculator />;
+    }
+
+    if (activeToolId === 'faelligkeitsrechner') {
+      return <DueDateCalculator />;
+    }
+
+    if (activeToolId === 'verzugszinsenrechner') {
+      return <DefaultInterestCalculator />;
+    }
+
+    if (activeToolId === 'stundenlohnrechner') {
+      return <HourlyWageCalculator />;
     }
 
     return <ToolOverview onSelect={handleSelectTool} />;

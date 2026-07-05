@@ -8010,6 +8010,52 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   order: 3;
 }
 
+.tools-form-grid-due-date .tools-field-due-invoice-date {
+  order: 1;
+}
+
+.tools-form-grid-due-date .tools-field-due-payment-term {
+  order: 2;
+}
+
+.tools-form-grid-due-date .tools-field-due-weekend {
+  order: 3;
+  grid-column: 1 / -1;
+}
+
+.tools-form-grid-default-interest .tools-field-default-amount {
+  order: 1;
+}
+
+.tools-form-grid-default-interest .tools-field-default-rate-option {
+  order: 2;
+}
+
+.tools-form-grid-default-interest .tools-field-default-custom-rate {
+  order: 3;
+  grid-column: 1 / -1;
+}
+
+.tools-form-grid-default-interest .tools-field-default-start-date {
+  order: 4;
+}
+
+.tools-form-grid-default-interest .tools-field-default-end-date {
+  order: 5;
+}
+
+.tools-form-grid-hourly-wage .tools-field-hourly-amount {
+  order: 1;
+}
+
+.tools-form-grid-hourly-wage .tools-field-hourly-type {
+  order: 2;
+}
+
+.tools-form-grid-hourly-wage .tools-field-hourly-duration {
+  order: 3;
+}
+
 .tools-field-duration {
   order: 4;
 }
@@ -8037,6 +8083,21 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   border-color: rgba(79, 111, 104, 0.56);
   background: #fffefd;
   box-shadow: 0 0 0 3px rgba(79, 111, 104, 0.12);
+}
+
+.tools-form-grid .tools-checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  color: var(--ink);
+}
+
+.tools-form-grid .tools-checkbox-field input {
+  width: 18px;
+  min-height: 18px;
+  margin: 0;
+  accent-color: var(--accent-deep);
 }
 
 .tools-result-panel dl {

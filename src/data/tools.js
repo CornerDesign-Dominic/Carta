@@ -43,6 +43,39 @@ export const toolItems = [
       canonicalPath: '/tools/arbeitszeitrechner',
     },
   },
+  {
+    id: 'faelligkeitsrechner',
+    title: 'Fälligkeit',
+    description: 'Berechne das Fälligkeitsdatum aus Rechnungsdatum und Zahlungsziel.',
+    path: '/tools/faelligkeitsrechner',
+    seo: {
+      title: 'Fälligkeitsrechner | Carta',
+      description: 'Berechne das Fälligkeitsdatum aus Rechnungsdatum und Zahlungsziel.',
+      canonicalPath: '/tools/faelligkeitsrechner',
+    },
+  },
+  {
+    id: 'verzugszinsenrechner',
+    title: 'Verzugszinsen',
+    description: 'Berechne Verzugstage, Verzugszinsen und Gesamtbetrag.',
+    path: '/tools/verzugszinsenrechner',
+    seo: {
+      title: 'Verzugszinsenrechner | Carta',
+      description: 'Berechne Verzugszinsen aus offenem Betrag, Zeitraum und Zinssatz.',
+      canonicalPath: '/tools/verzugszinsenrechner',
+    },
+  },
+  {
+    id: 'stundenlohnrechner',
+    title: 'Stundenlohn',
+    description: 'Berechne deinen Stundenlohn aus Betrag und Arbeitszeit.',
+    path: '/tools/stundenlohnrechner',
+    seo: {
+      title: 'Stundenlohnrechner | Carta',
+      description: 'Berechne deinen Stundenlohn aus Betrag, Stunden und Minuten.',
+      canonicalPath: '/tools/stundenlohnrechner',
+    },
+  },
 ];
 
 export function findToolItem(toolId) {
