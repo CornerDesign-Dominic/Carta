@@ -7257,15 +7257,18 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   margin: 0 0 14px;
   color: #232320;
   font-family: inherit;
-  font-size: 1.12rem;
-  font-weight: 800;
-  line-height: 1.22;
+  font-size: 1.16rem;
+  font-weight: 760;
+  line-height: 1.38;
 }
 
 .tool-document-a4 input.tool-document-title {
-  font-size: 1.12rem;
-  font-weight: 800;
-  line-height: 1.22;
+  min-height: 1.72em;
+  padding: 1px 0 4px;
+  font-family: inherit;
+  font-size: 1.16rem;
+  font-weight: 760;
+  line-height: 1.38;
 }
 
 .tool-document-text {
