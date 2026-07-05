@@ -7257,7 +7257,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   margin: 0 0 14px;
   color: #232320;
   font-family: inherit;
-  font-size: 1.16rem;
+  font-size: 1.24rem;
   font-weight: 760;
   line-height: 1.38;
 }
@@ -7266,7 +7266,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   min-height: 1.72em;
   padding: 1px 0 4px;
   font-family: inherit;
-  font-size: 1.16rem;
+  font-size: 1.24rem;
   font-weight: 760;
   line-height: 1.38;
 }
@@ -7398,7 +7398,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-print-title {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   color: #232320;
   font-size: 13pt;
   font-weight: 760;
@@ -7409,7 +7409,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: grid;
   align-self: stretch;
   align-content: start;
-  gap: 10px;
+  gap: 11px;
   height: var(--tool-print-content-max-height);
   max-height: var(--tool-print-content-max-height);
   min-height: 0;
@@ -7549,10 +7549,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-letter-mode-hint {
   width: calc(100% - var(--tool-document-right-safe-offset));
+  min-height: calc(1.42em + 2px);
   margin: 14px 0 0;
   color: #5f5e59;
   font-size: 10pt;
   line-height: 1.42;
+  overflow: hidden;
+  resize: none;
 }
 
 .tools-letter-result-summary {
@@ -7738,11 +7741,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-vat-print-page .tool-print-address-row {
-  margin-bottom: 22px;
+  margin-bottom: 36px;
 }
 
 .tools-vat-print-page .tool-print-title {
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 .tools-print-header {
@@ -7758,14 +7761,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-print-address-row {
-  margin-bottom: 34px;
+  margin-bottom: 38px;
 }
 
 .tools-print-calculation-block {
   display: grid;
   gap: 8px;
   width: calc(100% - var(--tool-document-right-safe-offset));
-  padding: 10px 0 12px;
+  padding: 11px 0 12px;
   border-top: 1px solid rgba(214, 209, 200, 0.72);
   color: #36342f;
   break-inside: avoid;
@@ -7774,8 +7777,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-print-calculation-block.tools-vat-calculation-block {
   gap: 6px;
-  padding-top: 8px;
+  padding-top: 9px;
   padding-bottom: 9px;
+}
+
+.tool-print-flow-text + .tools-print-calculation-block {
+  margin-top: 3px;
 }
 
 .tools-print-calculation-block h3 {
