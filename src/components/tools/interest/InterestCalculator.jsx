@@ -13,6 +13,7 @@ import {
   createInterestPdfFileName,
   createInterestPrintItems,
   formatDocumentCalculatedValue,
+  getCalculationDocumentResultTitle,
   getCalculationInputSummary,
   getCalculationModeHint,
   getCalculationTitle,
@@ -77,6 +78,7 @@ export default function InterestCalculator() {
         inputSummary: getCalculationInputSummary(calculationMode, result),
         result,
         resultValue: formatDocumentCalculatedValue(calculationMode, result),
+        resultTitle: getCalculationDocumentResultTitle(calculationMode),
         title: getCalculationTitle(index),
       };
     }),
@@ -337,7 +339,10 @@ export default function InterestCalculator() {
 function InterestDocumentCalculationBlock({ block }) {
   return (
     <article className="tools-letter-calculation-block">
-      <h3>{block.title}</h3>
+      <div className="tools-interest-calculation-heading">
+        <h3>{block.title}</h3>
+        <h3>{block.resultTitle}</h3>
+      </div>
       {block.result.status === 'success' ? (
         <div className="tools-letter-calculation-grid">
           <dl className="tools-letter-calculation-inputs">
@@ -349,7 +354,6 @@ function InterestDocumentCalculationBlock({ block }) {
             ))}
           </dl>
           <div className="tools-letter-calculation-result">
-            <span>Ergebnis</span>
             <strong>{block.resultValue}</strong>
           </div>
         </div>
@@ -545,7 +549,10 @@ function InterestPrintCalculationBlock({ block, dataMeasureCalculation }) {
 
   return (
     <article className="tools-print-calculation-block" {...measureProps}>
-      <h3>{block.title}</h3>
+      <div className="tools-interest-calculation-heading">
+        <h3>{block.title}</h3>
+        <h3>{block.resultTitle}</h3>
+      </div>
       {block.result.status === 'success' ? (
         <div className="tools-print-calculation-grid">
           <dl className="tools-print-calculation-inputs">
@@ -557,7 +564,6 @@ function InterestPrintCalculationBlock({ block, dataMeasureCalculation }) {
             ))}
           </dl>
           <div className="tools-print-calculation-result">
-            <span>Ergebnis</span>
             <strong>{block.resultValue}</strong>
           </div>
         </div>

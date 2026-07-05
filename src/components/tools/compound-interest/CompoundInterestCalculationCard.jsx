@@ -149,8 +149,12 @@ export default function CompoundInterestCalculationCard({
 
               <dl>
                 <div>
-                  <dt>Eingezahlt</dt>
-                  <dd>{formatCurrency(result.paidInCapital)}</dd>
+                  <dt>Startkapital</dt>
+                  <dd>{formatCurrency(result.initialCapital)}</dd>
+                </div>
+                <div>
+                  <dt>Eingezahlte Raten</dt>
+                  <dd>{formatCurrency(result.contributedCapital)}</dd>
                 </div>
                 <div>
                   <dt>Zinsertrag</dt>

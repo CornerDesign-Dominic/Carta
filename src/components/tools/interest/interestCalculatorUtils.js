@@ -111,6 +111,17 @@ export function getCalculationTitle(index) {
   return `${index + 1}.`;
 }
 
+export function getCalculationDocumentResultTitle(calculationMode) {
+  const titleByMode = {
+    initialCapital: 'Anfangskapital',
+    interestRate: 'Zinssatz',
+    duration: 'Laufzeit',
+    finalCapital: 'Endbetrag',
+  };
+
+  return titleByMode[calculationMode] ?? 'Ergebnis';
+}
+
 export function getCalculationModeHint(calculationMode) {
   const hintByMode = {
     initialCapital: 'Die folgenden Berechnungen ermitteln das Anfangskapital.',

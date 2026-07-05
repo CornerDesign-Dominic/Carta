@@ -5,19 +5,23 @@ import ToolRecipientBlock from '../document/ToolRecipientBlock.jsx';
 import ToolTextBlock from '../document/ToolTextBlock.jsx';
 import ToolToolbar from '../document/ToolToolbar.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from '../document/toolPagination.js';
-import CompoundInterestCalculationCard from './CompoundInterestCalculationCard.jsx';
+import VatCalculationCard from './VatCalculationCard.jsx';
 import {
-  calculateCompoundInterestResult,
-  createCompoundInterestCalculation,
-  createCompoundInterestPdfFileName,
-  createCompoundInterestPrintItems,
+  calculateVatResult,
+  createVatCalculation,
+  createVatPdfFileName,
+  createVatPrintItems,
   formatCurrency,
-  getCompoundInterestInputSummary,
-  getCompoundInterestTitle,
-  maxCompoundInterestCalculations,
-} from './compoundInterestUtils.js';
+  formatVatCalculatedValue,
+  getVatCalculationTitle,
+  getVatDocumentHint,
+  getVatInputSummary,
+  getVatResultTitle,
+  maxVatCalculations,
+  vatCalculationModes,
+} from './vatCalculatorUtils.js';
 
-const defaultCompoundInterestDocumentRecipient = {
+const defaultVatDocumentRecipient = {
   company: 'Max Mustermann GmbH',
   attention: 'z. H. Max Mustermann',
   name: 'Buchhaltung',
@@ -25,14 +29,10 @@ const defaultCompoundInterestDocumentRecipient = {
   cityLine: '12345 Musterstadt',
 };
 
-const defaultCompoundInterestSenderCompanyName = 'Belege24 Muster GmbH';
-
-const defaultCompoundInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
-
-const defaultCompoundInterestDocumentIntro =
-  'Hiermit erhalten Sie eine Übersicht der berechneten Zinseszinsentwicklung auf Grundlage der angegebenen Werte.';
-
-const compoundInterestDocumentHint = 'Die folgenden Berechnungen zeigen Endkapital, eingezahltes Kapital und Zinsertrag.';
+const defaultVatSenderCompanyName = 'Belege24 Muster GmbH';
+const defaultVatDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+const defaultVatDocumentIntro =
+  'Hiermit erhalten Sie eine Übersicht der berechneten Umsatzsteuerbeträge auf Grundlage der angegebenen Werte.';
 
 const toolsPrintLayout = {
   blockGap: 10,
@@ -48,45 +48,48 @@ function resizeToolsTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
-export default function CompoundInterestCalculator() {
+export default function VatCalculator() {
   const sheetRef = useRef(null);
   const documentIntroRef = useRef(null);
   const paginatorRef = useRef(null);
   const printPagesRef = useRef(null);
+  const [calculationMode, setCalculationMode] = useState('gross');
   const [nextCalculationId, setNextCalculationId] = useState(2);
-  const [calculations, setCalculations] = useState([createCompoundInterestCalculation(1)]);
+  const [calculations, setCalculations] = useState([createVatCalculation(1)]);
   const [isDocumentEditable, setIsDocumentEditable] = useState(false);
   const [isDataCheckActive, setIsDataCheckActive] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
-  const [senderCompanyName, setSenderCompanyName] = useState(defaultCompoundInterestSenderCompanyName);
-  const [documentRecipient, setDocumentRecipient] = useState(defaultCompoundInterestDocumentRecipient);
+  const [senderCompanyName, setSenderCompanyName] = useState(defaultVatSenderCompanyName);
+  const [documentRecipient, setDocumentRecipient] = useState(defaultVatDocumentRecipient);
   const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
-  const [documentSenderLine, setDocumentSenderLine] = useState(defaultCompoundInterestDocumentSenderLine);
-  const [documentIntro, setDocumentIntro] = useState(defaultCompoundInterestDocumentIntro);
-  const canAddCalculation = calculations.length < maxCompoundInterestCalculations;
+  const [documentSenderLine, setDocumentSenderLine] = useState(defaultVatDocumentSenderLine);
+  const [documentIntro, setDocumentIntro] = useState(defaultVatDocumentIntro);
+  const canAddCalculation = calculations.length < maxVatCalculations;
   const documentCalculationBlocks = useMemo(
     () => calculations.map((calculation, index) => {
-      const result = calculateCompoundInterestResult(calculation);
+      const result = calculateVatResult(calculation, calculationMode);
 
       return {
         id: calculation.id,
-        inputSummary: getCompoundInterestInputSummary(result),
+        inputSummary: getVatInputSummary(calculationMode, result),
         result,
-        resultValue: result.status === 'success' ? formatCurrency(result.finalCapital) : null,
-        title: getCompoundInterestTitle(index),
+        resultTitle: getVatResultTitle(calculationMode),
+        resultValue: formatVatCalculatedValue(calculationMode, result),
+        title: getVatCalculationTitle(index),
       };
     }),
-    [calculations],
+    [calculationMode, calculations],
   );
+  const documentCalculationHint = getVatDocumentHint(calculationMode);
   const printItems = useMemo(
-    () => createCompoundInterestPrintItems({
+    () => createVatPrintItems({
       blocks: documentCalculationBlocks,
-      hint: compoundInterestDocumentHint,
+      hint: documentCalculationHint,
       intro: documentIntro,
     }),
-    [documentCalculationBlocks, documentIntro],
+    [documentCalculationBlocks, documentCalculationHint, documentIntro],
   );
 
   useEffect(() => {
@@ -120,7 +123,7 @@ export default function CompoundInterestCalculator() {
 
     setCalculations((currentCalculations) => [
       ...currentCalculations,
-      createCompoundInterestCalculation(nextCalculationId),
+      createVatCalculation(nextCalculationId),
     ]);
     setNextCalculationId((currentId) => currentId + 1);
   }
@@ -133,6 +136,17 @@ export default function CompoundInterestCalculator() {
 
       return currentCalculations.filter((calculation) => calculation.id !== calculationId);
     });
+  }
+
+  function handleCalculationModeChange(nextCalculationMode) {
+    if (nextCalculationMode === calculationMode) {
+      return;
+    }
+
+    setCalculationMode(nextCalculationMode);
+    setCalculations((currentCalculations) => currentCalculations.map((calculation) => ({
+      ...createVatCalculation(calculation.id),
+    })));
   }
 
   function updateDocumentRecipient(field, value) {
@@ -158,8 +172,8 @@ export default function CompoundInterestCalculator() {
       await requestPdfDownload({
         sheet: sheetRef.current,
         exportRoot: printPagesRef.current,
-        documentType: 'compoundInterestCalculation',
-        filename: createCompoundInterestPdfFileName(),
+        documentType: 'vatCalculation',
+        filename: createVatPdfFileName(),
       });
     } catch (error) {
       window.alert(
@@ -189,12 +203,27 @@ export default function CompoundInterestCalculator() {
   return (
     <>
       <p className="eyebrow">WERKZEUGE</p>
-      <h1 id="tools-title">Zinseszins</h1>
+      <h1 id="tools-title">Umsatzsteuer</h1>
+
+      <div className="tools-mode-selector" aria-label="Berechnungsart auswählen">
+        {vatCalculationModes.map((mode) => (
+          <button
+            className={calculationMode === mode.value ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={calculationMode === mode.value}
+            onClick={() => handleCalculationModeChange(mode.value)}
+            key={mode.value}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
 
       <div className="tools-calculation-list">
         {calculations.map((calculation, index) => (
-          <CompoundInterestCalculationCard
+          <VatCalculationCard
             calculation={calculation}
+            calculationMode={calculationMode}
             index={index}
             canRemove={index > 0}
             onChange={(field, value) => updateCalculation(calculation.id, field, value)}
@@ -217,7 +246,7 @@ export default function CompoundInterestCalculator() {
       <section className="tools-document-preview-section" aria-label="Dokumentvorschau">
         <div className="tools-document-preview-divider" aria-hidden="true" />
         <ToolToolbar
-          ariaLabel="Zinseszinsberechnung Werkzeuge"
+          ariaLabel="Umsatzsteuerberechnung Werkzeuge"
           isDataCheckActive={isDataCheckActive}
           isEditable={isDocumentEditable}
           isExporting={isExporting}
@@ -229,7 +258,7 @@ export default function CompoundInterestCalculator() {
         <div className="tools-document-preview">
           <ToolA4Page
             ref={sheetRef}
-            ariaLabel="Dokumentvorschau Zinseszinsberechnung"
+            ariaLabel="Dokumentvorschau Umsatzsteuerberechnung"
             className={isDataCheckActive ? 'is-data-check-mode' : ''}
             editable={isDocumentEditable}
           >
@@ -265,11 +294,11 @@ export default function CompoundInterestCalculator() {
               </div>
             </div>
 
-            <h2 className="tool-document-title tools-letter-subject">Zinseszinsberechnung</h2>
+            <h2 className="tool-document-title tools-letter-subject">Umsatzsteuerberechnung</h2>
 
             <ToolTextBlock
               ref={documentIntroRef}
-              ariaLabel="Vorlauftext Zinseszinsberechnung"
+              ariaLabel="Vorlauftext Umsatzsteuerberechnung"
               className="tools-letter-intro"
               value={documentIntro}
               onChange={(value, event) => {
@@ -278,11 +307,11 @@ export default function CompoundInterestCalculator() {
               }}
             />
 
-            <p className="tools-letter-mode-hint">{compoundInterestDocumentHint}</p>
+            <p className="tools-letter-mode-hint">{documentCalculationHint}</p>
 
-            <section className="tools-letter-result-summary" aria-label="Zinseszinsberechnung Ergebnis">
+            <section className="tools-letter-result-summary" aria-label="Umsatzsteuerberechnung Ergebnis">
               {documentCalculationBlocks.map((block) => (
-                <CompoundInterestDocumentCalculationBlock block={block} key={block.id} />
+                <VatDocumentCalculationBlock block={block} key={block.id} />
               ))}
             </section>
           </ToolA4Page>
@@ -291,8 +320,8 @@ export default function CompoundInterestCalculator() {
 
       {isExportRenderActive ? (
         <>
-          <MeasuredCompoundInterestPaginator ref={paginatorRef} items={printItems} />
-          <CompoundInterestPrintPages
+          <MeasuredVatPaginator ref={paginatorRef} items={printItems} />
+          <VatPrintPages
             ref={printPagesRef}
             companyName={senderCompanyName}
             hiddenRecipientFields={recipientHiddenFields}
@@ -305,14 +334,15 @@ export default function CompoundInterestCalculator() {
   );
 }
 
-function CompoundInterestDocumentCalculationBlock({ block }) {
+function VatDocumentCalculationBlock({ block }) {
   return (
     <article className="tools-letter-calculation-block">
+      <div className="tools-interest-calculation-heading">
+        <h3>{block.title}</h3>
+        <h3>{block.resultTitle}</h3>
+      </div>
       {block.result.status === 'success' ? (
-        <div className="tools-letter-calculation-grid tools-compound-calculation-grid">
-          <h3>{block.title}</h3>
-          <h3>Zusammensetzung</h3>
-          <h3>Endkapital</h3>
+        <div className="tools-letter-calculation-grid">
           <dl className="tools-letter-calculation-inputs">
             {block.inputSummary.map(([label, value]) => (
               <div key={label}>
@@ -321,9 +351,7 @@ function CompoundInterestDocumentCalculationBlock({ block }) {
               </div>
             ))}
           </dl>
-          <CompoundInterestComposition className="tools-letter-compound-composition" result={block.result} />
           <div className="tools-letter-calculation-result">
-            <span>Endkapital</span>
             <strong>{block.resultValue}</strong>
           </div>
         </div>
@@ -334,11 +362,11 @@ function CompoundInterestDocumentCalculationBlock({ block }) {
   );
 }
 
-const MeasuredCompoundInterestPaginator = forwardRef(function MeasuredCompoundInterestPaginator({ items }, ref) {
+const MeasuredVatPaginator = forwardRef(function MeasuredVatPaginator({ items }, ref) {
   const measureRootRef = useRef(null);
 
   function measureNow() {
-    return measureCompoundInterestPages(measureRootRef.current, items);
+    return measureVatPages(measureRootRef.current, items);
   }
 
   useImperativeHandle(ref, () => ({ measureNow }), [items]);
@@ -356,18 +384,14 @@ const MeasuredCompoundInterestPaginator = forwardRef(function MeasuredCompoundIn
         {items
           .filter((item) => item.type === 'calculation')
           .map((item) => (
-            <CompoundInterestPrintCalculationBlock
-              block={item.block}
-              dataMeasureCalculation={String(item.id)}
-              key={item.id}
-            />
+            <VatPrintCalculationBlock block={item.block} dataMeasureCalculation={String(item.id)} key={item.id} />
           ))}
       </div>
     </div>
   );
 });
 
-function measureCompoundInterestPages(measureRoot, items) {
+function measureVatPages(measureRoot, items) {
   if (!measureRoot) {
     return null;
   }
@@ -422,7 +446,7 @@ function measureCompoundInterestPages(measureRoot, items) {
   });
 }
 
-const CompoundInterestPrintPages = forwardRef(function CompoundInterestPrintPages(
+const VatPrintPages = forwardRef(function VatPrintPages(
   { companyName, hiddenRecipientFields, pages, recipient },
   ref,
 ) {
@@ -438,17 +462,17 @@ const CompoundInterestPrintPages = forwardRef(function CompoundInterestPrintPage
           key={page.pageNumber}
         >
           {page.pageNumber === 1 ? (
-            <CompoundInterestPrintFirstPageHeader
+            <VatPrintFirstPageHeader
               companyName={companyName}
               hiddenRecipientFields={hiddenRecipientFields}
               recipient={recipient}
             />
           ) : (
-            <CompoundInterestPrintContinuationHeader companyName={companyName} />
+            <VatPrintContinuationHeader companyName={companyName} />
           )}
 
           <div className="tool-print-page-content">
-            <CompoundInterestPrintPageItems items={page.items} />
+            <VatPrintPageItems items={page.items} />
           </div>
 
           <p className={`tool-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
@@ -462,7 +486,7 @@ const CompoundInterestPrintPages = forwardRef(function CompoundInterestPrintPage
   );
 });
 
-function CompoundInterestPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient }) {
+function VatPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient }) {
   const recipientLines = [
     recipient.company,
     hiddenRecipientFields.includes('attention') ? '' : recipient.attention,
@@ -487,12 +511,12 @@ function CompoundInterestPrintFirstPageHeader({ companyName, hiddenRecipientFiel
         </div>
       </section>
 
-      <h2 className="tool-print-title">Zinseszinsberechnung</h2>
+      <h2 className="tool-print-title">Umsatzsteuerberechnung</h2>
     </div>
   );
 }
 
-function CompoundInterestPrintContinuationHeader({ companyName }) {
+function VatPrintContinuationHeader({ companyName }) {
   return (
     <header className="tool-print-header tool-print-continuation-header">
       <p className="tool-print-company-name">{companyName}</p>
@@ -500,7 +524,7 @@ function CompoundInterestPrintContinuationHeader({ companyName }) {
   );
 }
 
-function CompoundInterestPrintPageItems({ items }) {
+function VatPrintPageItems({ items }) {
   return items.map((item, index) => {
     if (item.type === 'text') {
       return (
@@ -511,23 +535,24 @@ function CompoundInterestPrintPageItems({ items }) {
     }
 
     if (item.type === 'calculation') {
-      return <CompoundInterestPrintCalculationBlock block={item.block} key={item.id} />;
+      return <VatPrintCalculationBlock block={item.block} key={item.id} />;
     }
 
     return null;
   });
 }
 
-function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }) {
+function VatPrintCalculationBlock({ block, dataMeasureCalculation }) {
   const measureProps = dataMeasureCalculation ? { 'data-measure-calculation': dataMeasureCalculation } : {};
 
   return (
     <article className="tools-print-calculation-block" {...measureProps}>
+      <div className="tools-interest-calculation-heading">
+        <h3>{block.title}</h3>
+        <h3>{block.resultTitle}</h3>
+      </div>
       {block.result.status === 'success' ? (
-        <div className="tools-print-calculation-grid tools-print-compound-calculation-grid">
-          <h3>{block.title}</h3>
-          <h3>Zusammensetzung</h3>
-          <h3>Endkapital</h3>
+        <div className="tools-print-calculation-grid">
           <dl className="tools-print-calculation-inputs">
             {block.inputSummary.map(([label, value]) => (
               <div key={label}>
@@ -536,9 +561,7 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
               </div>
             ))}
           </dl>
-          <CompoundInterestComposition className="tools-print-compound-composition" result={block.result} />
           <div className="tools-print-calculation-result">
-            <span>Endkapital</span>
             <strong>{block.resultValue}</strong>
           </div>
         </div>
@@ -546,25 +569,6 @@ function CompoundInterestPrintCalculationBlock({ block, dataMeasureCalculation }
         <p className="tool-print-flow-text">{block.result.message}</p>
       )}
     </article>
-  );
-}
-
-function CompoundInterestComposition({ className, result }) {
-  const compositionRows = [
-    ['Startkapital', formatCurrency(result.initialCapital)],
-    ['Einzahlungen', formatCurrency(result.contributedCapital)],
-    ['Zinsertrag', formatCurrency(result.interestReturn)],
-  ];
-
-  return (
-    <dl className={className} aria-label="Zusammensetzung des Endkapitals">
-      {compositionRows.map(([label, value]) => (
-        <div key={label}>
-          <dt>{label}</dt>
-          <dd>{value}</dd>
-        </div>
-      ))}
-    </dl>
   );
 }
 

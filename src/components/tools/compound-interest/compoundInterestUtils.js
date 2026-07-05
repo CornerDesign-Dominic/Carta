@@ -79,7 +79,6 @@ export function getCompoundInterestInputSummary(result) {
   }
 
   return [
-    ['Anfangskapital', formatCurrency(result.initialCapital)],
     ['Monatsrate', formatCurrency(result.monthlyRate)],
     ['Zinssatz', `${formatPercent(result.interestRate)} p.a.`],
     ['Laufzeit', formatCompactDuration(result.durationInMonths)],

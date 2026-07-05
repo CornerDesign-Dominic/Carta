@@ -7509,6 +7509,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.25;
 }
 
+.tools-interest-calculation-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.48fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.tools-interest-calculation-heading h3:last-child {
+  text-align: right;
+}
+
 .tools-letter-calculation-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(132px, 0.48fr);
@@ -7809,15 +7820,28 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-form-grid-compound-interest .tools-field-duration {
-  order: 3;
+  order: 5;
 }
 
 .tools-form-grid-compound-interest .tools-field-interest-rate {
-  order: 4;
+  order: 3;
 }
 
 .tools-form-grid-compound-interest .tools-field-interest-interval {
-  order: 5;
+  order: 4;
+}
+
+.tools-form-grid-vat .tools-field-vat-amount {
+  order: 1;
+}
+
+.tools-form-grid-vat .tools-field-vat-rate {
+  order: 2;
+}
+
+.tools-form-grid-vat .tools-field-vat-custom-rate {
+  order: 3;
+  grid-column: 1 / -1;
 }
 
 .tools-field-duration {

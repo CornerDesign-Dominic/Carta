@@ -21,6 +21,17 @@ export const toolItems = [
       canonicalPath: '/tools/zinseszins',
     },
   },
+  {
+    id: 'umsatzsteuerrechner',
+    title: 'Umsatzsteuer',
+    description: 'Berechne Nettobetrag, Umsatzsteuerbetrag und Bruttobetrag.',
+    path: '/tools/umsatzsteuerrechner',
+    seo: {
+      title: 'Umsatzsteuerrechner | Carta',
+      description: 'Berechne Netto, Umsatzsteuer und Brutto mit 19 %, 7 %, 0 % oder eigenem Steuersatz.',
+      canonicalPath: '/tools/umsatzsteuerrechner',
+    },
+  },
 ];
 
 export function findToolItem(toolId) {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import CompoundInterestCalculator from '../components/tools/compound-interest/CompoundInterestCalculator.jsx';
 import InterestCalculator from '../components/tools/interest/InterestCalculator.jsx';
+import VatCalculator from '../components/tools/vat/VatCalculator.jsx';
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
 import { findToolItem, toolItems } from '../data/tools.js';
 
@@ -58,6 +59,10 @@ export default function ToolsView({ activeToolId, onSelectTool }) {
 
     if (activeToolId === 'zinseszins') {
       return <CompoundInterestCalculator />;
+    }
+
+    if (activeToolId === 'umsatzsteuerrechner') {
+      return <VatCalculator />;
     }
 
     return <ToolOverview onSelect={handleSelectTool} />;
