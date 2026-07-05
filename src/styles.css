@@ -6864,8 +6864,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-calculation-section {
-  padding: 0 0 34px;
-  margin-bottom: 34px;
+  padding: 0 0 18px;
+  margin-bottom: 18px;
 }
 
 .tools-calculation-section:last-child {
@@ -7873,8 +7873,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   }
 
   .tools-calculation-section {
-    padding-bottom: 28px;
-    margin-bottom: 28px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
   }
 
   .tools-calculation-header {
