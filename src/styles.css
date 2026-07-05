@@ -7262,6 +7262,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.22;
 }
 
+.tool-document-a4 input.tool-document-title {
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.22;
+}
+
 .tool-document-text {
   min-height: 56px;
   color: #4d4b46;
@@ -7591,6 +7597,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   min-width: 0;
   color: #232320;
   font-family: inherit;
+  font-size: 10.5pt;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.tool-document-a4 input.tool-calculation-label {
   font-size: 10.5pt;
   font-weight: 800;
   line-height: 1.25;
