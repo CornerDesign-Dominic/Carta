@@ -123,7 +123,7 @@ export default function VatCalculator() {
 
     setCalculations((currentCalculations) => [
       ...currentCalculations,
-      createVatCalculation(nextCalculationId),
+      createVatCalculation(nextCalculationId, calculationMode),
     ]);
     setNextCalculationId((currentId) => currentId + 1);
   }
@@ -145,7 +145,7 @@ export default function VatCalculator() {
 
     setCalculationMode(nextCalculationMode);
     setCalculations((currentCalculations) => currentCalculations.map((calculation) => ({
-      ...createVatCalculation(calculation.id),
+      ...createVatCalculation(calculation.id, nextCalculationMode),
     })));
   }
 

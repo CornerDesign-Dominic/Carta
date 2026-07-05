@@ -15,6 +15,7 @@ export const vatRateOptions = [
 
 export const vatExampleValues = {
   amount: '1000',
+  grossAmount: '1190',
   customRate: '19',
   rateOption: '19',
 };
@@ -28,10 +29,10 @@ const percentFormatter = new Intl.NumberFormat('de-DE', {
   maximumFractionDigits: 2,
 });
 
-export function createVatCalculation(id) {
+export function createVatCalculation(id, calculationMode = 'gross') {
   return {
     id,
-    amount: vatExampleValues.amount,
+    amount: calculationMode === 'net' ? vatExampleValues.grossAmount : vatExampleValues.amount,
     customRate: vatExampleValues.customRate,
     rateOption: vatExampleValues.rateOption,
   };
