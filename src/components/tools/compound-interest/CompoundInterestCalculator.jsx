@@ -307,6 +307,7 @@ export default function CompoundInterestCalculator() {
               ref={documentHintRef}
               ariaLabel="Hinweistext Zinseszinsberechnung"
               className="tools-letter-mode-hint"
+              rows={1}
               value={documentCalculationHint}
               onChange={(value, event) => {
                 setDocumentCalculationHint(value);

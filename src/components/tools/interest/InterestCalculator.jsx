@@ -341,6 +341,7 @@ export default function InterestCalculator() {
               ref={documentHintRef}
               ariaLabel="Hinweistext Zinsberechnung"
               className="tools-letter-mode-hint"
+              rows={1}
               value={documentCalculationHint}
               onChange={(value, event) => {
                 setDocumentCalculationHint(value);

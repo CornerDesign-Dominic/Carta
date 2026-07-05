@@ -339,6 +339,7 @@ export default function VatCalculator() {
               ref={documentHintRef}
               ariaLabel="Hinweistext Umsatzsteuerberechnung"
               className="tools-letter-mode-hint"
+              rows={1}
               value={documentCalculationHint}
               onChange={(value, event) => {
                 setDocumentCalculationHint(value);
