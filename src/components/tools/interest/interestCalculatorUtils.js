@@ -35,14 +35,14 @@ export function createInterestCalculation(id) {
   };
 }
 
-export function clearInterestCalculation(calculation) {
+export function resetInterestCalculationToExamples(calculation) {
   return {
     ...calculation,
-    initialCapital: '',
-    finalCapital: '',
-    interestRate: '',
-    durationYears: '',
-    durationMonths: '',
+    initialCapital: interestExampleValues.initialCapital,
+    finalCapital: interestExampleValues.finalCapital,
+    interestRate: interestExampleValues.interestRate,
+    durationYears: interestExampleValues.durationYears,
+    durationMonths: interestExampleValues.durationMonths,
   };
 }
 

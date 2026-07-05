@@ -9,7 +9,6 @@ import InterestCalculationCard from './InterestCalculationCard.jsx';
 import {
   calculateInterestResult,
   calculationModes,
-  clearInterestCalculation,
   createInterestCalculation,
   createInterestPdfFileName,
   createInterestPrintItems,
@@ -18,6 +17,7 @@ import {
   getCalculationModeHint,
   getCalculationTitle,
   maxInterestCalculations,
+  resetInterestCalculationToExamples,
 } from './interestCalculatorUtils.js';
 
 const defaultInterestDocumentRecipient = {
@@ -129,15 +129,23 @@ export default function InterestCalculator() {
   }
 
   function removeCalculation(calculationId) {
-    setCalculations((currentCalculations) => currentCalculations.filter(
-      (calculation) => calculation.id !== calculationId,
-    ));
+    setCalculations((currentCalculations) => {
+      if (currentCalculations.length <= 1) {
+        return currentCalculations;
+      }
+
+      return currentCalculations.filter((calculation) => calculation.id !== calculationId);
+    });
   }
 
   function handleCalculationModeChange(nextCalculationMode) {
+    if (nextCalculationMode === calculationMode) {
+      return;
+    }
+
     setCalculationMode(nextCalculationMode);
     setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
-      clearInterestCalculation(calculation)
+      resetInterestCalculationToExamples(calculation)
     )));
   }
 
