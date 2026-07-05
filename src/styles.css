@@ -7501,6 +7501,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   border-bottom: 0;
 }
 
+.tools-vat-calculation-block {
+  gap: 6px;
+  padding-top: 8px;
+  padding-bottom: 9px;
+}
+
 .tools-letter-calculation-block h3 {
   margin: 0;
   color: #232320;
@@ -7617,6 +7623,32 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   --tool-print-content-max-height: 558px;
 }
 
+.tool-print-page.tools-vat-print-page.is-first-page {
+  --tool-print-content-max-height: 650px;
+}
+
+.tool-print-page.tools-vat-print-page.is-follow-page {
+  --tool-print-content-max-height: 832px;
+}
+
+.tools-vat-print-page .tool-print-header {
+  min-height: 76px;
+  margin-bottom: 18px;
+}
+
+.tools-vat-print-page .tool-print-continuation-header {
+  min-height: 46px;
+  margin-bottom: 12px;
+}
+
+.tools-vat-print-page .tool-print-address-row {
+  margin-bottom: 22px;
+}
+
+.tools-vat-print-page .tool-print-title {
+  margin-bottom: 10px;
+}
+
 .tools-print-header {
   margin-bottom: 28px;
 }
@@ -7634,6 +7666,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: #36342f;
   break-inside: avoid;
   page-break-inside: avoid;
+}
+
+.tools-print-calculation-block.tools-vat-calculation-block {
+  gap: 6px;
+  padding-top: 8px;
+  padding-bottom: 9px;
 }
 
 .tools-print-calculation-block h3 {

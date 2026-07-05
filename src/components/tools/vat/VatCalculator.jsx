@@ -336,7 +336,7 @@ export default function VatCalculator() {
 
 function VatDocumentCalculationBlock({ block }) {
   return (
-    <article className="tools-letter-calculation-block">
+    <article className="tools-letter-calculation-block tools-vat-calculation-block">
       <div className="tools-interest-calculation-heading">
         <h3>{block.title}</h3>
         <h3>{block.resultTitle}</h3>
@@ -373,10 +373,10 @@ const MeasuredVatPaginator = forwardRef(function MeasuredVatPaginator({ items },
 
   return (
     <div className="tool-document-measure-root" ref={measureRootRef} aria-hidden="true">
-      <div className="tool-print-page is-first-page">
+      <div className="tool-print-page tools-vat-print-page is-first-page">
         <div className="tool-print-page-content" data-measure-first-content />
       </div>
-      <div className="tool-print-page is-follow-page">
+      <div className="tool-print-page tools-vat-print-page is-follow-page">
         <div className="tool-print-page-content" data-measure-follow-content />
       </div>
       <div className="tool-document-measure-content">
@@ -456,7 +456,7 @@ const VatPrintPages = forwardRef(function VatPrintPages(
     <div className="tool-print-pages tools-print-pages" ref={ref} aria-hidden="true">
       {pages.map((page) => (
         <article
-          className={`tool-print-page tools-print-page${
+          className={`tool-print-page tools-print-page tools-vat-print-page${
             page.pageNumber === 1 ? ' is-first-page' : ' is-follow-page'
           }`}
           key={page.pageNumber}
@@ -546,7 +546,7 @@ function VatPrintCalculationBlock({ block, dataMeasureCalculation }) {
   const measureProps = dataMeasureCalculation ? { 'data-measure-calculation': dataMeasureCalculation } : {};
 
   return (
-    <article className="tools-print-calculation-block" {...measureProps}>
+    <article className="tools-print-calculation-block tools-vat-calculation-block" {...measureProps}>
       <div className="tools-interest-calculation-heading">
         <h3>{block.title}</h3>
         <h3>{block.resultTitle}</h3>
