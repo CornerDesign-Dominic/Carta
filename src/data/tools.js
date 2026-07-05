@@ -32,6 +32,17 @@ export const toolItems = [
       canonicalPath: '/tools/umsatzsteuerrechner',
     },
   },
+  {
+    id: 'arbeitszeitrechner',
+    title: 'Arbeitszeit',
+    description: 'Berechne reine Arbeitszeit aus Beginn, Ende und Pause.',
+    path: '/tools/arbeitszeitrechner',
+    seo: {
+      title: 'Arbeitszeitrechner | Carta',
+      description: 'Berechne deine Arbeitszeit aus Arbeitsbeginn, Arbeitsende und Pausenzeit.',
+      canonicalPath: '/tools/arbeitszeitrechner',
+    },
+  },
 ];
 
 export function findToolItem(toolId) {

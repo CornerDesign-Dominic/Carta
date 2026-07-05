@@ -7998,6 +7998,18 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   grid-column: 1 / -1;
 }
 
+.tools-form-grid-working-time .tools-field-working-start {
+  order: 1;
+}
+
+.tools-form-grid-working-time .tools-field-working-end {
+  order: 2;
+}
+
+.tools-form-grid-working-time .tools-field-working-break {
+  order: 3;
+}
+
 .tools-field-duration {
   order: 4;
 }
