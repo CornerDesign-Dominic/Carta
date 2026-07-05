@@ -239,7 +239,7 @@ export default function VatCalculator() {
             Weitere Vergleichsberechnung hinzufügen
           </button>
         ) : (
-          <p>Maximal 5 Vergleichsberechnungen möglich.</p>
+          <p>Maximal 10 Vergleichsberechnungen möglich.</p>
         )}
       </div>
 

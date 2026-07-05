@@ -1,4 +1,4 @@
-export const maxVatCalculations = 5;
+export const maxVatCalculations = 10;
 
 export const vatCalculationModes = [
   { value: 'gross', label: 'Bruttobetrag' },
