@@ -2,19 +2,19 @@ import { toolItems } from '../../data/tools.js';
 
 export default function ToolsSidebar({ activeToolId, onSelect, onShowOverview }) {
   return (
-    <aside className="document-sidebar tools-sidebar" aria-label="Werkzeugnavigation">
+    <aside className="tools-sidebar" aria-label="Werkzeugnavigation">
       <button
-        className={!activeToolId ? 'sidebar-title is-active' : 'sidebar-title'}
+        className={!activeToolId ? 'tools-sidebar-title is-active' : 'tools-sidebar-title'}
         type="button"
         onClick={onShowOverview}
       >
         Werkzeuge
       </button>
 
-      <nav className="sidebar-nav tools-sidebar-nav">
+      <nav className="tools-sidebar-nav">
         {toolItems.map((item) => (
           <button
-            className={activeToolId === item.id ? 'is-active' : undefined}
+            className={activeToolId === item.id ? 'tools-sidebar-link is-active' : 'tools-sidebar-link'}
             type="button"
             onClick={() => onSelect(item.id)}
             key={item.id}

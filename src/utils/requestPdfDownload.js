@@ -46,7 +46,7 @@ function buildExportHtml(sheet, exportRoot = sheet) {
   const clonedSheet = exportRoot.cloneNode(true);
   clonedSheet.classList.remove('is-highlight-mode');
   clonedSheet.classList.add('is-export-mode');
-  clonedSheet.querySelectorAll('.offer-sheet, .invoice-print-page, .receipt-sheet').forEach((page) => {
+  clonedSheet.querySelectorAll('.offer-sheet, .invoice-print-page, .receipt-sheet, .tool-document-a4, .tool-print-page').forEach((page) => {
     page.classList.remove('is-highlight-mode');
     page.classList.add('is-export-mode');
   });
@@ -82,7 +82,9 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     }
 
     .offer-sheet,
-    .invoice-print-page {
+    .invoice-print-page,
+    .tool-document-a4,
+    .tool-print-page {
       width: 210mm !important;
       min-width: 210mm !important;
       height: 297mm !important;
@@ -108,18 +110,23 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     }
 
     .offer-sheet,
-    .invoice-print-page:not(:last-child) {
+    .invoice-print-page:not(:last-child),
+    .tool-print-page:not(:last-child) {
       break-after: page;
     }
 
-    .invoice-print-page:last-child {
+    .invoice-print-page:last-child,
+    .tool-print-page:last-child {
       break-after: auto;
     }
 
     .visual-toolbar,
+    .tool-document-toolbar,
     .invoice-icon-action,
     .invoice-field-actions,
     .invoice-hidden-field-actions,
+    .tool-document-field-actions,
+    .tool-document-hidden-field-actions,
     .offer-remove,
     .offer-add-position {
       display: none !important;
@@ -139,7 +146,16 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     .offer-sheet.is-highlight-mode select,
     .offer-sheet.is-export-mode input,
     .offer-sheet.is-export-mode textarea,
-    .offer-sheet.is-export-mode select {
+    .offer-sheet.is-export-mode select,
+    .tool-document-a4 input,
+    .tool-document-a4 textarea,
+    .tool-document-a4 select,
+    .tool-document-a4.is-highlight-mode input,
+    .tool-document-a4.is-highlight-mode textarea,
+    .tool-document-a4.is-highlight-mode select,
+    .tool-document-a4.is-export-mode input,
+    .tool-document-a4.is-export-mode textarea,
+    .tool-document-a4.is-export-mode select {
       border-color: transparent !important;
       background: transparent !important;
       box-shadow: none !important;

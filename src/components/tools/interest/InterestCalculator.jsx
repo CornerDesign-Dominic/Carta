@@ -1,0 +1,581 @@
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import ToolA4Page from '../document/ToolA4Page.jsx';
+import ToolRecipientBlock from '../document/ToolRecipientBlock.jsx';
+import ToolTextBlock from '../document/ToolTextBlock.jsx';
+import ToolToolbar from '../document/ToolToolbar.jsx';
+import { paginateMeasuredItems, takeMeasuredText } from '../document/toolPagination.js';
+import { requestPdfDownload } from '../../../utils/requestPdfDownload.js';
+import InterestCalculationCard from './InterestCalculationCard.jsx';
+import {
+  calculateInterestResult,
+  calculationModes,
+  clearInterestCalculation,
+  createInterestCalculation,
+  createInterestPdfFileName,
+  createInterestPrintItems,
+  formatDocumentCalculatedValue,
+  getCalculationInputSummary,
+  getCalculationModeHint,
+  getCalculationTitle,
+  maxInterestCalculations,
+} from './interestCalculatorUtils.js';
+
+const defaultInterestDocumentRecipient = {
+  company: 'Max Mustermann GmbH',
+  attention: 'z. H. Max Mustermann',
+  name: 'Buchhaltung',
+  street: 'Musterstraße 12',
+  cityLine: '12345 Musterstadt',
+};
+
+const defaultInterestSenderCompanyName = 'Belege24 Muster GmbH';
+
+const defaultInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+
+const defaultInterestDocumentIntro =
+  'Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.';
+
+const toolsPrintLayout = {
+  blockGap: 24,
+  smallSafetyBuffer: 16,
+};
+
+function resizeToolsTextarea(textarea) {
+  if (!textarea) {
+    return;
+  }
+
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
+export default function InterestCalculator() {
+  const sheetRef = useRef(null);
+  const documentIntroRef = useRef(null);
+  const paginatorRef = useRef(null);
+  const printPagesRef = useRef(null);
+  const [calculationMode, setCalculationMode] = useState('finalCapital');
+  const [nextCalculationId, setNextCalculationId] = useState(2);
+  const [calculations, setCalculations] = useState([createInterestCalculation(1)]);
+  const [isDocumentEditable, setIsDocumentEditable] = useState(false);
+  const [isDataCheckActive, setIsDataCheckActive] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+  const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
+  const [senderCompanyName, setSenderCompanyName] = useState(defaultInterestSenderCompanyName);
+  const [documentRecipient, setDocumentRecipient] = useState(defaultInterestDocumentRecipient);
+  const [recipientHiddenFields, setRecipientHiddenFields] = useState([]);
+  const [documentSenderLine, setDocumentSenderLine] = useState(defaultInterestDocumentSenderLine);
+  const [documentIntro, setDocumentIntro] = useState(defaultInterestDocumentIntro);
+  const canAddCalculation = calculations.length < maxInterestCalculations;
+  const documentCalculationBlocks = useMemo(
+    () => calculations.map((calculation, index) => {
+      const result = calculateInterestResult(calculation, calculationMode);
+
+      return {
+        id: calculation.id,
+        inputSummary: getCalculationInputSummary(calculationMode, result),
+        result,
+        resultValue: formatDocumentCalculatedValue(calculationMode, result),
+        title: getCalculationTitle(index),
+      };
+    }),
+    [calculationMode, calculations],
+  );
+  const documentCalculationHint = getCalculationModeHint(calculationMode);
+  const printItems = useMemo(
+    () => createInterestPrintItems({
+      blocks: documentCalculationBlocks,
+      hint: documentCalculationHint,
+      intro: documentIntro,
+    }),
+    [documentCalculationBlocks, documentCalculationHint, documentIntro],
+  );
+
+  useEffect(() => {
+    resizeToolsTextarea(documentIntroRef.current);
+  }, [documentIntro]);
+
+  async function refreshPrintPages() {
+    setIsExportRenderActive(true);
+    await waitForNextFrame();
+
+    const nextPages = paginatorRef.current?.measureNow();
+
+    if (nextPages) {
+      setPrintPages(nextPages);
+      await waitForNextFrame();
+    }
+  }
+
+  function updateCalculation(calculationId, field, value) {
+    setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
+      calculation.id === calculationId
+        ? { ...calculation, [field]: value }
+        : calculation
+    )));
+  }
+
+  function addCalculation() {
+    if (!canAddCalculation) {
+      return;
+    }
+
+    setCalculations((currentCalculations) => [
+      ...currentCalculations,
+      createInterestCalculation(nextCalculationId),
+    ]);
+    setNextCalculationId((currentId) => currentId + 1);
+  }
+
+  function removeCalculation(calculationId) {
+    setCalculations((currentCalculations) => currentCalculations.filter(
+      (calculation) => calculation.id !== calculationId,
+    ));
+  }
+
+  function handleCalculationModeChange(nextCalculationMode) {
+    setCalculationMode(nextCalculationMode);
+    setCalculations((currentCalculations) => currentCalculations.map((calculation) => (
+      clearInterestCalculation(calculation)
+    )));
+  }
+
+  function updateDocumentRecipient(field, value) {
+    setDocumentRecipient((currentRecipient) => ({
+      ...currentRecipient,
+      [field]: value,
+    }));
+  }
+
+  function toggleRecipientField(field) {
+    setRecipientHiddenFields((currentHiddenFields) => (
+      currentHiddenFields.includes(field)
+        ? currentHiddenFields.filter((hiddenField) => hiddenField !== field)
+        : [...currentHiddenFields, field]
+    ));
+  }
+
+  async function handleCreatePdf() {
+    setIsExporting(true);
+
+    try {
+      await refreshPrintPages();
+      await requestPdfDownload({
+        sheet: sheetRef.current,
+        exportRoot: printPagesRef.current,
+        documentType: 'interestCalculation',
+        filename: createInterestPdfFileName(),
+      });
+    } catch (error) {
+      window.alert(
+        `PDF konnte nicht erstellt werden. Prüfe bitte, ob die Vercel Function lokal oder auf Vercel verfügbar ist.\n\n${error.message}`,
+      );
+    } finally {
+      setIsExportRenderActive(false);
+      setIsExporting(false);
+    }
+  }
+
+  async function handlePrint() {
+    await refreshPrintPages();
+    document.body.classList.add('document-print-mode');
+    window.print();
+
+    const cleanup = () => {
+      document.body.classList.remove('document-print-mode');
+      setIsExportRenderActive(false);
+      window.removeEventListener('afterprint', cleanup);
+    };
+
+    window.addEventListener('afterprint', cleanup);
+    window.setTimeout(cleanup, 1200);
+  }
+
+  return (
+    <>
+      <p className="eyebrow">WERKZEUGE</p>
+      <h1 id="tools-title">Zinsrechner</h1>
+
+      <div className="tools-mode-selector" aria-label="Berechnungsart auswählen">
+        {calculationModes.map((mode) => (
+          <button
+            className={calculationMode === mode.value ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={calculationMode === mode.value}
+            onClick={() => handleCalculationModeChange(mode.value)}
+            key={mode.value}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="tools-calculation-list">
+        {calculations.map((calculation, index) => (
+          <InterestCalculationCard
+            calculation={calculation}
+            calculationMode={calculationMode}
+            index={index}
+            canRemove={index > 0}
+            onChange={(field, value) => updateCalculation(calculation.id, field, value)}
+            onRemove={() => removeCalculation(calculation.id)}
+            key={calculation.id}
+          />
+        ))}
+      </div>
+
+      <div className="tools-add-calculation">
+        {canAddCalculation ? (
+          <button type="button" onClick={addCalculation}>
+            Weitere Vergleichsberechnung hinzufügen
+          </button>
+        ) : (
+          <p>Maximal 10 Vergleichsberechnungen möglich.</p>
+        )}
+      </div>
+
+      <section className="tools-document-preview-section" aria-label="Dokumentvorschau">
+        <div className="tools-document-preview-divider" aria-hidden="true" />
+        <ToolToolbar
+          ariaLabel="Zinsberechnung Werkzeuge"
+          isDataCheckActive={isDataCheckActive}
+          isEditable={isDocumentEditable}
+          isExporting={isExporting}
+          onCreatePdf={handleCreatePdf}
+          onPrint={handlePrint}
+          onToggleDataCheck={() => setIsDataCheckActive((current) => !current)}
+          onToggleEditable={() => setIsDocumentEditable((current) => !current)}
+        />
+        <div className="tools-document-preview">
+          <ToolA4Page
+            ref={sheetRef}
+            ariaLabel="Dokumentvorschau Zinsberechnung"
+            className={isDataCheckActive ? 'is-data-check-mode' : ''}
+            editable={isDocumentEditable}
+          >
+            <header className="tool-document-header tools-letter-header">
+              <div className="tool-document-editable-group tools-letter-company-field">
+                <input
+                  className={isDataCheckActive ? 'tool-document-data-check-marker' : undefined}
+                  aria-label="Eigener Firmenname"
+                  value={senderCompanyName}
+                  onChange={(event) => setSenderCompanyName(event.target.value)}
+                />
+              </div>
+            </header>
+
+            <div className="tool-document-address-row tools-letter-address-row">
+              <div className="tools-letter-recipient-reserved">
+                <ToolRecipientBlock
+                  dataCheckFields={isDataCheckActive ? {
+                    attention: true,
+                    company: true,
+                    name: true,
+                    senderLine: true,
+                    street: true,
+                    cityLine: true,
+                  } : {}}
+                  hiddenFields={recipientHiddenFields}
+                  recipient={documentRecipient}
+                  senderLine={documentSenderLine}
+                  onRecipientChange={updateDocumentRecipient}
+                  onSenderLineChange={setDocumentSenderLine}
+                  onToggleField={toggleRecipientField}
+                />
+              </div>
+            </div>
+
+            <h2 className="tool-document-title tools-letter-subject">Zinsberechnung</h2>
+
+            <ToolTextBlock
+              ref={documentIntroRef}
+              ariaLabel="Vorlauftext Zinsberechnung"
+              className="tools-letter-intro"
+              value={documentIntro}
+              onChange={(value, event) => {
+                setDocumentIntro(value);
+                resizeToolsTextarea(event.target);
+              }}
+            />
+
+            <p className="tools-letter-mode-hint">{documentCalculationHint}</p>
+
+            <section className="tools-letter-result-summary" aria-label="Zinsberechnung Ergebnis">
+              {documentCalculationBlocks.map((block) => (
+                <InterestDocumentCalculationBlock block={block} key={block.id} />
+              ))}
+            </section>
+          </ToolA4Page>
+        </div>
+      </section>
+
+      {isExportRenderActive ? (
+        <>
+          <MeasuredInterestPaginator ref={paginatorRef} items={printItems} />
+          <InterestPrintPages
+            ref={printPagesRef}
+            companyName={senderCompanyName}
+            hiddenRecipientFields={recipientHiddenFields}
+            pages={printPages}
+            recipient={documentRecipient}
+          />
+        </>
+      ) : null}
+    </>
+  );
+}
+
+function InterestDocumentCalculationBlock({ block }) {
+  return (
+    <article className="tools-letter-calculation-block">
+      <h3>{block.title}</h3>
+      {block.result.status === 'success' ? (
+        <div className="tools-letter-calculation-grid">
+          <dl className="tools-letter-calculation-inputs">
+            {block.inputSummary.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="tools-letter-calculation-result">
+            <span>Ergebnis</span>
+            <strong>{block.resultValue}</strong>
+          </div>
+        </div>
+      ) : (
+        <p>{block.result.message}</p>
+      )}
+    </article>
+  );
+}
+
+const MeasuredInterestPaginator = forwardRef(function MeasuredInterestPaginator({ items }, ref) {
+  const measureRootRef = useRef(null);
+
+  function measureNow() {
+    return measureInterestPages(measureRootRef.current, items);
+  }
+
+  useImperativeHandle(ref, () => ({ measureNow }), [items]);
+
+  return (
+    <div className="tool-document-measure-root" ref={measureRootRef} aria-hidden="true">
+      <div className="tool-print-page is-first-page">
+        <div className="tool-print-page-content" data-measure-first-content />
+      </div>
+      <div className="tool-print-page is-follow-page">
+        <div className="tool-print-page-content" data-measure-follow-content />
+      </div>
+      <div className="tool-document-measure-content">
+        <p className="tool-print-flow-text" data-measure-text-probe />
+        {items
+          .filter((item) => item.type === 'calculation')
+          .map((item) => (
+            <InterestPrintCalculationBlock block={item.block} dataMeasureCalculation={String(item.id)} key={item.id} />
+          ))}
+      </div>
+    </div>
+  );
+});
+
+function measureInterestPages(measureRoot, items) {
+  if (!measureRoot) {
+    return null;
+  }
+
+  const firstContent = measureRoot.querySelector('[data-measure-first-content]');
+  const followContent = measureRoot.querySelector('[data-measure-follow-content]');
+  const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
+  const calculationBlocks = new Map(
+    [...measureRoot.querySelectorAll('[data-measure-calculation]')].map((block) => [
+      block.dataset.measureCalculation,
+      getOuterHeight(block),
+    ]),
+  );
+
+  if (!firstContent || !followContent || !textProbe) {
+    return null;
+  }
+
+  const firstPageCapacity = firstContent.getBoundingClientRect().height - toolsPrintLayout.smallSafetyBuffer;
+  const followPageCapacity = followContent.getBoundingClientRect().height - toolsPrintLayout.smallSafetyBuffer;
+  const blockGap =
+    parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || toolsPrintLayout.blockGap;
+
+  function measureTextHeight(text) {
+    textProbe.textContent = String(text || '').trim();
+    return getOuterHeight(textProbe);
+  }
+
+  function getItemHeight(item) {
+    if (item.type === 'text') {
+      return measureTextHeight(item.text);
+    }
+
+    if (item.type === 'calculation') {
+      return calculationBlocks.get(String(item.id)) || 0;
+    }
+
+    return 0;
+  }
+
+  function getItemGap(page) {
+    return page.items.length > 0 ? blockGap : 0;
+  }
+
+  return paginateMeasuredItems({
+    items,
+    firstPageCapacity,
+    followPageCapacity,
+    getItemHeight,
+    getItemGap,
+    splitTextItem: (item, availableHeight) => takeMeasuredText(item.text, availableHeight, measureTextHeight),
+  });
+}
+
+const InterestPrintPages = forwardRef(function InterestPrintPages(
+  { companyName, hiddenRecipientFields, pages, recipient },
+  ref,
+) {
+  const totalPages = pages.length;
+
+  return (
+    <div className="tool-print-pages tools-print-pages" ref={ref} aria-hidden="true">
+      {pages.map((page) => (
+        <article
+          className={`tool-print-page tools-print-page${
+            page.pageNumber === 1 ? ' is-first-page' : ' is-follow-page'
+          }`}
+          key={page.pageNumber}
+        >
+          {page.pageNumber === 1 ? (
+            <InterestPrintFirstPageHeader
+              companyName={companyName}
+              hiddenRecipientFields={hiddenRecipientFields}
+              recipient={recipient}
+            />
+          ) : (
+            <InterestPrintContinuationHeader companyName={companyName} />
+          )}
+
+          <div className="tool-print-page-content">
+            <InterestPrintPageItems items={page.items} />
+          </div>
+
+          <p className={`tool-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
+            {totalPages > 1 ? `${page.pageNumber}/${totalPages}` : ''}
+          </p>
+
+          <footer className="tool-print-footer tools-print-footer" aria-hidden="true" />
+        </article>
+      ))}
+    </div>
+  );
+});
+
+function InterestPrintFirstPageHeader({ companyName, hiddenRecipientFields, recipient }) {
+  const recipientLines = [
+    recipient.company,
+    hiddenRecipientFields.includes('attention') ? '' : recipient.attention,
+    hiddenRecipientFields.includes('name') ? '' : recipient.name,
+    recipient.street,
+    recipient.cityLine,
+  ];
+
+  return (
+    <div className="tool-print-first-page-header">
+      <header className="tool-print-header tools-print-header">
+        <div>
+          <p className="tool-print-company-name">{companyName}</p>
+        </div>
+      </header>
+
+      <section className="tool-print-address-row tools-print-address-row">
+        <div className="tool-print-recipient">
+          {recipientLines.filter(Boolean).map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      </section>
+
+      <h2 className="tool-print-title">Zinsberechnung</h2>
+    </div>
+  );
+}
+
+function InterestPrintContinuationHeader({ companyName }) {
+  return (
+    <header className="tool-print-header tool-print-continuation-header">
+      <p className="tool-print-company-name">{companyName}</p>
+    </header>
+  );
+}
+
+function InterestPrintPageItems({ items }) {
+  return items.map((item, index) => {
+    if (item.type === 'text') {
+      return (
+        <p className="tool-print-flow-text" key={`${item.id}-${index}`}>
+          {item.text}
+        </p>
+      );
+    }
+
+    if (item.type === 'calculation') {
+      return <InterestPrintCalculationBlock block={item.block} key={item.id} />;
+    }
+
+    return null;
+  });
+}
+
+function InterestPrintCalculationBlock({ block, dataMeasureCalculation }) {
+  const measureProps = dataMeasureCalculation ? { 'data-measure-calculation': dataMeasureCalculation } : {};
+
+  return (
+    <article className="tools-print-calculation-block" {...measureProps}>
+      <h3>{block.title}</h3>
+      {block.result.status === 'success' ? (
+        <div className="tools-print-calculation-grid">
+          <dl className="tools-print-calculation-inputs">
+            {block.inputSummary.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="tools-print-calculation-result">
+            <span>Ergebnis</span>
+            <strong>{block.resultValue}</strong>
+          </div>
+        </div>
+      ) : (
+        <p className="tool-print-flow-text">{block.result.message}</p>
+      )}
+    </article>
+  );
+}
+
+function getOuterHeight(element) {
+  if (!element) {
+    return 0;
+  }
+
+  const styles = window.getComputedStyle(element);
+  const marginTop = parseFloat(styles.marginTop) || 0;
+  const marginBottom = parseFloat(styles.marginBottom) || 0;
+
+  return element.getBoundingClientRect().height + marginTop + marginBottom;
+}
+
+function waitForNextFrame() {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(resolve);
+    });
+  });
+}
