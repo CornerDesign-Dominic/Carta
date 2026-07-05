@@ -7163,6 +7163,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tool-document-recipient-hidden-actions {
   top: 30px;
   right: calc(100% + 29px);
+  transform: none;
+  flex-direction: column;
 }
 
 .tool-document-field-actions button,
@@ -7178,6 +7180,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: #67645e;
   font-size: 0.66rem;
   font-weight: 760;
+  line-height: 1;
+}
+
+.tool-document-field-actions button:hover,
+.tool-document-field-actions button:focus-visible,
+.tool-document-hidden-field-actions button:hover,
+.tool-document-hidden-field-actions button:focus-visible {
+  border-color: rgba(95, 94, 89, 0.36);
+  background: rgba(95, 94, 89, 0.1);
+  color: #3f3b35;
 }
 
 .tool-document-a4:hover .tool-document-field-actions,
@@ -7193,33 +7205,34 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tool-document-eye,
 .tool-document-eye-off {
   position: relative;
-  width: 11px;
+  display: block;
+  width: 12px;
   height: 8px;
-  border: 1.4px solid currentColor;
-  border-radius: 999px / 75%;
+  border: 1.3px solid currentColor;
+  border-radius: 999px / 720px;
 }
 
 .tool-document-eye::after,
 .tool-document-eye-off::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 2px;
+  left: 4px;
   width: 3px;
   height: 3px;
   border-radius: 999px;
   background: currentColor;
-  transform: translate(-50%, -50%);
 }
 
 .tool-document-eye-off::before {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 3px;
   left: -2px;
-  right: -2px;
-  border-top: 1.4px solid currentColor;
+  width: 15px;
+  border-top: 1.3px solid currentColor;
   transform: rotate(-35deg);
+  transform-origin: center;
 }
 
 .tool-document-title {
@@ -7739,6 +7752,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-form-grid-duration .tools-field-final-capital {
   order: 3;
+}
+
+.tools-form-grid-compound-interest .tools-field-initial-capital {
+  order: 1;
+}
+
+.tools-form-grid-compound-interest .tools-field-monthly-rate {
+  order: 2;
+}
+
+.tools-form-grid-compound-interest .tools-field-duration {
+  order: 3;
+}
+
+.tools-form-grid-compound-interest .tools-field-interest-rate {
+  order: 4;
+}
+
+.tools-form-grid-compound-interest .tools-field-interest-interval {
+  order: 5;
 }
 
 .tools-field-duration {

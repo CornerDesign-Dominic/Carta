@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import CompoundInterestCalculator from '../components/tools/compound-interest/CompoundInterestCalculator.jsx';
 import InterestCalculator from '../components/tools/interest/InterestCalculator.jsx';
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
 import { findToolItem, toolItems } from '../data/tools.js';
@@ -53,6 +54,10 @@ export default function ToolsView({ activeToolId, onSelectTool }) {
 
     if (activeToolId === 'zinsrechner') {
       return <InterestCalculator />;
+    }
+
+    if (activeToolId === 'zinseszins') {
+      return <CompoundInterestCalculator />;
     }
 
     return <ToolOverview onSelect={handleSelectTool} />;

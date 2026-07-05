@@ -10,6 +10,17 @@ export const toolItems = [
       canonicalPath: '/tools/zinsrechner',
     },
   },
+  {
+    id: 'zinseszins',
+    title: 'Zinseszins',
+    description: 'Berechne Zinseszins mit Anfangskapital, monatlicher Rate und Laufzeit.',
+    path: '/tools/zinseszins',
+    seo: {
+      title: 'Zinseszins | Carta',
+      description: 'Berechne Zinseszins aus Anfangskapital, Sparrate, Zinssatz und Laufzeit.',
+      canonicalPath: '/tools/zinseszins',
+    },
+  },
 ];
 
 export function findToolItem(toolId) {
