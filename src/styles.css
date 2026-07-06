@@ -8188,7 +8188,33 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-cost-variant-layout {
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
   margin-top: 0;
+}
+
+.tools-cost-variant-layout .tools-result-panel {
+  padding: 18px;
+}
+
+.tools-cost-variant-layout .tools-result-highlight {
+  gap: 5px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+}
+
+.tools-cost-variant-layout .tools-result-highlight strong {
+  font-size: clamp(1.28rem, 2vw, 1.62rem);
+}
+
+.tools-cost-variant-layout .tools-result-panel dl div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  padding: 9px 0;
+}
+
+.tools-cost-variant-layout .tools-result-panel dd {
+  text-align: left;
 }
 
 .tools-cost-group-list {
@@ -8321,6 +8347,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   .tools-calculator-layout {
     gap: 16px;
     margin-top: 16px;
+  }
+
+  .tools-cost-variant-layout {
+    grid-template-columns: 1fr;
   }
 
   .tools-calculation-section {
