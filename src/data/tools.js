@@ -76,6 +76,17 @@ export const toolItems = [
       canonicalPath: '/tools/stundenlohnrechner',
     },
   },
+  {
+    id: 'kostenvergleichsrechner',
+    title: 'Kostenvergleich',
+    description: 'Vergleiche mehrere Varianten nach Gesamtkosten und laufenden Kosten.',
+    path: '/tools/kostenvergleichsrechner',
+    seo: {
+      title: 'Kostenvergleichsrechner | Carta',
+      description: 'Vergleiche Anschaffungskosten, laufende Kosten, Laufzeit und Restwert mehrerer Varianten.',
+      canonicalPath: '/tools/kostenvergleichsrechner',
+    },
+  },
 ];
 
 export function findToolItem(toolId) {

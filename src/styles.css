@@ -8058,6 +8058,27 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   order: 3;
 }
 
+.tools-form-grid-cost-comparison .tools-field-cost-label {
+  order: 1;
+  grid-column: 1 / -1;
+}
+
+.tools-form-grid-cost-comparison .tools-field-cost-acquisition {
+  order: 2;
+}
+
+.tools-form-grid-cost-comparison .tools-field-cost-monthly {
+  order: 3;
+}
+
+.tools-form-grid-cost-comparison .tools-field-cost-duration {
+  order: 4;
+}
+
+.tools-form-grid-cost-comparison .tools-field-cost-residual {
+  order: 5;
+}
+
 .tools-field-duration {
   order: 4;
 }
@@ -8115,6 +8136,43 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-weight: 720;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.tools-cost-variant-list {
+  display: grid;
+  gap: 22px;
+}
+
+.tools-cost-variant {
+  display: grid;
+  gap: 12px;
+  padding: 18px 0 22px;
+  border-bottom: 1px solid rgba(214, 209, 200, 0.72);
+}
+
+.tools-cost-variant:first-child {
+  padding-top: 0;
+}
+
+.tools-cost-variant:last-child {
+  border-bottom: 0;
+}
+
+.tools-cost-variant .tools-calculation-header h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.tools-cost-variant.is-cheapest .tools-result-panel {
+  border-color: rgba(45, 91, 83, 0.42);
+  background: rgba(211, 231, 225, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(45, 91, 83, 0.08);
+}
+
+.tools-cost-variant-layout {
+  margin-top: 0;
 }
 
 .tools-result-panel dl {
