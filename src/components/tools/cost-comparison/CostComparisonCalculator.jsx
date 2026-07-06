@@ -155,123 +155,101 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
       <div className="tools-calculator-layout tools-cost-variant-layout">
         <section className="tools-calculator-panel" aria-label={`Eingaben Variante ${index + 1}`}>
           <h2>Eingaben</h2>
-          <div className="tools-form-grid tools-form-grid-cost-comparison">
-            <label className="tools-field-cost-label">
-              <span>Bezeichnung</span>
-              <input
-                type="text"
-                value={variant.label}
-                onChange={(event) => onChange('label', event.target.value)}
-              />
-            </label>
+          {isCostRevenueMode ? (
+            <div className="tools-cost-group-list">
+              <InputGroup title="Variante">
+                <TextField
+                  label="Bezeichnung"
+                  value={variant.label}
+                  onChange={(value) => onChange('label', value)}
+                />
+              </InputGroup>
 
-            <label className="tools-field-cost-acquisition">
-              <span>Anschaffungskosten</span>
-              <input
-                inputMode="decimal"
-                min="0"
-                type="number"
+              <InputGroup title="Maschine / Investition">
+                <MoneyField
+                  label="Anschaffungskosten"
+                  value={variant.acquisitionCost}
+                  onChange={handlePositiveNumberChange('acquisitionCost')}
+                />
+                <MoneyField
+                  label="Restwert"
+                  value={variant.residualValue}
+                  onChange={handlePositiveNumberChange('residualValue')}
+                />
+                <DurationField
+                  onMonthsChange={handleWholeNumberChange('termMonths')}
+                  onYearsChange={handleWholeNumberChange('termYears')}
+                  months={variant.termMonths}
+                  years={variant.termYears}
+                />
+              </InputGroup>
+
+              <InputGroup title="Laufende Fixkosten">
+                <MoneyField
+                  label="Laufende Kosten pro Monat"
+                  value={variant.monthlyCost}
+                  onChange={handlePositiveNumberChange('monthlyCost')}
+                />
+                <MoneyField
+                  label="Mtl. Lohnkosten"
+                  value={variant.payrollCost}
+                  onChange={handlePositiveNumberChange('payrollCost')}
+                />
+              </InputGroup>
+
+              <InputGroup title="Stück / Ertrag">
+                <WholeNumberField
+                  label="Stückzahl"
+                  value={variant.quantity}
+                  onChange={handleWholeNumberChange('quantity')}
+                />
+                <MoneyField
+                  label="Einzelsonderkosten pro Stück"
+                  value={variant.specialCost}
+                  onChange={handlePositiveNumberChange('specialCost')}
+                />
+                <MoneyField
+                  label="Verkaufsertrag pro Stück"
+                  value={variant.revenuePerUnit}
+                  onChange={handlePositiveNumberChange('revenuePerUnit')}
+                />
+              </InputGroup>
+            </div>
+          ) : (
+            <div className="tools-form-grid tools-form-grid-cost-comparison">
+              <TextField
+                className="tools-field-cost-label"
+                label="Bezeichnung"
+                value={variant.label}
+                onChange={(value) => onChange('label', value)}
+              />
+              <MoneyField
+                className="tools-field-cost-acquisition"
+                label="Anschaffungskosten"
                 value={variant.acquisitionCost}
                 onChange={handlePositiveNumberChange('acquisitionCost')}
               />
-            </label>
-
-            <label className="tools-field-cost-monthly">
-              <span>Laufende Kosten pro Monat</span>
-              <input
-                inputMode="decimal"
-                min="0"
-                type="number"
+              <MoneyField
+                className="tools-field-cost-monthly"
+                label="Laufende Kosten pro Monat"
                 value={variant.monthlyCost}
                 onChange={handlePositiveNumberChange('monthlyCost')}
               />
-            </label>
-
-            {isCostRevenueMode && (
-              <>
-                <label className="tools-field-cost-payroll">
-                  <span>Mtl. Lohnkosten</span>
-                  <input
-                    inputMode="decimal"
-                    min="0"
-                    type="number"
-                    value={variant.payrollCost}
-                    onChange={handlePositiveNumberChange('payrollCost')}
-                  />
-                </label>
-
-                <label className="tools-field-cost-special">
-                  <span>Einzelsonderkosten</span>
-                  <input
-                    inputMode="decimal"
-                    min="0"
-                    type="number"
-                    value={variant.specialCost}
-                    onChange={handlePositiveNumberChange('specialCost')}
-                  />
-                </label>
-
-                <label className="tools-field-cost-quantity">
-                  <span>Stückzahl</span>
-                  <input
-                    inputMode="numeric"
-                    min="0"
-                    type="number"
-                    value={variant.quantity}
-                    onChange={handleWholeNumberChange('quantity')}
-                  />
-                </label>
-
-                <label className="tools-field-cost-revenue">
-                  <span>Verkaufsertrag pro Stück</span>
-                  <input
-                    inputMode="decimal"
-                    min="0"
-                    type="number"
-                    value={variant.revenuePerUnit}
-                    onChange={handlePositiveNumberChange('revenuePerUnit')}
-                  />
-                </label>
-              </>
-            )}
-
-            <div className="tools-duration-field tools-field-cost-duration">
-              <span>Nutzungsdauer</span>
-              <div className="tools-duration-inputs">
-                <label>
-                  <span>Jahre</span>
-                  <input
-                    inputMode="numeric"
-                    min="0"
-                    type="number"
-                    value={variant.termYears}
-                    onChange={handleWholeNumberChange('termYears')}
-                  />
-                </label>
-                <label>
-                  <span>Monate</span>
-                  <input
-                    inputMode="numeric"
-                    min="0"
-                    type="number"
-                    value={variant.termMonths}
-                    onChange={handleWholeNumberChange('termMonths')}
-                  />
-                </label>
-              </div>
-            </div>
-
-            <label className="tools-field-cost-residual">
-              <span>Restwert</span>
-              <input
-                inputMode="decimal"
-                min="0"
-                type="number"
+              <DurationField
+                className="tools-field-cost-duration"
+                onMonthsChange={handleWholeNumberChange('termMonths')}
+                onYearsChange={handleWholeNumberChange('termYears')}
+                months={variant.termMonths}
+                years={variant.termYears}
+              />
+              <MoneyField
+                className="tools-field-cost-residual"
+                label="Restwert"
                 value={variant.residualValue}
                 onChange={handlePositiveNumberChange('residualValue')}
               />
-            </label>
-          </div>
+            </div>
+          )}
         </section>
 
         <section className="tools-result-panel" aria-label={`Ergebnis Variante ${index + 1}`}>
@@ -288,6 +266,90 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
         </section>
       </div>
     </section>
+  );
+}
+
+function InputGroup({ children, title }) {
+  return (
+    <fieldset className="tools-input-group">
+      <legend>{title}</legend>
+      <div className="tools-form-grid tools-form-grid-cost-comparison">
+        {children}
+      </div>
+    </fieldset>
+  );
+}
+
+function TextField({ className = '', label, onChange, value }) {
+  return (
+    <label className={className}>
+      <span>{label}</span>
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
+  );
+}
+
+function MoneyField({ className = '', label, onChange, value }) {
+  return (
+    <label className={className}>
+      <span>{label}</span>
+      <input
+        inputMode="decimal"
+        min="0"
+        type="number"
+        value={value}
+        onChange={onChange}
+      />
+    </label>
+  );
+}
+
+function WholeNumberField({ className = '', label, onChange, value }) {
+  return (
+    <label className={className}>
+      <span>{label}</span>
+      <input
+        inputMode="numeric"
+        min="0"
+        type="number"
+        value={value}
+        onChange={onChange}
+      />
+    </label>
+  );
+}
+
+function DurationField({ className = '', months, onMonthsChange, onYearsChange, years }) {
+  return (
+    <div className={`tools-duration-field${className ? ` ${className}` : ''}`}>
+      <span>Nutzungsdauer</span>
+      <div className="tools-duration-inputs">
+        <label>
+          <span>Jahre</span>
+          <input
+            inputMode="numeric"
+            min="0"
+            type="number"
+            value={years}
+            onChange={onYearsChange}
+          />
+        </label>
+        <label>
+          <span>Monate</span>
+          <input
+            inputMode="numeric"
+            min="0"
+            type="number"
+            value={months}
+            onChange={onMonthsChange}
+          />
+        </label>
+      </div>
+    </div>
   );
 }
 
