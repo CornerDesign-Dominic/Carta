@@ -1,3 +1,8 @@
+export const costComparisonModes = [
+  { value: 'cost', label: 'Kostenvergleich' },
+  { value: 'costRevenue', label: 'Kosten-Ertrag' },
+];
+
 export const maxCostComparisonVariants = 5;
 export const minCostComparisonVariants = 2;
 
@@ -6,7 +11,7 @@ const currencyFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
 });
 
-const defaultVariants = [
+const costDefaults = [
   {
     acquisitionCost: '12000',
     label: 'Maschine A',
@@ -25,15 +30,35 @@ const defaultVariants = [
   },
 ];
 
-export function createCostComparisonVariant(id, index = 0) {
-  const defaults = defaultVariants[index] ?? {
-    acquisitionCost: '',
-    label: `Variante ${index + 1}`,
-    monthlyCost: '',
-    residualValue: '',
-    termMonths: '',
-    termYears: '',
-  };
+const costRevenueDefaults = [
+  {
+    acquisitionCost: '12000',
+    label: 'Maschine A',
+    monthlyCost: '450',
+    payrollCost: '1800',
+    quantity: '18000',
+    residualValue: '2000',
+    revenuePerUnit: '2.90',
+    specialCost: '1500',
+    termMonths: '0',
+    termYears: '3',
+  },
+  {
+    acquisitionCost: '9000',
+    label: 'Maschine B',
+    monthlyCost: '520',
+    payrollCost: '1600',
+    quantity: '16500',
+    residualValue: '1500',
+    revenuePerUnit: '2.80',
+    specialCost: '1200',
+    termMonths: '0',
+    termYears: '3',
+  },
+];
+
+export function createCostComparisonVariant(id, index = 0, mode = 'cost') {
+  const defaults = getDefaultVariant(index, mode);
 
   return {
     id,
@@ -41,27 +66,34 @@ export function createCostComparisonVariant(id, index = 0) {
   };
 }
 
-export function createCostComparisonVariants() {
+export function createCostComparisonVariants(mode = 'cost') {
   return [
-    createCostComparisonVariant(1, 0),
-    createCostComparisonVariant(2, 1),
+    createCostComparisonVariant(1, 0, mode),
+    createCostComparisonVariant(2, 1, mode),
   ];
 }
 
-export function calculateCostComparison(variants) {
-  const results = variants.map((variant) => calculateVariantCosts(variant));
+export function calculateCostComparison(variants, mode = 'cost') {
+  const results = variants.map((variant) => calculateVariantCosts(variant, mode));
   const validResults = results.filter((result) => result.status === 'success');
-  const lowestTotalCost = validResults.length > 0
-    ? Math.min(...validResults.map((result) => result.totalCost))
-    : null;
+
+  if (validResults.length === 0) {
+    return results.map((result) => ({ ...result, isBest: false }));
+  }
+
+  const bestValue = mode === 'costRevenue'
+    ? Math.max(...validResults.map((result) => result.profit))
+    : Math.min(...validResults.map((result) => result.totalCost));
 
   return results.map((result) => ({
     ...result,
-    isCheapest: result.status === 'success' && result.totalCost === lowestTotalCost,
+    isBest: result.status === 'success' && (
+      mode === 'costRevenue' ? result.profit === bestValue : result.totalCost === bestValue
+    ),
   }));
 }
 
-export function calculateVariantCosts(variant) {
+export function calculateVariantCosts(variant, mode = 'cost') {
   const acquisitionCost = parsePositiveNumber(variant.acquisitionCost);
   const monthlyCost = parsePositiveNumber(variant.monthlyCost);
   const residualValue = parseOptionalPositiveNumber(variant.residualValue);
@@ -88,7 +120,38 @@ export function calculateVariantCosts(variant) {
     return invalid('Die Nutzungsdauer muss größer als 0 Monate sein.');
   }
 
-  const totalCost = acquisitionCost + monthlyCost * totalMonths - residualValue;
+  const runningCost = monthlyCost * totalMonths;
+  let totalCost = acquisitionCost + runningCost - residualValue;
+  let totalRevenue = null;
+  let profit = null;
+  let costPerUnit = null;
+  let revenuePerUnit = null;
+
+  if (mode === 'costRevenue') {
+    const payrollCost = parsePositiveNumber(variant.payrollCost);
+    const specialCost = parsePositiveNumber(variant.specialCost);
+    const quantity = parseWholeNumber(variant.quantity);
+    revenuePerUnit = parsePositiveNumber(variant.revenuePerUnit);
+
+    if (
+      payrollCost === null
+      || specialCost === null
+      || quantity === null
+      || revenuePerUnit === null
+    ) {
+      return invalid();
+    }
+
+    if (quantity <= 0) {
+      return invalid('Die Stückzahl muss größer als 0 sein.');
+    }
+
+    totalCost += payrollCost * totalMonths + specialCost;
+    totalRevenue = quantity * revenuePerUnit;
+    profit = totalRevenue - totalCost;
+    costPerUnit = totalCost / quantity;
+  }
+
   const monthlyAverageCost = totalCost / totalMonths;
   const yearlyAverageCost = monthlyAverageCost * 12;
 
@@ -96,17 +159,27 @@ export function calculateVariantCosts(variant) {
     !Number.isFinite(totalCost)
     || !Number.isFinite(monthlyAverageCost)
     || !Number.isFinite(yearlyAverageCost)
+    || (mode === 'costRevenue' && (
+      !Number.isFinite(totalRevenue)
+      || !Number.isFinite(profit)
+      || !Number.isFinite(costPerUnit)
+      || !Number.isFinite(revenuePerUnit)
+    ))
   ) {
     return invalid();
   }
 
   return {
+    costPerUnit,
     id: variant.id,
     label: variant.label || `Variante ${variant.id}`,
     monthlyAverageCost,
+    profit,
+    revenuePerUnit,
     status: 'success',
     totalCost,
     totalMonths,
+    totalRevenue,
     yearlyAverageCost,
   };
 }
@@ -130,6 +203,23 @@ export function formatMonths(totalMonths) {
   }
 
   return `${years} ${yearLabel} ${months} ${monthLabel}`;
+}
+
+function getDefaultVariant(index, mode) {
+  const defaults = mode === 'costRevenue' ? costRevenueDefaults : costDefaults;
+
+  return defaults[index] ?? {
+    acquisitionCost: '',
+    label: `Variante ${index + 1}`,
+    monthlyCost: '',
+    payrollCost: '',
+    quantity: '',
+    residualValue: '',
+    revenuePerUnit: '',
+    specialCost: '',
+    termMonths: '',
+    termYears: '',
+  };
 }
 
 function parseOptionalPositiveNumber(value) {

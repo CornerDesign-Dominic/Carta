@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
   calculateCostComparison,
+  costComparisonModes,
   createCostComparisonVariant,
   createCostComparisonVariants,
   formatCurrency,
@@ -10,9 +11,13 @@ import {
 } from './costComparisonUtils.js';
 
 export default function CostComparisonCalculator() {
+  const [comparisonMode, setComparisonMode] = useState('cost');
   const [nextVariantId, setNextVariantId] = useState(3);
-  const [variants, setVariants] = useState(() => createCostComparisonVariants());
-  const results = useMemo(() => calculateCostComparison(variants), [variants]);
+  const [variants, setVariants] = useState(() => createCostComparisonVariants('cost'));
+  const results = useMemo(
+    () => calculateCostComparison(variants, comparisonMode),
+    [comparisonMode, variants],
+  );
   const canAddVariant = variants.length < maxCostComparisonVariants;
 
   function updateVariant(variantId, field, value) {
@@ -28,7 +33,7 @@ export default function CostComparisonCalculator() {
 
     setVariants((currentVariants) => [
       ...currentVariants,
-      createCostComparisonVariant(nextVariantId, currentVariants.length),
+      createCostComparisonVariant(nextVariantId, currentVariants.length, comparisonMode),
     ]);
     setNextVariantId((currentId) => currentId + 1);
   }
@@ -43,9 +48,34 @@ export default function CostComparisonCalculator() {
     });
   }
 
+  function handleModeChange(nextMode) {
+    if (nextMode === comparisonMode) {
+      return;
+    }
+
+    setComparisonMode(nextMode);
+    setVariants((currentVariants) => currentVariants.map((variant, index) => (
+      createCostComparisonVariant(variant.id, index, nextMode)
+    )));
+  }
+
   return (
     <>
       <h1 id="tools-title">Kostenvergleich</h1>
+
+      <div className="tools-mode-selector" aria-label="Vergleichsart auswählen">
+        {costComparisonModes.map((mode) => (
+          <button
+            className={comparisonMode === mode.value ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={comparisonMode === mode.value}
+            onClick={() => handleModeChange(mode.value)}
+            key={mode.value}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
 
       <div className="tools-calculation-list tools-calculation-list-compact">
         <section className="tools-calculation-section" aria-labelledby="cost-comparison-calculation">
@@ -57,6 +87,7 @@ export default function CostComparisonCalculator() {
             {variants.map((variant, index) => (
               <CostVariantCard
                 canRemove={variants.length > minCostComparisonVariants}
+                comparisonMode={comparisonMode}
                 index={index}
                 key={variant.id}
                 onChange={(field, value) => updateVariant(variant.id, field, value)}
@@ -82,7 +113,9 @@ export default function CostComparisonCalculator() {
   );
 }
 
-function CostVariantCard({ canRemove, index, onChange, onRemove, result, variant }) {
+function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove, result, variant }) {
+  const isCostRevenueMode = comparisonMode === 'costRevenue';
+
   function handlePositiveNumberChange(field) {
     return (event) => {
       const nextValue = event.target.value;
@@ -105,7 +138,7 @@ function CostVariantCard({ canRemove, index, onChange, onRemove, result, variant
 
   return (
     <section
-      className={`tools-cost-variant${result?.isCheapest ? ' is-cheapest' : ''}`}
+      className={`tools-cost-variant${result?.isBest ? ' is-cheapest' : ''}`}
       aria-labelledby={`cost-variant-${variant.id}`}
     >
       <div className="tools-calculation-header">
@@ -154,6 +187,54 @@ function CostVariantCard({ canRemove, index, onChange, onRemove, result, variant
               />
             </label>
 
+            {isCostRevenueMode && (
+              <>
+                <label className="tools-field-cost-payroll">
+                  <span>Mtl. Lohnkosten</span>
+                  <input
+                    inputMode="decimal"
+                    min="0"
+                    type="number"
+                    value={variant.payrollCost}
+                    onChange={handlePositiveNumberChange('payrollCost')}
+                  />
+                </label>
+
+                <label className="tools-field-cost-special">
+                  <span>Einzelsonderkosten</span>
+                  <input
+                    inputMode="decimal"
+                    min="0"
+                    type="number"
+                    value={variant.specialCost}
+                    onChange={handlePositiveNumberChange('specialCost')}
+                  />
+                </label>
+
+                <label className="tools-field-cost-quantity">
+                  <span>Stückzahl</span>
+                  <input
+                    inputMode="numeric"
+                    min="0"
+                    type="number"
+                    value={variant.quantity}
+                    onChange={handleWholeNumberChange('quantity')}
+                  />
+                </label>
+
+                <label className="tools-field-cost-revenue">
+                  <span>Verkaufsertrag pro Stück</span>
+                  <input
+                    inputMode="decimal"
+                    min="0"
+                    type="number"
+                    value={variant.revenuePerUnit}
+                    onChange={handlePositiveNumberChange('revenuePerUnit')}
+                  />
+                </label>
+              </>
+            )}
+
             <div className="tools-duration-field tools-field-cost-duration">
               <span>Nutzungsdauer</span>
               <div className="tools-duration-inputs">
@@ -196,32 +277,72 @@ function CostVariantCard({ canRemove, index, onChange, onRemove, result, variant
         <section className="tools-result-panel" aria-label={`Ergebnis Variante ${index + 1}`}>
           <h2>Ergebnis</h2>
           {result.status === 'success' ? (
-            <>
-              <div className="tools-result-highlight">
-                <span>{result.isCheapest ? 'Günstigste Variante' : 'Gesamtkosten'}</span>
-                <strong>{formatCurrency(result.totalCost)}</strong>
-              </div>
-
-              <dl>
-                <div>
-                  <dt>Kosten pro Monat</dt>
-                  <dd>{formatCurrency(result.monthlyAverageCost)}</dd>
-                </div>
-                <div>
-                  <dt>Kosten pro Jahr</dt>
-                  <dd>{formatCurrency(result.yearlyAverageCost)}</dd>
-                </div>
-                <div>
-                  <dt>Laufzeit</dt>
-                  <dd>{formatMonths(result.totalMonths)}</dd>
-                </div>
-              </dl>
-            </>
+            isCostRevenueMode ? (
+              <CostRevenueResult result={result} />
+            ) : (
+              <CostResult result={result} />
+            )
           ) : (
             <p className="tools-result-empty">{result.message}</p>
           )}
         </section>
       </div>
     </section>
+  );
+}
+
+function CostResult({ result }) {
+  return (
+    <>
+      <div className="tools-result-highlight">
+        <span>{result.isBest ? 'Günstigste Variante' : 'Gesamtkosten'}</span>
+        <strong>{formatCurrency(result.totalCost)}</strong>
+      </div>
+
+      <dl>
+        <div>
+          <dt>Kosten pro Monat</dt>
+          <dd>{formatCurrency(result.monthlyAverageCost)}</dd>
+        </div>
+        <div>
+          <dt>Kosten pro Jahr</dt>
+          <dd>{formatCurrency(result.yearlyAverageCost)}</dd>
+        </div>
+        <div>
+          <dt>Laufzeit</dt>
+          <dd>{formatMonths(result.totalMonths)}</dd>
+        </div>
+      </dl>
+    </>
+  );
+}
+
+function CostRevenueResult({ result }) {
+  return (
+    <>
+      <div className="tools-result-highlight">
+        <span>{result.isBest ? 'Wirtschaftlichste Variante' : 'Gewinn/Verlust'}</span>
+        <strong>{formatCurrency(result.profit)}</strong>
+      </div>
+
+      <dl>
+        <div>
+          <dt>Gesamtkosten</dt>
+          <dd>{formatCurrency(result.totalCost)}</dd>
+        </div>
+        <div>
+          <dt>Gesamtertrag</dt>
+          <dd>{formatCurrency(result.totalRevenue)}</dd>
+        </div>
+        <div>
+          <dt>Kosten pro Stück</dt>
+          <dd>{formatCurrency(result.costPerUnit)}</dd>
+        </div>
+        <div>
+          <dt>Ertrag pro Stück</dt>
+          <dd>{formatCurrency(result.revenuePerUnit)}</dd>
+        </div>
+      </dl>
+    </>
   );
 }
