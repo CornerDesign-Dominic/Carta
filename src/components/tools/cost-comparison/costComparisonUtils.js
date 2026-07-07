@@ -11,9 +11,15 @@ const currencyFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
 });
 
+const percentFormatter = new Intl.NumberFormat('de-DE', {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
 const costDefaults = [
   {
     acquisitionCost: '12000',
+    imputedInterestRate: '5',
     label: 'Maschine A',
     monthlyCost: '450',
     residualValue: '2000',
@@ -22,6 +28,7 @@ const costDefaults = [
   },
   {
     acquisitionCost: '9000',
+    imputedInterestRate: '5',
     label: 'Maschine B',
     monthlyCost: '520',
     residualValue: '1500',
@@ -33,6 +40,7 @@ const costDefaults = [
 const costRevenueDefaults = [
   {
     acquisitionCost: '12000',
+    imputedInterestRate: '5',
     label: 'Maschine A',
     monthlyCost: '450',
     payrollCost: '1800',
@@ -45,6 +53,7 @@ const costRevenueDefaults = [
   },
   {
     acquisitionCost: '9000',
+    imputedInterestRate: '5',
     label: 'Maschine B',
     monthlyCost: '520',
     payrollCost: '1600',
@@ -95,6 +104,7 @@ export function calculateCostComparison(variants, mode = 'cost') {
 
 export function calculateVariantCosts(variant, mode = 'cost') {
   const acquisitionCost = parsePositiveNumber(variant.acquisitionCost);
+  const imputedInterestRate = parsePositiveNumber(variant.imputedInterestRate);
   const monthlyCost = parsePositiveNumber(variant.monthlyCost);
   const residualValue = parseOptionalPositiveNumber(variant.residualValue);
   const termYears = parseWholeNumber(variant.termYears);
@@ -106,6 +116,7 @@ export function calculateVariantCosts(variant, mode = 'cost') {
 
   if (
     acquisitionCost === null
+    || imputedInterestRate === null
     || monthlyCost === null
     || residualValue === null
     || termYears === null
@@ -121,7 +132,11 @@ export function calculateVariantCosts(variant, mode = 'cost') {
   }
 
   const runningCost = monthlyCost * totalMonths;
-  let totalCost = acquisitionCost + runningCost - residualValue;
+  const durationYears = totalMonths / 12;
+  const averageTiedCapital = (acquisitionCost + residualValue) / 2;
+  const imputedInterestPerYear = averageTiedCapital * imputedInterestRate / 100;
+  const imputedInterestTotal = imputedInterestPerYear * durationYears;
+  let totalCost = acquisitionCost + runningCost + imputedInterestTotal - residualValue;
   let totalRevenue = null;
   let profit = null;
   let costPerUnit = null;
@@ -171,6 +186,9 @@ export function calculateVariantCosts(variant, mode = 'cost') {
 
   return {
     costPerUnit,
+    imputedInterestPerYear,
+    imputedInterestRate,
+    imputedInterestTotal,
     id: variant.id,
     label: variant.label || `Variante ${variant.id}`,
     monthlyAverageCost,
@@ -186,6 +204,10 @@ export function calculateVariantCosts(variant, mode = 'cost') {
 
 export function formatCurrency(value) {
   return currencyFormatter.format(value);
+}
+
+export function formatPercent(value) {
+  return `${percentFormatter.format(value)} %`;
 }
 
 export function createCostComparisonPdfFileName() {
@@ -208,6 +230,8 @@ export function getCostComparisonTableRows(mode, variants, results) {
   if (mode === 'costRevenue') {
     return [
       ['Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+      ['Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+      ['Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
       ['Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
       ['Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
       ['Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
@@ -228,6 +252,8 @@ export function getCostComparisonTableRows(mode, variants, results) {
 
   return [
     ['Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+    ['Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+    ['Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
     ['Laufende Kosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
     ['Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
     ['Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
@@ -262,6 +288,11 @@ function formatCurrencyValue(value) {
   return parsed === null ? '' : formatCurrency(parsed);
 }
 
+function formatPercentValue(value) {
+  const parsed = parsePositiveNumber(value);
+  return parsed === null ? '' : `${percentFormatter.format(parsed)} %`;
+}
+
 function formatOptionalCurrencyValue(value) {
   const parsed = parseOptionalPositiveNumber(value);
   return parsed === null ? '' : formatCurrency(parsed);
@@ -276,6 +307,7 @@ function getDefaultVariant(index, mode) {
 
   return defaults[index] ?? {
     acquisitionCost: '',
+    imputedInterestRate: '',
     label: `Variante ${index + 1}`,
     monthlyCost: '',
     payrollCost: '',

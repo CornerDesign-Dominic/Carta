@@ -8133,28 +8133,32 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   order: 3;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-payroll {
+.tools-form-grid-cost-comparison .tools-field-cost-imputed-interest {
   order: 4;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-special {
+.tools-form-grid-cost-comparison .tools-field-cost-payroll {
   order: 5;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-quantity {
+.tools-form-grid-cost-comparison .tools-field-cost-special {
   order: 6;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-revenue {
+.tools-form-grid-cost-comparison .tools-field-cost-quantity {
   order: 7;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-duration {
+.tools-form-grid-cost-comparison .tools-field-cost-revenue {
   order: 8;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-residual {
+.tools-form-grid-cost-comparison .tools-field-cost-duration {
   order: 9;
+}
+
+.tools-form-grid-cost-comparison .tools-field-cost-residual {
+  order: 10;
 }
 
 .tools-field-duration {

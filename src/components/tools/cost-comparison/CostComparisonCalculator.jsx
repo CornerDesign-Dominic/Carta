@@ -18,6 +18,7 @@ import {
   createCostComparisonVariants,
   formatCurrency,
   formatMonths,
+  formatPercent,
   getCostComparisonDocumentHint,
   getCostComparisonDocumentTitle,
   getCostComparisonTableRows,
@@ -424,6 +425,11 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
                   value={variant.residualValue}
                   onChange={handlePositiveNumberChange('residualValue')}
                 />
+                <PercentField
+                  label="Kalkulatorischer Zinssatz p.a."
+                  value={variant.imputedInterestRate}
+                  onChange={handlePositiveNumberChange('imputedInterestRate')}
+                />
                 <DurationField
                   onMonthsChange={handleWholeNumberChange('termMonths')}
                   onYearsChange={handleWholeNumberChange('termYears')}
@@ -482,6 +488,12 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
                 label="Laufende Kosten pro Monat"
                 value={variant.monthlyCost}
                 onChange={handlePositiveNumberChange('monthlyCost')}
+              />
+              <PercentField
+                className="tools-field-cost-imputed-interest"
+                label="Kalkulatorischer Zinssatz p.a."
+                value={variant.imputedInterestRate}
+                onChange={handlePositiveNumberChange('imputedInterestRate')}
               />
               <DurationField
                 className="tools-field-cost-duration"
@@ -542,6 +554,21 @@ function TextField({ className = '', label, onChange, value }) {
 }
 
 function MoneyField({ className = '', label, onChange, value }) {
+  return (
+    <label className={className}>
+      <span>{label}</span>
+      <input
+        inputMode="decimal"
+        min="0"
+        type="number"
+        value={value}
+        onChange={onChange}
+      />
+    </label>
+  );
+}
+
+function PercentField({ className = '', label, onChange, value }) {
   return (
     <label className={className}>
       <span>{label}</span>
@@ -619,6 +646,14 @@ function CostResult({ result }) {
           <dd>{formatCurrency(result.yearlyAverageCost)}</dd>
         </div>
         <div>
+          <dt>Kalk. Zinssatz</dt>
+          <dd>{formatPercent(result.imputedInterestRate)}</dd>
+        </div>
+        <div>
+          <dt>Kalk. Zinsen</dt>
+          <dd>{formatCurrency(result.imputedInterestTotal)}</dd>
+        </div>
+        <div>
           <dt>Laufzeit</dt>
           <dd>{formatMonths(result.totalMonths)}</dd>
         </div>
@@ -643,6 +678,14 @@ function CostRevenueResult({ result }) {
         <div>
           <dt>Gesamtertrag</dt>
           <dd>{formatCurrency(result.totalRevenue)}</dd>
+        </div>
+        <div>
+          <dt>Kalk. Zinssatz</dt>
+          <dd>{formatPercent(result.imputedInterestRate)}</dd>
+        </div>
+        <div>
+          <dt>Kalk. Zinsen</dt>
+          <dd>{formatCurrency(result.imputedInterestTotal)}</dd>
         </div>
         <div>
           <dt>Kosten pro Stück</dt>
