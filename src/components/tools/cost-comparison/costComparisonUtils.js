@@ -188,6 +188,58 @@ export function formatCurrency(value) {
   return currencyFormatter.format(value);
 }
 
+export function createCostComparisonPdfFileName() {
+  return 'kostenvergleich.pdf';
+}
+
+export function getCostComparisonDocumentHint(mode) {
+  if (mode === 'costRevenue') {
+    return 'Die folgende Übersicht vergleicht Kosten, Erträge und Gewinn oder Verlust der Varianten.';
+  }
+
+  return 'Die folgende Übersicht vergleicht die Gesamtkosten und durchschnittlichen Kosten der Varianten.';
+}
+
+export function getCostComparisonDocumentTitle(mode) {
+  return mode === 'costRevenue' ? 'Kosten-Ertrag-Vergleich' : 'Kostenvergleich';
+}
+
+export function getCostComparisonTableRows(mode, variants, results) {
+  if (mode === 'costRevenue') {
+    return [
+      ['Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+      ['Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
+      ['Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
+      ['Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
+      ['Mtl. Lohnkosten', (variant) => formatCurrencyValue(variant.payrollCost)],
+      ['Stückzahl', (variant) => variant.quantity],
+      ['Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.specialCost)],
+      ['Verkaufsertrag pro Stück', (variant) => formatCurrencyValue(variant.revenuePerUnit)],
+      ['Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
+      ['Gesamtertrag', (_variant, result) => formatResultCurrency(result, 'totalRevenue')],
+      ['Gewinn/Verlust', (_variant, result) => formatResultCurrency(result, 'profit')],
+      ['Kosten pro Stück', (_variant, result) => formatResultCurrency(result, 'costPerUnit')],
+      ['Ertrag pro Stück', (_variant, result) => formatResultCurrency(result, 'revenuePerUnit')],
+    ].map(([label, getValue]) => ({
+      label,
+      values: variants.map((variant, index) => getValue(variant, results[index])),
+    }));
+  }
+
+  return [
+    ['Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+    ['Laufende Kosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
+    ['Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
+    ['Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
+    ['Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
+    ['Kosten pro Monat', (_variant, result) => formatResultCurrency(result, 'monthlyAverageCost')],
+    ['Kosten pro Jahr', (_variant, result) => formatResultCurrency(result, 'yearlyAverageCost')],
+  ].map(([label, getValue]) => ({
+    label,
+    values: variants.map((variant, index) => getValue(variant, results[index])),
+  }));
+}
+
 export function formatMonths(totalMonths) {
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
@@ -203,6 +255,20 @@ export function formatMonths(totalMonths) {
   }
 
   return `${years} ${yearLabel} ${months} ${monthLabel}`;
+}
+
+function formatCurrencyValue(value) {
+  const parsed = parsePositiveNumber(value);
+  return parsed === null ? '' : formatCurrency(parsed);
+}
+
+function formatOptionalCurrencyValue(value) {
+  const parsed = parseOptionalPositiveNumber(value);
+  return parsed === null ? '' : formatCurrency(parsed);
+}
+
+function formatResultCurrency(result, field) {
+  return result?.status === 'success' && Number.isFinite(result[field]) ? formatCurrency(result[field]) : '';
 }
 
 function getDefaultVariant(index, mode) {

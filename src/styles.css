@@ -7715,6 +7715,68 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.1;
 }
 
+.tools-cost-document-table-wrap {
+  width: calc(100% - var(--tool-document-right-safe-offset));
+  margin-top: 28px;
+  overflow: hidden;
+}
+
+.tools-cost-document-table,
+.tools-print-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: #36342f;
+}
+
+.tools-cost-document-table {
+  font-size: 7.8pt;
+  line-height: 1.22;
+}
+
+.tools-cost-document-table th,
+.tools-cost-document-table td,
+.tools-print-cost-table th,
+.tools-print-cost-table td {
+  border-bottom: 1px solid rgba(214, 209, 200, 0.72);
+  padding: 5px 5px;
+  text-align: right;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.tools-cost-document-table thead th,
+.tools-print-cost-table thead th {
+  border-top: 1px solid rgba(214, 209, 200, 0.72);
+  color: #232320;
+  font-weight: 760;
+}
+
+.tools-cost-document-table th:first-child,
+.tools-cost-document-table td:first-child,
+.tools-print-cost-table th:first-child,
+.tools-print-cost-table td:first-child {
+  width: 25%;
+  color: #67645e;
+  font-weight: 680;
+  text-align: left;
+}
+
+.tools-print-cost-table-wrap {
+  width: calc(100% - var(--tool-document-right-safe-offset));
+  color: #36342f;
+}
+
+.tools-print-cost-table {
+  font-size: 7.4pt;
+  line-height: 1.18;
+}
+
+.tools-print-cost-table th,
+.tools-print-cost-table td {
+  padding: 4px 4px;
+}
+
 .tools-print-page {
   --tool-print-content-max-height: 788px;
 }
