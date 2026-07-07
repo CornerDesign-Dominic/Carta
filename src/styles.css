@@ -8187,28 +8187,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   order: 4;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-payroll {
+.tools-form-grid-cost-comparison .tools-field-cost-duration {
   order: 5;
 }
 
-.tools-form-grid-cost-comparison .tools-field-cost-special {
-  order: 6;
-}
-
-.tools-form-grid-cost-comparison .tools-field-cost-quantity {
-  order: 7;
-}
-
-.tools-form-grid-cost-comparison .tools-field-cost-revenue {
-  order: 8;
-}
-
-.tools-form-grid-cost-comparison .tools-field-cost-duration {
-  order: 9;
-}
-
 .tools-form-grid-cost-comparison .tools-field-cost-residual {
-  order: 10;
+  order: 6;
 }
 
 .tools-field-duration {
@@ -8430,6 +8414,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   margin: 0;
   color: var(--muted);
   line-height: 1.65;
+}
+
+.tools-result-warning {
+  margin: -2px 0 14px;
+  padding: 9px 10px;
+  border: 1px solid rgba(173, 124, 31, 0.28);
+  border-radius: 6px;
+  background: rgba(236, 198, 91, 0.16);
+  color: #6b521e;
+  font-size: 0.86rem;
+  line-height: 1.4;
 }
 
 @media (max-width: 760px) {

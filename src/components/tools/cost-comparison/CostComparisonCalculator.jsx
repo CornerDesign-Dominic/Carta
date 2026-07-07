@@ -456,32 +456,42 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
 
               <InputGroup title="Laufende Fixkosten">
                 <MoneyField
-                  label="Laufende Kosten pro Monat"
-                  value={variant.monthlyCost}
-                  onChange={handlePositiveNumberChange('monthlyCost')}
+                  label="Jährliche Lohnkosten"
+                  value={variant.annualPayrollCost}
+                  onChange={handlePositiveNumberChange('annualPayrollCost')}
                 />
                 <MoneyField
-                  label="Mtl. Lohnkosten"
-                  value={variant.payrollCost}
-                  onChange={handlePositiveNumberChange('payrollCost')}
+                  label="Jährliche Wartungskosten"
+                  value={variant.annualMaintenanceCost}
+                  onChange={handlePositiveNumberChange('annualMaintenanceCost')}
+                />
+                <MoneyField
+                  label="Jährliche sonstige Kosten"
+                  value={variant.annualOtherCost}
+                  onChange={handlePositiveNumberChange('annualOtherCost')}
                 />
               </InputGroup>
 
               <InputGroup title="Stück / Ertrag">
                 <WholeNumberField
-                  label="Stückzahl"
-                  value={variant.quantity}
-                  onChange={handleWholeNumberChange('quantity')}
+                  label="Max. Stückzahl"
+                  value={variant.maxQuantity}
+                  onChange={handleWholeNumberChange('maxQuantity')}
+                />
+                <WholeNumberField
+                  label="Prognose Stückzahl"
+                  value={variant.forecastQuantity}
+                  onChange={handleWholeNumberChange('forecastQuantity')}
                 />
                 <MoneyField
-                  label="Einzelsonderkosten pro Stück"
-                  value={variant.specialCost}
-                  onChange={handlePositiveNumberChange('specialCost')}
+                  label="Variable Kosten pro Stück"
+                  value={variant.variableCostPerUnit}
+                  onChange={handlePositiveNumberChange('variableCostPerUnit')}
                 />
                 <MoneyField
-                  label="Verkaufsertrag pro Stück"
-                  value={variant.revenuePerUnit}
-                  onChange={handlePositiveNumberChange('revenuePerUnit')}
+                  label="Verkaufspreis pro Stück"
+                  value={variant.sellingPricePerUnit}
+                  onChange={handlePositiveNumberChange('sellingPricePerUnit')}
                 />
               </InputGroup>
             </div>
@@ -686,6 +696,10 @@ function CostRevenueResult({ result }) {
         <strong>{formatCurrency(result.profit)}</strong>
       </div>
 
+      {result.capacityWarning ? (
+        <p className="tools-result-warning">{result.capacityWarning}</p>
+      ) : null}
+
       <dl>
         <div>
           <dt>Gesamtkosten</dt>
@@ -704,12 +718,24 @@ function CostRevenueResult({ result }) {
           <dd>{formatCurrency(result.imputedInterestTotal)}</dd>
         </div>
         <div>
+          <dt>Max. Stückzahl</dt>
+          <dd>{result.maxQuantity}</dd>
+        </div>
+        <div>
+          <dt>Prognose Stückzahl</dt>
+          <dd>{result.forecastQuantity}</dd>
+        </div>
+        <div>
+          <dt>Variable Kosten/Stück</dt>
+          <dd>{formatCurrency(result.variableCostPerUnit)}</dd>
+        </div>
+        <div>
           <dt>Kosten pro Stück</dt>
           <dd>{formatCurrency(result.costPerUnit)}</dd>
         </div>
         <div>
-          <dt>Ertrag pro Stück</dt>
-          <dd>{formatCurrency(result.revenuePerUnit)}</dd>
+          <dt>Verkaufspreis/Stück</dt>
+          <dd>{formatCurrency(result.sellingPricePerUnit)}</dd>
         </div>
       </dl>
     </>

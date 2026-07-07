@@ -40,29 +40,33 @@ const costDefaults = [
 const costRevenueDefaults = [
   {
     acquisitionCost: '12000',
+    annualMaintenanceCost: '2200',
+    annualOtherCost: '1800',
+    annualPayrollCost: '21600',
+    forecastQuantity: '16000',
     imputedInterestRate: '5',
     label: 'Maschine A',
-    monthlyCost: '450',
-    payrollCost: '1800',
-    quantity: '18000',
+    maxQuantity: '18000',
     residualValue: '2000',
-    revenuePerUnit: '2.90',
-    specialCost: '1500',
+    sellingPricePerUnit: '2.90',
     termMonths: '0',
     termYears: '3',
+    variableCostPerUnit: '0.35',
   },
   {
     acquisitionCost: '9000',
+    annualMaintenanceCost: '2600',
+    annualOtherCost: '1400',
+    annualPayrollCost: '19200',
+    forecastQuantity: '15000',
     imputedInterestRate: '5',
     label: 'Maschine B',
-    monthlyCost: '520',
-    payrollCost: '1600',
-    quantity: '16500',
+    maxQuantity: '16500',
     residualValue: '1500',
-    revenuePerUnit: '2.80',
-    specialCost: '1200',
+    sellingPricePerUnit: '2.80',
     termMonths: '0',
     termYears: '3',
+    variableCostPerUnit: '0.40',
   },
 ];
 
@@ -105,7 +109,7 @@ export function calculateCostComparison(variants, mode = 'cost') {
 export function calculateVariantCosts(variant, mode = 'cost') {
   const acquisitionCost = parsePositiveNumber(variant.acquisitionCost);
   const imputedInterestRate = parsePositiveNumber(variant.imputedInterestRate);
-  const monthlyCost = parsePositiveNumber(variant.monthlyCost);
+  const monthlyCost = mode === 'cost' ? parsePositiveNumber(variant.monthlyCost) : 0;
   const residualValue = parseOptionalPositiveNumber(variant.residualValue);
   const termYears = parseWholeNumber(variant.termYears);
   const termMonths = parseWholeNumber(variant.termMonths);
@@ -117,7 +121,7 @@ export function calculateVariantCosts(variant, mode = 'cost') {
   if (
     acquisitionCost === null
     || imputedInterestRate === null
-    || monthlyCost === null
+    || (mode === 'cost' && monthlyCost === null)
     || residualValue === null
     || termYears === null
     || termMonths === null
@@ -140,31 +144,52 @@ export function calculateVariantCosts(variant, mode = 'cost') {
   let totalRevenue = null;
   let profit = null;
   let costPerUnit = null;
-  let revenuePerUnit = null;
+  let sellingPricePerUnit = null;
+  let forecastQuantity = null;
+  let maxQuantity = null;
+  let variableCostPerUnit = null;
+  let capacityWarning = '';
 
   if (mode === 'costRevenue') {
-    const payrollCost = parsePositiveNumber(variant.payrollCost);
-    const specialCost = parsePositiveNumber(variant.specialCost);
-    const quantity = parseWholeNumber(variant.quantity);
-    revenuePerUnit = parsePositiveNumber(variant.revenuePerUnit);
+    const annualMaintenanceCost = parsePositiveNumber(variant.annualMaintenanceCost);
+    const annualOtherCost = parsePositiveNumber(variant.annualOtherCost);
+    const annualPayrollCost = parsePositiveNumber(variant.annualPayrollCost);
+    forecastQuantity = parseWholeNumber(variant.forecastQuantity);
+    maxQuantity = parseWholeNumber(variant.maxQuantity);
+    variableCostPerUnit = parsePositiveNumber(variant.variableCostPerUnit);
+    sellingPricePerUnit = parsePositiveNumber(variant.sellingPricePerUnit);
 
     if (
-      payrollCost === null
-      || specialCost === null
-      || quantity === null
-      || revenuePerUnit === null
+      annualMaintenanceCost === null
+      || annualOtherCost === null
+      || annualPayrollCost === null
+      || forecastQuantity === null
+      || maxQuantity === null
+      || variableCostPerUnit === null
+      || sellingPricePerUnit === null
     ) {
       return invalid();
     }
 
-    if (quantity <= 0) {
-      return invalid('Die Stückzahl muss größer als 0 sein.');
+    if (forecastQuantity <= 0) {
+      return invalid('Die Prognose Stückzahl muss größer als 0 sein.');
     }
 
-    totalCost += payrollCost * totalMonths + specialCost;
-    totalRevenue = quantity * revenuePerUnit;
+    if (maxQuantity <= 0) {
+      return invalid('Die maximale Stückzahl muss größer als 0 sein.');
+    }
+
+    if (forecastQuantity > maxQuantity) {
+      capacityWarning = 'Die Prognose Stückzahl liegt über der maximalen Stückzahl.';
+    }
+
+    const annualFixedCosts = annualPayrollCost + annualMaintenanceCost + annualOtherCost;
+    const variableCosts = variableCostPerUnit * forecastQuantity;
+
+    totalCost += annualFixedCosts * durationYears + variableCosts;
+    totalRevenue = forecastQuantity * sellingPricePerUnit;
     profit = totalRevenue - totalCost;
-    costPerUnit = totalCost / quantity;
+    costPerUnit = totalCost / forecastQuantity;
   }
 
   const monthlyAverageCost = totalCost / totalMonths;
@@ -178,26 +203,30 @@ export function calculateVariantCosts(variant, mode = 'cost') {
       !Number.isFinite(totalRevenue)
       || !Number.isFinite(profit)
       || !Number.isFinite(costPerUnit)
-      || !Number.isFinite(revenuePerUnit)
+      || !Number.isFinite(sellingPricePerUnit)
     ))
   ) {
     return invalid();
   }
 
   return {
+    capacityWarning,
     costPerUnit,
+    forecastQuantity,
     imputedInterestPerYear,
     imputedInterestRate,
     imputedInterestTotal,
     id: variant.id,
     label: variant.label || `Variante ${variant.id}`,
+    maxQuantity,
     monthlyAverageCost,
     profit,
-    revenuePerUnit,
+    sellingPricePerUnit,
     status: 'success',
     totalCost,
     totalMonths,
     totalRevenue,
+    variableCostPerUnit,
     yearlyAverageCost,
   };
 }
@@ -231,19 +260,20 @@ export function getCostComparisonTableRows(mode, variants, results) {
     return [
       ['general', 'duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
       ['general', 'imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+      ['general', 'maxQuantity', 'Max. Stückzahl', (variant) => variant.maxQuantity],
+      ['general', 'forecastQuantity', 'Prognose Stückzahl', (variant) => variant.forecastQuantity],
       ['cost', 'acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
       ['cost', 'residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
-      ['cost', 'monthlyCost', 'Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
-      ['cost', 'payrollCost', 'Mtl. Lohnkosten', (variant) => formatCurrencyValue(variant.payrollCost)],
-      ['cost', 'specialCost', 'Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.specialCost)],
+      ['cost', 'annualPayrollCost', 'Jährliche Lohnkosten', (variant) => formatCurrencyValue(variant.annualPayrollCost)],
+      ['cost', 'annualMaintenanceCost', 'Jährliche Wartungskosten', (variant) => formatCurrencyValue(variant.annualMaintenanceCost)],
+      ['cost', 'annualOtherCost', 'Jährliche sonstige Kosten', (variant) => formatCurrencyValue(variant.annualOtherCost)],
+      ['cost', 'variableCostPerUnit', 'Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.variableCostPerUnit)],
       ['cost', 'imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
-      ['result', 'quantity', 'Stückzahl', (variant) => variant.quantity],
-      ['result', 'revenuePerUnit', 'Verkaufsertrag pro Stück', (variant) => formatCurrencyValue(variant.revenuePerUnit)],
+      ['result', 'sellingPricePerUnit', 'Verkaufspreis pro Stück', (variant) => formatCurrencyValue(variant.sellingPricePerUnit)],
       ['result', 'totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
       ['result', 'totalRevenue', 'Gesamtertrag', (_variant, result) => formatResultCurrency(result, 'totalRevenue')],
       ['result', 'profit', 'Gewinn/Verlust', (_variant, result) => formatResultCurrency(result, 'profit')],
       ['result', 'costPerUnit', 'Kosten pro Stück', (_variant, result) => formatResultCurrency(result, 'costPerUnit')],
-      ['result', 'resultRevenuePerUnit', 'Ertrag pro Stück', (_variant, result) => formatResultCurrency(result, 'revenuePerUnit')],
     ].map(([section, id, label, getValue]) => ({
       id,
       label,
@@ -311,16 +341,19 @@ function getDefaultVariant(index, mode) {
 
   return defaults[index] ?? {
     acquisitionCost: '',
+    annualMaintenanceCost: '',
+    annualOtherCost: '',
+    annualPayrollCost: '',
+    forecastQuantity: '',
     imputedInterestRate: '',
     label: `Variante ${index + 1}`,
+    maxQuantity: '',
     monthlyCost: '',
-    payrollCost: '',
-    quantity: '',
     residualValue: '',
-    revenuePerUnit: '',
-    specialCost: '',
+    sellingPricePerUnit: '',
     termMonths: '',
     termYears: '',
+    variableCostPerUnit: '',
   };
 }
 
