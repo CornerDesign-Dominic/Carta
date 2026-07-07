@@ -717,6 +717,8 @@ function CostRevenueResult({ result }) {
 }
 
 function CostComparisonDocumentTable({ onRowLabelChange, onVariantLabelChange, rowLabels, rows, variants }) {
+  let previousSection = null;
+
   return (
     <section className="tools-cost-document-table-wrap" aria-label="Kostenvergleich Tabelle">
       <table className="tools-cost-document-table">
@@ -736,24 +738,50 @@ function CostComparisonDocumentTable({ onRowLabelChange, onVariantLabelChange, r
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.id}>
-              <th>
-                <input
-                  className="tools-cost-document-table-label"
-                  aria-label={`Zeilenbeschreibung ${row.label}`}
-                  value={rowLabels[row.id] ?? row.label}
-                  onChange={(event) => onRowLabelChange(row.id, event.target.value)}
+          {rows.flatMap((row) => {
+            const sectionChanged = row.section !== previousSection;
+            previousSection = row.section;
+
+            return [
+              sectionChanged ? (
+                <CostComparisonSectionRow
+                  colSpan={variants.length + 1}
+                  section={row.section}
+                  key={`${row.section}-section`}
                 />
-              </th>
-              {row.values.map((value, index) => (
-                <td key={`${row.id}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
-              ))}
-            </tr>
-          ))}
+              ) : null,
+              <tr
+                className={[
+                  row.section === 'result' ? 'is-result-row' : '',
+                  sectionChanged ? 'is-section-first-row' : '',
+                ].filter(Boolean).join(' ') || undefined}
+                key={row.id}
+              >
+                <th>
+                  <input
+                    className="tools-cost-document-table-label"
+                    aria-label={`Zeilenbeschreibung ${row.label}`}
+                    value={rowLabels[row.id] ?? row.label}
+                    onChange={(event) => onRowLabelChange(row.id, event.target.value)}
+                  />
+                </th>
+                {row.values.map((value, index) => (
+                  <td key={`${row.id}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
+                ))}
+              </tr>,
+            ].filter(Boolean);
+          })}
         </tbody>
       </table>
     </section>
+  );
+}
+
+function CostComparisonSectionRow({ colSpan, section }) {
+  return (
+    <tr className={`tools-cost-table-section is-${section}`}>
+      <th colSpan={colSpan}>{getCostComparisonSectionLabel(section)}</th>
+    </tr>
   );
 }
 
@@ -942,6 +970,7 @@ function CostComparisonPrintPageItems({ items, rowLabels, rows, variants }) {
 
 function CostComparisonPrintTable({ dataMeasureTable, rowLabels = {}, rows, variants }) {
   const measureProps = dataMeasureTable ? { 'data-measure-table': dataMeasureTable } : {};
+  let previousSection = null;
 
   return (
     <section className="tools-print-cost-table-wrap" {...measureProps}>
@@ -955,18 +984,46 @@ function CostComparisonPrintTable({ dataMeasureTable, rowLabels = {}, rows, vari
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.id}>
-              <th>{rowLabels[row.id] ?? row.label}</th>
-              {row.values.map((value, index) => (
-                <td key={`${row.id}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
-              ))}
-            </tr>
-          ))}
+          {rows.flatMap((row) => {
+            const sectionChanged = row.section !== previousSection;
+            previousSection = row.section;
+
+            return [
+              sectionChanged ? (
+                <CostComparisonSectionRow
+                  colSpan={variants.length + 1}
+                  section={row.section}
+                  key={`${row.section}-section`}
+                />
+              ) : null,
+              <tr
+                className={[
+                  row.section === 'result' ? 'is-result-row' : '',
+                  sectionChanged ? 'is-section-first-row' : '',
+                ].filter(Boolean).join(' ') || undefined}
+                key={row.id}
+              >
+                <th>{rowLabels[row.id] ?? row.label}</th>
+                {row.values.map((value, index) => (
+                  <td key={`${row.id}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
+                ))}
+              </tr>,
+            ].filter(Boolean);
+          })}
         </tbody>
       </table>
     </section>
   );
+}
+
+function getCostComparisonSectionLabel(section) {
+  const labels = {
+    cost: 'Kosten',
+    general: 'Allgemeine Daten',
+    result: 'Ergebnis',
+  };
+
+  return labels[section] ?? section;
 }
 
 function getOuterHeight(element) {

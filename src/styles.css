@@ -7762,6 +7762,45 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: left;
 }
 
+.tools-cost-document-table .tools-cost-table-section th,
+.tools-print-cost-table .tools-cost-table-section th {
+  border-top: 1.4px solid rgba(169, 163, 152, 0.82);
+  border-bottom: 1px solid rgba(214, 209, 200, 0.72);
+  background: rgba(247, 244, 237, 0.72);
+  color: #3f3b35;
+  font-size: 7.2pt;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.tools-cost-document-table .tools-cost-table-section.is-result th,
+.tools-print-cost-table .tools-cost-table-section.is-result th {
+  border-top-color: rgba(79, 111, 104, 0.42);
+  background: rgba(223, 236, 232, 0.72);
+  color: var(--accent-deep);
+}
+
+.tools-cost-document-table tr.is-result-row th,
+.tools-cost-document-table tr.is-result-row td,
+.tools-print-cost-table tr.is-result-row th,
+.tools-print-cost-table tr.is-result-row td {
+  background: rgba(223, 236, 232, 0.28);
+}
+
+.tools-cost-document-table tr.is-result-row.is-section-first-row th,
+.tools-cost-document-table tr.is-result-row.is-section-first-row td,
+.tools-print-cost-table tr.is-result-row.is-section-first-row th,
+.tools-print-cost-table tr.is-result-row.is-section-first-row td {
+  border-top: 1.2px solid rgba(79, 111, 104, 0.28);
+}
+
+.tools-cost-document-table tr.is-result-row td,
+.tools-print-cost-table tr.is-result-row td {
+  color: #232320;
+  font-weight: 740;
+}
+
 .tools-cost-document-table-label {
   display: block;
   width: 100%;

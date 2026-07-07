@@ -229,41 +229,43 @@ export function getCostComparisonDocumentTitle(mode) {
 export function getCostComparisonTableRows(mode, variants, results) {
   if (mode === 'costRevenue') {
     return [
-      ['acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
-      ['imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
-      ['imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
-      ['residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
-      ['duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
-      ['monthlyCost', 'Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
-      ['payrollCost', 'Mtl. Lohnkosten', (variant) => formatCurrencyValue(variant.payrollCost)],
-      ['quantity', 'Stückzahl', (variant) => variant.quantity],
-      ['specialCost', 'Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.specialCost)],
-      ['revenuePerUnit', 'Verkaufsertrag pro Stück', (variant) => formatCurrencyValue(variant.revenuePerUnit)],
-      ['totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
-      ['totalRevenue', 'Gesamtertrag', (_variant, result) => formatResultCurrency(result, 'totalRevenue')],
-      ['profit', 'Gewinn/Verlust', (_variant, result) => formatResultCurrency(result, 'profit')],
-      ['costPerUnit', 'Kosten pro Stück', (_variant, result) => formatResultCurrency(result, 'costPerUnit')],
-      ['resultRevenuePerUnit', 'Ertrag pro Stück', (_variant, result) => formatResultCurrency(result, 'revenuePerUnit')],
-    ].map(([id, label, getValue]) => ({
+      ['general', 'duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
+      ['general', 'imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+      ['cost', 'acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+      ['cost', 'residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
+      ['cost', 'monthlyCost', 'Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
+      ['cost', 'payrollCost', 'Mtl. Lohnkosten', (variant) => formatCurrencyValue(variant.payrollCost)],
+      ['cost', 'specialCost', 'Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.specialCost)],
+      ['cost', 'imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
+      ['result', 'quantity', 'Stückzahl', (variant) => variant.quantity],
+      ['result', 'revenuePerUnit', 'Verkaufsertrag pro Stück', (variant) => formatCurrencyValue(variant.revenuePerUnit)],
+      ['result', 'totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
+      ['result', 'totalRevenue', 'Gesamtertrag', (_variant, result) => formatResultCurrency(result, 'totalRevenue')],
+      ['result', 'profit', 'Gewinn/Verlust', (_variant, result) => formatResultCurrency(result, 'profit')],
+      ['result', 'costPerUnit', 'Kosten pro Stück', (_variant, result) => formatResultCurrency(result, 'costPerUnit')],
+      ['result', 'resultRevenuePerUnit', 'Ertrag pro Stück', (_variant, result) => formatResultCurrency(result, 'revenuePerUnit')],
+    ].map(([section, id, label, getValue]) => ({
       id,
       label,
+      section,
       values: variants.map((variant, index) => getValue(variant, results[index])),
     }));
   }
 
   return [
-    ['acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
-    ['imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
-    ['imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
-    ['monthlyCost', 'Laufende Kosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
-    ['duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
-    ['residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
-    ['totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
-    ['monthlyAverageCost', 'Kosten pro Monat', (_variant, result) => formatResultCurrency(result, 'monthlyAverageCost')],
-    ['yearlyAverageCost', 'Kosten pro Jahr', (_variant, result) => formatResultCurrency(result, 'yearlyAverageCost')],
-  ].map(([id, label, getValue]) => ({
+    ['general', 'duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
+    ['general', 'imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+    ['cost', 'acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+    ['cost', 'monthlyCost', 'Laufende Kosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
+    ['cost', 'residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
+    ['cost', 'imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
+    ['result', 'totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
+    ['result', 'monthlyAverageCost', 'Kosten pro Monat', (_variant, result) => formatResultCurrency(result, 'monthlyAverageCost')],
+    ['result', 'yearlyAverageCost', 'Kosten pro Jahr', (_variant, result) => formatResultCurrency(result, 'yearlyAverageCost')],
+  ].map(([section, id, label, getValue]) => ({
     id,
     label,
+    section,
     values: variants.map((variant, index) => getValue(variant, results[index])),
   }));
 }
