@@ -229,38 +229,40 @@ export function getCostComparisonDocumentTitle(mode) {
 export function getCostComparisonTableRows(mode, variants, results) {
   if (mode === 'costRevenue') {
     return [
-      ['Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
-      ['Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
-      ['Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
-      ['Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
-      ['Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
-      ['Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
-      ['Mtl. Lohnkosten', (variant) => formatCurrencyValue(variant.payrollCost)],
-      ['Stückzahl', (variant) => variant.quantity],
-      ['Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.specialCost)],
-      ['Verkaufsertrag pro Stück', (variant) => formatCurrencyValue(variant.revenuePerUnit)],
-      ['Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
-      ['Gesamtertrag', (_variant, result) => formatResultCurrency(result, 'totalRevenue')],
-      ['Gewinn/Verlust', (_variant, result) => formatResultCurrency(result, 'profit')],
-      ['Kosten pro Stück', (_variant, result) => formatResultCurrency(result, 'costPerUnit')],
-      ['Ertrag pro Stück', (_variant, result) => formatResultCurrency(result, 'revenuePerUnit')],
-    ].map(([label, getValue]) => ({
+      ['acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+      ['imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+      ['imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
+      ['residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
+      ['duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
+      ['monthlyCost', 'Laufende Fixkosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
+      ['payrollCost', 'Mtl. Lohnkosten', (variant) => formatCurrencyValue(variant.payrollCost)],
+      ['quantity', 'Stückzahl', (variant) => variant.quantity],
+      ['specialCost', 'Variable Kosten pro Stück', (variant) => formatCurrencyValue(variant.specialCost)],
+      ['revenuePerUnit', 'Verkaufsertrag pro Stück', (variant) => formatCurrencyValue(variant.revenuePerUnit)],
+      ['totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
+      ['totalRevenue', 'Gesamtertrag', (_variant, result) => formatResultCurrency(result, 'totalRevenue')],
+      ['profit', 'Gewinn/Verlust', (_variant, result) => formatResultCurrency(result, 'profit')],
+      ['costPerUnit', 'Kosten pro Stück', (_variant, result) => formatResultCurrency(result, 'costPerUnit')],
+      ['resultRevenuePerUnit', 'Ertrag pro Stück', (_variant, result) => formatResultCurrency(result, 'revenuePerUnit')],
+    ].map(([id, label, getValue]) => ({
+      id,
       label,
       values: variants.map((variant, index) => getValue(variant, results[index])),
     }));
   }
 
   return [
-    ['Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
-    ['Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
-    ['Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
-    ['Laufende Kosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
-    ['Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
-    ['Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
-    ['Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
-    ['Kosten pro Monat', (_variant, result) => formatResultCurrency(result, 'monthlyAverageCost')],
-    ['Kosten pro Jahr', (_variant, result) => formatResultCurrency(result, 'yearlyAverageCost')],
-  ].map(([label, getValue]) => ({
+    ['acquisitionCost', 'Anschaffungskosten', (variant) => formatCurrencyValue(variant.acquisitionCost)],
+    ['imputedInterestRate', 'Kalkulatorischer Zinssatz', (variant) => formatPercentValue(variant.imputedInterestRate)],
+    ['imputedInterestTotal', 'Kalkulatorische Zinsen', (_variant, result) => formatResultCurrency(result, 'imputedInterestTotal')],
+    ['monthlyCost', 'Laufende Kosten', (variant) => formatCurrencyValue(variant.monthlyCost)],
+    ['duration', 'Laufzeit', (_variant, result) => (result.status === 'success' ? formatMonths(result.totalMonths) : '')],
+    ['residualValue', 'Restwert', (variant) => formatOptionalCurrencyValue(variant.residualValue)],
+    ['totalCost', 'Gesamtkosten', (_variant, result) => formatResultCurrency(result, 'totalCost')],
+    ['monthlyAverageCost', 'Kosten pro Monat', (_variant, result) => formatResultCurrency(result, 'monthlyAverageCost')],
+    ['yearlyAverageCost', 'Kosten pro Jahr', (_variant, result) => formatResultCurrency(result, 'yearlyAverageCost')],
+  ].map(([id, label, getValue]) => ({
+    id,
     label,
     values: variants.map((variant, index) => getValue(variant, results[index])),
   }));

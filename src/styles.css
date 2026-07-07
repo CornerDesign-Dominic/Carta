@@ -7762,6 +7762,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: left;
 }
 
+.tools-cost-document-table-label {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-align: inherit;
+}
+
 .tools-print-cost-table-wrap {
   width: calc(100% - var(--tool-document-right-safe-offset));
   color: #36342f;

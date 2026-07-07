@@ -75,6 +75,7 @@ export default function CostComparisonCalculator() {
   const [documentIntro, setDocumentIntro] = useState(defaultCostDocumentIntro);
   const [documentHint, setDocumentHint] = useState(() => getCostComparisonDocumentHint('cost'));
   const [documentTitle, setDocumentTitle] = useState(() => getCostComparisonDocumentTitle('cost'));
+  const [tableRowLabels, setTableRowLabels] = useState({});
   const results = useMemo(
     () => calculateCostComparison(variants, comparisonMode),
     [comparisonMode, variants],
@@ -122,6 +123,13 @@ export default function CostComparisonCalculator() {
     setVariants((currentVariants) => currentVariants.map((variant) => (
       variant.id === variantId ? { ...variant, [field]: value } : variant
     )));
+  }
+
+  function updateTableRowLabel(rowId, value) {
+    setTableRowLabels((currentLabels) => ({
+      ...currentLabels,
+      [rowId]: value,
+    }));
   }
 
   function addVariant() {
@@ -332,7 +340,13 @@ export default function CostComparisonCalculator() {
               }}
             />
 
-            <CostComparisonDocumentTable rows={tableRows} variants={variants} />
+            <CostComparisonDocumentTable
+              rows={tableRows}
+              rowLabels={tableRowLabels}
+              variants={variants}
+              onRowLabelChange={updateTableRowLabel}
+              onVariantLabelChange={(variantId, value) => updateVariant(variantId, 'label', value)}
+            />
           </ToolA4Page>
         </div>
       </section>
@@ -343,6 +357,7 @@ export default function CostComparisonCalculator() {
             ref={paginatorRef}
             items={printItems}
             rows={tableRows}
+            rowLabels={tableRowLabels}
             variants={variants}
           />
           <CostComparisonPrintPages
@@ -354,6 +369,7 @@ export default function CostComparisonCalculator() {
             pages={printPages}
             recipient={documentRecipient}
             rows={tableRows}
+            rowLabels={tableRowLabels}
             variants={variants}
           />
         </>
@@ -700,7 +716,7 @@ function CostRevenueResult({ result }) {
   );
 }
 
-function CostComparisonDocumentTable({ rows, variants }) {
+function CostComparisonDocumentTable({ onRowLabelChange, onVariantLabelChange, rowLabels, rows, variants }) {
   return (
     <section className="tools-cost-document-table-wrap" aria-label="Kostenvergleich Tabelle">
       <table className="tools-cost-document-table">
@@ -708,16 +724,30 @@ function CostComparisonDocumentTable({ rows, variants }) {
           <tr>
             <th>Beschreibung</th>
             {variants.map((variant, index) => (
-              <th key={variant.id}>{variant.label || `Variante ${index + 1}`}</th>
+              <th key={variant.id}>
+                <input
+                  className="tools-cost-document-table-label"
+                  aria-label={`Bezeichnung Variante ${index + 1}`}
+                  value={variant.label || `Variante ${index + 1}`}
+                  onChange={(event) => onVariantLabelChange(variant.id, event.target.value)}
+                />
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.label}>
-              <th>{row.label}</th>
+            <tr key={row.id}>
+              <th>
+                <input
+                  className="tools-cost-document-table-label"
+                  aria-label={`Zeilenbeschreibung ${row.label}`}
+                  value={rowLabels[row.id] ?? row.label}
+                  onChange={(event) => onRowLabelChange(row.id, event.target.value)}
+                />
+              </th>
               {row.values.map((value, index) => (
-                <td key={`${row.label}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
+                <td key={`${row.id}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
               ))}
             </tr>
           ))}
@@ -728,7 +758,7 @@ function CostComparisonDocumentTable({ rows, variants }) {
 }
 
 const MeasuredCostComparisonPaginator = forwardRef(function MeasuredCostComparisonPaginator(
-  { items, rows, variants },
+  { items, rowLabels, rows, variants },
   ref,
 ) {
   const measureRootRef = useRef(null);
@@ -749,7 +779,12 @@ const MeasuredCostComparisonPaginator = forwardRef(function MeasuredCostComparis
       </div>
       <div className="tool-document-measure-content">
         <p className="tool-print-flow-text" data-measure-text-probe />
-        <CostComparisonPrintTable rows={rows} variants={variants} dataMeasureTable="table" />
+        <CostComparisonPrintTable
+          rows={rows}
+          rowLabels={rowLabels}
+          variants={variants}
+          dataMeasureTable="table"
+        />
       </div>
     </div>
   );
@@ -806,7 +841,7 @@ function measureCostComparisonPages(measureRoot, items) {
 }
 
 const CostComparisonPrintPages = forwardRef(function CostComparisonPrintPages(
-  { companyName, documentDate, documentTitle, hiddenRecipientFields, pages, recipient, rows, variants },
+  { companyName, documentDate, documentTitle, hiddenRecipientFields, pages, recipient, rowLabels, rows, variants },
   ref,
 ) {
   const totalPages = pages.length;
@@ -833,7 +868,7 @@ const CostComparisonPrintPages = forwardRef(function CostComparisonPrintPages(
           )}
 
           <div className="tool-print-page-content">
-            <CostComparisonPrintPageItems items={page.items} rows={rows} variants={variants} />
+            <CostComparisonPrintPageItems items={page.items} rowLabels={rowLabels} rows={rows} variants={variants} />
           </div>
 
           <p className={`tool-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
@@ -887,7 +922,7 @@ function CostComparisonPrintContinuationHeader({ companyName, documentDate }) {
   );
 }
 
-function CostComparisonPrintPageItems({ items, rows, variants }) {
+function CostComparisonPrintPageItems({ items, rowLabels, rows, variants }) {
   return items.map((item, index) => {
     if (item.type === 'text') {
       return (
@@ -898,14 +933,14 @@ function CostComparisonPrintPageItems({ items, rows, variants }) {
     }
 
     if (item.type === 'table') {
-      return <CostComparisonPrintTable rows={rows} variants={variants} key={item.id} />;
+      return <CostComparisonPrintTable rowLabels={rowLabels} rows={rows} variants={variants} key={item.id} />;
     }
 
     return null;
   });
 }
 
-function CostComparisonPrintTable({ dataMeasureTable, rows, variants }) {
+function CostComparisonPrintTable({ dataMeasureTable, rowLabels = {}, rows, variants }) {
   const measureProps = dataMeasureTable ? { 'data-measure-table': dataMeasureTable } : {};
 
   return (
@@ -921,10 +956,10 @@ function CostComparisonPrintTable({ dataMeasureTable, rows, variants }) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.label}>
-              <th>{row.label}</th>
+            <tr key={row.id}>
+              <th>{rowLabels[row.id] ?? row.label}</th>
               {row.values.map((value, index) => (
-                <td key={`${row.label}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
+                <td key={`${row.id}-${variants[index]?.id ?? index}`}>{value || '–'}</td>
               ))}
             </tr>
           ))}
