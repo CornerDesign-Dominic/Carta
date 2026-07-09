@@ -451,11 +451,15 @@ function DefaultInterestDocumentTotals({ result }) {
   return (
     <dl className="tools-default-interest-totals">
       <div>
+        <dt>Offener Betrag</dt>
+        <dd>{formatCurrency(result.amount)}</dd>
+      </div>
+      <div>
         <dt>Summe Verzugszinsen</dt>
         <dd>{formatCurrency(result.interestAmount)}</dd>
       </div>
       <div>
-        <dt>Gesamtbetrag inkl. Verzugszinsen</dt>
+        <dt>= Gesamtbetrag</dt>
         <dd>{formatCurrency(result.totalAmount)}</dd>
       </div>
     </dl>

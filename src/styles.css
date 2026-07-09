@@ -7849,7 +7849,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   column-gap: 24px;
   row-gap: 5px;
   color: #4d4b46;
-  font-size: 7.6pt;
+  font-size: 8.2pt;
   line-height: 1.24;
 }
 
@@ -7867,6 +7867,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   gap: 18px;
   align-items: baseline;
   min-width: 0;
+  font-size: 8.6pt;
 }
 
 .tools-default-interest-summary dt,
@@ -7914,7 +7915,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   border-collapse: collapse;
   table-layout: fixed;
   color: #2f2d29;
-  font-size: 7.3pt;
+  font-size: 7.9pt;
   line-height: 1.18;
 }
 
@@ -7962,7 +7963,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-default-interest-totals div:last-child dd {
   color: #232320;
-  font-size: 11pt;
+  font-size: 10pt;
   font-weight: 800;
   text-align: right;
 }
