@@ -89,6 +89,7 @@ export default async function handler(request, response) {
         'compoundInterestCalculation',
         'vatCalculation',
         'costComparison',
+        'defaultInterest',
       ].includes(documentType)
     ) {
       response.status(400).json({ error: 'Invalid documentType.' });

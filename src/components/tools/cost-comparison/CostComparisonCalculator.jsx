@@ -434,7 +434,7 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
           <div className="tools-panel-title-row">
             <h2>Eingaben</h2>
             <button className="tools-reset-variant" type="button" onClick={onReset}>
-              Zurücksetzen
+              Felder leeren
             </button>
           </div>
           {isCostRevenueMode ? (

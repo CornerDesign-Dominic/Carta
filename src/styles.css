@@ -7827,6 +7827,108 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   padding: 4px 4px;
 }
 
+.tools-default-interest-document {
+  display: grid;
+  gap: 16px;
+  width: calc(100% - var(--tool-document-right-safe-offset));
+  margin-top: 24px;
+  color: #36342f;
+  font-size: 8.5pt;
+  line-height: 1.28;
+}
+
+.tools-default-interest-summary,
+.tools-default-interest-totals {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.tools-default-interest-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tools-default-interest-summary div,
+.tools-default-interest-totals div {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.64fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+
+.tools-default-interest-summary dt,
+.tools-default-interest-summary dd,
+.tools-default-interest-totals dt,
+.tools-default-interest-totals dd {
+  margin: 0;
+}
+
+.tools-default-interest-summary dt,
+.tools-default-interest-totals dt {
+  color: #67645e;
+}
+
+.tools-default-interest-summary dd,
+.tools-default-interest-totals dd {
+  color: #232320;
+  font-weight: 700;
+}
+
+.tools-default-interest-table-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.tools-default-interest-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: #36342f;
+  font-size: 7.3pt;
+  line-height: 1.18;
+}
+
+.tools-default-interest-table th,
+.tools-default-interest-table td {
+  border-bottom: 1px solid rgba(214, 209, 200, 0.72);
+  padding: 4px 4px;
+  text-align: right;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.tools-default-interest-table thead th {
+  border-top: 1px solid rgba(214, 209, 200, 0.72);
+  color: #232320;
+  font-weight: 760;
+}
+
+.tools-default-interest-table th:first-child,
+.tools-default-interest-table td:first-child {
+  width: 25%;
+  color: #67645e;
+  font-weight: 680;
+  text-align: left;
+}
+
+.tools-default-interest-totals {
+  padding: 9px 10px;
+  border: 1px solid rgba(79, 111, 104, 0.18);
+  border-radius: 6px;
+  background: rgba(223, 236, 232, 0.46);
+}
+
+.tools-default-interest-totals div:last-child dd {
+  color: var(--accent-deep);
+  font-size: 10.5pt;
+}
+
+.tools-default-interest-document-empty {
+  margin: 0;
+  color: #67645e;
+  line-height: 1.5;
+}
+
 .tools-print-page {
   --tool-print-content-max-height: 788px;
 }
