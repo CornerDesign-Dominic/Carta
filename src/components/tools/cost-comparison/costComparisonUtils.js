@@ -20,7 +20,7 @@ const costDefaults = [
   {
     acquisitionCost: '12000',
     imputedInterestRate: '5',
-    label: 'Maschine A',
+    label: 'Variante 1',
     monthlyCost: '450',
     residualValue: '2000',
     termMonths: '0',
@@ -29,7 +29,7 @@ const costDefaults = [
   {
     acquisitionCost: '9000',
     imputedInterestRate: '5',
-    label: 'Maschine B',
+    label: 'Variante 2',
     monthlyCost: '520',
     residualValue: '1500',
     termMonths: '0',
@@ -45,7 +45,7 @@ const costRevenueDefaults = [
     annualPayrollCost: '21600',
     forecastQuantity: '16000',
     imputedInterestRate: '5',
-    label: 'Maschine A',
+    label: 'Variante 1',
     maxQuantity: '18000',
     residualValue: '2000',
     sellingPricePerUnit: '2.90',
@@ -60,7 +60,7 @@ const costRevenueDefaults = [
     annualPayrollCost: '19200',
     forecastQuantity: '15000',
     imputedInterestRate: '5',
-    label: 'Maschine B',
+    label: 'Variante 2',
     maxQuantity: '16500',
     residualValue: '1500',
     sellingPricePerUnit: '2.80',
@@ -114,7 +114,7 @@ export function calculateVariantCosts(variant, mode = 'cost') {
   const termYears = parseWholeNumber(variant.termYears);
   const termMonths = parseWholeNumber(variant.termMonths);
 
-  function invalid(message = 'Bitte fülle alle benötigten Felder mit gültigen Werten aus.') {
+  function invalid(message = 'Bitte Angaben eingeben.') {
     return { id: variant.id, label: variant.label, message, status: 'invalid' };
   }
 

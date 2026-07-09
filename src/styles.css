@@ -8317,6 +8317,37 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: left;
 }
 
+.tools-panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.tools-panel-title-row h2 {
+  margin: 0;
+}
+
+.tools-reset-variant {
+  appearance: none;
+  border: 1px solid rgba(45, 91, 83, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 254, 250, 0.74);
+  color: var(--accent-deep);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 720;
+  line-height: 1.2;
+  padding: 7px 10px;
+}
+
+.tools-reset-variant:hover {
+  border-color: rgba(45, 91, 83, 0.38);
+  background: rgba(211, 231, 225, 0.46);
+}
+
 .tools-cost-group-list {
   display: grid;
   gap: 16px;

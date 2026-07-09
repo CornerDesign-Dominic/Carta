@@ -125,6 +125,12 @@ export default function CostComparisonCalculator() {
     )));
   }
 
+  function resetVariant(variantId) {
+    setVariants((currentVariants) => currentVariants.map((variant) => (
+      variant.id === variantId ? createEmptyCostComparisonVariant(variant) : variant
+    )));
+  }
+
   function updateTableRowLabel(rowId, value) {
     setTableRowLabels((currentLabels) => ({
       ...currentLabels,
@@ -211,9 +217,14 @@ export default function CostComparisonCalculator() {
     }
 
     setComparisonMode(nextMode);
-    setVariants((currentVariants) => currentVariants.map((variant, index) => (
-      createCostComparisonVariant(variant.id, index, nextMode)
-    )));
+    setVariants((currentVariants) => currentVariants.map((variant, index) => {
+      const nextVariant = createCostComparisonVariant(variant.id, index, nextMode);
+
+      return {
+        ...nextVariant,
+        label: variant.label || nextVariant.label,
+      };
+    }));
   }
 
   return (
@@ -249,6 +260,7 @@ export default function CostComparisonCalculator() {
                 key={variant.id}
                 onChange={(field, value) => updateVariant(variant.id, field, value)}
                 onRemove={() => removeVariant(variant.id)}
+                onReset={() => resetVariant(variant.id)}
                 result={results[index]}
                 variant={variant}
               />
@@ -378,7 +390,7 @@ export default function CostComparisonCalculator() {
   );
 }
 
-function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove, result, variant }) {
+function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove, onReset, result, variant }) {
   const isCostRevenueMode = comparisonMode === 'costRevenue';
 
   function handlePositiveNumberChange(field) {
@@ -419,7 +431,12 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
 
       <div className="tools-calculator-layout tools-cost-variant-layout">
         <section className="tools-calculator-panel" aria-label={`Eingaben Variante ${index + 1}`}>
-          <h2>Eingaben</h2>
+          <div className="tools-panel-title-row">
+            <h2>Eingaben</h2>
+            <button className="tools-reset-variant" type="button" onClick={onReset}>
+              Zurücksetzen
+            </button>
+          </div>
           {isCostRevenueMode ? (
             <div className="tools-cost-group-list">
               <InputGroup title="Variante">
@@ -553,6 +570,26 @@ function CostVariantCard({ canRemove, comparisonMode, index, onChange, onRemove,
       </div>
     </section>
   );
+}
+
+function createEmptyCostComparisonVariant(variant) {
+  return {
+    ...variant,
+    acquisitionCost: '',
+    annualMaintenanceCost: '',
+    annualOtherCost: '',
+    annualPayrollCost: '',
+    forecastQuantity: '',
+    imputedInterestRate: '',
+    label: '',
+    maxQuantity: '',
+    monthlyCost: '',
+    residualValue: '',
+    sellingPricePerUnit: '',
+    termMonths: '',
+    termYears: '',
+    variableCostPerUnit: '',
+  };
 }
 
 function InputGroup({ children, title }) {
