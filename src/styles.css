@@ -7840,20 +7840,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tools-default-interest-summary,
 .tools-default-interest-totals {
   display: grid;
-  gap: 4px;
+  gap: 6px;
   margin: 0;
 }
 
 .tools-default-interest-summary {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 5px;
+  color: #5f5e59;
+  font-size: 7.6pt;
+  line-height: 1.24;
 }
 
 .tools-default-interest-summary div,
 .tools-default-interest-totals div {
   display: grid;
-  grid-template-columns: minmax(92px, 0.64fr) minmax(0, 1fr);
-  gap: 10px;
-  align-items: baseline;
+  grid-template-columns: minmax(0, 0.74fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
 }
 
 .tools-default-interest-summary dt,
@@ -7866,12 +7872,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tools-default-interest-summary dt,
 .tools-default-interest-totals dt {
   color: #67645e;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.26;
 }
 
 .tools-default-interest-summary dd,
 .tools-default-interest-totals dd {
   color: #232320;
   font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.26;
+}
+
+.tools-default-interest-summary dd {
+  color: #4a4842;
+  font-weight: 600;
 }
 
 .tools-default-interest-table-wrap {
@@ -7894,7 +7911,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   padding: 4px 4px;
   text-align: right;
   vertical-align: top;
+  min-width: 0;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .tools-default-interest-table thead th {
@@ -7912,15 +7931,32 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-default-interest-totals {
-  padding: 9px 10px;
-  border: 1px solid rgba(79, 111, 104, 0.18);
-  border-radius: 6px;
-  background: rgba(223, 236, 232, 0.46);
+  gap: 0;
+  padding: 8px 0 0;
+  border-top: 1.4px solid rgba(79, 111, 104, 0.36);
+  background: transparent;
+}
+
+.tools-default-interest-totals div {
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.42fr);
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(214, 209, 200, 0.62);
+}
+
+.tools-default-interest-totals div:last-child {
+  border-bottom: 0;
+  padding-top: 7px;
 }
 
 .tools-default-interest-totals div:last-child dd {
   color: var(--accent-deep);
-  font-size: 10.5pt;
+  font-size: 11pt;
+  font-weight: 800;
+}
+
+.tools-default-interest-totals div:last-child dt {
+  color: #232320;
+  font-weight: 760;
 }
 
 .tools-default-interest-document-empty {
