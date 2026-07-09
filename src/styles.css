@@ -7829,10 +7829,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-default-interest-document {
   display: grid;
-  gap: 16px;
+  gap: 14px;
   width: calc(100% - var(--tool-document-right-safe-offset));
   margin-top: 24px;
-  color: #36342f;
+  color: #2f2d29;
   font-size: 8.5pt;
   line-height: 1.28;
 }
@@ -7846,19 +7846,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-default-interest-summary {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 18px;
+  column-gap: 24px;
   row-gap: 5px;
-  color: #5f5e59;
+  color: #4d4b46;
   font-size: 7.6pt;
   line-height: 1.24;
 }
 
-.tools-default-interest-summary div,
+.tools-default-interest-summary div {
+  display: grid;
+  grid-template-columns: minmax(112px, 0.82fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+}
+
 .tools-default-interest-totals div {
   display: grid;
-  grid-template-columns: minmax(0, 0.74fr) minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.42fr);
+  gap: 18px;
+  align-items: baseline;
   min-width: 0;
 }
 
@@ -7871,10 +7878,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-default-interest-summary dt,
 .tools-default-interest-totals dt {
-  color: #67645e;
+  color: #5f5e59;
   min-width: 0;
   overflow-wrap: anywhere;
   line-height: 1.26;
+}
+
+.tools-default-interest-summary dt {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
 }
 
 .tools-default-interest-summary dd,
@@ -7887,7 +7900,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-default-interest-summary dd {
-  color: #4a4842;
+  color: #3b3934;
   font-weight: 600;
 }
 
@@ -7900,7 +7913,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  color: #36342f;
+  color: #2f2d29;
   font-size: 7.3pt;
   line-height: 1.18;
 }
@@ -7925,20 +7938,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .tools-default-interest-table th:first-child,
 .tools-default-interest-table td:first-child {
   width: 25%;
-  color: #67645e;
+  color: #5f5e59;
   font-weight: 680;
   text-align: left;
 }
 
 .tools-default-interest-totals {
   gap: 0;
-  padding: 8px 0 0;
-  border-top: 1.4px solid rgba(79, 111, 104, 0.36);
+  padding: 9px 0 0;
+  border-top: 1.2px solid rgba(60, 58, 52, 0.34);
   background: transparent;
 }
 
 .tools-default-interest-totals div {
-  grid-template-columns: minmax(0, 1fr) minmax(132px, 0.42fr);
   padding: 5px 0;
   border-bottom: 1px solid rgba(214, 209, 200, 0.62);
 }
@@ -7949,14 +7961,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-default-interest-totals div:last-child dd {
-  color: var(--accent-deep);
+  color: #232320;
   font-size: 11pt;
   font-weight: 800;
+  text-align: right;
 }
 
 .tools-default-interest-totals div:last-child dt {
   color: #232320;
   font-weight: 760;
+}
+
+.tools-default-interest-totals dd {
+  text-align: right;
 }
 
 .tools-default-interest-document-empty {
