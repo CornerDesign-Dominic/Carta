@@ -7861,6 +7861,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   min-width: 0;
 }
 
+.tools-default-interest-summary div:nth-child(odd) {
+  grid-template-columns: minmax(162px, 1fr) minmax(0, 1fr);
+}
+
+.tools-default-interest-summary div:nth-child(even) {
+  grid-template-columns: minmax(87px, 0.58fr) minmax(0, 1fr);
+}
+
 .tools-default-interest-totals div {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(132px, 0.42fr);
