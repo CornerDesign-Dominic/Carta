@@ -10,6 +10,7 @@ import {
   writeStoredConsent,
 } from './utils/consent.js';
 import DocumentsView from './views/DocumentsView.jsx';
+import BaseInterestRateTableView from './views/BaseInterestRateTableView.jsx';
 import HomeView from './views/HomeView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
@@ -59,6 +60,10 @@ function routeFromLocation() {
 
   if (path === '/tools') {
     return { view: 'tools', knowledgeSlug: null, documentId: 'overview', toolId: null };
+  }
+
+  if (path === '/tools/basiszinssatz-tabelle') {
+    return { view: 'base-interest-rate-table', knowledgeSlug: null, documentId: 'overview', toolId: null };
   }
 
   if (path.startsWith('/tools/')) {
@@ -256,6 +261,7 @@ export default function App() {
           />
         )}
         {currentView === 'home' && <HomeView onNavigate={handleNavigate} />}
+        {currentView === 'base-interest-rate-table' && <BaseInterestRateTableView />}
         {currentView.startsWith('legal:') && (
           <LegalPage pageId={currentView.replace('legal:', '')} />
         )}

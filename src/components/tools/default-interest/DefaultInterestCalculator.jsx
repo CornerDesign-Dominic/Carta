@@ -233,7 +233,10 @@ export default function DefaultInterestCalculator() {
               Deutsche Bundesbank
             </a>
             . Bitte prüfe den Wert dort, da der hier hinterlegte Zinssatz nicht immer dem aktuellen Stand
-            entsprechen muss.
+            entsprechen muss.{' '}
+            <a href="/tools/basiszinssatz-tabelle" target="_blank" rel="noopener noreferrer">
+              Zur verwendeten Basiszinssatz-Tabelle
+            </a>
           </p>
         </section>
       </div>

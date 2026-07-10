@@ -1,5 +1,8 @@
 // Source: Deutsche Bundesbank, Basiszinssatz nach § 247 BGB.
 // https://www.bundesbank.de/de/bundesbank/organisation/agb-und-regelungen/basiszinssatz-607820
+export const baseInterestRateSourceUrl =
+  'https://www.bundesbank.de/de/bundesbank/organisation/agb-und-regelungen/basiszinssatz-607820';
+
 export const baseInterestRates = [
   { validFrom: '2002-07-01', rate: 2.47 },
   { validFrom: '2003-01-01', rate: 1.97 },

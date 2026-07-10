@@ -8418,6 +8418,72 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-underline-offset: 3px;
 }
 
+.tools-info-page {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.tools-info-paper {
+  padding: clamp(28px, 5vw, 52px);
+  border: 1px solid rgba(214, 209, 200, 0.76);
+  border-radius: 8px;
+  background: rgba(255, 254, 250, 0.86);
+  box-shadow: 0 18px 48px rgba(56, 48, 38, 0.08);
+}
+
+.tools-info-paper h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  line-height: 1.06;
+}
+
+.tools-info-intro {
+  max-width: 680px;
+}
+
+.tools-info-meta,
+.tools-info-source {
+  margin: 18px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.tools-info-source a {
+  color: var(--accent-deep);
+  font-weight: 760;
+}
+
+.tools-info-table-wrap {
+  margin-top: 26px;
+  overflow-x: auto;
+}
+
+.tools-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--ink);
+  font-size: 0.96rem;
+}
+
+.tools-info-table th,
+.tools-info-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(214, 209, 200, 0.74);
+  text-align: left;
+}
+
+.tools-info-table th {
+  color: var(--accent-deep);
+  font-weight: 780;
+}
+
+.tools-info-table td:last-child,
+.tools-info-table th:last-child {
+  text-align: right;
+}
+
 .tools-cost-variant-list {
   display: grid;
   gap: 22px;
