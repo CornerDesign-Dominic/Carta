@@ -63,7 +63,7 @@ export function calculateDefaultInterest(calculation) {
     : createStatutoryInterestPeriods({ amount, endDate, rateOption: calculation.rateOption, startDate });
 
   if (!interestPeriods) {
-    return invalid('Historische Basiszinssätze sind erst ab dem 01.07.2002 hinterlegt.');
+    return invalid('Historische Basiszinssätze sind erst ab dem 01.01.2002 hinterlegt.');
   }
 
   const interestAmount = interestPeriods.reduce((sum, period) => sum + period.interestAmount, 0);
@@ -112,7 +112,6 @@ function createCustomInterestPeriods({ amount, endDate, interestRate, startDate 
 }
 
 function createStatutoryInterestPeriods({ amount, endDate, rateOption, startDate }) {
-  const surcharge = rateOption === 'business' ? 9 : 5;
   const periods = [];
   let cursor = new Date(startDate);
 
@@ -128,10 +127,12 @@ function createStatutoryInterestPeriods({ amount, endDate, rateOption, startDate
       ? nextRateStart
       : endDate;
     const days = getDateDifferenceInDays(cursor, periodEnd);
-    const interestRate = baseRateEntry.rate + surcharge;
+    const interestRate = rateOption === 'business'
+      ? baseRateEntry.businessDefaultRate
+      : baseRateEntry.consumerDefaultRate;
 
     periods.push({
-      baseRate: baseRateEntry.rate,
+      baseRate: baseRateEntry.baseRate,
       days,
       interestAmount: amount * interestRate * days / 365 / 100,
       interestRate,
@@ -150,10 +151,12 @@ function createStatutoryInterestPeriods({ amount, endDate, rateOption, startDate
     }
 
     periods.push({
-      baseRate: baseRateEntry.rate,
+      baseRate: baseRateEntry.baseRate,
       days: 0,
       interestAmount: 0,
-      interestRate: baseRateEntry.rate + surcharge,
+      interestRate: rateOption === 'business'
+        ? baseRateEntry.businessDefaultRate
+        : baseRateEntry.consumerDefaultRate,
       validFrom: formatDateValue(startDate),
       validTo: formatDateValue(endDate),
     });
@@ -166,7 +169,7 @@ function getBaseRateEntryForDate(date) {
   const value = formatDateValue(date);
 
   for (let index = baseInterestRates.length - 1; index >= 0; index -= 1) {
-    if (baseInterestRates[index].validFrom <= value) {
+    if (baseInterestRates[index].validFrom <= value && value <= baseInterestRates[index].validTo) {
       return baseInterestRates[index];
     }
   }
