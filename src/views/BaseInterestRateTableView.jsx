@@ -28,18 +28,22 @@ export default function BaseInterestRateTableView() {
         )}
 
         <div className="tools-info-disclaimer">
-          <ul>
-            <li>Verbraucher: Basiszinssatz + 5 Prozentpunkte</li>
-            <li>Unternehmen/Handelsgeschäfte: Basiszinssatz + 9 Prozentpunkte</li>
-            <li>Der Verzugsbeginn richtet sich nicht nach dieser Tabelle, sondern nach den Regeln zum Verzug.</li>
-            <li>Diese Seite stellt keine Rechtsberatung dar.</li>
-            <li>
-              Quelle:{' '}
-              <a href={baseInterestRateSourceUrl} target="_blank" rel="noopener noreferrer">
-                Deutsche Bundesbank – Basiszinssatz
-              </a>
-            </li>
-          </ul>
+          <p>
+            Hinweis: Die Tabelle dient als unverbindliche Berechnungshilfe für gesetzliche
+            Verzugszinsen. Der Verzugszinssatz beträgt bei Verbrauchern 5 Prozentpunkte und bei
+            Entgeltforderungen zwischen Unternehmen 9 Prozentpunkte über dem Basiszinssatz.
+          </p>
+          <p>
+            Der tatsächliche Verzugsbeginn hängt vom Einzelfall ab und richtet sich nicht allein
+            nach dieser Tabelle. Diese Seite stellt keine Rechtsberatung dar.
+          </p>
+          <p>
+            Quelle:{' '}
+            <a href={baseInterestRateSourceUrl} target="_blank" rel="noopener noreferrer">
+              Deutsche Bundesbank – Basiszinssatz
+            </a>
+          </p>
+          <p className="tools-info-legal-basis">Rechtsgrundlagen: § 247 BGB, § 288 BGB, § 286 BGB</p>
         </div>
 
         <div className="tools-info-table-wrap">

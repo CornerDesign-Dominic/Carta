@@ -8463,20 +8463,18 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.45;
 }
 
-.tools-info-disclaimer p,
-.tools-info-disclaimer ul {
+.tools-info-disclaimer p {
   margin: 0;
-}
-
-.tools-info-disclaimer ul {
-  display: grid;
-  gap: 4px;
-  padding-left: 18px;
 }
 
 .tools-info-disclaimer a {
   color: var(--accent-deep);
   font-weight: 760;
+}
+
+.tools-info-legal-basis {
+  color: #6f6b63;
+  font-size: 0.84rem;
 }
 
 .tools-info-table-wrap {
