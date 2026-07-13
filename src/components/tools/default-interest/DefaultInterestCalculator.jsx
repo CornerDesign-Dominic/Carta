@@ -389,16 +389,16 @@ function DefaultInterestInputSummary({ calculation, result }) {
         <dd>{formatCurrency(result.amount)}</dd>
       </div>
       <div>
+        <dt>Verzugsart</dt>
+        <dd>{result.modeLabel}</dd>
+      </div>
+      <div>
         <dt>Verzugsbeginn</dt>
         <dd>{formatDate(calculation.startDate)}</dd>
       </div>
       <div>
-        <dt>Zahlungs-/Berechnungsdatum</dt>
+        <dt>Berechnungsende</dt>
         <dd>{formatDate(calculation.endDate)}</dd>
-      </div>
-      <div>
-        <dt>Verzugsart</dt>
-        <dd>{result.modeLabel}</dd>
       </div>
     </dl>
   );
