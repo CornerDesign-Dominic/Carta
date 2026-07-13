@@ -10,7 +10,6 @@ import ToolRecipientBlock from '../document/ToolRecipientBlock.jsx';
 import ToolTextBlock from '../document/ToolTextBlock.jsx';
 import ToolToolbar from '../document/ToolToolbar.jsx';
 import {
-  baseInterestRate,
   calculateDefaultInterest,
   createDefaultInterestCalculation,
   createDefaultInterestPdfFileName,
@@ -344,7 +343,7 @@ export default function DefaultInterestCalculator() {
   );
 }
 
-function DefaultInterestResult({ calculation, result }) {
+function DefaultInterestResult({ result }) {
   return (
     <>
       <div className="tools-result-highlight">
@@ -354,33 +353,13 @@ function DefaultInterestResult({ calculation, result }) {
 
       <dl>
         <div>
-          <dt>Verzugstage</dt>
-          <dd>{result.daysInDefault} Tage</dd>
-        </div>
-        <div>
-          <dt>Zinsmodus</dt>
+          <dt>Zinsart</dt>
           <dd>{result.modeLabel}</dd>
         </div>
         <div>
-          <dt>Gesamtbetrag</dt>
-          <dd>{formatCurrency(result.totalAmount)}</dd>
+          <dt>Verzugstage</dt>
+          <dd>{result.daysInDefault} Tage</dd>
         </div>
-        <div>
-          <dt>Zinszeiträume</dt>
-          <dd>{result.periodCount}</dd>
-        </div>
-        {calculation.rateOption === 'custom' && (
-          <div>
-            <dt>Zinssatz p.a.</dt>
-            <dd>{formatPercent(result.interestRate)}</dd>
-          </div>
-        )}
-        {calculation.rateOption !== 'custom' && (
-          <div>
-            <dt>Aktueller Basiszinssatz</dt>
-            <dd>{formatPercent(baseInterestRate)}</dd>
-          </div>
-        )}
       </dl>
     </>
   );
