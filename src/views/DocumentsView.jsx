@@ -119,19 +119,14 @@ function DocumentOverview() {
   return (
     <>
       <p className="eyebrow">DOKUMENTE</p>
-      <h1 id="document-title">Dokumente einfach im Browser erstellen</h1>
+      <h1 id="document-title">Erstelle dein Dokument</h1>
       <p className="intro document-intro">
-        Mit den online Belegen von Belege24 erstellen Sie Dokumente direkt im
-        Browser. Kostenlos, ohne Werbung, keine Anmeldung und ohne Limit.
+        Mit unseren interaktiven Online-Dokumenten erstellst du dein
+        Geschäfts-Dokument einfach und schnell direkt im Browser. So
+        funktioniert es:
       </p>
 
       <section className="document-usage-section" aria-label="Anleitung zur Nutzung der Generatoren">
-        <h2>Erstelle dein Dokument</h2>
-        <p className="document-usage-intro">
-          Mit unseren interaktiven Online-Dokumenten erstellst du dein
-          Geschäfts-Dokument einfach und schnell direkt im Browser. So
-          funktioniert es:
-        </p>
         <div className="document-usage-grid" aria-label="Hinweise zur Nutzung der Generatoren">
           {usageSections.map((section) => (
             <section className="document-usage-row" key={section.title}>
