@@ -14,32 +14,105 @@ function pathForDocumentId(documentId) {
   return item?.path ?? '/dokumente';
 }
 
+function DocumentUsageMiniVisual({ type }) {
+  return (
+    <div className={`document-usage-mini document-usage-mini-${type}`} aria-hidden="true">
+      <div className="document-usage-mini-header">
+        <strong>Belege24</strong>
+        <span>Vorschau</span>
+      </div>
+      <div className="document-usage-mini-address">
+        <span>Max Mustermann GmbH</span>
+        <span>Musterstraße 12</span>
+        <span>12345 Musterstadt</span>
+      </div>
+      <div className="document-usage-mini-title">
+        {type === 'template' ? 'Vorlage' : 'Rechnung'}
+      </div>
+
+      {type === 'edit' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line is-highlighted">Rechnungsnummer</span>
+          <span className="document-usage-mini-line is-highlighted">Datum</span>
+          <span className="document-usage-mini-line">Leistung</span>
+          <span className="document-usage-mini-line is-highlighted">Gesamtbetrag</span>
+        </div>
+      )}
+
+      {type === 'optional' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line">Empfänger</span>
+          <span className="document-usage-mini-line is-optional">
+            <span className="document-usage-mini-eye" />
+            z. H. Ansprechpartner
+          </span>
+          <span className="document-usage-mini-line is-muted">ausblendbare Zeile</span>
+          <span className="document-usage-mini-line">Summe</span>
+        </div>
+      )}
+
+      {type === 'output' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line">Vorschau geprüft</span>
+          <span className="document-usage-mini-line">Layout bereit</span>
+          <div className="document-usage-mini-actions">
+            <span>PDF</span>
+            <span>Drucken</span>
+          </div>
+        </div>
+      )}
+
+      {type === 'template' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line">Dokumentdaten</span>
+          <span className="document-usage-mini-line is-code">beleg-vorlage.json</span>
+          <span className="document-usage-mini-line">später laden</span>
+        </div>
+      )}
+
+      {type === 'check' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line is-marked">Max Mustermann</span>
+          <span className="document-usage-mini-line">Rechnungsposition</span>
+          <span className="document-usage-mini-line is-marked">Musterstraße 12</span>
+          <span className="document-usage-mini-line">Gesamtbetrag</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DocumentOverview() {
   const usageSections = [
     {
       title: 'Direkt im Dokument',
       text:
-        'Einfach loslegen. Klicken Sie auf „Bearbeiten“, um zu sehen, was alles bearbeitet werden kann.',
+        'Einfach loslegen. Klicke auf „Bearbeiten“, um zu sehen, welche Angaben im Dokument angepasst werden können.',
+      visual: 'edit',
     },
     {
       title: 'Optionale Felder',
       text:
-        'Optionale Felder sind mit einem Augen-Symbol gekennzeichnet. Diese Felder können ausgeblendet und wieder eingeblendet werden.',
+        'Optionale Felder sind mit einem Augen-Symbol gekennzeichnet. Sie können ausgeblendet und bei Bedarf wieder eingeblendet werden.',
+      visual: 'optional',
     },
     {
       title: 'Dokument erstellen',
       text:
-        'Wenn Sie in der Vorschau zufrieden sind, drücken Sie einfach auf „PDF erstellen“ oder „Drucken“. So wie das Dokument in der Vorschau zu sehen ist, wird es generiert.',
+        'Wenn die Vorschau passt, kannst du das Dokument über „PDF erstellen“ oder „Drucken“ ausgeben. Es wird so erstellt, wie es in der Vorschau zu sehen ist.',
+      visual: 'output',
     },
     {
       title: 'Vorlagen',
       text:
-        'Beim Erstellen werden die Daten aus dem Dokument in einer JSON-Datei gespeichert. Diese kann anschließend immer wieder als Vorlage hochgeladen und verwendet werden.',
+        'Beim Erstellen können die Dokumentdaten als JSON-Datei gespeichert werden. Diese Datei lässt sich später wieder hochladen und als Vorlage nutzen.',
+      visual: 'template',
     },
     {
       title: 'Hinweis zur Prüfung',
       text:
-        'Beispieldaten können mit unserem Daten-Prüfer erkannt und hervorgehoben werden. Vor dem Erstellen eines Dokumentes sollten diese Daten angepasst sowie Tippfehler und unvollständige Angaben ergänzt werden.',
+        'Beispieldaten können mit dem Daten-Prüfer erkannt und hervorgehoben werden. Vor dem Erstellen sollten diese Daten angepasst sowie Tippfehler und unvollständige Angaben geprüft werden.',
+      visual: 'check',
     },
   ];
 
@@ -53,12 +126,20 @@ function DocumentOverview() {
       </p>
 
       <section className="document-usage-section" aria-label="Anleitung zur Nutzung der Generatoren">
-        <h2>So geht es:</h2>
+        <h2>Erstelle dein Dokument</h2>
+        <p className="document-usage-intro">
+          Mit unseren interaktiven Online-Dokumenten erstellst du dein
+          Geschäfts-Dokument einfach und schnell direkt im Browser. So
+          funktioniert es:
+        </p>
         <div className="document-usage-grid" aria-label="Hinweise zur Nutzung der Generatoren">
           {usageSections.map((section) => (
-            <section className="document-usage-card" key={section.title}>
-              <h3>{section.title}</h3>
-              <p>{section.text}</p>
+            <section className="document-usage-row" key={section.title}>
+              <div className="document-usage-copy">
+                <h3>{section.title}</h3>
+                <p>{section.text}</p>
+              </div>
+              <DocumentUsageMiniVisual type={section.visual} />
             </section>
           ))}
         </div>

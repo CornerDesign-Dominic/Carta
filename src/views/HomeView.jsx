@@ -66,14 +66,11 @@ export default function HomeView({ onNavigate }) {
         </div>
       </section>
 
-      <section className="home-explainer" aria-label="Über Belege24">
+      <section className="home-trust-strip" aria-label="Schnell startklar">
+        <strong>Schnell startklar</strong>
         <p>
-          Belege24 richtet sich an alle, die geschäftliche Belege schnell und unkompliziert
-          erstellen möchten. Rechnungen, Angebote, Mahnungen und weitere Dokumente lassen sich
-          direkt online ausfüllen, prüfen und als PDF nutzen – kostenlos, ohne Anmeldung und ohne
-          unnötiges Sammeln persönlicher Daten. Zusätzlich stehen praktische Rechner und Werkzeuge
-          bereit, zum Beispiel für Zinsen, Umsatzsteuer, Fristen oder Kostenvergleiche. Die Nutzung
-          ist unlimitiert und direkt im Browser möglich.
+          Ohne Konto, ohne Einrichtung und ohne versteckte Pflichtangaben. Wähle ein Dokument,
+          fülle die Felder aus und nutze es direkt als PDF oder Druckvorlage.
         </p>
       </section>
 
