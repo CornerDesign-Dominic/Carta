@@ -14,19 +14,12 @@ const toolItems = [
   { title: 'Kostenvergleich', text: 'Varianten nach Kosten und Wirtschaftlichkeit vergleichen.', toolId: 'kostenvergleichsrechner' },
 ];
 
-const knowledgeItems = [
-  { title: 'Rechnung', slug: 'rechnung' },
-  { title: 'Angebot', slug: 'angebot' },
-  { title: 'Mahnverfahren', slug: 'mahnverfahren' },
-];
-
 export default function HomeView({ onNavigate }) {
   return (
     <main className="paper-page home-page">
       <section className="home-hero" aria-labelledby="home-title">
         <div className="home-hero-copy">
-          <p className="eyebrow">Belege24</p>
-          <h1 id="home-title">Geschäftsdokumente einfach erstellen</h1>
+          <h1 id="home-title">Belege erstellen, die professionell aussehen</h1>
           <p className="intro home-intro">
             Erstelle Rechnungen, Angebote, Mahnungen und weitere Belege direkt im Browser –
             übersichtlich, schnell und professionell.
@@ -34,9 +27,6 @@ export default function HomeView({ onNavigate }) {
           <div className="home-hero-actions">
             <button type="button" onClick={() => onNavigate({ view: 'documents' })}>
               Dokument erstellen
-            </button>
-            <button type="button" onClick={() => onNavigate({ view: 'tools' })}>
-              Werkzeuge ansehen
             </button>
           </div>
         </div>
@@ -72,10 +62,21 @@ export default function HomeView({ onNavigate }) {
         </div>
       </section>
 
+      <section className="home-explainer" aria-label="Über Belege24">
+        <p>
+          Belege24 richtet sich an alle, die geschäftliche Belege schnell und unkompliziert
+          erstellen möchten. Rechnungen, Angebote, Mahnungen und weitere Dokumente lassen sich
+          direkt online ausfüllen, prüfen und als PDF nutzen – kostenlos, ohne Anmeldung und ohne
+          unnötiges Sammeln persönlicher Daten. Zusätzlich stehen praktische Rechner und Werkzeuge
+          bereit, zum Beispiel für Zinsen, Umsatzsteuer, Fristen oder Kostenvergleiche. Die Nutzung
+          ist unlimitiert und direkt im Browser möglich.
+        </p>
+      </section>
+
       <section className="home-section" aria-labelledby="home-documents-title">
         <div className="home-section-heading">
           <h2 id="home-documents-title">Dokumente</h2>
-          <p>Generatoren für typische Belege im geschäftlichen Alltag.</p>
+          <p>Die meistgenutzten Dokumente für deinen geschäftlichen Alltag.</p>
         </div>
         <div className="home-card-grid">
           {documentItems.map((item) => (
@@ -95,7 +96,7 @@ export default function HomeView({ onNavigate }) {
       <section className="home-section" aria-labelledby="home-tools-title">
         <div className="home-section-heading">
           <h2 id="home-tools-title">Werkzeuge</h2>
-          <p>Rechner für Zinsen, Steuern, Fristen, Arbeitszeit und Kosten.</p>
+          <p>Beliebte Rechner und Werkzeuge für Zahlen, Fristen und Entscheidungen.</p>
         </div>
         <div className="home-card-grid">
           {toolItems.map((item) => (
@@ -109,29 +110,6 @@ export default function HomeView({ onNavigate }) {
               <p>{item.text}</p>
             </button>
           ))}
-        </div>
-      </section>
-
-      <section className="home-knowledge-section" aria-labelledby="home-knowledge-title">
-        <div>
-          <h2 id="home-knowledge-title">Wissen</h2>
-          <p>
-            Verständliche Artikel zu Geschäftsdokumenten, Pflichtangaben und typischen Abläufen.
-          </p>
-        </div>
-        <div className="home-knowledge-links">
-          {knowledgeItems.map((item) => (
-            <button
-              type="button"
-              onClick={() => onNavigate({ view: 'knowledge', slug: item.slug })}
-              key={item.slug}
-            >
-              {item.title}
-            </button>
-          ))}
-          <button type="button" onClick={() => onNavigate({ view: 'knowledge' })}>
-            Alle Wissensartikel
-          </button>
         </div>
       </section>
     </main>

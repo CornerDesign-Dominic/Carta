@@ -770,6 +770,18 @@ h1 {
   font-size: 1.08rem;
 }
 
+.home-explainer {
+  max-width: 900px;
+  padding: 0 4px;
+}
+
+.home-explainer p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 1.4vw, 1.08rem);
+  line-height: 1.72;
+}
+
 .home-section {
   display: grid;
   gap: 16px;
@@ -784,16 +796,14 @@ h1 {
   border-bottom: 1px solid rgba(214, 209, 200, 0.72);
 }
 
-.home-section-heading h2,
-.home-knowledge-section h2 {
+.home-section-heading h2 {
   margin: 0;
   color: var(--ink);
   font-size: 1.2rem;
   line-height: 1.3;
 }
 
-.home-section-heading p,
-.home-knowledge-section p {
+.home-section-heading p {
   max-width: 520px;
   margin: 0;
   color: var(--muted);
@@ -842,41 +852,6 @@ h1 {
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.45;
-}
-
-.home-knowledge-section {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
-  align-items: center;
-  padding: 22px;
-  border: 1px solid rgba(216, 208, 196, 0.82);
-  border-radius: 8px;
-  background: #fffefd;
-}
-
-.home-knowledge-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.home-knowledge-links button {
-  border: 1px solid rgba(199, 186, 168, 0.76);
-  border-radius: 999px;
-  padding: 8px 12px;
-  background: #fffefd;
-  color: var(--accent-deep);
-  font-size: 0.88rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.home-knowledge-links button:hover {
-  border-color: rgba(53, 107, 102, 0.34);
-  background: #f7faf8;
-  color: var(--ink);
 }
 
 .documents-layout {
@@ -6270,8 +6245,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     transform: none;
   }
 
-  .home-section-heading,
-  .home-knowledge-section {
+  .home-section-heading {
     display: grid;
     grid-template-columns: 1fr;
     align-items: start;
@@ -6283,10 +6257,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
   .home-card {
     min-height: 0;
-  }
-
-  .home-knowledge-links {
-    justify-content: flex-start;
   }
 
   .invoice-summary {
