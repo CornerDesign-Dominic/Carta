@@ -44,7 +44,7 @@ export function calculateDefaultInterest(calculation) {
   const startDate = parseDate(calculation.startDate);
   const endDate = parseDate(calculation.endDate);
 
-  function invalid(message = 'Bitte fülle alle benötigten Felder mit gültigen Werten aus.') {
+  function invalid(message = 'Bitte Angaben eingeben.') {
     return { status: 'invalid', message };
   }
 

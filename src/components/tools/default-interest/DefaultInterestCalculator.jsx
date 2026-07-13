@@ -78,6 +78,16 @@ export default function DefaultInterestCalculator() {
     }));
   }
 
+  function clearCalculationFields() {
+    setCalculation({
+      amount: '',
+      customRate: '',
+      endDate: '',
+      rateOption: '',
+      startDate: '',
+    });
+  }
+
   function handlePositiveNumberChange(field) {
     return (event) => {
       const nextValue = event.target.value;
@@ -143,7 +153,7 @@ export default function DefaultInterestCalculator() {
 
   return (
     <>
-      <h1 id="tools-title">Verzugszinsen</h1>
+      <h1 id="tools-title">Verzugszinsen berechnen</h1>
 
       <div className="tools-calculation-list tools-calculation-list-compact">
         <section className="tools-calculation-section" aria-labelledby="default-interest-calculation">
@@ -153,7 +163,12 @@ export default function DefaultInterestCalculator() {
 
           <div className="tools-calculator-layout">
             <section className="tools-calculator-panel" aria-label="Eingaben">
-              <h2>Eingaben</h2>
+              <div className="tools-panel-title-row">
+                <h2>Eingaben</h2>
+                <button className="tools-reset-variant" type="button" onClick={clearCalculationFields}>
+                  Felder leeren
+                </button>
+              </div>
               <div className="tools-form-grid tools-form-grid-default-interest">
                 <label className="tools-field-default-amount">
                   <span>Offener Betrag</span>
