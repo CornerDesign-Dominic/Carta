@@ -1,12 +1,8 @@
 // Sources:
 // Deutsche Bundesbank, Basiszinssatz nach § 247 BGB.
 // https://www.bundesbank.de/de/bundesbank/organisation/agb-und-regelungen/basiszinssatz-607820
-// basiszinssatz.de, historische Übersicht inklusive Verzugszinssätzen.
-// https://www.basiszinssatz.de/#m3
 export const baseInterestRateSourceUrl =
   'https://www.bundesbank.de/de/bundesbank/organisation/agb-und-regelungen/basiszinssatz-607820';
-
-export const baseInterestRateOverviewUrl = 'https://www.basiszinssatz.de/#m3';
 
 const baseInterestRatePeriods = [
   { validFrom: '2002-01-01', validTo: '2002-06-30', baseRate: 2.57, businessSurcharge: 8 },

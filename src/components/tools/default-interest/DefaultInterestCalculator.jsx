@@ -224,17 +224,8 @@ export default function DefaultInterestCalculator() {
           </div>
 
           <p className="tools-external-note">
-            Den aktuellen Basiszinssatz veröffentlicht die{' '}
-            <a
-              href="https://www.bundesbank.de/de/bundesbank/organisation/agb-und-regelungen/basiszinssatz-607820"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Deutsche Bundesbank
-            </a>
-            . Bitte prüfe den Wert dort, da der hier hinterlegte Zinssatz nicht immer dem aktuellen Stand
-            entsprechen muss.{' '}
-            <a href="/tools/basiszinssatz-tabelle" target="_blank" rel="noopener noreferrer">
+            Die Berechnung basiert auf der verwendeten Basiszinssatz-Tabelle.{' '}
+            <a href="/basiszinssatz-tabelle" target="_blank" rel="noopener noreferrer">
               Zur verwendeten Basiszinssatz-Tabelle
             </a>
           </p>

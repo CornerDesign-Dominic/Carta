@@ -62,7 +62,7 @@ function routeFromLocation() {
     return { view: 'tools', knowledgeSlug: null, documentId: 'overview', toolId: null };
   }
 
-  if (path === '/tools/basiszinssatz-tabelle') {
+  if (path === '/basiszinssatz-tabelle') {
     return { view: 'base-interest-rate-table', knowledgeSlug: null, documentId: 'overview', toolId: null };
   }
 

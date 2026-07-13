@@ -1,6 +1,5 @@
 import {
   baseInterestRates,
-  baseInterestRateOverviewUrl,
   baseInterestRateSourceUrl,
 } from '../components/tools/lateInterest/baseInterestRates.js';
 import { formatPercent } from '../components/tools/default-interest/defaultInterestUtils.js';
@@ -30,12 +29,17 @@ export default function BaseInterestRateTableView() {
 
         <div className="tools-info-disclaimer">
           <p>
-            Die Tabelle dient nur der unverbindlichen Information und Berechnungshilfe. Trotz
-            sorgfältiger Pflege kann keine Gewähr für Vollständigkeit, Aktualität und Richtigkeit
-            übernommen werden. Bitte prüfen Sie die jeweils aktuellen Werte bei der Deutschen
-            Bundesbank oder holen Sie bei rechtlichen Fragen fachkundigen Rat ein.
+            Hinweis: Die Tabelle dient als unverbindliche Berechnungshilfe und stellt keine
+            Rechtsberatung dar. Trotz sorgfältiger Pflege übernehmen wir keine Gewähr für
+            Vollständigkeit, Aktualität und Richtigkeit. Bitte prüfen Sie die aktuellen Werte bei
+            der Deutschen Bundesbank.
           </p>
-          <p>Diese Seite stellt keine Rechtsberatung dar.</p>
+          <p>
+            Quelle:{' '}
+            <a href={baseInterestRateSourceUrl} target="_blank" rel="noopener noreferrer">
+              Deutsche Bundesbank – Basiszinssatz
+            </a>
+          </p>
         </div>
 
         <div className="tools-info-table-wrap">
@@ -60,17 +64,6 @@ export default function BaseInterestRateTableView() {
             </tbody>
           </table>
         </div>
-
-        <p className="tools-info-source">
-          Quellen:{' '}
-          <a href={baseInterestRateSourceUrl} target="_blank" rel="noopener noreferrer">
-            Deutsche Bundesbank
-          </a>
-          {' '}und{' '}
-          <a href={baseInterestRateOverviewUrl} target="_blank" rel="noopener noreferrer">
-            basiszinssatz.de
-          </a>
-        </p>
       </article>
     </main>
   );
