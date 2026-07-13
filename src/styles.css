@@ -8497,9 +8497,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-weight: 780;
 }
 
-.tools-info-table td:last-child,
-.tools-info-table th:last-child {
-  text-align: right;
+.tools-info-table th:nth-child(n + 2),
+.tools-info-table td:nth-child(n + 2) {
+  text-align: center;
 }
 
 .tools-cost-variant-list {

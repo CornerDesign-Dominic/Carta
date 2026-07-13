@@ -16,7 +16,6 @@ export default function BaseInterestRateTableView() {
   return (
     <main className="tools-info-page">
       <article className="tools-info-paper">
-        <p className="eyebrow">WERKZEUGE</p>
         <h1>Basiszinssatz-Tabelle</h1>
         <p className="intro tools-info-intro">
           Diese Tabelle zeigt die Basiszinssätze und die daraus abgeleiteten Verzugszinssätze,
