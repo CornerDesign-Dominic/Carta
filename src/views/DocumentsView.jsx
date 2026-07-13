@@ -103,16 +103,16 @@ function DocumentOverview() {
       visual: 'output',
     },
     {
-      title: 'Vorlagen',
-      text:
-        'Beim Erstellen können die Dokumentdaten als JSON-Datei gespeichert werden. Diese Datei lässt sich später wieder hochladen und als Vorlage nutzen.',
-      visual: 'template',
-    },
-    {
       title: 'Hinweis zur Prüfung',
       text:
         'Beispieldaten können mit dem Daten-Prüfer erkannt und hervorgehoben werden. Vor dem Erstellen sollten diese Daten angepasst sowie Tippfehler und unvollständige Angaben geprüft werden.',
       visual: 'check',
+    },
+    {
+      title: 'Vorlagen',
+      text:
+        'Beim Erstellen können die Dokumentdaten als JSON-Datei gespeichert werden. Diese Datei lässt sich später wieder hochladen und als Vorlage nutzen.',
+      visual: 'template',
     },
   ];
 
