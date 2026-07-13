@@ -8463,8 +8463,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.45;
 }
 
-.tools-info-disclaimer p {
+.tools-info-disclaimer p,
+.tools-info-disclaimer ul {
   margin: 0;
+}
+
+.tools-info-disclaimer ul {
+  display: grid;
+  gap: 4px;
+  padding-left: 18px;
 }
 
 .tools-info-disclaimer a {

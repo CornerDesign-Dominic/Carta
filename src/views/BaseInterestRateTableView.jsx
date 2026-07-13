@@ -16,10 +16,11 @@ export default function BaseInterestRateTableView() {
   return (
     <main className="tools-info-page">
       <article className="tools-info-paper">
-        <h1>Basiszinssatz-Tabelle</h1>
+        <h1>Basiszinssatz und Verzugszinssätze</h1>
         <p className="intro tools-info-intro">
-          Diese Tabelle zeigt die Basiszinssätze und die daraus abgeleiteten Verzugszinssätze,
-          die der Verzugszinsenrechner verwendet.
+          Diese Übersicht zeigt die Basiszinssätze nach § 247 BGB und die daraus abgeleiteten
+          gesetzlichen Verzugszinssätze nach § 288 BGB. Die Werte dienen als Grundlage für den
+          Verzugszinsenrechner.
         </p>
 
         {lastUpdated && (
@@ -27,18 +28,18 @@ export default function BaseInterestRateTableView() {
         )}
 
         <div className="tools-info-disclaimer">
-          <p>
-            Hinweis: Die Tabelle dient als unverbindliche Berechnungshilfe und stellt keine
-            Rechtsberatung dar. Trotz sorgfältiger Pflege übernehmen wir keine Gewähr für
-            Vollständigkeit, Aktualität und Richtigkeit. Bitte prüfen Sie die aktuellen Werte bei
-            der Deutschen Bundesbank.
-          </p>
-          <p>
-            Quelle:{' '}
-            <a href={baseInterestRateSourceUrl} target="_blank" rel="noopener noreferrer">
-              Deutsche Bundesbank – Basiszinssatz
-            </a>
-          </p>
+          <ul>
+            <li>Verbraucher: Basiszinssatz + 5 Prozentpunkte</li>
+            <li>Unternehmen/Handelsgeschäfte: Basiszinssatz + 9 Prozentpunkte</li>
+            <li>Der Verzugsbeginn richtet sich nicht nach dieser Tabelle, sondern nach den Regeln zum Verzug.</li>
+            <li>Diese Seite stellt keine Rechtsberatung dar.</li>
+            <li>
+              Quelle:{' '}
+              <a href={baseInterestRateSourceUrl} target="_blank" rel="noopener noreferrer">
+                Deutsche Bundesbank – Basiszinssatz
+              </a>
+            </li>
+          </ul>
         </div>
 
         <div className="tools-info-table-wrap">
