@@ -19,11 +19,15 @@ export default function HomeView({ onNavigate }) {
     <main className="paper-page home-page">
       <section className="home-hero" aria-labelledby="home-title">
         <div className="home-hero-copy">
-          <h1 id="home-title">Belege erstellen, die professionell aussehen</h1>
-          <p className="intro home-intro">
-            Erstelle Rechnungen, Angebote, Mahnungen und weitere Belege direkt im Browser –
-            übersichtlich, schnell und professionell.
-          </p>
+          <h1 id="home-title">Deine Belege</h1>
+          <ul className="home-benefit-list">
+            <li>Direkt online erstellen</li>
+            <li>Als PDF speichern oder drucken</li>
+            <li>Professionell aufgebaut</li>
+            <li>Kostenlos und ohne Anmeldung</li>
+            <li>Keine Datenspeicherung</li>
+          </ul>
+          <p className="intro home-intro">Erstelle dein erstes Dokument und probiere Belege24 direkt aus.</p>
           <div className="home-hero-actions">
             <button type="button" onClick={() => onNavigate({ view: 'documents' })}>
               Dokument erstellen
