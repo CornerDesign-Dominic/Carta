@@ -637,7 +637,7 @@ h1 {
 
 .home-benefit-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, max-content));
+  grid-template-columns: minmax(0, 1fr);
   gap: 9px 18px;
   margin: 0 0 20px;
   padding: 0;
@@ -6259,10 +6259,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
   .home-hero-actions {
     flex-direction: column;
-  }
-
-  .home-benefit-list {
-    grid-template-columns: 1fr;
   }
 
   .home-hero-actions button {
