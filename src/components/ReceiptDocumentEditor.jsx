@@ -444,6 +444,92 @@ function formatReceiptAmount(value) {
   }).format(value);
 }
 
+function receiptNumberToGermanWords(value, standaloneOne = true) {
+  const smallNumbers = [
+    'null',
+    standaloneOne ? 'eins' : 'ein',
+    'zwei',
+    'drei',
+    'vier',
+    'fünf',
+    'sechs',
+    'sieben',
+    'acht',
+    'neun',
+    'zehn',
+    'elf',
+    'zwölf',
+    'dreizehn',
+    'vierzehn',
+    'fünfzehn',
+    'sechzehn',
+    'siebzehn',
+    'achtzehn',
+    'neunzehn',
+  ];
+  const tens = {
+    20: 'zwanzig',
+    30: 'dreißig',
+    40: 'vierzig',
+    50: 'fünfzig',
+    60: 'sechzig',
+    70: 'siebzig',
+    80: 'achtzig',
+    90: 'neunzig',
+  };
+
+  if (value < 20) {
+    return smallNumbers[value];
+  }
+
+  if (value < 100) {
+    const unit = value % 10;
+    const ten = value - unit;
+    return unit === 0 ? tens[ten] : `${receiptNumberToGermanWords(unit, false)}und${tens[ten]}`;
+  }
+
+  if (value < 1000) {
+    const hundred = Math.floor(value / 100);
+    const remainder = value % 100;
+    const prefix = `${receiptNumberToGermanWords(hundred, false)}hundert`;
+    return remainder === 0 ? prefix : `${prefix}${receiptNumberToGermanWords(remainder)}`;
+  }
+
+  if (value < 1000000) {
+    const thousand = Math.floor(value / 1000);
+    const remainder = value % 1000;
+    const prefix = `${receiptNumberToGermanWords(thousand, false)}tausend`;
+    return remainder === 0 ? prefix : `${prefix}${receiptNumberToGermanWords(remainder)}`;
+  }
+
+  const million = Math.floor(value / 1000000);
+  const remainder = value % 1000000;
+  const prefix = million === 1
+    ? 'eine Million'
+    : `${receiptNumberToGermanWords(million)} Millionen`;
+  return remainder === 0 ? prefix : `${prefix} ${receiptNumberToGermanWords(remainder)}`;
+}
+
+function formatReceiptAmountInWords(value) {
+  const amount = parseReceiptAmount(value);
+
+  if (amount === null || amount < 0) {
+    return '';
+  }
+
+  const totalCents = Math.round(amount * 100);
+  const euros = Math.floor(totalCents / 100);
+  const cents = totalCents % 100;
+  const euroText = euros === 1
+    ? 'ein Euro'
+    : `${receiptNumberToGermanWords(euros)} Euro`;
+  const centText = cents === 1
+    ? 'ein Cent'
+    : `${receiptNumberToGermanWords(cents)} Cent`;
+
+  return `${euroText} und ${centText}`;
+}
+
 function calculateReceiptGrossAmount(amount) {
   const netAmount = parseReceiptAmount(amount.netAmount);
 
@@ -877,9 +963,13 @@ export default function ReceiptDocumentEditor() {
       const nextAmount = { ...current.amount, [field]: nextValue };
 
       if (field === 'netAmount' || field === 'grossAmount' || field === 'taxRate') {
+        const calculatedAmount = calculateReceiptAmounts(nextAmount, nextSource);
         return {
           ...current,
-          amount: calculateReceiptAmounts(nextAmount, nextSource),
+          amount: {
+            ...calculatedAmount,
+            amountInWords: formatReceiptAmountInWords(calculatedAmount.grossAmount),
+          },
         };
       }
 
