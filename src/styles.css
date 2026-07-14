@@ -599,7 +599,7 @@ h1 {
 .home-page {
   display: grid;
   gap: clamp(42px, 5.5vw, 68px);
-  max-width: 1080px;
+  max-width: 1000px;
   padding: clamp(24px, 3.5vw, 42px);
   background: rgba(255, 254, 252, 0.96);
 }
@@ -2803,6 +2803,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   text-transform: uppercase;
 }
 
+.receipt-fixed-amount-label {
+  display: block;
+}
+
 .receipt-amount-box input:not(.document-label-input) {
   box-sizing: border-box;
   width: 100%;
@@ -2841,14 +2845,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   text-align: right;
 }
 
-.receipt-tax-line input:nth-child(4) {
+.receipt-tax-line .receipt-tax-amount-label {
   grid-column: 5;
   justify-self: end;
   width: 100%;
   max-width: 100%;
 }
 
-.receipt-tax-line input:nth-child(5) {
+.receipt-tax-line .receipt-tax-amount-value {
   grid-column: 6;
 }
 

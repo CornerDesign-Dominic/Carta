@@ -381,12 +381,13 @@ function createViewData(data) {
       netAmount: viewValue(data.amount.netAmount),
       taxRate: viewValue(data.amount.taxRate),
       taxAmount: viewValue(data.amount.taxAmount),
-      grossAmount: calculateReceiptGrossAmount({
-        netAmount: data.amount.netAmount,
-        taxRate: data.amount.taxRate,
-        taxAmount: data.amount.taxAmount,
-        grossAmount: data.amount.grossAmount,
-      }),
+      grossAmount: viewValue(data.amount.grossAmount)
+        || calculateReceiptGrossAmount({
+          netAmount: data.amount.netAmount,
+          taxRate: data.amount.taxRate,
+          taxAmount: data.amount.taxAmount,
+          grossAmount: data.amount.grossAmount,
+        }),
       amountInWords: viewValue(data.amount.amountInWords),
       settlementMethod: viewValue(data.amount.settlementMethod),
     },
@@ -463,15 +464,54 @@ function calculateReceiptGrossAmount(amount) {
   return '';
 }
 
-function calculateReceiptTaxAmount(amount) {
+function calculateReceiptAmounts(amount, sourceField = 'netAmount') {
   const netAmount = parseReceiptAmount(amount.netAmount);
+  const grossAmount = parseReceiptAmount(amount.grossAmount);
   const taxRate = parseReceiptAmount(amount.taxRate);
 
-  if (netAmount === null || taxRate === null) {
-    return null;
+  if (taxRate === null) {
+    return {
+      ...amount,
+      taxAmount: '',
+      [sourceField === 'grossAmount' ? 'netAmount' : 'grossAmount']: '',
+    };
   }
 
-  return formatReceiptAmount(netAmount * (taxRate / 100));
+  const taxFactor = 1 + taxRate / 100;
+
+  if (sourceField === 'grossAmount') {
+    if (grossAmount === null || taxFactor === 0) {
+      return {
+        ...amount,
+        netAmount: '',
+        taxAmount: '',
+      };
+    }
+
+    const calculatedNet = grossAmount / taxFactor;
+
+    return {
+      ...amount,
+      netAmount: formatReceiptAmount(calculatedNet),
+      taxAmount: formatReceiptAmount(grossAmount - calculatedNet),
+    };
+  }
+
+  if (netAmount === null) {
+    return {
+      ...amount,
+      taxAmount: '',
+      grossAmount: '',
+    };
+  }
+
+  const calculatedTax = netAmount * (taxRate / 100);
+
+  return {
+    ...amount,
+    taxAmount: formatReceiptAmount(calculatedTax),
+    grossAmount: formatReceiptAmount(netAmount + calculatedTax),
+  };
 }
 
 function limitReceiptTaxRate(value) {
@@ -651,6 +691,7 @@ export default function ReceiptDocumentEditor() {
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialReceiptLabels);
   const [receiptData, setReceiptData] = useState(emptyReceiptData);
+  const [amountCalculationSource, setAmountCalculationSource] = useState('netAmount');
   const [textBlocks, setTextBlocks] = useState(defaultReceiptTextBlocks);
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(receiptContactFields),
@@ -825,13 +866,21 @@ export default function ReceiptDocumentEditor() {
   }
 
   function updateAmount(field, value) {
+    const nextSource = field === 'grossAmount' ? 'grossAmount' : field === 'netAmount' ? 'netAmount' : amountCalculationSource;
+
+    if (field === 'grossAmount' || field === 'netAmount') {
+      setAmountCalculationSource(field);
+    }
+
     setReceiptData((current) => {
       const nextValue = field === 'taxRate' ? limitReceiptTaxRate(value) : value;
       const nextAmount = { ...current.amount, [field]: nextValue };
 
-      if (field === 'netAmount' || field === 'taxRate') {
-        const taxAmount = calculateReceiptTaxAmount(nextAmount);
-        nextAmount.taxAmount = taxAmount ?? '';
+      if (field === 'netAmount' || field === 'grossAmount' || field === 'taxRate') {
+        return {
+          ...current,
+          amount: calculateReceiptAmounts(nextAmount, nextSource),
+        };
       }
 
       return {
@@ -1089,12 +1138,7 @@ export default function ReceiptDocumentEditor() {
             </h2>
             <section className="receipt-amount-box" aria-label="Betragsdarstellung">
               <label>
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${labels.netAmount}`}
-                  value={labels.netAmount}
-                  onChange={(event) => updateLabel('netAmount', event.target.value)}
-                />
+                <span className="document-label-input receipt-fixed-amount-label">{labels.netAmount}</span>
                 <input
                   className={dataCheckState.amount.netAmount ? 'document-data-check-marker' : undefined}
                   aria-label={labels.netAmount}
@@ -1106,12 +1150,7 @@ export default function ReceiptDocumentEditor() {
                 </span>
               </label>
               <label className="receipt-tax-line">
-                <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${labels.taxRate}`}
-                  value={labels.taxRate}
-                  onChange={(event) => updateLabel('taxRate', event.target.value)}
-                />
+                <span className="document-label-input receipt-fixed-amount-label">{labels.taxRate}</span>
                 <input
                   className={dataCheckState.amount.taxRate ? 'document-data-check-marker' : undefined}
                   aria-label={labels.taxRate}
@@ -1121,14 +1160,11 @@ export default function ReceiptDocumentEditor() {
                 <span className="receipt-amount-unit" aria-hidden="true">
                   %
                 </span>
+                <span className="document-label-input receipt-fixed-amount-label receipt-tax-amount-label">
+                  {labels.taxAmount}
+                </span>
                 <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${labels.taxAmount}`}
-                  value={labels.taxAmount}
-                  onChange={(event) => updateLabel('taxAmount', event.target.value)}
-                />
-                <input
-                  className="receipt-readonly-amount"
+                  className="receipt-readonly-amount receipt-tax-amount-value"
                   aria-label={labels.taxAmount}
                   value={amount.taxAmount}
                   readOnly
@@ -1138,17 +1174,12 @@ export default function ReceiptDocumentEditor() {
                 </span>
               </label>
               <label className="is-emphasized">
+                <span className="document-label-input receipt-fixed-amount-label">{labels.grossAmount}</span>
                 <input
-                  className="document-label-input"
-                  aria-label={`Beschriftung ${labels.grossAmount}`}
-                  value={labels.grossAmount}
-                  onChange={(event) => updateLabel('grossAmount', event.target.value)}
-                />
-                <input
-                  className="receipt-readonly-amount"
+                  className={dataCheckState.amount.grossAmount ? 'document-data-check-marker' : undefined}
                   aria-label={labels.grossAmount}
                   value={amount.grossAmount}
-                  readOnly
+                  onChange={(event) => updateAmount('grossAmount', event.target.value)}
                 />
                 <span className="receipt-amount-unit" aria-hidden="true">
                   {'\u20ac'}
