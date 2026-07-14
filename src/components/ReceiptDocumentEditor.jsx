@@ -201,7 +201,7 @@ const emptyReceiptData = {
   },
   amount: {
     netAmount: '',
-    taxRate: '',
+    taxRate: '0',
     taxAmount: '',
     grossAmount: '',
     amountInWords: '',
@@ -553,7 +553,7 @@ function calculateReceiptGrossAmount(amount) {
 function calculateReceiptAmounts(amount, sourceField = 'netAmount') {
   const netAmount = parseReceiptAmount(amount.netAmount);
   const grossAmount = parseReceiptAmount(amount.grossAmount);
-  const taxRate = parseReceiptAmount(amount.taxRate);
+  const taxRate = String(amount.taxRate ?? '').trim() === '' ? 0 : parseReceiptAmount(amount.taxRate);
 
   if (taxRate === null) {
     return {

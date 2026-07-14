@@ -2832,6 +2832,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   overflow-wrap: anywhere;
 }
 
+.receipt-amount-box input.receipt-readonly-amount,
+.receipt-amount-box input.receipt-readonly-amount:focus {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
 .receipt-amount-box select {
   appearance: none;
   box-sizing: border-box;
