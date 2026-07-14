@@ -4,25 +4,26 @@ Belege sind interaktive DIN-A4-Dokumente.
 
 ## Ziel
 
-- Dokumente direkt online erstellen, prüfen, drucken und als PDF speichern.
-- Belege sollen dokumentnah, ruhig und professionell wirken.
+- Direkt online erstellen, prüfen, drucken und als PDF speichern.
+- Dokumente sollen ruhig, sauber, geschäftlich und drucknah wirken.
 - Das Dokument steht im Mittelpunkt, nicht ein großes Formular.
 
 ## Bearbeitung
 
 - Der Bearbeiten-Modus hebt nur editierbare Felder hervor.
-- Vorschau, Print und PDF dürfen keine Bearbeitungshervorhebungen zeigen.
-- Optionale Felder sollen ein- und ausblendbar sein, wenn es fachlich sinnvoll ist.
-- Datenprüfung soll Beispielwerte, fehlende Angaben und auffällige Felder markieren.
+- Vorschau, PDF und Print zeigen keine Bearbeitungshervorhebungen.
+- Labels und Beschriftungen nicht editierbar machen, wenn sie fachlich fest sind.
+- Werte und Eingaben sind editierbar oder berechnet, je nach Beleglogik.
+- Optionale Felder nutzen ein Augen-Symbol, wenn das fachlich sinnvoll ist.
 
-## Vorlagen und Daten
+## Daten
 
-- Vorlagen speichern und laden Dokumentdaten als Datei.
-- Keine serverseitige Speicherung von Vorlagen oder Dokumentdaten.
-- Keine unnötige Datensammlung.
+- Vorlagen als Datei speichern und laden.
+- Keine serverseitige Speicherung von Dokumentdaten.
+- Datenprüfung markiert Beispieldaten, fehlende Angaben und auffällige Felder.
 
 ## Entwicklung
 
-- Layoutänderungen müssen Web, Print und PDF berücksichtigen.
-- Keine Änderungen an Belege-Komponenten für Tool-Zwecke.
+- Layoutänderungen müssen Vorschau, PDF und Print berücksichtigen.
 - Bestehende PDF-/Print-Logik wiederverwenden.
+- Keine Belege-Komponenten ändern, nur um Tools anzupassen.

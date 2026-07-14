@@ -1,26 +1,32 @@
 # Tools Guide
 
-Tools lösen konkrete Alltagsprobleme: rechnen, vergleichen, Fristen prüfen und Nachweise erzeugen.
+Tools lösen konkrete Alltagsprobleme: rechnen, vergleichen, Fristen prüfen und Nachweise erstellen.
 
-## Tool-Grundsätze
+## Grundsatz
 
-- Ein neues Tool startet standardmäßig ohne DIN-A4-Dokument.
-- Ein Tool-Dokument kommt nur dazu, wenn klar ist, welcher Inhalt dokumentiert werden soll.
+- Neue Tools starten standardmäßig ohne DIN-A4-Dokument.
+- Ein Tool-Dokument kommt nur dazu, wenn der Nachweisinhalt klar ist.
 - Einfache Rechner können dauerhaft ohne Dokument bleiben.
-- Druck und PDF gibt es nur, wenn ein Tool-Dokument vorhanden ist.
-- Tools dürfen keine Belege-Komponenten verändern oder direkt davon abhängig sein.
+- PDF und Druck gibt es nur bei Tools mit Dokument.
 
 ## Tool-Dokumente
 
 - Tool-Dokumente sind Berechnungsnachweise, keine Briefe.
-- Sie nutzen abgespeckte Briefstandards: Firmenname, Empfänger, Datum, Betreff, Vorlauftext, Inhalt und Seitenzahl.
-- Tool-Dokumente verwenden eigene Tool-Komponenten.
-- Web, Print und PDF müssen zusammenpassen.
+- Sie nutzen eigene Tool-Komponenten, keine Belege-Komponenten.
+- Standardbausteine: Firmenname, Empfänger, Datum, Betreff, Vorlauftext, Inhalt, Seitenzahl.
+- Web, Print und PDF müssen konsistent aussehen.
 
-## Rechnerverhalten
+## Eingaben und Ergebnisse
 
-- Vergleichsrechnungen müssen verständlich, begrenzt und sauber nummeriert oder benannt sein.
-- Ergebnisboxen sind klar, ruhig und nicht farblich überladen.
+- Sichtbare Beispielwerte sind erlaubt.
 - Keine versteckten Beispiel-Fallbacks verwenden.
-- Beispielwerte dürfen als sichtbare Startwerte genutzt werden.
-- Leere oder ungültige Eingaben dürfen kein `NaN` oder `Infinity` erzeugen.
+- `Felder leeren` oder Reset löscht Eingaben und zeigt einen sauberen Hinweis statt alter Ergebnisse.
+- Leere oder ungültige Eingaben erzeugen kein `NaN` und kein `Infinity`.
+- Ergebnisboxen sind ruhig, klar, ohne Verläufe und ohne doppelte Eingabe-/Ergebniswerte.
+
+## Vergleiche
+
+- Vergleichsrechnungen begrenzen.
+- Varianten sauber benennen oder nummerieren.
+- Hinzufügen und Entfernen müssen konsistent funktionieren.
+- Dokumente zeigen nur vorhandene Vergleiche.

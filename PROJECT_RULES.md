@@ -2,24 +2,31 @@
 
 Belege24 schafft Ordnung und Klarheit für geschäftliche Dokumente, Rechner und Nachweise.
 
-## Grundrichtung
+## Produktidee
 
-- Fokus liegt auf Belegen, Tools und Wissen, die sich gegenseitig unterstützen.
-- Nutzer sollen schnell etwas berechnen, erstellen, dokumentieren, drucken oder als PDF speichern können.
-- Kein unnötiger Schnickschnack, kein überladenes Design.
+- Schnell online arbeiten, ohne unnötigen Schnickschnack.
+- Belege und Tools unterstützen sich gegenseitig.
+- Nutzer sollen etwas berechnen, erstellen, dokumentieren, drucken oder als PDF speichern können.
 - Ton: Du-Ansprache, professionell, kollegial und auf Augenhöhe.
 
-## Produktstandard
+## Datenschutz und Login
 
-- Standard ist: kein Login, keine Server-Speicherung, keine unnötige Datensammlung.
+- Standard: kein Login, keine Server-Speicherung, keine unnötige Datensammlung.
 - Ein optionaler Login kann später für Stammdaten oder Einstellungen kommen.
 - Die aktuelle Entwicklung bleibt loginfrei.
-- Belege, Tools und Wissen bleiben strukturell sauber getrennt.
 
-## Technische Regeln
+## Struktur
+
+- Belege, Tools und Wissen bleiben getrennt.
+- Änderungen an einem Bereich dürfen andere Bereiche nicht unbeabsichtigt verändern.
+- Keine Belege-Komponenten für Tool-Zwecke umbauen.
+- Keine Tool-Komponenten in Wissensseiten mischen.
+
+## Entwicklung
 
 - PDF und Print laufen über bestehende Projektlogik.
 - Keine neue PDF-/Print-Parallelstruktur bauen.
-- Globale CSS-Änderungen nur, wenn sie wirklich sinnvoll sind.
+- Globales CSS nur anfassen, wenn es sinnvoll und stabil ist.
 - Sonst komponentenspezifische Klassen bevorzugen.
-- Web, Print und PDF müssen konsistent geprüft werden.
+- Web, Print und PDF bei relevanten Änderungen prüfen.
+- Der Build muss laufen.
