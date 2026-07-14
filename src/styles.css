@@ -1193,23 +1193,24 @@ h1 {
 
 .document-usage-mini-eye {
   position: relative;
+  display: block;
   flex: 0 0 auto;
-  width: 13px;
+  width: 12px;
   height: 8px;
-  border: 1.5px solid var(--accent-deep);
-  border-radius: 999px / 70%;
+  border: 1.3px solid currentColor;
+  border-radius: 999px / 720px;
+  color: var(--accent-deep);
 }
 
 .document-usage-mini-eye::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 2px;
+  left: 4px;
   width: 3px;
   height: 3px;
-  border-radius: 50%;
-  background: var(--accent-deep);
-  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: currentColor;
 }
 
 .document-usage-mini-actions {
@@ -7957,20 +7958,31 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   position: absolute;
   top: calc(100% + var(--tool-document-recipient-offset));
   right: 0;
-  display: block;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
   width: 100%;
   max-width: 118px;
   margin-top: 0;
   color: #67645e;
-  direction: rtl;
 }
 
 .tool-document-date-field input {
-  direction: ltr;
+  position: absolute;
+  grid-column: 1 / -1;
+  grid-row: 1;
   width: 100%;
+  height: 100%;
   min-width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tool-document-date-display {
+  grid-column: 2;
+  grid-row: 1;
   min-height: 20px;
-  padding: 1px 0;
   color: #232320;
   font-size: 0.72rem;
   font-weight: 560;
@@ -7979,11 +7991,77 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-document-date-field input::-webkit-calendar-picker-indicator {
-  order: -1;
+  display: none;
+}
+
+.tool-document-date-picker {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 13px;
   height: 13px;
-  margin: 0 5px 0 0;
-  opacity: 0.58;
+  border: 1px solid rgba(95, 94, 89, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 254, 250, 0.92);
+  color: #67645e;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.tool-document-date-picker:hover,
+.tool-document-date-picker:focus-visible {
+  border-color: rgba(95, 94, 89, 0.36);
+  background: rgba(95, 94, 89, 0.1);
+  color: #3f3b35;
+}
+
+.tool-document-date-picker span {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border: 1.15px solid currentColor;
+  border-radius: 2px;
+}
+
+.tool-document-date-picker span::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: -1.15px;
+  right: -1.15px;
+  border-top: 1.15px solid currentColor;
+}
+
+.tool-document-date-picker span::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  width: 3px;
+  height: 3px;
+  border-left: 1.15px solid currentColor;
+  border-right: 1.15px solid currentColor;
+}
+
+.tool-document-a4:hover .tool-document-date-picker,
+.tool-document-a4:focus-within .tool-document-date-picker,
+.tool-document-a4.is-highlight-mode .tool-document-date-picker {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tool-document-a4.is-export-mode .tool-document-date-picker,
+body.document-print-mode .tool-document-date-picker,
+body.tool-document-print-mode .tool-document-date-picker {
+  display: none;
 }
 
 .tool-print-date {
@@ -8796,14 +8874,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-form-grid-hourly-wage .tools-field-hourly-amount {
   order: 1;
-}
-
-.tools-form-grid-hourly-wage .tools-field-hourly-type {
-  order: 2;
+  grid-column: 1 / -1;
 }
 
 .tools-form-grid-hourly-wage .tools-field-hourly-duration {
-  order: 3;
+  order: 2;
+  grid-column: 1 / -1;
 }
 
 .tools-form-grid-cost-comparison .tools-field-cost-label {

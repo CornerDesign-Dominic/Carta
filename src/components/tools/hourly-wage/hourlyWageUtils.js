@@ -1,12 +1,5 @@
-export const hourlyWageAmountOptions = [
-  { value: 'gross', label: 'Brutto' },
-  { value: 'net', label: 'Netto' },
-  { value: 'project', label: 'Projektbetrag' },
-];
-
 export const hourlyWageExampleValues = {
   amount: '3000',
-  amountType: 'gross',
   hours: '160',
   minutes: '0',
 };
@@ -19,7 +12,6 @@ const currencyFormatter = new Intl.NumberFormat('de-DE', {
 export function createHourlyWageCalculation() {
   return {
     amount: hourlyWageExampleValues.amount,
-    amountType: hourlyWageExampleValues.amountType,
     hours: hourlyWageExampleValues.hours,
     minutes: hourlyWageExampleValues.minutes,
   };

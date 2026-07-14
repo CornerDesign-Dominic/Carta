@@ -8,7 +8,7 @@ import InterestCalculator from '../components/tools/interest/InterestCalculator.
 import VatCalculator from '../components/tools/vat/VatCalculator.jsx';
 import WorkingTimeCalculator from '../components/tools/working-time/WorkingTimeCalculator.jsx';
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
-import { findToolItem, toolItems } from '../data/tools.js';
+import { findToolItem } from '../data/tools.js';
 
 function ToolUsageMiniVisual({ type }) {
   return (
@@ -70,7 +70,7 @@ function ToolUsageMiniVisual({ type }) {
   );
 }
 
-function ToolOverview({ onSelect }) {
+function ToolOverview() {
   const usageSections = [
     {
       title: 'Angaben eintragen',
@@ -127,20 +127,6 @@ function ToolOverview({ onSelect }) {
           ))}
         </div>
       </section>
-
-      <section className="tools-overview-grid" aria-label="Verfügbare Werkzeuge">
-        {toolItems.map((item) => (
-          <button
-            className="tools-overview-card"
-            type="button"
-            onClick={() => onSelect(item.id)}
-            key={item.id}
-          >
-            <span>{item.title}</span>
-            <p>{item.description}</p>
-          </button>
-        ))}
-      </section>
     </>
   );
 }
@@ -164,7 +150,7 @@ export default function ToolsView({ activeToolId, onSelectTool }) {
 
   function renderTool() {
     if (!activeToolId) {
-      return <ToolOverview onSelect={handleSelectTool} />;
+      return <ToolOverview />;
     }
 
     if (activeToolId === 'zinsrechner') {
@@ -199,7 +185,7 @@ export default function ToolsView({ activeToolId, onSelectTool }) {
       return <CostComparisonCalculator />;
     }
 
-    return <ToolOverview onSelect={handleSelectTool} />;
+    return <ToolOverview />;
   }
 
   return (

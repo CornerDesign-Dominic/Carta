@@ -4,7 +4,6 @@ import {
   createHourlyWageCalculation,
   formatCurrency,
   formatDuration,
-  hourlyWageAmountOptions,
 } from './hourlyWageUtils.js';
 
 export default function HourlyWageCalculator() {
@@ -53,7 +52,7 @@ export default function HourlyWageCalculator() {
               <h2>Eingaben</h2>
               <div className="tools-form-grid tools-form-grid-hourly-wage">
                 <label className="tools-field-hourly-amount">
-                  <span>Verdienst/Betrag</span>
+                  <span>Vergütung</span>
                   <input
                     inputMode="decimal"
                     min="0"
@@ -61,20 +60,6 @@ export default function HourlyWageCalculator() {
                     value={calculation.amount}
                     onChange={handlePositiveNumberChange('amount')}
                   />
-                </label>
-
-                <label className="tools-field-hourly-type">
-                  <span>Art des Betrags</span>
-                  <select
-                    value={calculation.amountType}
-                    onChange={(event) => updateCalculation('amountType', event.target.value)}
-                  >
-                    {hourlyWageAmountOptions.map((option) => (
-                      <option value={option.value} key={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
                 </label>
 
                 <div className="tools-duration-field tools-field-hourly-duration">
@@ -124,7 +109,7 @@ export default function HourlyWageCalculator() {
                       <dd>{formatCurrency(result.minuteWage)}</dd>
                     </div>
                     <div>
-                      <dt>Berechneter Betrag</dt>
+                      <dt>Gesamtvergütung</dt>
                       <dd>{formatCurrency(result.amount)}</dd>
                     </div>
                   </dl>
