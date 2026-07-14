@@ -1,26 +1,42 @@
 import { toolItems } from '../../data/tools.js';
 
 export default function ToolsSidebar({ activeToolId, onSelect, onShowOverview }) {
+  function handleInternalLinkClick(event, callback) {
+    if (
+      event.defaultPrevented
+      || event.button !== 0
+      || event.metaKey
+      || event.ctrlKey
+      || event.altKey
+      || event.shiftKey
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    callback();
+  }
+
   return (
     <aside className="tools-sidebar" aria-label="Werkzeugnavigation">
-      <button
+      <a
         className={!activeToolId ? 'tools-sidebar-title is-active' : 'tools-sidebar-title'}
-        type="button"
-        onClick={onShowOverview}
+        href="/tools"
+        onClick={(event) => handleInternalLinkClick(event, onShowOverview)}
       >
         Werkzeuge
-      </button>
+      </a>
 
       <nav className="tools-sidebar-nav">
         {toolItems.map((item) => (
-          <button
+          <a
             className={activeToolId === item.id ? 'tools-sidebar-link is-active' : 'tools-sidebar-link'}
-            type="button"
-            onClick={() => onSelect(item.id)}
+            href={item.path}
+            onClick={(event) => handleInternalLinkClick(event, () => onSelect(item.id))}
             key={item.id}
           >
             {item.title}
-          </button>
+          </a>
         ))}
       </nav>
     </aside>
