@@ -1247,9 +1247,9 @@ export default function ReceiptDocumentEditor() {
                   value={amount.taxRate}
                   onChange={(event) => updateAmount('taxRate', event.target.value)}
                 >
-                  <option value="0">0 %</option>
-                  <option value="7">7 %</option>
-                  <option value="19">19 %</option>
+                  <option value="0">0</option>
+                  <option value="7">7</option>
+                  <option value="19">19</option>
                 </select>
                 <span className="receipt-amount-unit" aria-hidden="true">
                   %
