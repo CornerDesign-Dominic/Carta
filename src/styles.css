@@ -2682,7 +2682,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   grid-template-columns: minmax(0, 1fr) 50%;
   gap: 18px;
   align-items: start;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .receipt-header-address {
@@ -2717,10 +2717,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-width: 0;
   min-height: 16px;
   padding: 0 !important;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
   color: inherit;
   font-size: 0.72rem;
   line-height: 1.18;
   text-align: left;
+}
+
+.receipt-sheet.is-highlight-mode .receipt-header-row input {
+  border-color: rgba(74, 103, 119, 0.28);
+  background: rgba(236, 244, 246, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
 }
 
 .receipt-header-address .editable-group input {
@@ -2823,8 +2832,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   overflow-wrap: anywhere;
 }
 
+.receipt-amount-box select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 18px;
+  border: 0;
+  border-radius: 4px;
+  padding: 0 10px 0 0;
+  background: transparent;
+  color: #000000;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 720;
+  line-height: 1.18;
+  text-align: right;
+  text-align-last: right;
+}
+
 .receipt-amount-box .receipt-tax-line {
-  grid-template-columns: 58px 30px 8px minmax(0, 1fr) 82px 84px max-content;
+  grid-template-columns: minmax(0, 1fr) 84px max-content;
   column-gap: 4px;
 }
 
@@ -2843,23 +2870,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   padding-left: 0;
 }
 
+.receipt-tax-line select {
+  text-align: right;
+  text-align-last: right;
+}
+
 .receipt-tax-line input:nth-child(2) {
   text-align: right;
-}
-
-.receipt-tax-line .receipt-tax-amount-label {
-  grid-column: 5;
-  justify-self: end;
-  width: 100%;
-  max-width: 100%;
-}
-
-.receipt-tax-line .receipt-tax-amount-value {
-  grid-column: 6;
-}
-
-.receipt-tax-line .receipt-amount-unit:last-child {
-  grid-column: 7;
 }
 
 .receipt-amount-unit {

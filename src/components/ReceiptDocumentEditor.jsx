@@ -1241,20 +1241,24 @@ export default function ReceiptDocumentEditor() {
               </label>
               <label className="receipt-tax-line">
                 <span className="document-label-input receipt-fixed-amount-label">{labels.taxRate}</span>
-                <input
+                <select
                   className={dataCheckState.amount.taxRate ? 'document-data-check-marker' : undefined}
                   aria-label={labels.taxRate}
                   value={amount.taxRate}
                   onChange={(event) => updateAmount('taxRate', event.target.value)}
-                />
+                >
+                  <option value="0">0 %</option>
+                  <option value="7">7 %</option>
+                  <option value="19">19 %</option>
+                </select>
                 <span className="receipt-amount-unit" aria-hidden="true">
                   %
                 </span>
-                <span className="document-label-input receipt-fixed-amount-label receipt-tax-amount-label">
-                  {labels.taxAmount}
-                </span>
+              </label>
+              <label>
+                <span className="document-label-input receipt-fixed-amount-label">{labels.taxAmount}</span>
                 <input
-                  className="receipt-readonly-amount receipt-tax-amount-value"
+                  className="receipt-readonly-amount"
                   aria-label={labels.taxAmount}
                   value={amount.taxAmount}
                   readOnly

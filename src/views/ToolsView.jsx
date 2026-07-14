@@ -107,18 +107,14 @@ function ToolOverview({ onSelect }) {
   return (
     <>
       <p className="eyebrow">WERKZEUGE</p>
-      <h1 id="tools-title">Werkzeuge für schnelle Berechnungen</h1>
+      <h1 id="tools-title">Nutze deine Werkzeuge</h1>
       <p className="intro tools-intro">
-        Hier findest du praktische Rechner und Hilfen für den geschäftlichen Alltag.
+        Mit unseren Online-Rechnern kannst du wichtige Werte direkt im
+        Browser berechnen. Trage deine Angaben ein, prüfe das Ergebnis und
+        nutze die Berechnung für deinen geschäftlichen Alltag.
       </p>
 
       <section className="tools-usage-section" aria-label="Anleitung zur Nutzung der Werkzeuge">
-        <h2>Nutze deine Werkzeuge</h2>
-        <p className="tools-usage-intro">
-          Mit unseren Online-Rechnern kannst du wichtige Werte direkt im
-          Browser berechnen. Trage deine Angaben ein, prüfe das Ergebnis und
-          nutze die Berechnung für deinen geschäftlichen Alltag.
-        </p>
         <div className="tools-usage-grid" aria-label="Hinweise zur Nutzung der Werkzeuge">
           {usageSections.map((section) => (
             <section className="tools-usage-row" key={section.title}>
