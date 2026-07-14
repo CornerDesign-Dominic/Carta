@@ -8,6 +8,7 @@ function ReceiptPanelInput({
   inputMode,
   label,
   name,
+  onBlur,
   onChange,
   placeholder = '',
   readOnly = false,
@@ -27,6 +28,7 @@ function ReceiptPanelInput({
         spellCheck={spellCheck}
         type={type}
         value={getFormValue(value)}
+        onBlur={onBlur}
         onChange={(event) => {
           if (!readOnly) onChange(event.target.value);
         }}
@@ -57,6 +59,7 @@ export default function ReceiptDocumentForm({
   onToggle,
   sender,
   updateAmount,
+  formatAmountField,
   updateDetail,
   updateSender,
 }) {
@@ -110,10 +113,10 @@ export default function ReceiptDocumentForm({
             <div className="invoice-panel-section">
               <h3>Beträge</h3>
               <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <ReceiptPanelInput inputMode="decimal" label="Netto Betrag" name="receipt-net-amount" placeholder={defaults.amount.netAmount} value={amount.netAmount} onChange={(value) => updateAmount('netAmount', value)} />
+                <ReceiptPanelInput inputMode="decimal" label="Netto Betrag" name="receipt-net-amount" placeholder={defaults.amount.netAmount} value={amount.netAmount} onChange={(value) => updateAmount('netAmount', value)} onBlur={() => formatAmountField('netAmount')} />
                 <ReceiptPanelInput inputMode="decimal" label="USt.-Satz" name="receipt-tax-rate" placeholder={defaults.amount.taxRate} value={amount.taxRate} onChange={(value) => updateAmount('taxRate', value)} />
                 <ReceiptPanelInput inputMode="decimal" label="USt.-Betrag" name="receipt-tax-amount" placeholder={defaults.amount.taxAmount} readOnly value={amount.taxAmount} onChange={() => {}} />
-                <ReceiptPanelInput inputMode="decimal" label="Brutto Gesamtbetrag / Betrag in Zahlen" name="receipt-gross-amount" placeholder={defaults.amount.grossAmount} value={amount.grossAmount} onChange={(value) => updateAmount('grossAmount', value)} />
+                <ReceiptPanelInput inputMode="decimal" label="Brutto Gesamtbetrag / Betrag in Zahlen" name="receipt-gross-amount" placeholder={defaults.amount.grossAmount} value={amount.grossAmount} onChange={(value) => updateAmount('grossAmount', value)} onBlur={() => formatAmountField('grossAmount')} />
                 <ReceiptPanelInput label="Betrag in Worten" name="receipt-amount-words" placeholder={defaults.amount.amountInWords} value={amount.amountInWords} onChange={(value) => updateAmount('amountInWords', value)} />
               </div>
             </div>

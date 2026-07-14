@@ -444,11 +444,6 @@ function formatReceiptAmount(value) {
   }).format(value);
 }
 
-function formatReceiptInputAmount(value) {
-  const amount = parseReceiptAmount(value);
-  return amount === null ? value : formatReceiptAmount(amount);
-}
-
 function receiptNumberToGermanWords(value, standaloneOne = true) {
   const smallNumbers = [
     'null',
@@ -964,9 +959,8 @@ export default function ReceiptDocumentEditor() {
     }
 
     setReceiptData((current) => {
-    const nextValue = field === 'taxRate' ? limitReceiptTaxRate(value) : value;
-      const displayValue = field === 'netAmount' ? formatReceiptInputAmount(nextValue) : nextValue;
-      const nextAmount = { ...current.amount, [field]: displayValue };
+      const nextValue = field === 'taxRate' ? limitReceiptTaxRate(value) : value;
+      const nextAmount = { ...current.amount, [field]: nextValue };
 
       if (field === 'netAmount' || field === 'grossAmount' || field === 'taxRate') {
         const calculatedAmount = calculateReceiptAmounts(nextAmount, nextSource);
@@ -982,6 +976,32 @@ export default function ReceiptDocumentEditor() {
       return {
         ...current,
         amount: nextAmount,
+      };
+    });
+  }
+
+  function formatAmountField(field) {
+    setReceiptData((current) => {
+      const currentValue = current.amount[field];
+      const parsedValue = parseReceiptAmount(currentValue);
+
+      if (parsedValue === null) {
+        return current;
+      }
+
+      const sourceField = field === 'grossAmount' ? 'grossAmount' : 'netAmount';
+      const nextAmount = {
+        ...current.amount,
+        [field]: formatReceiptAmount(parsedValue),
+      };
+      const calculatedAmount = calculateReceiptAmounts(nextAmount, sourceField);
+
+      return {
+        ...current,
+        amount: {
+          ...calculatedAmount,
+          amountInWords: formatReceiptAmountInWords(calculatedAmount.grossAmount),
+        },
       };
     });
   }
@@ -1185,6 +1205,7 @@ export default function ReceiptDocumentEditor() {
           defaults={{ ...defaultReceiptData, textBlocks: receiptTextDefaults }}
           details={{ ...receiptData.details, ...receiptData.references }}
           isOpen={isFormPanelOpen}
+          formatAmountField={formatAmountField}
           onToggle={() => setIsFormPanelOpen((current) => !current)}
           sender={receiptData.sender}
           updateAmount={updateAmount}
@@ -1240,6 +1261,7 @@ export default function ReceiptDocumentEditor() {
                   aria-label={labels.netAmount}
                   value={amount.netAmount}
                   onChange={(event) => updateAmount('netAmount', event.target.value)}
+                  onBlur={() => formatAmountField('netAmount')}
                 />
                 <span className="receipt-amount-unit" aria-hidden="true">
                   {'\u20ac'}
@@ -1280,6 +1302,7 @@ export default function ReceiptDocumentEditor() {
                   aria-label={labels.grossAmount}
                   value={amount.grossAmount}
                   onChange={(event) => updateAmount('grossAmount', event.target.value)}
+                  onBlur={() => formatAmountField('grossAmount')}
                 />
                 <span className="receipt-amount-unit" aria-hidden="true">
                   {'\u20ac'}

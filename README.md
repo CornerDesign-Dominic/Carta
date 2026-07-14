@@ -2,6 +2,15 @@
 
 Belege24 ist ein browserbasiertes Werkzeug zur Erstellung von Geschäftsdokumenten wie Rechnungen, Angeboten und Mahnungen.
 
+## Leitfäden
+
+Diese Markdown-Dateien sind der verbindliche Arbeitsstandard für die weitere Entwicklung:
+
+- [Projektregeln](PROJECT_RULES.md)
+- [Tools Guide](TOOLS_GUIDE.md)
+- [Documents Guide](DOCUMENTS_GUIDE.md)
+- [Knowledge Guide](KNOWLEDGE_GUIDE.md)
+
 ## Fokus
 
 Der Schwerpunkt liegt auf visuell editierbaren A4-Dokumenten statt klassischen Formularen. Nutzer sollen Dokumente direkt im Browser so bearbeiten, wie sie später gedruckt oder als PDF exportiert werden.
