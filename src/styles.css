@@ -2797,7 +2797,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   width: 100%;
   min-width: 0;
   color: #000000;
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: 720;
   text-align: left;
   text-transform: uppercase;
@@ -2878,7 +2878,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .receipt-line-field {
   display: grid;
   grid-template-columns: 118px minmax(0, 1fr);
-  gap: 12px;
+  gap: 24px;
   align-items: end;
   min-width: 0;
   min-height: 28px;
@@ -2895,7 +2895,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   border-radius: 4px;
   padding: 0 0 7px !important;
   color: #000000;
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 720;
   line-height: 1.25;
   outline: 1px solid transparent;
@@ -2957,7 +2957,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .receipt-place-date-fields .receipt-place-input {
-  text-align: right;
+  text-align: left;
 }
 
 .receipt-date-field {
@@ -3026,7 +3026,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .receipt-bottom-field .document-label-input {
   color: #000000;
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 720;
 }
 
@@ -3092,7 +3092,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .receipt-signature-field .document-label-input {
   align-self: end;
   color: #000000;
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   font-weight: 720;
 }
 
