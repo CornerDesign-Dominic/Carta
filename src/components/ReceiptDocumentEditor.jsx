@@ -444,6 +444,11 @@ function formatReceiptAmount(value) {
   }).format(value);
 }
 
+function formatReceiptInputAmount(value) {
+  const amount = parseReceiptAmount(value);
+  return amount === null ? value : formatReceiptAmount(amount);
+}
+
 function receiptNumberToGermanWords(value, standaloneOne = true) {
   const smallNumbers = [
     'null',
@@ -959,8 +964,9 @@ export default function ReceiptDocumentEditor() {
     }
 
     setReceiptData((current) => {
-      const nextValue = field === 'taxRate' ? limitReceiptTaxRate(value) : value;
-      const nextAmount = { ...current.amount, [field]: nextValue };
+    const nextValue = field === 'taxRate' ? limitReceiptTaxRate(value) : value;
+      const displayValue = field === 'netAmount' ? formatReceiptInputAmount(nextValue) : nextValue;
+      const nextAmount = { ...current.amount, [field]: displayValue };
 
       if (field === 'netAmount' || field === 'grossAmount' || field === 'taxRate') {
         const calculatedAmount = calculateReceiptAmounts(nextAmount, nextSource);
