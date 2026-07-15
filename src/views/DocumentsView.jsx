@@ -23,6 +23,10 @@ function pathForInvoiceVariant(variant) {
     return '/dokumente/rechnung/text';
   }
 
+  if (variant === 'goods') {
+    return '/dokumente/rechnung/waren';
+  }
+
   return '/dokumente/rechnung';
 }
 

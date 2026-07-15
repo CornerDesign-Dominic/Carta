@@ -24,6 +24,7 @@ const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
   { id: 'smallBusiness', label: 'Kleinunternehmer' },
   { id: 'text', label: 'Textrechnung' },
+  { id: 'goods', label: 'Warenrechnung' },
 ];
 const smallBusinessTaxNotice =
   'Aufgrund der Anwendung der Kleinunternehmerregelung gemäß § 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
@@ -41,6 +42,7 @@ const initialInvoiceLabels = {
   externalNumber: 'Externe Nummer',
   customerNumber: 'Kundennummer',
   position: 'Pos.',
+  articleNumber: 'Artikelnummer',
   description: 'Beschreibung',
   unitPrice: 'Einzelpreis',
   quantity: 'Anzahl',
@@ -75,6 +77,11 @@ const invoiceMetaFields = [
 const invoiceRecipientOptionalFields = [
   { field: 'attention', label: 'Zusatz / zu Händen' },
   { field: 'name', label: 'Name / Abteilung' },
+];
+
+const invoiceDeliveryAddressOptionalFields = [
+  { field: 'attention', label: 'z. Hd.' },
+  { field: 'name', label: 'Abteilung' },
 ];
 
 const invoiceFooterColumns = [
@@ -144,6 +151,17 @@ const defaultInvoiceData = {
       street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
+      city: 'Hamburg',
+    },
+  },
+  deliveryAddress: {
+    companyName: 'Beispielkunde GmbH',
+    attention: 'z. Hd. Warenannahme',
+    name: 'Logistik',
+    address: {
+      street: 'Lieferstrasse',
+      houseNumber: '3',
+      postalCode: '20097',
       city: 'Hamburg',
     },
   },
@@ -226,7 +244,7 @@ function createReturnAddress(sender) {
     .join(' - ');
 }
 
-function createInvoiceViewData({ sender, recipient, details, references, footer }) {
+function createInvoiceViewData({ sender, recipient, deliveryAddress, details, references, footer }) {
   return {
     sender: {
       company: sender.companyName,
@@ -242,6 +260,13 @@ function createInvoiceViewData({ sender, recipient, details, references, footer 
       name: recipient.name,
       street: joinLine(recipient.address.street, recipient.address.houseNumber),
       cityLine: joinLine(recipient.address.postalCode, recipient.address.city),
+    },
+    deliveryAddress: {
+      company: deliveryAddress.companyName,
+      attention: deliveryAddress.attention,
+      name: deliveryAddress.name,
+      street: joinLine(deliveryAddress.address.street, deliveryAddress.address.houseNumber),
+      cityLine: joinLine(deliveryAddress.address.postalCode, deliveryAddress.address.city),
     },
     details: {
       ...details,
@@ -275,6 +300,7 @@ function createInvoiceViewData({ sender, recipient, details, references, footer 
 function createInvoicePosition() {
   return {
     id: crypto.randomUUID(),
+    articleNumber: '',
     description: 'Leistung beschreiben',
     unitPrice: '0',
     quantity: '1',
@@ -294,6 +320,7 @@ function createTextInvoicePosition() {
 
 const defaultInvoiceViewData = createInvoiceViewData(defaultInvoiceData);
 const defaultInvoicePositionForCheck = {
+  articleNumber: '',
   description: 'Leistung beschreiben',
   unitPrice: '0',
   quantity: '1',
@@ -312,6 +339,7 @@ function normalizeFieldConfig(config) {
   const fallback = {
     contact: createFieldConfig(invoiceContactFields),
     details: createFieldConfig(invoiceMetaFields),
+    deliveryAddress: createFieldConfig(invoiceDeliveryAddressOptionalFields),
     recipient: createFieldConfig(invoiceRecipientOptionalFields),
     footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
   };
@@ -323,6 +351,7 @@ function normalizeFieldConfig(config) {
   return {
     contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
     details: normalizeFieldConfigBlock(config.details, fallback.details),
+    deliveryAddress: normalizeFieldConfigBlock(config.deliveryAddress, fallback.deliveryAddress),
     recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
     footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
   };
@@ -354,6 +383,11 @@ function normalizeInvoiceData(data = {}) {
       ...defaultInvoiceData.recipient,
       ...(data.recipient ?? {}),
       address: { ...defaultInvoiceData.recipient.address, ...(data.recipient?.address ?? {}) },
+    },
+    deliveryAddress: {
+      ...defaultInvoiceData.deliveryAddress,
+      ...(data.deliveryAddress ?? {}),
+      address: { ...defaultInvoiceData.deliveryAddress.address, ...(data.deliveryAddress?.address ?? {}) },
     },
     details: { ...defaultInvoiceData.details, ...(data.details ?? {}) },
     references: { ...defaultInvoiceData.references, ...(data.references ?? {}) },
@@ -398,6 +432,7 @@ function normalizePositions(templatePositions) {
 
   return templatePositions.map((position) => ({
     id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
+    articleNumber: String(position.articleNumber ?? ''),
     description: String(position.description ?? 'Leistung beschreiben'),
     unitPrice: String(position.unitPrice ?? '0'),
     quantity: String(position.quantity ?? '1'),
@@ -481,6 +516,8 @@ function createPdfFileName(title, number, invoiceVariant = 'standard') {
       ? 'kleinunternehmerrechnung'
       : invoiceVariant === 'text'
         ? 'textrechnung'
+        : invoiceVariant === 'goods'
+          ? 'warenrechnung'
         : title || 'rechnung',
   );
   const cleanNumber = createSlug(number || new Date().toISOString().slice(0, 10));
@@ -569,11 +606,12 @@ function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
 }
 
 export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onInvoiceVariantChange }) {
-  const normalizedInvoiceVariant = ['standard', 'smallBusiness', 'text'].includes(invoiceVariant)
+  const normalizedInvoiceVariant = ['standard', 'smallBusiness', 'text', 'goods'].includes(invoiceVariant)
     ? invoiceVariant
     : 'standard';
   const isSmallBusinessInvoice = normalizedInvoiceVariant === 'smallBusiness';
   const isTextInvoice = normalizedInvoiceVariant === 'text';
+  const isGoodsInvoice = normalizedInvoiceVariant === 'goods';
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -582,6 +620,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(invoiceContactFields),
     details: createFieldConfig(invoiceMetaFields),
+    deliveryAddress: createFieldConfig(invoiceDeliveryAddressOptionalFields),
     recipient: createFieldConfig(invoiceRecipientOptionalFields),
     footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
   });
@@ -594,7 +633,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
   const [invoiceData, setInvoiceData] = useState(defaultInvoiceData);
   const [textBlocks, setTextBlocks] = useState(defaultInvoiceTextBlocks);
   const [positions, setPositions] = useState(() => [isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
-  const { sender, recipient, details, footerLines } = useMemo(
+  const { sender, recipient, deliveryAddress, details, footerLines } = useMemo(
     () => createInvoiceViewData(invoiceData),
     [invoiceData],
   );
@@ -671,6 +710,8 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           ? { ...defaultInvoicePositionForCheck, description: 'Leistungsbeschreibung eintragen' }
           : defaultInvoicePositionForCheck,
         defaultViewData: defaultInvoiceViewData,
+        deliveryAddress,
+        deliveryAddressHiddenFields: fieldConfig.deliveryAddress.hidden,
         details,
         footerLines,
         isActive: isDataCheckMode,
@@ -679,6 +720,8 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           ? ['description', 'unitPrice', 'unit']
           : isSmallBusinessInvoice
           ? ['description', 'unitPrice', 'quantity', 'unit']
+          : isGoodsInvoice
+          ? ['articleNumber', 'description', 'unitPrice', 'quantity', 'unit', 'taxRate']
           : ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'],
         recipient,
         recipientHiddenFields: fieldConfig.recipient.hidden,
@@ -693,7 +736,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
         ),
       }),
-    [details, fieldConfig, footerLines, isDataCheckMode, isSmallBusinessInvoice, isTextInvoice, positions, recipient, sender],
+    [deliveryAddress, details, fieldConfig, footerLines, isDataCheckMode, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, positions, recipient, sender],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -813,6 +856,26 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
 
   function addPosition() {
     setPositions((current) => [...current, isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
+  }
+
+  function updateDeliveryAddress(field, value) {
+    setInvoiceData((current) => {
+      if (field === 'company') {
+        return { ...current, deliveryAddress: { ...current.deliveryAddress, companyName: value } };
+      }
+
+      if (field === 'address') {
+        return {
+          ...current,
+          deliveryAddress: {
+            ...current.deliveryAddress,
+            address: { ...current.deliveryAddress.address, ...value },
+          },
+        };
+      }
+
+      return { ...current, deliveryAddress: { ...current.deliveryAddress, [field]: value } };
+    });
   }
 
   function removePosition(positionId) {
@@ -943,7 +1006,12 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      if (data.invoiceVariant === 'smallBusiness' || data.invoiceVariant === 'standard' || data.invoiceVariant === 'text') {
+      if (
+        data.invoiceVariant === 'smallBusiness' ||
+        data.invoiceVariant === 'standard' ||
+        data.invoiceVariant === 'text' ||
+        data.invoiceVariant === 'goods'
+      ) {
         onInvoiceVariantChange?.(data.invoiceVariant);
       }
       setIsDataCheckMode(false);
@@ -1100,15 +1168,35 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
         />
 
         <section className="invoice-address-row">
-          <RecipientBlock
-            dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
-            hiddenFields={getHiddenFields('recipient', invoiceRecipientOptionalFields)}
-            recipient={recipient}
-            senderLine={sender.senderLine}
-            onRecipientChange={updateRecipient}
-            onSenderLineChange={(value) => updateSender('senderLine', value)}
-            onToggleField={(field) => toggleConfiguredField('recipient', field)}
-          />
+          <div className="invoice-address-stack">
+            <RecipientBlock
+              ariaPrefix="Empfaenger"
+              dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
+              hiddenFields={getHiddenFields('recipient', invoiceRecipientOptionalFields)}
+              recipient={recipient}
+              senderLine={sender.senderLine}
+              onRecipientChange={updateRecipient}
+              onSenderLineChange={(value) => updateSender('senderLine', value)}
+              onToggleField={(field) => toggleConfiguredField('recipient', field)}
+            />
+
+            {isGoodsInvoice && (
+              <section className="invoice-delivery-address-block" aria-label="Lieferadresse">
+                <p className="invoice-delivery-address-title">Lieferadresse</p>
+                <RecipientBlock
+                  ariaPrefix="Lieferadresse"
+                  attentionToggleLabel="z. Hd."
+                  dataCheckFields={dataCheckState.deliveryAddress}
+                  hiddenFields={getHiddenFields('deliveryAddress', invoiceDeliveryAddressOptionalFields)}
+                  nameToggleLabel="Abteilung"
+                  recipient={deliveryAddress}
+                  showSenderLine={false}
+                  onRecipientChange={updateDeliveryAddress}
+                  onToggleField={(field) => toggleConfiguredField('deliveryAddress', field)}
+                />
+              </section>
+            )}
+          </div>
 
           <DocumentMetaBlock
             dataCheckFields={dataCheckState.details}
@@ -1142,6 +1230,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           calculatePosition={calculateCurrentPosition}
           dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
+          isGoodsInvoice={isGoodsInvoice}
           isTextInvoice={isTextInvoice}
           labels={labels}
           positions={positions}
@@ -1194,6 +1283,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           <MeasuredInvoicePaginator
             ref={paginatorRef}
             calculatePosition={calculateCurrentPosition}
+            isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isTextInvoice={isTextInvoice}
             items={printItems}
@@ -1204,7 +1294,9 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
             ref={printPagesRef}
             calculatePosition={calculateCurrentPosition}
             details={details}
+            deliveryAddress={deliveryAddress}
             footerLines={footerLines}
+            isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isTextInvoice={isTextInvoice}
             labels={labels}
@@ -1217,6 +1309,9 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
             )}
             visibleDetailDefinitions={getOrderedDefinitions('details', invoiceMetaFields).filter(
               (definition) => !fieldConfig.details.hidden.includes(definition.field),
+            )}
+            visibleDeliveryAddressFields={invoiceDeliveryAddressOptionalFields.filter(
+              (definition) => !fieldConfig.deliveryAddress.hidden.includes(definition.field),
             )}
             visibleRecipientFields={invoiceRecipientOptionalFields.filter(
               (definition) => !fieldConfig.recipient.hidden.includes(definition.field),
@@ -1232,7 +1327,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
 }
 
 const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
-  { calculatePosition: calculateInvoicePosition, isSmallBusinessInvoice, isTextInvoice, items, labels, totals },
+  { calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, items, labels, totals },
   ref,
 ) {
   const measureRootRef = useRef(null);
@@ -1254,11 +1349,12 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
       </div>
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
-        <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}`}>
+        <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
           {!isTextInvoice && (
             <thead>
               <tr data-measure-position-header>
                 <th>{labels.position}</th>
+                {isGoodsInvoice && <th>{labels.articleNumber}</th>}
                 <th>{labels.description}</th>
                 <th>{labels.unitPrice}</th>
                 <th>{labels.quantity}</th>
@@ -1274,14 +1370,17 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
 
               return (
                 <tr data-measure-position-row={String(index)} key={position.id}>
-                  <td>{position.description}</td>
                   {isTextInvoice ? (
                     <>
+                      <td>{position.description}</td>
                       <td>{position.unit}</td>
                       <td>{formatCurrency(calculated.net)}</td>
                     </>
                   ) : (
                     <>
+                      <td>{index + 1}</td>
+                      {isGoodsInvoice && <td>{position.articleNumber}</td>}
+                      <td>{position.description}</td>
                       <td>{formatCurrency(toNumber(position.unitPrice))}</td>
                       <td>{position.quantity}</td>
                       <td>{position.unit}</td>
@@ -1371,7 +1470,8 @@ function arePrintItemsEqual(first, second) {
   if (first.type === 'position') {
     return (
       first.index === second.index &&
-      first.position.id === second.position.id &&
+    first.position.id === second.position.id &&
+      first.position.articleNumber === second.position.articleNumber &&
       first.position.description === second.position.description &&
       first.position.unitPrice === second.position.unitPrice &&
       first.position.quantity === second.position.quantity &&
@@ -1387,7 +1487,9 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
   {
     calculatePosition: calculateInvoicePosition,
     details,
+    deliveryAddress,
     footerLines,
+    isGoodsInvoice,
     isSmallBusinessInvoice,
     isTextInvoice,
     labels,
@@ -1396,6 +1498,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
     sender,
     totals,
     visibleContactDefinitions,
+    visibleDeliveryAddressFields,
     visibleDetailDefinitions,
     visibleRecipientFields,
     visibleFooterMiddleDefinitions,
@@ -1416,10 +1519,13 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
           {page.pageNumber === 1 ? (
             <InvoicePrintFirstPageHeader
               details={details}
+              deliveryAddress={deliveryAddress}
+              isGoodsInvoice={isGoodsInvoice}
               labels={labels}
               recipient={recipient}
               sender={sender}
               visibleContactDefinitions={visibleContactDefinitions}
+              visibleDeliveryAddressFields={visibleDeliveryAddressFields}
               visibleDetailDefinitions={visibleDetailDefinitions}
               visibleRecipientFields={visibleRecipientFields}
             />
@@ -1430,6 +1536,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
           <div className="invoice-print-page-content">
             <InvoicePrintPageItems
               calculatePosition={calculateInvoicePosition}
+              isGoodsInvoice={isGoodsInvoice}
               isSmallBusinessInvoice={isSmallBusinessInvoice}
               isTextInvoice={isTextInvoice}
               items={page.items}
@@ -1451,21 +1558,33 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
 
 function InvoicePrintFirstPageHeader({
   details,
+  deliveryAddress,
+  isGoodsInvoice,
   labels,
   recipient,
   sender,
   visibleContactDefinitions,
+  visibleDeliveryAddressFields,
   visibleDetailDefinitions,
   visibleRecipientFields,
 }) {
   const showRecipientAttention = visibleRecipientFields.some((definition) => definition.field === 'attention');
   const showRecipientName = visibleRecipientFields.some((definition) => definition.field === 'name');
+  const showDeliveryAttention = visibleDeliveryAddressFields.some((definition) => definition.field === 'attention');
+  const showDeliveryName = visibleDeliveryAddressFields.some((definition) => definition.field === 'name');
   const recipientLines = [
     recipient.company,
     showRecipientAttention ? recipient.attention : '',
     showRecipientName ? recipient.name : '',
     recipient.street,
     recipient.cityLine,
+  ];
+  const deliveryAddressLines = [
+    deliveryAddress.company,
+    showDeliveryAttention ? deliveryAddress.attention : '',
+    showDeliveryName ? deliveryAddress.name : '',
+    deliveryAddress.street,
+    deliveryAddress.cityLine,
   ];
 
   return (
@@ -1490,6 +1609,14 @@ function InvoicePrintFirstPageHeader({
           {recipientLines.filter(Boolean).map((line) => (
             <p key={line}>{line}</p>
           ))}
+          {isGoodsInvoice && (
+            <section className="invoice-print-delivery-address" aria-label="Lieferadresse">
+              <p className="invoice-print-delivery-address-title">Lieferadresse</p>
+              {deliveryAddressLines.filter(Boolean).map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </section>
+          )}
         </div>
 
         <div className="invoice-print-details">
@@ -1526,7 +1653,7 @@ function PrintDetailRow({ emphasized = false, label, value }) {
   );
 }
 
-function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, isSmallBusinessInvoice, isTextInvoice, items, labels, totals }) {
+function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, items, labels, totals }) {
   const renderedItems = [];
   let index = 0;
 
@@ -1544,6 +1671,7 @@ function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, is
       renderedItems.push(
         <InvoicePrintPositionTable
           calculatePosition={calculateInvoicePosition}
+          isGoodsInvoice={isGoodsInvoice}
           isSmallBusinessInvoice={isSmallBusinessInvoice}
           isTextInvoice={isTextInvoice}
           key={`positions-${positionItems[0].index}`}
@@ -1579,13 +1707,14 @@ function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, is
   return renderedItems;
 }
 
-function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isSmallBusinessInvoice, isTextInvoice, labels, positionItems }) {
+function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, labels, positionItems }) {
   return (
-    <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}`}>
+    <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
       {!isTextInvoice && (
         <thead>
           <tr>
             <th>{labels.position}</th>
+            {isGoodsInvoice && <th>{labels.articleNumber}</th>}
             <th>{labels.description}</th>
             <th>{labels.unitPrice}</th>
             <th>{labels.quantity}</th>
@@ -1601,14 +1730,17 @@ function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition
 
           return (
             <tr key={position.id}>
-              <td>{position.description}</td>
               {isTextInvoice ? (
                 <>
+                  <td>{position.description}</td>
                   <td>{position.unit}</td>
                   <td>{formatCurrency(calculated.net)}</td>
                 </>
               ) : (
                 <>
+                  <td>{index + 1}</td>
+                  {isGoodsInvoice && <td>{position.articleNumber}</td>}
+                  <td>{position.description}</td>
                   <td>{formatCurrency(toNumber(position.unitPrice))}</td>
                   <td>{position.quantity}</td>
                   <td>{position.unit}</td>

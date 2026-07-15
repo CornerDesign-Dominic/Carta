@@ -19,6 +19,7 @@ export function usesExampleValue(value, defaultValue) {
 
 export function createEmptyDataCheckState() {
   return {
+    deliveryAddress: {},
     details: {},
     footerLines: {},
     positions: {},
@@ -30,6 +31,8 @@ export function createEmptyDataCheckState() {
 export function createDocumentDataCheckState({
   defaultPosition = {},
   defaultViewData,
+  deliveryAddress,
+  deliveryAddressHiddenFields = [],
   details,
   footerLines,
   isActive,
@@ -69,6 +72,25 @@ export function createDocumentDataCheckState({
     recipientChecks.name = usesExampleValue(recipient.name, defaultViewData.recipient.name);
   }
 
+  const deliveryAddressChecks = deliveryAddress
+    ? {
+        company: usesExampleValue(deliveryAddress.company, defaultViewData.deliveryAddress.company),
+        street: usesExampleValue(deliveryAddress.street, defaultViewData.deliveryAddress.street),
+        cityLine: usesExampleValue(deliveryAddress.cityLine, defaultViewData.deliveryAddress.cityLine),
+      }
+    : {};
+
+  if (deliveryAddress && !deliveryAddressHiddenFields.includes('attention')) {
+    deliveryAddressChecks.attention = usesExampleValue(
+      deliveryAddress.attention,
+      defaultViewData.deliveryAddress.attention,
+    );
+  }
+
+  if (deliveryAddress && !deliveryAddressHiddenFields.includes('name')) {
+    deliveryAddressChecks.name = usesExampleValue(deliveryAddress.name, defaultViewData.deliveryAddress.name);
+  }
+
   const detailChecks = {};
   visibleDetailFields.forEach(({ field }) => {
     detailChecks[field] = usesExampleValue(details[field], defaultViewData.details[field]);
@@ -99,6 +121,7 @@ export function createDocumentDataCheckState({
   });
 
   return {
+    deliveryAddress: deliveryAddressChecks,
     details: detailChecks,
     footerLines: footerChecks,
     positions: positionChecks,

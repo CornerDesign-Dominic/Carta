@@ -7,6 +7,7 @@ export default function PositionTable({
   calculatePosition,
   dataCheckPositions = {},
   formatCurrency,
+  isGoodsInvoice = false,
   isTextInvoice = false,
   labels,
   onLabelChange,
@@ -25,6 +26,7 @@ export default function PositionTable({
     : labels.unitPrice;
   const tableLabels = [
     ['position', 'Tabellenkopf Position'],
+    ...(isGoodsInvoice ? [['articleNumber', 'Tabellenkopf Artikelnummer']] : []),
     ['description', 'Tabellenkopf Beschreibung', descriptionLabel],
     ['unitPrice', 'Tabellenkopf Betrag', unitPriceLabel],
     ...(!isTextInvoice
@@ -49,7 +51,7 @@ export default function PositionTable({
   }, [autoResizeDescription, positions, showTaxColumn]);
 
   return (
-    <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}${isTextInvoice ? ' is-text-invoice' : ''}`}>
+    <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
       {!isTextInvoice && (
         <thead>
           <tr>
@@ -105,6 +107,16 @@ export default function PositionTable({
                 </span>
                 {isTextInvoice ? '' : index + 1}
               </td>
+              {isGoodsInvoice && (
+                <td>
+                  <input
+                    className={dataCheckPositions[position.id]?.articleNumber ? 'document-data-check-marker' : undefined}
+                    aria-label={`Artikelnummer Position ${index + 1}`}
+                    value={position.articleNumber}
+                    onChange={(event) => onPositionChange(position.id, 'articleNumber', event.target.value)}
+                  />
+                </td>
+              )}
               <td>
                 {autoResizeDescription ? (
                   <textarea

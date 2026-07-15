@@ -99,6 +99,15 @@ function routeFromLocation() {
     };
   }
 
+  if (path === '/dokumente/rechnung/waren') {
+    return {
+      view: 'documents',
+      knowledgeSlug: null,
+      documentId: 'write-invoice',
+      invoiceVariant: 'goods',
+    };
+  }
+
   if (path === '/dokumente/eigenbeleg') {
     return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
   }
@@ -143,6 +152,10 @@ function pathForNavigation(item) {
 
       if (item.invoiceVariant === 'text') {
         return '/dokumente/rechnung/text';
+      }
+
+      if (item.invoiceVariant === 'goods') {
+        return '/dokumente/rechnung/waren';
       }
     }
 
