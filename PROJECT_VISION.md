@@ -22,7 +22,7 @@ Dokumente sollen visuell bearbeitbar sein, wie echte Druckdokumente wirken und h
 
 ### 2. Wissen
 
-Belege24 soll kaufmännische Themen verständlich erklären, z. B.:
+Belege24 soll kaufmännische Themen verständlich erklären z. B.:
 
 - Rechnungspflichtangaben
 - Mahnverfahren
