@@ -1,8 +1,14 @@
 const navigationItems = [
   { label: 'Dokumente', view: 'documents' },
+  { label: 'Werkzeuge', view: 'tools' },
+  { label: 'Wissen', view: 'knowledge' },
 ];
 
-export default function Header({ currentView, onNavigate }) {
+export default function Header({ currentView, enableKnowledge = true, onNavigate }) {
+  const visibleNavigationItems = navigationItems.filter(
+    (item) => item.view !== 'knowledge' || enableKnowledge,
+  );
+
   return (
     <header className="site-header" aria-label="Hauptnavigation">
       <button
@@ -14,7 +20,7 @@ export default function Header({ currentView, onNavigate }) {
         Belege24
       </button>
       <nav className="nav-links">
-        {navigationItems.map((item) => {
+        {visibleNavigationItems.map((item) => {
           const isActive = item.view === currentView;
 
           return (

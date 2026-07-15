@@ -42,13 +42,18 @@ function syncFormValues(root) {
   });
 }
 
-function buildExportHtml(sheet) {
-  const clonedSheet = sheet.cloneNode(true);
+function buildExportHtml(sheet, exportRoot = sheet) {
+  const clonedSheet = exportRoot.cloneNode(true);
   clonedSheet.classList.remove('is-highlight-mode');
   clonedSheet.classList.add('is-export-mode');
+  clonedSheet.querySelectorAll('.offer-sheet, .invoice-print-page, .receipt-sheet, .tool-document-a4, .tool-print-page').forEach((page) => {
+    page.classList.remove('is-highlight-mode');
+    page.classList.add('is-export-mode');
+  });
   syncFormValues(clonedSheet);
 
   const styles = getDocumentStyles();
+  const isReceipt = sheet.classList.contains('receipt-sheet');
 
   return `<!doctype html>
 <html lang="de">
@@ -59,14 +64,14 @@ function buildExportHtml(sheet) {
     ${styles}
 
     @page {
-      size: A4 portrait;
+      size: ${isReceipt ? 'A5 landscape' : 'A4 portrait'};
       margin: 0;
     }
 
     html,
     body {
       width: 210mm;
-      min-height: 297mm;
+      min-height: ${isReceipt ? '148mm' : '297mm'};
       margin: 0;
       background: #ffffff;
     }
@@ -76,7 +81,10 @@ function buildExportHtml(sheet) {
       color: #232320;
     }
 
-    .offer-sheet {
+    .offer-sheet,
+    .invoice-print-page,
+    .tool-document-a4,
+    .tool-print-page {
       width: 210mm !important;
       min-width: 210mm !important;
       height: 297mm !important;
@@ -85,15 +93,48 @@ function buildExportHtml(sheet) {
       box-shadow: none !important;
       border: 0 !important;
       background: #ffffff !important;
+    }
+
+    .receipt-sheet {
+      width: 210mm !important;
+      min-width: 210mm !important;
+      max-width: 210mm !important;
+      height: 148mm !important;
+      min-height: 148mm !important;
+      max-height: 148mm !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      background: #ffffff !important;
+      overflow: hidden !important;
+    }
+
+    .offer-sheet,
+    .invoice-print-page:not(:last-child),
+    .tool-print-page:not(:last-child) {
       break-after: page;
     }
 
+    .invoice-print-page:last-child,
+    .tool-print-page:last-child {
+      break-after: auto;
+    }
+
     .visual-toolbar,
+    .tool-document-toolbar,
     .invoice-icon-action,
     .invoice-field-actions,
     .invoice-hidden-field-actions,
+    .tool-document-field-actions,
+    .tool-document-hidden-field-actions,
     .offer-remove,
     .offer-add-position {
+      display: none !important;
+    }
+
+    .receipt-sheet .invoice-icon-action,
+    .receipt-sheet .invoice-field-actions,
+    .receipt-sheet .invoice-hidden-field-actions {
       display: none !important;
     }
 
@@ -105,7 +146,31 @@ function buildExportHtml(sheet) {
     .offer-sheet.is-highlight-mode select,
     .offer-sheet.is-export-mode input,
     .offer-sheet.is-export-mode textarea,
-    .offer-sheet.is-export-mode select {
+    .offer-sheet.is-export-mode select,
+    .tool-document-a4 input,
+    .tool-document-a4 textarea,
+    .tool-document-a4 select,
+    .tool-document-a4.is-highlight-mode input,
+    .tool-document-a4.is-highlight-mode textarea,
+    .tool-document-a4.is-highlight-mode select,
+    .tool-document-a4.is-export-mode input,
+    .tool-document-a4.is-export-mode textarea,
+    .tool-document-a4.is-export-mode select {
+      border-color: transparent !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .receipt-sheet input,
+    .receipt-sheet textarea,
+    .receipt-sheet select,
+    .receipt-sheet.is-highlight-mode input,
+    .receipt-sheet.is-highlight-mode textarea,
+    .receipt-sheet.is-highlight-mode select,
+    .receipt-sheet.is-export-mode input,
+    .receipt-sheet.is-export-mode textarea,
+    .receipt-sheet.is-export-mode select {
       border-color: transparent !important;
       background: transparent !important;
       box-shadow: none !important;
@@ -141,7 +206,7 @@ function isPdfArrayBuffer(arrayBuffer) {
   );
 }
 
-export async function requestPdfDownload({ sheet, documentType, filename }) {
+export async function requestPdfDownload({ sheet, exportRoot, documentType, filename }) {
   if (!sheet) {
     throw new Error('Kein Dokument zum Exportieren gefunden.');
   }
@@ -154,7 +219,7 @@ export async function requestPdfDownload({ sheet, documentType, filename }) {
     body: JSON.stringify({
       documentType,
       filename,
-      html: buildExportHtml(sheet),
+      html: buildExportHtml(sheet, exportRoot),
     }),
   });
 
