@@ -3803,45 +3803,59 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-text-invoice th:nth-child(2),
 .invoice-position-table.is-text-invoice td:nth-child(2) {
-  width: 50%;
+  width: 62%;
 }
 
 .invoice-position-table.is-text-invoice th:nth-child(3),
 .invoice-position-table.is-text-invoice td:nth-child(3) {
-  width: 16%;
-  text-align: right;
+  width: 18%;
+  color: #4d4b46;
+  text-align: left;
 }
 
-.invoice-position-table.is-text-invoice th:nth-child(3) .document-label-input,
-.invoice-position-table.is-text-invoice .invoice-position-amount-input {
-  text-align: right;
+.invoice-position-table.is-text-invoice th:nth-child(3) .document-label-input {
+  text-align: left;
 }
 
 .invoice-position-table.is-text-invoice th:nth-child(4),
 .invoice-position-table.is-text-invoice td:nth-child(4) {
-  width: 8%;
+  width: 20%;
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice .invoice-position-amount-input {
+  text-align: right;
 }
 
 .invoice-position-table.is-text-invoice th:nth-child(5),
 .invoice-position-table.is-text-invoice td:nth-child(5) {
-  width: 16%;
-  text-align: right;
-}
-
-.invoice-position-table.is-text-invoice th:nth-child(5) .document-label-input {
-  text-align: right;
-}
-
-.invoice-position-table.is-text-invoice th:nth-child(6),
-.invoice-position-table.is-text-invoice td:nth-child(6) {
   position: relative;
   width: 0;
   padding-right: 0;
   padding-left: 0;
 }
 
+.invoice-position-table.is-text-invoice tbody tr {
+  border-bottom: 0;
+}
+
+.invoice-position-table.is-text-invoice td {
+  border-bottom: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: top;
+}
+
+.invoice-position-table.is-text-invoice .invoice-position-index-cell {
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+  border-bottom: 0;
+}
+
 .invoice-position-table.is-text-invoice textarea.invoice-position-description {
-  min-height: 64px;
+  min-height: 58px;
+  line-height: 1.42;
 }
 
 .invoice-position-table th:nth-child(8),
@@ -4521,27 +4535,29 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: right;
 }
 
+.invoice-print-position-table.is-text-invoice th:nth-child(1),
+.invoice-print-position-table.is-text-invoice td:nth-child(1) {
+  width: 62%;
+  white-space: pre-wrap;
+}
+
 .invoice-print-position-table.is-text-invoice th:nth-child(2),
 .invoice-print-position-table.is-text-invoice td:nth-child(2) {
-  width: 50%;
-  white-space: pre-wrap;
+  width: 18%;
+  text-align: left;
 }
 
 .invoice-print-position-table.is-text-invoice th:nth-child(3),
 .invoice-print-position-table.is-text-invoice td:nth-child(3) {
-  width: 16%;
+  width: 20%;
   text-align: right;
 }
 
-.invoice-print-position-table.is-text-invoice th:nth-child(4),
-.invoice-print-position-table.is-text-invoice td:nth-child(4) {
-  width: 8%;
-}
-
-.invoice-print-position-table.is-text-invoice th:nth-child(5),
-.invoice-print-position-table.is-text-invoice td:nth-child(5) {
-  width: 16%;
-  text-align: right;
+.invoice-print-position-table.is-text-invoice th,
+.invoice-print-position-table.is-text-invoice td {
+  border-bottom: 0;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .invoice-print-summary {

@@ -50,21 +50,23 @@ export default function PositionTable({
 
   return (
     <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}${isTextInvoice ? ' is-text-invoice' : ''}`}>
-      <thead>
-        <tr>
-          {tableLabels.map(([field, ariaLabel, labelOverride]) => (
-            <th key={field}>
-              <input
-                className="document-label-input"
-                aria-label={ariaLabel}
-                value={labelOverride ?? labels[field]}
-                onChange={(event) => onLabelChange(field, event.target.value)}
-              />
-            </th>
-          ))}
-          <th />
-        </tr>
-      </thead>
+      {!isTextInvoice && (
+        <thead>
+          <tr>
+            {tableLabels.map(([field, ariaLabel, labelOverride]) => (
+              <th key={field}>
+                <input
+                  className="document-label-input"
+                  aria-label={ariaLabel}
+                  value={labelOverride ?? labels[field]}
+                  onChange={(event) => onLabelChange(field, event.target.value)}
+                />
+              </th>
+            ))}
+            <th />
+          </tr>
+        </thead>
+      )}
       <tbody>
         {positions.map((position, index) => {
           const calculated = calculatePosition(position);
@@ -101,7 +103,7 @@ export default function PositionTable({
                     <MoveDownIcon />
                   </button>
                 </span>
-                {index + 1}
+                {isTextInvoice ? '' : index + 1}
               </td>
               <td>
                 {autoResizeDescription ? (
@@ -111,7 +113,7 @@ export default function PositionTable({
                       resizeTextarea(element);
                     }}
                     className={`invoice-position-description${dataCheckPositions[position.id]?.description ? ' document-data-check-marker' : ''}`}
-                    aria-label={`Beschreibung Position ${index + 1}`}
+                    aria-label={`${isTextInvoice ? 'Leistungsbeschreibung' : 'Beschreibung'} Position ${index + 1}`}
                     rows={1}
                     value={position.description}
                     onChange={(event) => {
@@ -122,12 +124,22 @@ export default function PositionTable({
                 ) : (
                   <input
                     className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
-                    aria-label={`Beschreibung Position ${index + 1}`}
+                    aria-label={`${isTextInvoice ? 'Leistungsbeschreibung' : 'Beschreibung'} Position ${index + 1}`}
                     value={position.description}
                     onChange={(event) => onPositionChange(position.id, 'description', event.target.value)}
                   />
                 )}
               </td>
+              {isTextInvoice && (
+                <td>
+                  <input
+                    className={dataCheckPositions[position.id]?.unit ? 'document-data-check-marker' : undefined}
+                    aria-label={`Mengen- oder Zeitangabe Position ${index + 1}`}
+                    value={position.unit}
+                    onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
+                  />
+                </td>
+              )}
               <td>
                 <input
                   className={`${isTextInvoice ? 'invoice-position-amount-input' : ''}${dataCheckPositions[position.id]?.unitPrice ? ' document-data-check-marker' : ''}`.trim() || undefined}
@@ -160,7 +172,7 @@ export default function PositionTable({
                   </td>
                 </>
               )}
-              {showTaxColumn && (
+              {showTaxColumn && !isTextInvoice && (
                 <td>
                   <span className="invoice-tax-rate-cell">
                     <input
@@ -175,7 +187,7 @@ export default function PositionTable({
                   </span>
                 </td>
               )}
-              <td>{formatCurrency(calculated.net)}</td>
+              {!isTextInvoice && <td>{formatCurrency(calculated.net)}</td>}
               <td />
             </tr>
           );
