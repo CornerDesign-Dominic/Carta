@@ -19,6 +19,11 @@ import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const invoiceSchemaVersion = '1.0';
+const invoiceVariants = [
+  { id: 'standard', label: 'Standardrechnung' },
+  { id: 'smallBusiness', label: 'Kleinunternehmer' },
+];
+const smallBusinessTaxNotice = 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und nicht ausgewiesen.';
 
 const initialInvoiceLabels = {
   title: 'Rechnung',
@@ -440,9 +445,9 @@ function formatGermanDate(value) {
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
 
-function calculatePosition(position) {
+function calculatePosition(position, { isSmallBusinessInvoice = false } = {}) {
   const net = toNumber(position.unitPrice) * toNumber(position.quantity);
-  const taxRate = Math.max(0, toNumber(position.taxRate));
+  const taxRate = isSmallBusinessInvoice ? 0 : Math.max(0, toNumber(position.taxRate));
   const tax = net * (taxRate / 100);
 
   return { net, tax, gross: net + tax, taxRate };
@@ -457,8 +462,8 @@ function resizeTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
-function createPdfFileName(title, number) {
-  const cleanTitle = createSlug(title || 'rechnung');
+function createPdfFileName(title, number, invoiceVariant = 'standard') {
+  const cleanTitle = createSlug(invoiceVariant === 'smallBusiness' ? 'kleinunternehmerrechnung' : title || 'rechnung');
   const cleanNumber = createSlug(number || new Date().toISOString().slice(0, 10));
 
   return `${cleanTitle || 'rechnung'}-${cleanNumber || 'dokument'}.pdf`;
@@ -510,7 +515,7 @@ function validateInvoiceTemplate(template) {
   return template.data;
 }
 
-function createInvoicePrintItems({ positions, textBlocks }) {
+function createInvoicePrintItems({ isSmallBusinessInvoice, positions, textBlocks }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
 
@@ -518,11 +523,32 @@ function createInvoicePrintItems({ positions, textBlocks }) {
     ...(introBlock?.visible ? [{ type: 'text', id: 'intro', text: introBlock.value }] : []),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     { type: 'summary' },
+    ...(isSmallBusinessInvoice ? [{ type: 'taxNotice', id: 'small-business-tax-notice', text: smallBusinessTaxNotice }] : []),
     ...(closingBlock?.visible ? [{ type: 'text', id: 'closing', text: closingBlock.value }] : []),
   ];
 }
 
-export default function InvoiceDocumentEditor() {
+function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
+  return (
+    <div className="document-choice-bar" aria-label="Rechnungsart auswählen">
+      {invoiceVariants.map((variant) => (
+        <button
+          className={activeVariant === variant.id ? 'is-active' : undefined}
+          type="button"
+          aria-pressed={activeVariant === variant.id}
+          onClick={() => onChange?.(variant.id)}
+          key={variant.id}
+        >
+          {variant.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onInvoiceVariantChange }) {
+  const normalizedInvoiceVariant = invoiceVariant === 'smallBusiness' ? 'smallBusiness' : 'standard';
+  const isSmallBusinessInvoice = normalizedInvoiceVariant === 'smallBusiness';
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -559,12 +585,16 @@ export default function InvoiceDocumentEditor() {
   const totals = useMemo(() => {
     const summary = positions.reduce(
       (current, position) => {
-        const calculated = calculatePosition(position);
-        const taxKey = String(calculated.taxRate);
-        const taxGroup = current.taxGroups.get(taxKey) ?? { taxRate: calculated.taxRate, tax: 0 };
+        const calculated = calculatePosition(position, { isSmallBusinessInvoice });
 
-        taxGroup.tax += calculated.tax;
-        current.taxGroups.set(taxKey, taxGroup);
+        if (!isSmallBusinessInvoice) {
+          const taxKey = String(calculated.taxRate);
+          const taxGroup = current.taxGroups.get(taxKey) ?? { taxRate: calculated.taxRate, tax: 0 };
+
+          taxGroup.tax += calculated.tax;
+          current.taxGroups.set(taxKey, taxGroup);
+        }
+
         current.net += calculated.net;
         current.tax += calculated.tax;
 
@@ -579,9 +609,16 @@ export default function InvoiceDocumentEditor() {
       gross: summary.net + summary.tax,
       taxGroups: [...summary.taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate),
     };
-  }, [positions]);
+  }, [isSmallBusinessInvoice, positions]);
 
-  const printItems = useMemo(() => createInvoicePrintItems({ positions, textBlocks }), [positions, textBlocks]);
+  const calculateCurrentPosition = useMemo(
+    () => (position) => calculatePosition(position, { isSmallBusinessInvoice }),
+    [isSmallBusinessInvoice],
+  );
+  const printItems = useMemo(
+    () => createInvoicePrintItems({ isSmallBusinessInvoice, positions, textBlocks }),
+    [isSmallBusinessInvoice, positions, textBlocks],
+  );
   const dataCheckState = useMemo(
     () =>
       createDocumentDataCheckState({
@@ -591,6 +628,9 @@ export default function InvoiceDocumentEditor() {
         footerLines,
         isActive: isDataCheckMode,
         positions,
+        positionFields: isSmallBusinessInvoice
+          ? ['description', 'unitPrice', 'quantity', 'unit']
+          : ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'],
         recipient,
         recipientHiddenFields: fieldConfig.recipient.hidden,
         sender,
@@ -604,7 +644,7 @@ export default function InvoiceDocumentEditor() {
           ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
         ),
       }),
-    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+    [details, fieldConfig, footerLines, isDataCheckMode, isSmallBusinessInvoice, positions, recipient, sender],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -815,6 +855,7 @@ export default function InvoiceDocumentEditor() {
   function createInvoiceTemplate() {
     return {
       documentType: 'invoice',
+      invoiceVariant: normalizedInvoiceVariant,
       schemaVersion: invoiceSchemaVersion,
       createdWith: 'Carta',
       data: {
@@ -853,6 +894,9 @@ export default function InvoiceDocumentEditor() {
       setPositions(normalizePositions(data.positions));
       setTextBlocks(normalizeTextBlocks(data.textBlocks));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      if (data.invoiceVariant === 'smallBusiness' || data.invoiceVariant === 'standard') {
+        onInvoiceVariantChange?.(data.invoiceVariant);
+      }
       setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
@@ -868,7 +912,7 @@ export default function InvoiceDocumentEditor() {
         sheet: sheetRef.current,
         exportRoot: printPagesRef.current,
         documentType: 'invoice',
-        filename: createPdfFileName(labels.title, details.invoiceNumber),
+        filename: createPdfFileName(labels.title, details.invoiceNumber, normalizedInvoiceVariant),
       });
     } catch (error) {
       window.alert(
@@ -953,6 +997,7 @@ export default function InvoiceDocumentEditor() {
           references={invoiceData.references}
           removePosition={removePosition}
           sender={invoiceData.sender}
+          showTaxFields={!isSmallBusinessInvoice}
           textBlocks={textBlocks}
           toggleTextBlockVisibility={toggleTextBlockVisibility}
           totals={totals}
@@ -964,6 +1009,11 @@ export default function InvoiceDocumentEditor() {
           updateTextBlock={updateTextBlock}
         />
       )}
+
+      <InvoiceVariantChoiceBar
+        activeVariant={normalizedInvoiceVariant}
+        onChange={onInvoiceVariantChange}
+      />
 
       <DocumentToolbar
         ariaLabel="Rechnung Werkzeuge"
@@ -1038,11 +1088,12 @@ export default function InvoiceDocumentEditor() {
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <PositionTable
-          calculatePosition={calculatePosition}
+          calculatePosition={calculateCurrentPosition}
           dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
           labels={labels}
           positions={positions}
+          showTaxColumn={!isSmallBusinessInvoice}
           variant="offer"
           onLabelChange={updateLabel}
           onMovePosition={movePosition}
@@ -1059,9 +1110,15 @@ export default function InvoiceDocumentEditor() {
           formatCurrency={formatCurrency}
           formatPercent={formatPercent}
           labels={labels}
+          showNetTotal={!isSmallBusinessInvoice}
+          showTaxDetails={!isSmallBusinessInvoice}
           totals={totals}
           onLabelChange={updateLabel}
         />
+
+        {isSmallBusinessInvoice && (
+          <p className="invoice-tax-notice">{smallBusinessTaxNotice}</p>
+        )}
 
         {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}
 
@@ -1084,11 +1141,20 @@ export default function InvoiceDocumentEditor() {
 
       {isExportRenderActive ? (
         <>
-          <MeasuredInvoicePaginator ref={paginatorRef} items={printItems} labels={labels} totals={totals} />
+          <MeasuredInvoicePaginator
+            ref={paginatorRef}
+            calculatePosition={calculateCurrentPosition}
+            isSmallBusinessInvoice={isSmallBusinessInvoice}
+            items={printItems}
+            labels={labels}
+            totals={totals}
+          />
           <InvoicePrintPages
             ref={printPagesRef}
+            calculatePosition={calculateCurrentPosition}
             details={details}
             footerLines={footerLines}
+            isSmallBusinessInvoice={isSmallBusinessInvoice}
             labels={labels}
             pages={printPages}
             recipient={recipient}
@@ -1113,7 +1179,10 @@ export default function InvoiceDocumentEditor() {
   );
 }
 
-const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator({ items, labels, totals }, ref) {
+const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
+  { calculatePosition: calculateInvoicePosition, isSmallBusinessInvoice, items, labels, totals },
+  ref,
+) {
   const measureRootRef = useRef(null);
   const positionItems = items.filter((item) => item.type === 'position');
 
@@ -1133,7 +1202,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator({ 
       </div>
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
-        <table className="invoice-print-position-table">
+        <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}`}>
           <thead>
             <tr data-measure-position-header>
               <th>{labels.position}</th>
@@ -1141,13 +1210,13 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator({ 
               <th>{labels.unitPrice}</th>
               <th>{labels.quantity}</th>
               <th>{labels.unit}</th>
-              <th>{labels.tax}</th>
+              {!isSmallBusinessInvoice && <th>{labels.tax}</th>}
               <th>{labels.total}</th>
             </tr>
           </thead>
           <tbody>
             {positionItems.map(({ index, position }) => {
-              const calculated = calculatePosition(position);
+              const calculated = calculateInvoicePosition(position);
 
               return (
                 <tr data-measure-position-row={String(index)} key={position.id}>
@@ -1156,7 +1225,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator({ 
                   <td>{formatCurrency(toNumber(position.unitPrice))}</td>
                   <td>{position.quantity}</td>
                   <td>{position.unit}</td>
-                  <td>{formatPercent(calculated.taxRate)}%</td>
+                  {!isSmallBusinessInvoice && <td>{formatPercent(calculated.taxRate)}%</td>}
                   <td>{formatCurrency(calculated.net)}</td>
                 </tr>
               );
@@ -1164,8 +1233,9 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator({ 
           </tbody>
         </table>
         <div data-measure-summary>
-          <InvoicePrintSummary labels={labels} totals={totals} />
+          <InvoicePrintSummary isSmallBusinessInvoice={isSmallBusinessInvoice} labels={labels} totals={totals} />
         </div>
+        <p className="invoice-print-tax-notice" data-measure-tax-notice>{smallBusinessTaxNotice}</p>
       </div>
     </div>
   );
@@ -1178,6 +1248,7 @@ function measureInvoicePages(measureRoot, items) {
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+  const taxNoticeProbe = measureRoot.querySelector('[data-measure-tax-notice]');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
   const positionRows = new Map(
     [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
@@ -1186,7 +1257,7 @@ function measureInvoicePages(measureRoot, items) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) return null;
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !taxNoticeProbe || !positionHeader) return null;
 
   const firstPageCapacity = firstContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
   const followPageCapacity = followContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
@@ -1203,6 +1274,7 @@ function measureInvoicePages(measureRoot, items) {
     if (item.type === 'text') return measureTextHeight(item.text);
     if (item.type === 'position') return positionRows.get(String(item.index)) || 0;
     if (item.type === 'summary') return getOuterHeight(summaryProbe);
+    if (item.type === 'taxNotice') return getOuterHeight(taxNoticeProbe);
     return 0;
   }
 
@@ -1237,6 +1309,7 @@ function arePrintPagesEqual(currentPages, nextPages) {
 function arePrintItemsEqual(first, second) {
   if (first.type !== second.type) return false;
   if (first.type === 'text') return first.id === second.id && first.text === second.text;
+  if (first.type === 'taxNotice') return first.id === second.id && first.text === second.text;
   if (first.type === 'position') {
     return (
       first.index === second.index &&
@@ -1254,8 +1327,10 @@ function arePrintItemsEqual(first, second) {
 
 const InvoicePrintPages = forwardRef(function InvoicePrintPages(
   {
+    calculatePosition: calculateInvoicePosition,
     details,
     footerLines,
+    isSmallBusinessInvoice,
     labels,
     pages,
     recipient,
@@ -1294,7 +1369,13 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
           )}
 
           <div className="invoice-print-page-content">
-            <InvoicePrintPageItems items={page.items} labels={labels} totals={totals} />
+            <InvoicePrintPageItems
+              calculatePosition={calculateInvoicePosition}
+              isSmallBusinessInvoice={isSmallBusinessInvoice}
+              items={page.items}
+              labels={labels}
+              totals={totals}
+            />
           </div>
 
           <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
@@ -1385,7 +1466,7 @@ function PrintDetailRow({ emphasized = false, label, value }) {
   );
 }
 
-function InvoicePrintPageItems({ items, labels, totals }) {
+function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, isSmallBusinessInvoice, items, labels, totals }) {
   const renderedItems = [];
   let index = 0;
 
@@ -1401,13 +1482,34 @@ function InvoicePrintPageItems({ items, labels, totals }) {
       }
 
       renderedItems.push(
-        <InvoicePrintPositionTable key={`positions-${positionItems[0].index}`} labels={labels} positionItems={positionItems} />,
+        <InvoicePrintPositionTable
+          calculatePosition={calculateInvoicePosition}
+          isSmallBusinessInvoice={isSmallBusinessInvoice}
+          key={`positions-${positionItems[0].index}`}
+          labels={labels}
+          positionItems={positionItems}
+        />,
       );
       continue;
     }
 
     if (item.type === 'summary') {
-      renderedItems.push(<InvoicePrintSummary key="summary" labels={labels} totals={totals} />);
+      renderedItems.push(
+        <InvoicePrintSummary
+          isSmallBusinessInvoice={isSmallBusinessInvoice}
+          key="summary"
+          labels={labels}
+          totals={totals}
+        />,
+      );
+    }
+
+    if (item.type === 'taxNotice') {
+      renderedItems.push(
+        <p className="invoice-print-tax-notice" key={item.id}>
+          {item.text}
+        </p>,
+      );
     }
 
     if (item.type === 'text') {
@@ -1424,9 +1526,9 @@ function InvoicePrintPageItems({ items, labels, totals }) {
   return renderedItems;
 }
 
-function InvoicePrintPositionTable({ labels, positionItems }) {
+function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isSmallBusinessInvoice, labels, positionItems }) {
   return (
-    <table className="invoice-print-position-table">
+    <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}`}>
       <thead>
         <tr>
           <th>{labels.position}</th>
@@ -1434,13 +1536,13 @@ function InvoicePrintPositionTable({ labels, positionItems }) {
           <th>{labels.unitPrice}</th>
           <th>{labels.quantity}</th>
           <th>{labels.unit}</th>
-          <th>{labels.tax}</th>
+          {!isSmallBusinessInvoice && <th>{labels.tax}</th>}
           <th>{labels.total}</th>
         </tr>
       </thead>
       <tbody>
         {positionItems.map(({ index, position }) => {
-          const calculated = calculatePosition(position);
+          const calculated = calculateInvoicePosition(position);
 
           return (
             <tr key={position.id}>
@@ -1449,7 +1551,7 @@ function InvoicePrintPositionTable({ labels, positionItems }) {
               <td>{formatCurrency(toNumber(position.unitPrice))}</td>
               <td>{position.quantity}</td>
               <td>{position.unit}</td>
-              <td>{formatPercent(calculated.taxRate)}%</td>
+              {!isSmallBusinessInvoice && <td>{formatPercent(calculated.taxRate)}%</td>}
               <td>{formatCurrency(calculated.net)}</td>
             </tr>
           );
@@ -1459,14 +1561,16 @@ function InvoicePrintPositionTable({ labels, positionItems }) {
   );
 }
 
-function InvoicePrintSummary({ labels, totals }) {
+function InvoicePrintSummary({ isSmallBusinessInvoice = false, labels, totals }) {
   return (
     <aside className="invoice-print-summary" aria-label="Rechnungssummen">
-      <div>
-        <span>{labels.net}</span>
-        <strong>{formatCurrency(totals.net)}</strong>
-      </div>
-      {totals.taxGroups.map((group) => (
+      {!isSmallBusinessInvoice && (
+        <div>
+          <span>{labels.net}</span>
+          <strong>{formatCurrency(totals.net)}</strong>
+        </div>
+      )}
+      {!isSmallBusinessInvoice && totals.taxGroups.map((group) => (
         <div key={group.taxRate}>
           <span>
             {labels.taxAmount} {formatPercent(group.taxRate)}%

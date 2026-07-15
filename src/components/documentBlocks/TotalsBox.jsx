@@ -1,16 +1,27 @@
-export default function TotalsBox({ ariaLabel, formatCurrency, formatPercent, labels, onLabelChange, totals }) {
+export default function TotalsBox({
+  ariaLabel,
+  formatCurrency,
+  formatPercent,
+  labels,
+  onLabelChange,
+  showNetTotal = true,
+  showTaxDetails = true,
+  totals,
+}) {
   return (
     <aside className="offer-summary invoice-document-summary" aria-label={ariaLabel}>
-      <div>
-        <input
-          className="document-label-input"
-          aria-label="Beschriftung Nettobetrag"
-          value={labels.net}
-          onChange={(event) => onLabelChange('net', event.target.value)}
-        />
-        <strong>{formatCurrency(totals.net)}</strong>
-      </div>
-      {totals.taxGroups.map((group) => (
+      {showNetTotal && (
+        <div>
+          <input
+            className="document-label-input"
+            aria-label="Beschriftung Nettobetrag"
+            value={labels.net}
+            onChange={(event) => onLabelChange('net', event.target.value)}
+          />
+          <strong>{formatCurrency(totals.net)}</strong>
+        </div>
+      )}
+      {showTaxDetails && totals.taxGroups.map((group) => (
         <div key={group.taxRate}>
           <span className="document-summary-label">
             <input

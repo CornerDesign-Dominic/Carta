@@ -14,6 +14,10 @@ function pathForDocumentId(documentId) {
   return item?.path ?? '/dokumente';
 }
 
+function pathForInvoiceVariant(variant) {
+  return variant === 'smallBusiness' ? '/dokumente/rechnung/kleinunternehmer' : '/dokumente/rechnung';
+}
+
 function DocumentUsageMiniVisual({ type }) {
   return (
     <div className={`document-usage-mini document-usage-mini-${type}`} aria-hidden="true">
@@ -153,8 +157,9 @@ function DocumentOverview() {
   );
 }
 
-export default function DocumentsView({ initialDocumentId = 'overview' }) {
+export default function DocumentsView({ initialDocumentId = 'overview', initialInvoiceVariant = 'standard', onNavigate }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
+  const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
   const showDocumentDescription = ![
@@ -172,10 +177,33 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
     setActiveDocumentId(initialDocumentId);
   }, [initialDocumentId]);
 
+  useEffect(() => {
+    setActiveInvoiceVariant(initialInvoiceVariant);
+  }, [initialInvoiceVariant]);
+
   function handleSelectDocument(documentId) {
     setActiveDocumentId(documentId);
+    if (documentId === 'write-invoice') {
+      setActiveInvoiceVariant('standard');
+    }
 
     const nextPath = pathForDocumentId(documentId);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+    }
+  }
+
+  function handleInvoiceVariantChange(variant) {
+    setActiveInvoiceVariant(variant);
+
+    const nextPath = pathForInvoiceVariant(variant);
+    onNavigate?.({
+      view: 'documents',
+      documentId: 'write-invoice',
+      invoiceVariant: variant,
+      path: nextPath,
+    }, { preserveDocumentsView: true });
+
     if (window.location.pathname !== nextPath) {
       window.history.pushState({}, '', nextPath);
     }
@@ -202,7 +230,12 @@ export default function DocumentsView({ initialDocumentId = 'overview' }) {
 
             {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor />}
             {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
-            {activeDocument.formType === 'invoice' && <InvoiceDocumentEditor />}
+            {activeDocument.formType === 'invoice' && (
+              <InvoiceDocumentEditor
+                invoiceVariant={activeInvoiceVariant}
+                onInvoiceVariantChange={handleInvoiceVariantChange}
+              />
+            )}
             {activeDocument.formType === 'offer' && <OfferDocumentEditor />}
             {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor />}
             {activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}

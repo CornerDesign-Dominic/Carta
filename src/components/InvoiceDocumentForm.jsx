@@ -282,6 +282,7 @@ export default function InvoiceDocumentForm({
   references,
   removePosition,
   sender,
+  showTaxFields = true,
   textBlocks,
   toggleTextBlockVisibility,
   totals,
@@ -393,7 +394,9 @@ export default function InvoiceDocumentForm({
                   <InvoicePanelInput inputMode="decimal" label="Einzelpreis" name={`position-${index + 1}-unit-price`} value={position.unitPrice} onChange={(value) => updatePosition(position.id, 'unitPrice', value)} />
                   <InvoicePanelInput inputMode="decimal" label="Anzahl" name={`position-${index + 1}-quantity`} value={position.quantity} onChange={(value) => updatePosition(position.id, 'quantity', value)} />
                   <InvoicePanelInput label="Einheit" name={`position-${index + 1}-unit`} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
-                  <InvoicePanelInput inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
+                  {showTaxFields && (
+                    <InvoicePanelInput inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
+                  )}
                   <div className="invoice-panel-position-actions">
                     <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
                       x
@@ -412,7 +415,9 @@ export default function InvoiceDocumentForm({
               + Position hinzufügen
             </button>
             <p className="invoice-panel-note">
-              Rechnungsbetrag: {formatCurrency(totals.gross)} | USt.: {formatCurrency(totals.tax)} ({totals.taxGroups.map((group) => `${formatPercent(group.taxRate)}%`).join(', ') || '0%'})
+              {showTaxFields
+                ? `Rechnungsbetrag: ${formatCurrency(totals.gross)} | USt.: ${formatCurrency(totals.tax)} (${totals.taxGroups.map((group) => `${formatPercent(group.taxRate)}%`).join(', ') || '0%'})`
+                : `Rechnungsbetrag: ${formatCurrency(totals.gross)} | keine Umsatzsteuer nach § 19 UStG`}
             </p>
           </div>
 

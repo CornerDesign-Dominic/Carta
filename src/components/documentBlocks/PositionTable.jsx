@@ -10,6 +10,7 @@ export default function PositionTable({
   onPositionChange,
   onRemovePosition,
   positions,
+  showTaxColumn = true,
   variant = 'offer',
 }) {
   const tableLabels = [
@@ -18,12 +19,12 @@ export default function PositionTable({
     ['unitPrice', 'Tabellenkopf Einzelpreis'],
     ['quantity', 'Tabellenkopf Anzahl'],
     ['unit', 'Tabellenkopf Einheit'],
-    ['tax', 'Tabellenkopf Umsatzsteuer'],
+    ...(showTaxColumn ? [['tax', 'Tabellenkopf Umsatzsteuer']] : []),
     ['total', 'Tabellenkopf Gesamt'],
   ];
 
   return (
-    <table className={`offer-position-table invoice-position-table document-position-table-${variant}`}>
+    <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}`}>
       <thead>
         <tr>
           {tableLabels.map(([field, ariaLabel]) => (
@@ -113,19 +114,21 @@ export default function PositionTable({
                   onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
                 />
               </td>
-              <td>
-                <span className="invoice-tax-rate-cell">
-                  <input
-                    className={dataCheckPositions[position.id]?.taxRate ? 'document-data-check-marker' : undefined}
-                    aria-label={`Umsatzsteuer Position ${index + 1}`}
-                    inputMode="decimal"
-                    type="text"
-                    value={position.taxRate}
-                    onChange={(event) => onPositionChange(position.id, 'taxRate', event.target.value)}
-                  />
-                  <span>%</span>
-                </span>
-              </td>
+              {showTaxColumn && (
+                <td>
+                  <span className="invoice-tax-rate-cell">
+                    <input
+                      className={dataCheckPositions[position.id]?.taxRate ? 'document-data-check-marker' : undefined}
+                      aria-label={`Umsatzsteuer Position ${index + 1}`}
+                      inputMode="decimal"
+                      type="text"
+                      value={position.taxRate}
+                      onChange={(event) => onPositionChange(position.id, 'taxRate', event.target.value)}
+                    />
+                    <span>%</span>
+                  </span>
+                </td>
+              )}
               <td>{formatCurrency(calculated.net)}</td>
               <td />
             </tr>

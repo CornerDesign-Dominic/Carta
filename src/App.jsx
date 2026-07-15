@@ -78,7 +78,16 @@ function routeFromLocation() {
 
   const generatorDocumentId = generatorIdByPath.get(path);
   if (generatorDocumentId) {
-    return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId };
+    return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId, invoiceVariant: 'standard' };
+  }
+
+  if (path === '/dokumente/rechnung/kleinunternehmer') {
+    return {
+      view: 'documents',
+      knowledgeSlug: null,
+      documentId: 'write-invoice',
+      invoiceVariant: 'smallBusiness',
+    };
   }
 
   if (path === '/dokumente/eigenbeleg') {
@@ -118,6 +127,10 @@ function pathForNavigation(item) {
   }
 
   if (item.view === 'documents') {
+    if (item.documentId === 'write-invoice' && item.invoiceVariant === 'smallBusiness') {
+      return '/dokumente/rechnung/kleinunternehmer';
+    }
+
     return generatorPathById.get(item.documentId) ?? '/dokumente';
   }
 
@@ -146,6 +159,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState(initialRoute.view);
   const [currentKnowledgeSlug, setCurrentKnowledgeSlug] = useState(initialRoute.knowledgeSlug);
   const [currentDocumentId, setCurrentDocumentId] = useState(initialRoute.documentId);
+  const [currentInvoiceVariant, setCurrentInvoiceVariant] = useState(initialRoute.invoiceVariant ?? 'standard');
   const [currentToolId, setCurrentToolId] = useState(initialRoute.toolId ?? null);
   const [documentsViewKey, setDocumentsViewKey] = useState(0);
   const [consent, setConsent] = useState(initialConsent ?? createDefaultConsent());
@@ -156,6 +170,7 @@ export default function App() {
     setCurrentView(route.view);
     setCurrentKnowledgeSlug(route.knowledgeSlug);
     setCurrentDocumentId(route.documentId);
+    setCurrentInvoiceVariant(route.invoiceVariant ?? 'standard');
     setCurrentToolId(route.toolId ?? null);
   }
 
@@ -177,13 +192,14 @@ export default function App() {
       return;
     }
 
-    if (item.view === 'documents') {
+    if (item.view === 'documents' && !options.preserveDocumentsView) {
       setDocumentsViewKey((key) => key + 1);
     }
 
     setCurrentView(item.view);
     setCurrentKnowledgeSlug(item.slug ?? null);
     setCurrentDocumentId(item.documentId ?? 'overview');
+    setCurrentInvoiceVariant(item.invoiceVariant ?? 'standard');
     setCurrentToolId(item.toolId ?? null);
 
     const nextPath = pathForNavigation(item);
@@ -244,6 +260,7 @@ export default function App() {
           <DocumentsView
             key={documentsViewKey}
             initialDocumentId={currentDocumentId}
+            initialInvoiceVariant={currentInvoiceVariant}
             onNavigate={handleNavigate}
           />
         )}
