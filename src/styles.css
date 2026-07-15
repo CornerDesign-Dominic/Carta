@@ -3778,6 +3778,29 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: right;
 }
 
+.invoice-position-table.is-without-tax-column th:nth-child(2),
+.invoice-position-table.is-without-tax-column td:nth-child(2) {
+  width: 44%;
+}
+
+.invoice-position-table.is-without-tax-column th:nth-child(6),
+.invoice-position-table.is-without-tax-column td:nth-child(6) {
+  width: 16%;
+  text-align: right;
+}
+
+.invoice-position-table.is-without-tax-column th:nth-child(6) .document-label-input {
+  text-align: right;
+}
+
+.invoice-position-table.is-without-tax-column th:nth-child(7),
+.invoice-position-table.is-without-tax-column td:nth-child(7) {
+  position: relative;
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .invoice-position-table th:nth-child(8),
 .invoice-position-table td:nth-child(8) {
   position: relative;
@@ -4463,19 +4486,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 0.8rem;
   break-inside: avoid;
   page-break-inside: avoid;
-}
-
-.invoice-tax-notice,
-.invoice-print-tax-notice {
-  width: calc(100% - var(--invoice-right-safe-offset));
-  margin: 10px 0 0;
-  color: #4d4b46;
-  font-size: 0.78rem;
-  line-height: 1.45;
-}
-
-.invoice-print-tax-notice {
-  font-size: 9.2pt;
 }
 
 .invoice-print-summary div {

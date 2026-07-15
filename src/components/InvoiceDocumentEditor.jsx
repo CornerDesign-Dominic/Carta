@@ -23,7 +23,8 @@ const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
   { id: 'smallBusiness', label: 'Kleinunternehmer' },
 ];
-const smallBusinessTaxNotice = 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und nicht ausgewiesen.';
+const smallBusinessTaxNotice =
+  'Aufgrund der Anwendung der Kleinunternehmerregelung gemäß § 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
 
 const initialInvoiceLabels = {
   title: 'Rechnung',
@@ -190,6 +191,12 @@ const defaultInvoiceTextBlocks = [
     label: 'Nachlauftext',
     value:
       'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.',
+    visible: true,
+  },
+  {
+    id: 'smallBusinessNotice',
+    label: 'Hinweis Kleinunternehmerregelung',
+    value: smallBusinessTaxNotice,
     visible: true,
   },
 ];
@@ -518,13 +525,16 @@ function validateInvoiceTemplate(template) {
 function createInvoicePrintItems({ isSmallBusinessInvoice, positions, textBlocks }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
+  const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
 
   return [
     ...(introBlock?.visible ? [{ type: 'text', id: 'intro', text: introBlock.value }] : []),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     { type: 'summary' },
-    ...(isSmallBusinessInvoice ? [{ type: 'taxNotice', id: 'small-business-tax-notice', text: smallBusinessTaxNotice }] : []),
     ...(closingBlock?.visible ? [{ type: 'text', id: 'closing', text: closingBlock.value }] : []),
+    ...(isSmallBusinessInvoice && smallBusinessNoticeBlock?.visible
+      ? [{ type: 'text', id: 'smallBusinessNotice', text: smallBusinessNoticeBlock.value }]
+      : []),
   ];
 }
 
@@ -939,7 +949,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
     window.setTimeout(cleanup, 1200);
   }
 
-  function renderTextBlock(block, index) {
+  function renderTextBlock(block, index, lastIndex = textBlocks.length - 1) {
     if (!block) return null;
 
     if (!block.visible) {
@@ -947,7 +957,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
         <div className="invoice-flow-config-row invoice-flow-hidden-row" key={block.id}>
           <TextBlockControls
             isFirst={index === 0}
-            isLast={index === textBlocks.length - 1}
+            isLast={index === lastIndex}
             label={block.label}
             visible={block.visible}
             onToggle={() => toggleTextBlockVisibility(block.id)}
@@ -971,7 +981,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
         />
         <TextBlockControls
           isFirst={index === 0}
-          isLast={index === textBlocks.length - 1}
+          isLast={index === lastIndex}
           label={block.label}
           visible={block.visible}
           onToggle={() => toggleTextBlockVisibility(block.id)}
@@ -1085,7 +1095,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           />
         </h2>
 
-        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
+        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <PositionTable
           calculatePosition={calculateCurrentPosition}
@@ -1116,11 +1126,9 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           onLabelChange={updateLabel}
         />
 
-        {isSmallBusinessInvoice && (
-          <p className="invoice-tax-notice">{smallBusinessTaxNotice}</p>
-        )}
+        {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1, isSmallBusinessInvoice ? 2 : 1)}
 
-        {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}
+        {isSmallBusinessInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'smallBusinessNotice'), 2, 2)}
 
         <FooterBlock
           columns={[
@@ -1235,7 +1243,6 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
         <div data-measure-summary>
           <InvoicePrintSummary isSmallBusinessInvoice={isSmallBusinessInvoice} labels={labels} totals={totals} />
         </div>
-        <p className="invoice-print-tax-notice" data-measure-tax-notice>{smallBusinessTaxNotice}</p>
       </div>
     </div>
   );
@@ -1248,7 +1255,6 @@ function measureInvoicePages(measureRoot, items) {
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
-  const taxNoticeProbe = measureRoot.querySelector('[data-measure-tax-notice]');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
   const positionRows = new Map(
     [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
@@ -1257,7 +1263,7 @@ function measureInvoicePages(measureRoot, items) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !taxNoticeProbe || !positionHeader) return null;
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) return null;
 
   const firstPageCapacity = firstContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
   const followPageCapacity = followContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
@@ -1274,7 +1280,6 @@ function measureInvoicePages(measureRoot, items) {
     if (item.type === 'text') return measureTextHeight(item.text);
     if (item.type === 'position') return positionRows.get(String(item.index)) || 0;
     if (item.type === 'summary') return getOuterHeight(summaryProbe);
-    if (item.type === 'taxNotice') return getOuterHeight(taxNoticeProbe);
     return 0;
   }
 
@@ -1309,7 +1314,6 @@ function arePrintPagesEqual(currentPages, nextPages) {
 function arePrintItemsEqual(first, second) {
   if (first.type !== second.type) return false;
   if (first.type === 'text') return first.id === second.id && first.text === second.text;
-  if (first.type === 'taxNotice') return first.id === second.id && first.text === second.text;
   if (first.type === 'position') {
     return (
       first.index === second.index &&
@@ -1501,14 +1505,6 @@ function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, is
           labels={labels}
           totals={totals}
         />,
-      );
-    }
-
-    if (item.type === 'taxNotice') {
-      renderedItems.push(
-        <p className="invoice-print-tax-notice" key={item.id}>
-          {item.text}
-        </p>,
       );
     }
 

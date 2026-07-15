@@ -40,6 +40,8 @@ const invoiceFormDefaults = {
     intro: 'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
     closing:
       'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.',
+    smallBusinessNotice:
+      'Aufgrund der Anwendung der Kleinunternehmerregelung gemäß § 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.',
   },
   position: {
     description: 'Leistung beschreiben',
@@ -295,6 +297,7 @@ export default function InvoiceDocumentForm({
 }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
+  const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
 
   function updateSenderAddress(field, value) {
     if (field === 'company') {
@@ -382,6 +385,13 @@ export default function InvoiceDocumentForm({
           <div className="invoice-panel-row">
             {introBlock && <TextBlockFormSection block={introBlock} onToggleVisible={() => toggleTextBlockVisibility(introBlock.id)} onUpdate={updateTextBlock} />}
             {closingBlock && <TextBlockFormSection block={closingBlock} onToggleVisible={() => toggleTextBlockVisibility(closingBlock.id)} onUpdate={updateTextBlock} />}
+            {!showTaxFields && smallBusinessNoticeBlock && (
+              <TextBlockFormSection
+                block={smallBusinessNoticeBlock}
+                onToggleVisible={() => toggleTextBlockVisibility(smallBusinessNoticeBlock.id)}
+                onUpdate={updateTextBlock}
+              />
+            )}
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
