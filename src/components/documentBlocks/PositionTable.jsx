@@ -1,9 +1,13 @@
+import { useEffect, useRef } from 'react';
+import { resizeTextarea } from '../../utils/resizeTextarea.js';
 import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
 
 export default function PositionTable({
+  autoResizeDescription = false,
   calculatePosition,
   dataCheckPositions = {},
   formatCurrency,
+  isTextInvoice = false,
   labels,
   onLabelChange,
   onMovePosition,
@@ -13,26 +17,47 @@ export default function PositionTable({
   showTaxColumn = true,
   variant = 'offer',
 }) {
+  const descriptionLabel = isTextInvoice && labels.description === 'Beschreibung'
+    ? 'Leistungsbeschreibung'
+    : labels.description;
+  const unitPriceLabel = isTextInvoice && labels.unitPrice === 'Einzelpreis'
+    ? 'Betrag'
+    : labels.unitPrice;
   const tableLabels = [
     ['position', 'Tabellenkopf Position'],
-    ['description', 'Tabellenkopf Beschreibung'],
-    ['unitPrice', 'Tabellenkopf Einzelpreis'],
-    ['quantity', 'Tabellenkopf Anzahl'],
-    ['unit', 'Tabellenkopf Einheit'],
+    ['description', 'Tabellenkopf Beschreibung', descriptionLabel],
+    ['unitPrice', 'Tabellenkopf Betrag', unitPriceLabel],
+    ...(!isTextInvoice
+      ? [
+          ['quantity', 'Tabellenkopf Anzahl'],
+          ['unit', 'Tabellenkopf Einheit'],
+        ]
+      : []),
     ...(showTaxColumn ? [['tax', 'Tabellenkopf Umsatzsteuer']] : []),
     ['total', 'Tabellenkopf Gesamt'],
   ];
+  const descriptionRefs = useRef({});
+
+  useEffect(() => {
+    if (!autoResizeDescription) {
+      return;
+    }
+
+    positions.forEach((position) => {
+      resizeTextarea(descriptionRefs.current[position.id]);
+    });
+  }, [autoResizeDescription, positions, showTaxColumn]);
 
   return (
-    <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}`}>
+    <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}${isTextInvoice ? ' is-text-invoice' : ''}`}>
       <thead>
         <tr>
-          {tableLabels.map(([field, ariaLabel]) => (
+          {tableLabels.map(([field, ariaLabel, labelOverride]) => (
             <th key={field}>
               <input
                 className="document-label-input"
                 aria-label={ariaLabel}
-                value={labels[field]}
+                value={labelOverride ?? labels[field]}
                 onChange={(event) => onLabelChange(field, event.target.value)}
               />
             </th>
@@ -79,41 +104,62 @@ export default function PositionTable({
                 {index + 1}
               </td>
               <td>
-                <input
-                  className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
-                  aria-label={`Beschreibung Position ${index + 1}`}
-                  value={position.description}
-                  onChange={(event) => onPositionChange(position.id, 'description', event.target.value)}
-                />
+                {autoResizeDescription ? (
+                  <textarea
+                    ref={(element) => {
+                      descriptionRefs.current[position.id] = element;
+                      resizeTextarea(element);
+                    }}
+                    className={`invoice-position-description${dataCheckPositions[position.id]?.description ? ' document-data-check-marker' : ''}`}
+                    aria-label={`Beschreibung Position ${index + 1}`}
+                    rows={1}
+                    value={position.description}
+                    onChange={(event) => {
+                      onPositionChange(position.id, 'description', event.target.value);
+                      resizeTextarea(event.target);
+                    }}
+                  />
+                ) : (
+                  <input
+                    className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
+                    aria-label={`Beschreibung Position ${index + 1}`}
+                    value={position.description}
+                    onChange={(event) => onPositionChange(position.id, 'description', event.target.value)}
+                  />
+                )}
               </td>
               <td>
                 <input
-                  className={dataCheckPositions[position.id]?.unitPrice ? 'document-data-check-marker' : undefined}
-                  aria-label={`Einzelpreis Position ${index + 1}`}
+                  className={`${isTextInvoice ? 'invoice-position-amount-input' : ''}${dataCheckPositions[position.id]?.unitPrice ? ' document-data-check-marker' : ''}`.trim() || undefined}
+                  aria-label={`${isTextInvoice ? 'Betrag' : 'Einzelpreis'} Position ${index + 1}`}
                   inputMode="decimal"
                   type="text"
                   value={position.unitPrice}
                   onChange={(event) => onPositionChange(position.id, 'unitPrice', event.target.value)}
                 />
               </td>
-              <td>
-                <input
-                  className={dataCheckPositions[position.id]?.quantity ? 'document-data-check-marker' : undefined}
-                  aria-label={`Anzahl Position ${index + 1}`}
-                  inputMode="decimal"
-                  type="text"
-                  value={position.quantity}
-                  onChange={(event) => onPositionChange(position.id, 'quantity', event.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  className={dataCheckPositions[position.id]?.unit ? 'document-data-check-marker' : undefined}
-                  aria-label={`Einheit Position ${index + 1}`}
-                  value={position.unit}
-                  onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
-                />
-              </td>
+              {!isTextInvoice && (
+                <>
+                  <td>
+                    <input
+                      className={dataCheckPositions[position.id]?.quantity ? 'document-data-check-marker' : undefined}
+                      aria-label={`Anzahl Position ${index + 1}`}
+                      inputMode="decimal"
+                      type="text"
+                      value={position.quantity}
+                      onChange={(event) => onPositionChange(position.id, 'quantity', event.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className={dataCheckPositions[position.id]?.unit ? 'document-data-check-marker' : undefined}
+                      aria-label={`Einheit Position ${index + 1}`}
+                      value={position.unit}
+                      onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
+                    />
+                  </td>
+                </>
+              )}
               {showTaxColumn && (
                 <td>
                   <span className="invoice-tax-rate-cell">

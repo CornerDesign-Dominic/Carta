@@ -15,7 +15,15 @@ function pathForDocumentId(documentId) {
 }
 
 function pathForInvoiceVariant(variant) {
-  return variant === 'smallBusiness' ? '/dokumente/rechnung/kleinunternehmer' : '/dokumente/rechnung';
+  if (variant === 'smallBusiness') {
+    return '/dokumente/rechnung/kleinunternehmer';
+  }
+
+  if (variant === 'text') {
+    return '/dokumente/rechnung/text';
+  }
+
+  return '/dokumente/rechnung';
 }
 
 function DocumentUsageMiniVisual({ type }) {

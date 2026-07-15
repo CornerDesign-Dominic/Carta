@@ -90,6 +90,15 @@ function routeFromLocation() {
     };
   }
 
+  if (path === '/dokumente/rechnung/text') {
+    return {
+      view: 'documents',
+      knowledgeSlug: null,
+      documentId: 'write-invoice',
+      invoiceVariant: 'text',
+    };
+  }
+
   if (path === '/dokumente/eigenbeleg') {
     return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
   }
@@ -127,8 +136,14 @@ function pathForNavigation(item) {
   }
 
   if (item.view === 'documents') {
-    if (item.documentId === 'write-invoice' && item.invoiceVariant === 'smallBusiness') {
-      return '/dokumente/rechnung/kleinunternehmer';
+    if (item.documentId === 'write-invoice') {
+      if (item.invoiceVariant === 'smallBusiness') {
+        return '/dokumente/rechnung/kleinunternehmer';
+      }
+
+      if (item.invoiceVariant === 'text') {
+        return '/dokumente/rechnung/text';
+      }
     }
 
     return generatorPathById.get(item.documentId) ?? '/dokumente';

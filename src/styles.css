@@ -3801,6 +3801,49 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   padding-left: 0;
 }
 
+.invoice-position-table.is-text-invoice th:nth-child(2),
+.invoice-position-table.is-text-invoice td:nth-child(2) {
+  width: 50%;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(3),
+.invoice-position-table.is-text-invoice td:nth-child(3) {
+  width: 16%;
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(3) .document-label-input,
+.invoice-position-table.is-text-invoice .invoice-position-amount-input {
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(4),
+.invoice-position-table.is-text-invoice td:nth-child(4) {
+  width: 8%;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(5),
+.invoice-position-table.is-text-invoice td:nth-child(5) {
+  width: 16%;
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(5) .document-label-input {
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(6),
+.invoice-position-table.is-text-invoice td:nth-child(6) {
+  position: relative;
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.invoice-position-table.is-text-invoice textarea.invoice-position-description {
+  min-height: 64px;
+}
+
 .invoice-position-table th:nth-child(8),
 .invoice-position-table td:nth-child(8) {
   position: relative;
@@ -3837,6 +3880,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 0.66rem;
   font-weight: 760;
   line-height: 1;
+  pointer-events: auto;
 }
 
 .invoice-position-delete {
@@ -4473,6 +4517,29 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-without-tax-column th:nth-child(6),
 .invoice-print-position-table.is-without-tax-column td:nth-child(6) {
+  width: 16%;
+  text-align: right;
+}
+
+.invoice-print-position-table.is-text-invoice th:nth-child(2),
+.invoice-print-position-table.is-text-invoice td:nth-child(2) {
+  width: 50%;
+  white-space: pre-wrap;
+}
+
+.invoice-print-position-table.is-text-invoice th:nth-child(3),
+.invoice-print-position-table.is-text-invoice td:nth-child(3) {
+  width: 16%;
+  text-align: right;
+}
+
+.invoice-print-position-table.is-text-invoice th:nth-child(4),
+.invoice-print-position-table.is-text-invoice td:nth-child(4) {
+  width: 8%;
+}
+
+.invoice-print-position-table.is-text-invoice th:nth-child(5),
+.invoice-print-position-table.is-text-invoice td:nth-child(5) {
   width: 16%;
   text-align: right;
 }
