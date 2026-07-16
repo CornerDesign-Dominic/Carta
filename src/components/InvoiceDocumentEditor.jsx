@@ -1128,24 +1128,28 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
         />
       )}
 
-      <InvoiceVariantChoiceBar
-        activeVariant={normalizedInvoiceVariant}
-        onChange={onInvoiceVariantChange}
-      />
+      <div className="invoice-variant-controls">
+        <InvoiceVariantChoiceBar
+          activeVariant={normalizedInvoiceVariant}
+          onChange={onInvoiceVariantChange}
+        />
 
-      <DocumentToolbar
-        ariaLabel="Rechnung Werkzeuge"
-        isDataCheckActive={isDataCheckMode}
-        isEditable={highlightFields}
-        isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
-        onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
-        onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
-        onToggleDataCheck={toggleDataCheckMode}
-        onToggleEditable={toggleEditableMode}
-      />
+        <div className="invoice-variant-controls-divider" aria-hidden="true" />
+
+        <DocumentToolbar
+          ariaLabel="Rechnung Werkzeuge"
+          isDataCheckActive={isDataCheckMode}
+          isEditable={highlightFields}
+          isExporting={isExporting}
+          jsonInputRef={jsonInputRef}
+          onCreatePdf={handleCreatePdf}
+          onLoadJson={handleLoadJson}
+          onPrint={handlePrint}
+          onSaveJson={handleSaveJson}
+          onToggleDataCheck={toggleDataCheckMode}
+          onToggleEditable={toggleEditableMode}
+        />
+      </div>
 
       <p className="document-mode-hint">{viewModeHint}</p>
 
@@ -1354,10 +1358,10 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
             <thead>
               <tr data-measure-position-header>
                 <th>{labels.position}</th>
-                {isGoodsInvoice && <th>{labels.articleNumber}</th>}
+                {isGoodsInvoice && <th>Artikel-Nr.</th>}
                 <th>{labels.description}</th>
                 <th>{labels.unitPrice}</th>
-                <th>{labels.quantity}</th>
+                <th>{isGoodsInvoice ? 'Anz.' : labels.quantity}</th>
                 <th>{labels.unit}</th>
                 {!isSmallBusinessInvoice && <th>{labels.tax}</th>}
                 <th>{labels.total}</th>
@@ -1714,10 +1718,10 @@ function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition
         <thead>
           <tr>
             <th>{labels.position}</th>
-            {isGoodsInvoice && <th>{labels.articleNumber}</th>}
+            {isGoodsInvoice && <th>Artikel-Nr.</th>}
             <th>{labels.description}</th>
             <th>{labels.unitPrice}</th>
-            <th>{labels.quantity}</th>
+            <th>{isGoodsInvoice ? 'Anz.' : labels.quantity}</th>
             <th>{labels.unit}</th>
             {!isSmallBusinessInvoice && <th>{labels.tax}</th>}
             <th>{labels.total}</th>

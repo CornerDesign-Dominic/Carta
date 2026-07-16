@@ -26,12 +26,12 @@ export default function PositionTable({
     : labels.unitPrice;
   const tableLabels = [
     ['position', 'Tabellenkopf Position'],
-    ...(isGoodsInvoice ? [['articleNumber', 'Tabellenkopf Artikelnummer']] : []),
+    ...(isGoodsInvoice ? [['articleNumber', 'Tabellenkopf Artikelnummer', 'Artikel-Nr.']] : []),
     ['description', 'Tabellenkopf Beschreibung', descriptionLabel],
     ['unitPrice', 'Tabellenkopf Betrag', unitPriceLabel],
     ...(!isTextInvoice
       ? [
-          ['quantity', 'Tabellenkopf Anzahl'],
+          ['quantity', 'Tabellenkopf Anzahl', isGoodsInvoice ? 'Anz.' : undefined],
           ['unit', 'Tabellenkopf Einheit'],
         ]
       : []),
