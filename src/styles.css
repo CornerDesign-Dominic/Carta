@@ -3780,6 +3780,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table th,
 .invoice-position-table td {
+  padding-right: 3px;
+  padding-left: 3px;
   padding-top: 4px;
   padding-bottom: 4px;
   vertical-align: top;
@@ -3848,7 +3850,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .invoice-position-table th:nth-child(1),
 .invoice-position-table td:nth-child(1) {
   position: relative;
-  width: 6%;
+  width: 5.5%;
 }
 
 .invoice-position-table .invoice-position-index-cell {
@@ -3857,29 +3859,29 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table th:nth-child(2),
 .invoice-position-table td:nth-child(2) {
-  width: 37%;
+  width: 43.5%;
 }
 
 .invoice-position-table th:nth-child(3),
 .invoice-position-table td:nth-child(3) {
-  width: 14%;
+  width: 13.5%;
 }
 
 .invoice-position-table th:nth-child(4),
 .invoice-position-table td:nth-child(4),
 .invoice-position-table th:nth-child(5),
 .invoice-position-table td:nth-child(5) {
-  width: 10%;
+  width: 8.5%;
 }
 
 .invoice-position-table th:nth-child(6),
 .invoice-position-table td:nth-child(6) {
-  width: 7%;
+  width: 6.5%;
 }
 
 .invoice-position-table th:nth-child(7),
 .invoice-position-table td:nth-child(7) {
-  width: 16%;
+  width: 14%;
   text-align: right;
 }
 
@@ -3889,12 +3891,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-without-tax-column th:nth-child(2),
 .invoice-position-table.is-without-tax-column td:nth-child(2) {
-  width: 44%;
+  width: 50.5%;
 }
 
 .invoice-position-table.is-without-tax-column th:nth-child(6),
 .invoice-position-table.is-without-tax-column td:nth-child(6) {
-  width: 16%;
+  width: 14%;
   text-align: right;
 }
 
@@ -4785,7 +4787,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table th,
 .invoice-print-position-table td {
-  padding: 4px 6px;
+  padding: 4px 3px;
   border-bottom: 1px solid #e8e4dc;
   vertical-align: top;
   break-inside: avoid;
@@ -4802,46 +4804,46 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table th:nth-child(1),
 .invoice-print-position-table td:nth-child(1) {
-  width: 6%;
+  width: 5.5%;
 }
 
 .invoice-print-position-table th:nth-child(2),
 .invoice-print-position-table td:nth-child(2) {
-  width: 37%;
+  width: 43.5%;
   white-space: pre-wrap;
 }
 
 .invoice-print-position-table th:nth-child(3),
 .invoice-print-position-table td:nth-child(3) {
-  width: 14%;
+  width: 13.5%;
 }
 
 .invoice-print-position-table th:nth-child(4),
 .invoice-print-position-table td:nth-child(4),
 .invoice-print-position-table th:nth-child(5),
 .invoice-print-position-table td:nth-child(5) {
-  width: 10%;
+  width: 8.5%;
 }
 
 .invoice-print-position-table th:nth-child(6),
 .invoice-print-position-table td:nth-child(6) {
-  width: 7%;
+  width: 6.5%;
 }
 
 .invoice-print-position-table th:nth-child(7),
 .invoice-print-position-table td:nth-child(7) {
-  width: 16%;
+  width: 14%;
   text-align: right;
 }
 
 .invoice-print-position-table.is-without-tax-column th:nth-child(2),
 .invoice-print-position-table.is-without-tax-column td:nth-child(2) {
-  width: 44%;
+  width: 50.5%;
 }
 
 .invoice-print-position-table.is-without-tax-column th:nth-child(6),
 .invoice-print-position-table.is-without-tax-column td:nth-child(6) {
-  width: 16%;
+  width: 14%;
   text-align: right;
 }
 

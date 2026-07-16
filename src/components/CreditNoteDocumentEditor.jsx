@@ -1263,6 +1263,7 @@ export default function CreditNoteDocumentEditor() {
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <PositionTable
+          autoResizeDescription
           calculatePosition={calculatePosition}
           dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
