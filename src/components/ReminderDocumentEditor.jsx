@@ -849,6 +849,26 @@ export default function ReminderDocumentEditor() {
     downloadJson(createReminderTemplate(), createJsonFileName(details.reminderNumber));
   }
 
+  function handleNewDocument() {
+    setLabels(initialReminderLabels);
+    setReminderData(defaultReminderData);
+    setOpenItems([createOpenItem()]);
+    setCharges(defaultReminderCharges);
+    setTextBlocks(defaultReminderTextBlocks);
+    setFieldConfig({
+      contact: createFieldConfig(reminderContactFields),
+      details: createFieldConfig(reminderMetaFields),
+      recipient: createFieldConfig(reminderRecipientOptionalFields),
+      footerMiddle: createFieldConfig(reminderFooterColumns[1]),
+    });
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setIsExporting(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -994,6 +1014,7 @@ export default function ReminderDocumentEditor() {
         jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
         onLoadJson={handleLoadJson}
+        onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}

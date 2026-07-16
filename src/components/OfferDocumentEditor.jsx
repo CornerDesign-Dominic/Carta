@@ -1109,6 +1109,25 @@ export default function OfferDocumentEditor() {
     downloadJson(createOfferTemplate(), createJsonFileName(details.offerNumber));
   }
 
+  function handleNewDocument() {
+    setLabels(initialOfferLabels);
+    setOfferData(defaultOfferData);
+    setTextBlocks(defaultOfferTextBlocks);
+    setPositions([createOfferPosition()]);
+    setFieldConfig({
+      contact: createFieldConfig(offerContactFields),
+      details: createFieldConfig(offerMetaFields),
+      recipient: createFieldConfig(offerRecipientOptionalFields),
+      footerMiddle: createFieldConfig(offerFooterColumns[1]),
+    });
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setIsExporting(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -1277,6 +1296,7 @@ export default function OfferDocumentEditor() {
         jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
         onLoadJson={handleLoadJson}
+        onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}

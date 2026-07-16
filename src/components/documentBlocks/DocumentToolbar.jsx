@@ -21,6 +21,7 @@ export default function DocumentToolbar({
   onCreatePdf,
   onToggleDataCheck,
   onLoadJson,
+  onNewDocument,
   onPrint,
   onSaveJson,
   onToggleEditable,
@@ -136,6 +137,30 @@ export default function DocumentToolbar({
           </>
         )}
       </div>
+      {onNewDocument && (
+        <div className="visual-toolbar-group visual-toolbar-new-group">
+          <button
+            className="visual-toolbar-new-button"
+            type="button"
+            title="Neues Dokument erstellen"
+            aria-label="Neues Dokument erstellen"
+            onClick={() => {
+              const confirmed = window.confirm(
+                'Möchtest du dieses Dokument wirklich zurücksetzen? Alle aktuellen Eingaben gehen verloren.',
+              );
+
+              if (!confirmed) {
+                return;
+              }
+
+              trackDocumentAction('new_document');
+              onNewDocument?.();
+            }}
+          >
+            Neu
+          </button>
+        </div>
+      )}
     </div>
   );
 }

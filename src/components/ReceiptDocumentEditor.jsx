@@ -1139,6 +1139,24 @@ export default function ReceiptDocumentEditor() {
     downloadJson(createReceiptTemplate(), createJsonFileName(details.receiptId));
   }
 
+  function handleNewDocument() {
+    setLabels(initialReceiptLabels);
+    setReceiptData(emptyReceiptData);
+    setAmountCalculationSource('netAmount');
+    setTextBlocks(defaultReceiptTextBlocks);
+    setFieldConfig({
+      contact: createFieldConfig(receiptContactFields),
+      details: createFieldConfig(receiptMetaFields),
+      header: createFieldConfig(receiptHeaderFields),
+      recipient: createFieldConfig(receiptRecipientOptionalFields),
+      footerMiddle: createFieldConfig(receiptFooterColumns[1]),
+    });
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExporting(false);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -1222,6 +1240,7 @@ export default function ReceiptDocumentEditor() {
         jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
         onLoadJson={handleLoadJson}
+        onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}

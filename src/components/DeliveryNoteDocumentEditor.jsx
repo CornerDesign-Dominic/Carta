@@ -941,6 +941,25 @@ export default function DeliveryNoteDocumentEditor() {
     downloadJson(createDeliveryNoteTemplate(), createJsonFileName(details.deliveryNoteNumber));
   }
 
+  function handleNewDocument() {
+    setLabels(initialDeliveryNoteLabels);
+    setDeliveryNoteData(defaultDeliveryNoteData);
+    setTextBlocks(defaultDeliveryNoteTextBlocks);
+    setPositions([createDeliveryNotePosition()]);
+    setFieldConfig({
+      contact: createFieldConfig(deliveryNoteContactFields),
+      details: createFieldConfig(deliveryNoteMetaFields),
+      recipient: createFieldConfig(deliveryNoteRecipientOptionalFields),
+      footerMiddle: createFieldConfig(deliveryNoteFooterColumns[1]),
+    });
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setIsExporting(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -1085,6 +1104,7 @@ export default function DeliveryNoteDocumentEditor() {
         jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
         onLoadJson={handleLoadJson}
+        onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}

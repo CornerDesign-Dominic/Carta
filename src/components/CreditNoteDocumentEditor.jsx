@@ -1031,6 +1031,25 @@ export default function CreditNoteDocumentEditor() {
     downloadJson(createOfferTemplate(), createJsonFileName(details.creditNoteNumber));
   }
 
+  function handleNewDocument() {
+    setLabels(initialCreditNoteLabels);
+    setOfferData(defaultOfferData);
+    setTextBlocks(defaultOfferTextBlocks);
+    setPositions([createCreditNotePosition()]);
+    setFieldConfig({
+      contact: createFieldConfig(offerContactFields),
+      details: createFieldConfig(offerMetaFields),
+      recipient: createFieldConfig(offerRecipientOptionalFields),
+      footerMiddle: createFieldConfig(offerFooterColumns[1]),
+    });
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setIsExporting(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -1198,6 +1217,7 @@ export default function CreditNoteDocumentEditor() {
         jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
         onLoadJson={handleLoadJson}
+        onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}

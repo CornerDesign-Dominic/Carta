@@ -1047,9 +1047,11 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     }
   }
 
-  function setSmallBusinessMode(isSmallBusiness) {
+  function setSmallBusinessMode(isSmallBusiness, { persist = true } = {}) {
     setIsSmallBusinessInvoice(isSmallBusiness);
-    writeStoredSmallBusinessMode(isSmallBusiness);
+    if (persist) {
+      writeStoredSmallBusinessMode(isSmallBusiness);
+    }
     onSmallBusinessChange?.(isSmallBusiness);
   }
 
@@ -1107,6 +1109,29 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     downloadJson(createInvoiceTemplate(), createJsonFileName(details.invoiceNumber));
   }
 
+  function handleNewDocument() {
+    const resetSmallBusinessMode = readStoredSmallBusinessMode();
+
+    setLabels(initialInvoiceLabels);
+    setInvoiceData(defaultInvoiceData);
+    setPositions([isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
+    setTextBlockSets(createInitialTextBlockSets());
+    setSmallBusinessMode(resetSmallBusinessMode);
+    setFieldConfig({
+      contact: createFieldConfig(invoiceContactFields),
+      details: createFieldConfig(invoiceMetaFields),
+      deliveryAddress: createFieldConfig(invoiceDeliveryAddressOptionalFields),
+      recipient: createFieldConfig(invoiceRecipientOptionalFields),
+      footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
+    });
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setIsExporting(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -1133,7 +1158,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       setInvoiceData(normalizeInvoiceData(data));
       setPositions(normalizePositions(data.positions));
       setActiveTextBlocks(normalizeTextBlocksForVariant(data.textBlocks, templateInvoiceVariant), templateInvoiceVariant);
-      setSmallBusinessMode(templateSmallBusiness);
+      setSmallBusinessMode(templateSmallBusiness, { persist: false });
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
       if (
         data.invoiceVariant === 'standard' ||
@@ -1286,6 +1311,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           jsonInputRef={jsonInputRef}
           onCreatePdf={handleCreatePdf}
           onLoadJson={handleLoadJson}
+          onNewDocument={handleNewDocument}
           onPrint={handlePrint}
           onSaveJson={handleSaveJson}
           onToggleDataCheck={toggleDataCheckMode}

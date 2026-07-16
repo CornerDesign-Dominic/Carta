@@ -875,6 +875,24 @@ export default function SelfReceiptDocumentEditor() {
     downloadJson(createTemplatePayload(), createJsonFileName(details.selfReceiptId));
   }
 
+  function handleNewDocument() {
+    setLabels(initialSelfReceiptLabels);
+    setFieldConfig({
+      contact: createFieldConfig(selfReceiptContactFields),
+      details: createFieldConfig(selfReceiptMetaFields),
+      recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
+      footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
+    });
+    setSelfReceiptData(defaultSelfReceiptData);
+    setTextBlocks(defaultSelfReceiptTextBlocks);
+    setPositions([createSelfReceiptPosition()]);
+    setHighlightFields(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setIsExporting(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+  }
+
   async function handleLoadJson(event) {
     const file = event.target.files?.[0];
 
@@ -1116,6 +1134,7 @@ export default function SelfReceiptDocumentEditor() {
         jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
         onLoadJson={handleLoadJson}
+        onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onSaveJson={handleSaveJson}
         onToggleEditable={() => setHighlightFields((current) => !current)}
