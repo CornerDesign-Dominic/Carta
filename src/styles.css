@@ -2320,7 +2320,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .invoice-variant-controls .document-choice-bar {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   width: 100%;
   max-width: 100%;
@@ -2340,13 +2340,39 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   background: rgba(201, 196, 186, 0.58);
 }
 
+.invoice-small-business-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(201, 196, 186, 0.62);
+  border-radius: 6px;
+  background: rgba(255, 253, 249, 0.78);
+  color: #3f3b35;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.invoice-small-business-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-deep);
+  flex: 0 0 auto;
+}
+
+.invoice-small-business-toggle span {
+  min-width: 0;
+}
+
 .invoice-variant-controls .visual-toolbar {
   width: 100%;
 }
 
 @media (max-width: 720px) {
   .invoice-variant-controls .document-choice-bar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -3896,33 +3922,35 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-goods-invoice th:nth-child(3),
 .invoice-position-table.is-goods-invoice td:nth-child(3) {
-  width: 39%;
+  width: 38.5%;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(4),
 .invoice-position-table.is-goods-invoice td:nth-child(4) {
-  width: 10%;
+  width: 12%;
   text-align: right;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(5),
 .invoice-position-table.is-goods-invoice td:nth-child(5) {
-  width: 6%;
+  width: 5.5%;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(6),
 .invoice-position-table.is-goods-invoice td:nth-child(6) {
-  width: 6%;
+  width: 8%;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(7),
 .invoice-position-table.is-goods-invoice td:nth-child(7) {
-  width: 6%;
+  width: 5%;
+  padding-right: 2px;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(8),
 .invoice-position-table.is-goods-invoice td:nth-child(8) {
-  width: 15%;
+  width: 13%;
+  padding-left: 2px;
   text-align: right;
 }
 
@@ -4031,12 +4059,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .invoice-position-table.is-goods-invoice th:nth-child(8),
 .invoice-position-table.is-goods-invoice td:nth-child(8) {
   position: static;
-  width: 15%;
+  width: 13%;
   padding-right: 6px;
-  padding-left: 6px;
-  border-top-color: inherit;
-  border-bottom-color: inherit;
+  padding-left: 2px;
   text-align: right;
+}
+
+.invoice-position-table.is-goods-invoice th:nth-child(8) {
+  border-top: 1px solid #cfc9be;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.invoice-position-table.is-goods-invoice td:nth-child(8) {
+  border-bottom: 1px solid #e8e4dc;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(8) .document-label-input {
@@ -4747,34 +4782,36 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(3),
 .invoice-print-position-table.is-goods-invoice td:nth-child(3) {
-  width: 39%;
+  width: 38.5%;
   white-space: pre-wrap;
 }
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(4),
 .invoice-print-position-table.is-goods-invoice td:nth-child(4) {
-  width: 10%;
+  width: 12%;
   text-align: right;
 }
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(5),
 .invoice-print-position-table.is-goods-invoice td:nth-child(5) {
-  width: 6%;
+  width: 5.5%;
 }
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(6),
 .invoice-print-position-table.is-goods-invoice td:nth-child(6) {
-  width: 6%;
+  width: 8%;
 }
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(7),
 .invoice-print-position-table.is-goods-invoice td:nth-child(7) {
-  width: 6%;
+  width: 5%;
+  padding-right: 2px;
 }
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(8),
 .invoice-print-position-table.is-goods-invoice td:nth-child(8) {
-  width: 15%;
+  width: 13%;
+  padding-left: 2px;
   text-align: right;
 }
 

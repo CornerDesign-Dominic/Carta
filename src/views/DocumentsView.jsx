@@ -15,10 +15,6 @@ function pathForDocumentId(documentId) {
 }
 
 function pathForInvoiceVariant(variant) {
-  if (variant === 'smallBusiness') {
-    return '/dokumente/rechnung/kleinunternehmer';
-  }
-
   if (variant === 'text') {
     return '/dokumente/rechnung/text';
   }
@@ -169,9 +165,15 @@ function DocumentOverview() {
   );
 }
 
-export default function DocumentsView({ initialDocumentId = 'overview', initialInvoiceVariant = 'standard', onNavigate }) {
+export default function DocumentsView({
+  initialDocumentId = 'overview',
+  initialInvoiceSmallBusiness,
+  initialInvoiceVariant = 'standard',
+  onNavigate,
+}) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
+  const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
   const showDocumentDescription = ![
@@ -193,6 +195,10 @@ export default function DocumentsView({ initialDocumentId = 'overview', initialI
     setActiveInvoiceVariant(initialInvoiceVariant);
   }, [initialInvoiceVariant]);
 
+  useEffect(() => {
+    setActiveInvoiceSmallBusiness(initialInvoiceSmallBusiness);
+  }, [initialInvoiceSmallBusiness]);
+
   function handleSelectDocument(documentId) {
     setActiveDocumentId(documentId);
     if (documentId === 'write-invoice') {
@@ -213,12 +219,24 @@ export default function DocumentsView({ initialDocumentId = 'overview', initialI
       view: 'documents',
       documentId: 'write-invoice',
       invoiceVariant: variant,
+      isSmallBusiness: activeInvoiceSmallBusiness,
       path: nextPath,
     }, { preserveDocumentsView: true });
 
     if (window.location.pathname !== nextPath) {
       window.history.pushState({}, '', nextPath);
     }
+  }
+
+  function handleInvoiceSmallBusinessChange(isSmallBusiness) {
+    setActiveInvoiceSmallBusiness(isSmallBusiness);
+    onNavigate?.({
+      view: 'documents',
+      documentId: 'write-invoice',
+      invoiceVariant: activeInvoiceVariant,
+      isSmallBusiness,
+      path: pathForInvoiceVariant(activeInvoiceVariant),
+    }, { preserveDocumentsView: true, replace: true });
   }
 
   return (
@@ -244,8 +262,10 @@ export default function DocumentsView({ initialDocumentId = 'overview', initialI
             {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
             {activeDocument.formType === 'invoice' && (
               <InvoiceDocumentEditor
+                initialSmallBusiness={activeInvoiceSmallBusiness}
                 invoiceVariant={activeInvoiceVariant}
                 onInvoiceVariantChange={handleInvoiceVariantChange}
+                onSmallBusinessChange={handleInvoiceSmallBusinessChange}
               />
             )}
             {activeDocument.formType === 'offer' && <OfferDocumentEditor />}

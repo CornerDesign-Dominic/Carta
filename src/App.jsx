@@ -86,7 +86,9 @@ function routeFromLocation() {
       view: 'documents',
       knowledgeSlug: null,
       documentId: 'write-invoice',
-      invoiceVariant: 'smallBusiness',
+      invoiceVariant: 'standard',
+      isSmallBusiness: true,
+      redirectPath: '/dokumente/rechnung',
     };
   }
 
@@ -146,10 +148,6 @@ function pathForNavigation(item) {
 
   if (item.view === 'documents') {
     if (item.documentId === 'write-invoice') {
-      if (item.invoiceVariant === 'smallBusiness') {
-        return '/dokumente/rechnung/kleinunternehmer';
-      }
-
       if (item.invoiceVariant === 'text') {
         return '/dokumente/rechnung/text';
       }
@@ -188,6 +186,7 @@ export default function App() {
   const [currentKnowledgeSlug, setCurrentKnowledgeSlug] = useState(initialRoute.knowledgeSlug);
   const [currentDocumentId, setCurrentDocumentId] = useState(initialRoute.documentId);
   const [currentInvoiceVariant, setCurrentInvoiceVariant] = useState(initialRoute.invoiceVariant ?? 'standard');
+  const [currentInvoiceSmallBusiness, setCurrentInvoiceSmallBusiness] = useState(initialRoute.isSmallBusiness);
   const [currentToolId, setCurrentToolId] = useState(initialRoute.toolId ?? null);
   const [documentsViewKey, setDocumentsViewKey] = useState(0);
   const [consent, setConsent] = useState(initialConsent ?? createDefaultConsent());
@@ -199,12 +198,24 @@ export default function App() {
     setCurrentKnowledgeSlug(route.knowledgeSlug);
     setCurrentDocumentId(route.documentId);
     setCurrentInvoiceVariant(route.invoiceVariant ?? 'standard');
+    setCurrentInvoiceSmallBusiness(route.isSmallBusiness);
     setCurrentToolId(route.toolId ?? null);
   }
 
   useEffect(() => {
+    if (initialRoute.redirectPath && window.location.pathname !== initialRoute.redirectPath) {
+      window.history.replaceState({}, '', initialRoute.redirectPath);
+    }
+  }, []);
+
+  useEffect(() => {
     function handlePopState() {
-      applyRoute(routeFromLocation());
+      const route = routeFromLocation();
+      applyRoute(route);
+
+      if (route.redirectPath && window.location.pathname !== route.redirectPath) {
+        window.history.replaceState({}, '', route.redirectPath);
+      }
     }
 
     window.addEventListener('popstate', handlePopState);
@@ -228,10 +239,13 @@ export default function App() {
     setCurrentKnowledgeSlug(item.slug ?? null);
     setCurrentDocumentId(item.documentId ?? 'overview');
     setCurrentInvoiceVariant(item.invoiceVariant ?? 'standard');
+    setCurrentInvoiceSmallBusiness(item.isSmallBusiness);
     setCurrentToolId(item.toolId ?? null);
 
     const nextPath = pathForNavigation(item);
-    if (!options.replace && window.location.pathname !== nextPath) {
+    if (options.replace && window.location.pathname !== nextPath) {
+      window.history.replaceState({}, '', nextPath);
+    } else if (!options.replace && window.location.pathname !== nextPath) {
       window.history.pushState({}, '', nextPath);
     }
 
@@ -288,6 +302,7 @@ export default function App() {
           <DocumentsView
             key={documentsViewKey}
             initialDocumentId={currentDocumentId}
+            initialInvoiceSmallBusiness={currentInvoiceSmallBusiness}
             initialInvoiceVariant={currentInvoiceVariant}
             onNavigate={handleNavigate}
           />

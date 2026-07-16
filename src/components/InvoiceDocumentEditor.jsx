@@ -20,9 +20,9 @@ import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const invoiceSchemaVersion = '1.0';
+const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
-  { id: 'smallBusiness', label: 'Kleinunternehmer' },
   { id: 'text', label: 'Textrechnung' },
   { id: 'goods', label: 'Warenrechnung' },
 ];
@@ -425,6 +425,55 @@ function normalizeTextBlocks(templateTextBlocks) {
   return normalized;
 }
 
+function createTextInvoiceTextBlocks() {
+  return normalizeTextBlocks().map((block) => {
+    if (block.id === 'intro') {
+      return { ...block, value: textInvoiceIntro };
+    }
+
+    if (block.id === 'closing') {
+      return { ...block, value: textInvoiceClosing };
+    }
+
+    return block;
+  });
+}
+
+function getTextBlockSetKey(invoiceVariant) {
+  return invoiceVariant === 'text' ? 'text' : 'default';
+}
+
+function createInitialTextBlockSets() {
+  return {
+    default: normalizeTextBlocks(),
+    text: createTextInvoiceTextBlocks(),
+  };
+}
+
+function normalizeTextBlocksForVariant(templateTextBlocks, invoiceVariant) {
+  if (invoiceVariant === 'text' && !Array.isArray(templateTextBlocks)) {
+    return createTextInvoiceTextBlocks();
+  }
+
+  return normalizeTextBlocks(templateTextBlocks);
+}
+
+function readStoredSmallBusinessMode() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return window.localStorage.getItem(smallBusinessStorageKey) === 'true';
+}
+
+function writeStoredSmallBusinessMode(isSmallBusiness) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(smallBusinessStorageKey, isSmallBusiness ? 'true' : 'false');
+}
+
 function normalizePositions(templatePositions) {
   if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
     return [createInvoicePosition()];
@@ -512,12 +561,10 @@ function calculatePosition(position, { isSmallBusinessInvoice = false, isTextInv
 
 function createPdfFileName(title, number, invoiceVariant = 'standard') {
   const cleanTitle = createSlug(
-    invoiceVariant === 'smallBusiness'
-      ? 'kleinunternehmerrechnung'
-      : invoiceVariant === 'text'
-        ? 'textrechnung'
-        : invoiceVariant === 'goods'
-          ? 'warenrechnung'
+    invoiceVariant === 'text'
+      ? 'textrechnung'
+      : invoiceVariant === 'goods'
+        ? 'warenrechnung'
         : title || 'rechnung',
   );
   const cleanNumber = createSlug(number || new Date().toISOString().slice(0, 10));
@@ -605,11 +652,10 @@ function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
   );
 }
 
-export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onInvoiceVariantChange }) {
-  const normalizedInvoiceVariant = ['standard', 'smallBusiness', 'text', 'goods'].includes(invoiceVariant)
+export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVariant = 'standard', onInvoiceVariantChange, onSmallBusinessChange }) {
+  const normalizedInvoiceVariant = ['standard', 'text', 'goods'].includes(invoiceVariant)
     ? invoiceVariant
     : 'standard';
-  const isSmallBusinessInvoice = normalizedInvoiceVariant === 'smallBusiness';
   const isTextInvoice = normalizedInvoiceVariant === 'text';
   const isGoodsInvoice = normalizedInvoiceVariant === 'goods';
   const [highlightFields, setHighlightFields] = useState(false);
@@ -631,12 +677,23 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [invoiceData, setInvoiceData] = useState(defaultInvoiceData);
-  const [textBlocks, setTextBlocks] = useState(defaultInvoiceTextBlocks);
+  const [isSmallBusinessInvoice, setIsSmallBusinessInvoice] = useState(() =>
+    typeof initialSmallBusiness === 'boolean' ? initialSmallBusiness : readStoredSmallBusinessMode(),
+  );
+  const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState(() => [isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
   const { sender, recipient, deliveryAddress, details, footerLines } = useMemo(
     () => createInvoiceViewData(invoiceData),
     [invoiceData],
   );
+  const activeTextBlockSetKey = getTextBlockSetKey(normalizedInvoiceVariant);
+  const textBlocks = textBlockSets[activeTextBlockSetKey] ?? textBlockSets.default;
+
+  useEffect(() => {
+    if (typeof initialSmallBusiness === 'boolean') {
+      setIsSmallBusinessInvoice(initialSmallBusiness);
+    }
+  }, [initialSmallBusiness]);
 
   useEffect(() => {
     textBlocks.forEach((block) => {
@@ -645,26 +702,6 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
       }
     });
   }, [textBlocks]);
-
-  useEffect(() => {
-    if (!isTextInvoice) {
-      return;
-    }
-
-    setTextBlocks((current) =>
-      current.map((block) => {
-        if (block.id === 'intro' && block.value === defaultInvoiceTextBlocks[0].value) {
-          return { ...block, value: textInvoiceIntro };
-        }
-
-        if (block.id === 'closing' && block.value === defaultInvoiceTextBlocks[1].value) {
-          return { ...block, value: textInvoiceClosing };
-        }
-
-        return block;
-      }),
-    );
-  }, [isTextInvoice]);
 
   const totals = useMemo(() => {
     const summary = positions.reduce(
@@ -718,10 +755,17 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
         positions,
         positionFields: isTextInvoice
           ? ['description', 'unitPrice', 'unit']
+          : isGoodsInvoice
+          ? [
+              'articleNumber',
+              'description',
+              'unitPrice',
+              'quantity',
+              'unit',
+              ...(isSmallBusinessInvoice ? [] : ['taxRate']),
+            ]
           : isSmallBusinessInvoice
           ? ['description', 'unitPrice', 'quantity', 'unit']
-          : isGoodsInvoice
-          ? ['articleNumber', 'description', 'unitPrice', 'quantity', 'unit', 'taxRate']
           : ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'],
         recipient,
         recipientHiddenFields: fieldConfig.recipient.hidden,
@@ -952,16 +996,43 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
     }
   }
 
+  function setSmallBusinessMode(isSmallBusiness) {
+    setIsSmallBusinessInvoice(isSmallBusiness);
+    writeStoredSmallBusinessMode(isSmallBusiness);
+    onSmallBusinessChange?.(isSmallBusiness);
+  }
+
   function updateTextBlock(blockId, patch) {
-    setTextBlocks((current) =>
-      current.map((block) => (block.id === blockId ? { ...block, ...patch } : block)),
-    );
+    setTextBlockSets((current) => (
+      {
+        ...current,
+        [activeTextBlockSetKey]: current[activeTextBlockSetKey].map((block) =>
+          block.id === blockId ? { ...block, ...patch } : block,
+        ),
+      }
+    ));
+  }
+
+  function setActiveTextBlocks(nextTextBlocks, invoiceVariant = normalizedInvoiceVariant) {
+    const textBlockSetKey = getTextBlockSetKey(invoiceVariant);
+
+    setTextBlockSets((current) => (
+      {
+        ...current,
+        [textBlockSetKey]: nextTextBlocks,
+      }
+    ));
   }
 
   function toggleTextBlockVisibility(blockId) {
-    setTextBlocks((current) =>
-      current.map((block) => (block.id === blockId ? { ...block, visible: !block.visible } : block)),
-    );
+    setTextBlockSets((current) => (
+      {
+        ...current,
+        [activeTextBlockSetKey]: current[activeTextBlockSetKey].map((block) =>
+          block.id === blockId ? { ...block, visible: !block.visible } : block,
+        ),
+      }
+    ));
   }
 
   function createInvoiceTemplate() {
@@ -973,6 +1044,7 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
       data: {
         labels,
         ...invoiceData,
+        isSmallBusiness: isSmallBusinessInvoice,
         positions,
         textBlocks,
         fieldConfig,
@@ -993,32 +1065,42 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
     }
 
     if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswählen.');
+      window.alert('Bitte eine JSON-Datei auswÃ¤hlen.');
       return;
     }
 
     try {
       const template = JSON.parse(await file.text());
       const data = validateInvoiceTemplate(template);
+      const templateInvoiceVariant = ['standard', 'text', 'goods'].includes(data.invoiceVariant)
+        ? data.invoiceVariant
+        : normalizedInvoiceVariant;
+      const templateSmallBusiness =
+        data.invoiceVariant === 'smallBusiness' ? true : data.isSmallBusiness === true;
 
       setLabels({ ...initialInvoiceLabels, ...(data.labels ?? {}) });
       setInvoiceData(normalizeInvoiceData(data));
       setPositions(normalizePositions(data.positions));
-      setTextBlocks(normalizeTextBlocks(data.textBlocks));
+      setActiveTextBlocks(normalizeTextBlocksForVariant(data.textBlocks, templateInvoiceVariant), templateInvoiceVariant);
+      setSmallBusinessMode(templateSmallBusiness);
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
       if (
-        data.invoiceVariant === 'smallBusiness' ||
         data.invoiceVariant === 'standard' ||
         data.invoiceVariant === 'text' ||
         data.invoiceVariant === 'goods'
       ) {
-        onInvoiceVariantChange?.(data.invoiceVariant);
+        onInvoiceVariantChange?.(templateInvoiceVariant);
+      }
+
+      if (data.invoiceVariant === 'smallBusiness') {
+        onInvoiceVariantChange?.('standard');
       }
       setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
     }
   }
+
 
   async function handleCreatePdf() {
     setIsExporting(true);
@@ -1133,6 +1215,15 @@ export default function InvoiceDocumentEditor({ invoiceVariant = 'standard', onI
           activeVariant={normalizedInvoiceVariant}
           onChange={onInvoiceVariantChange}
         />
+
+        <label className="invoice-small-business-toggle">
+          <input
+            type="checkbox"
+            checked={isSmallBusinessInvoice}
+            onChange={(event) => setSmallBusinessMode(event.target.checked)}
+          />
+          <span>Kleinunternehmerregelung nach § 19 UStG anwenden</span>
+        </label>
 
         <div className="invoice-variant-controls-divider" aria-hidden="true" />
 
