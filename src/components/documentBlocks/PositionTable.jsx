@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
 import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
 
@@ -18,6 +18,7 @@ export default function PositionTable({
   showTaxColumn = true,
   variant = 'offer',
 }) {
+  const [focusedAmountPositionId, setFocusedAmountPositionId] = useState(null);
   const descriptionLabel = isTextInvoice && labels.description === 'Beschreibung'
     ? 'Leistungsbeschreibung'
     : labels.description;
@@ -39,6 +40,24 @@ export default function PositionTable({
     ['total', 'Tabellenkopf Gesamt'],
   ];
   const descriptionRefs = useRef({});
+
+  function normalizeAmountInput(value) {
+    const numericValue = Number.parseFloat(
+      String(value)
+        .replace(/[^\d,.-]/g, '')
+        .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+        .replace(',', '.'),
+    );
+
+    if (!Number.isFinite(numericValue)) {
+      return value;
+    }
+
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(numericValue);
+  }
 
   useEffect(() => {
     if (!autoResizeDescription) {
@@ -158,8 +177,22 @@ export default function PositionTable({
                   aria-label={`${isTextInvoice ? 'Betrag' : 'Einzelpreis'} Position ${index + 1}`}
                   inputMode="decimal"
                   type="text"
-                  value={position.unitPrice}
+                  value={isTextInvoice && focusedAmountPositionId !== position.id
+                    ? formatCurrency(calculatePosition(position).net)
+                    : position.unitPrice}
                   onChange={(event) => onPositionChange(position.id, 'unitPrice', event.target.value)}
+                  onBlur={(event) => {
+                    if (isTextInvoice) {
+                      onPositionChange(position.id, 'unitPrice', normalizeAmountInput(event.target.value));
+                      setFocusedAmountPositionId(null);
+                    }
+                  }}
+                  onFocus={(event) => {
+                    if (isTextInvoice) {
+                      setFocusedAmountPositionId(position.id);
+                      event.target.select();
+                    }
+                  }}
                 />
               </td>
               {!isTextInvoice && (

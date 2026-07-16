@@ -23,8 +23,8 @@ const invoiceSchemaVersion = '1.0';
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
-  { id: 'text', label: 'Textrechnung' },
   { id: 'goods', label: 'Warenrechnung' },
+  { id: 'text', label: 'Textrechnung' },
 ];
 const smallBusinessTaxNotice =
   'Aufgrund der Anwendung der Kleinunternehmerregelung gemäß § 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
@@ -309,12 +309,17 @@ function createInvoicePosition() {
   };
 }
 
+const textInvoicePositionDefaults = {
+  description: 'Leistung in Textform beschreiben',
+  unitPrice: '150,00',
+  quantity: '1',
+  unit: '3 Stunden',
+};
+
 function createTextInvoicePosition() {
   return {
     ...createInvoicePosition(),
-    description: 'Leistungsbeschreibung eintragen',
-    quantity: '1',
-    unit: 'pauschal',
+    ...textInvoicePositionDefaults,
   };
 }
 
@@ -327,6 +332,23 @@ const defaultInvoicePositionForCheck = {
   unit: 'Stk.',
   taxRate: '19',
 };
+
+const legacyTextInvoiceDefaultPositions = [
+  {
+    description: 'Leistung beschreiben',
+    unitPrice: '0',
+    quantity: '1',
+    unit: 'Stk.',
+    taxRate: '19',
+  },
+  {
+    description: 'Leistungsbeschreibung eintragen',
+    unitPrice: '0',
+    quantity: '1',
+    unit: 'pauschal',
+    taxRate: '19',
+  },
+];
 
 function createFieldConfig(fields) {
   return {
@@ -490,6 +512,23 @@ function normalizePositions(templatePositions) {
   }));
 }
 
+function isLegacyTextInvoiceDefaultPosition(position) {
+  return legacyTextInvoiceDefaultPositions.some((defaultPosition) =>
+    Object.entries(defaultPosition).every(([field, value]) => String(position[field] ?? '') === value),
+  );
+}
+
+function normalizeTextInvoiceDefaultPosition(position) {
+  if (!isLegacyTextInvoiceDefaultPosition(position)) {
+    return position;
+  }
+
+  return {
+    ...position,
+    ...textInvoicePositionDefaults,
+  };
+}
+
 function formatInvoiceFooterLine(field, value = '', footerLines = {}) {
   const normalized = String(value ?? '').trim();
   const labelField = invoiceFooterLabeledFields[field];
@@ -528,7 +567,11 @@ function parseInvoiceFooterLine(field, value = '') {
 }
 
 function toNumber(value) {
-  const parsed = Number.parseFloat(String(value).replace(',', '.'));
+  const normalized = String(value)
+    .replace(/[^\d,.-]/g, '')
+    .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+    .replace(',', '.');
+  const parsed = Number.parseFloat(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
@@ -703,6 +746,14 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     });
   }, [textBlocks]);
 
+  useEffect(() => {
+    if (!isTextInvoice) {
+      return;
+    }
+
+    setPositions((current) => current.map(normalizeTextInvoiceDefaultPosition));
+  }, [isTextInvoice]);
+
   const totals = useMemo(() => {
     const summary = positions.reduce(
       (current, position) => {
@@ -744,7 +795,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     () =>
       createDocumentDataCheckState({
         defaultPosition: isTextInvoice
-          ? { ...defaultInvoicePositionForCheck, description: 'Leistungsbeschreibung eintragen' }
+          ? { ...defaultInvoicePositionForCheck, ...textInvoicePositionDefaults }
           : defaultInvoicePositionForCheck,
         defaultViewData: defaultInvoiceViewData,
         deliveryAddress,
