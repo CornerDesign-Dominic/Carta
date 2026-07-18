@@ -77,6 +77,17 @@ export const toolItems = [
     },
   },
   {
+    id: 'break-even-rechner',
+    title: 'Break-even',
+    description: 'Berechne Absatzmenge, Umsatz und Zeit bis zum Break-even.',
+    path: '/tools/break-even-rechner',
+    seo: {
+      title: 'Break-even-Rechner | Carta',
+      description: 'Berechne Break-even-Menge, Deckungsbeitrag, Umsatz und Zeit bis zum Break-even.',
+      canonicalPath: '/tools/break-even-rechner',
+    },
+  },
+  {
     id: 'kostenvergleichsrechner',
     title: 'Kostenvergleich',
     description: 'Vergleiche mehrere Varianten nach Gesamtkosten und laufenden Kosten.',

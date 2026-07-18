@@ -23,7 +23,7 @@ function pathForInvoiceVariant(variant) {
     return '/dokumente/rechnung/waren';
   }
 
-  return '/dokumente/rechnung';
+  return '/dokumente/rechnung/standard';
 }
 
 function DocumentUsageMiniVisual({ type }) {

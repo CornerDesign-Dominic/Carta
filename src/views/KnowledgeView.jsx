@@ -4,6 +4,7 @@ import KnowledgeSidebar from '../components/knowledge/KnowledgeSidebar.jsx';
 
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
   const documentIdByToolLink = {
+    '/dokumente/rechnung/standard': 'write-invoice',
     '/dokumente/rechnung': 'write-invoice',
     '/dokumente/angebot': 'write-offer',
     '/dokumente/lieferschein': 'write-delivery-note',

@@ -63,7 +63,7 @@ const allDocumentSections = [
         id: 'write-invoice',
         label: 'Rechnung schreiben',
         title: 'Rechnung schreiben',
-        path: '/dokumente/rechnung',
+        path: '/dokumente/rechnung/standard',
         formType: 'invoice',
         description:
           'Erstelle eine Rechnung direkt im A4-Dokument mit Absender, EmpfÃ¤nger, Positionen, Steuern und FuÃŸdaten.',

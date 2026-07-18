@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import CompoundInterestCalculator from '../components/tools/compound-interest/CompoundInterestCalculator.jsx';
+import BreakEvenCalculator from '../components/tools/break-even/BreakEvenCalculator.jsx';
 import CostComparisonCalculator from '../components/tools/cost-comparison/CostComparisonCalculator.jsx';
 import DefaultInterestCalculator from '../components/tools/default-interest/DefaultInterestCalculator.jsx';
 import DueDateCalculator from '../components/tools/due-date/DueDateCalculator.jsx';
@@ -179,6 +180,10 @@ export default function ToolsView({ activeToolId, onSelectTool }) {
 
     if (activeToolId === 'stundenlohnrechner') {
       return <HourlyWageCalculator />;
+    }
+
+    if (activeToolId === 'break-even-rechner') {
+      return <BreakEvenCalculator />;
     }
 
     if (activeToolId === 'kostenvergleichsrechner') {

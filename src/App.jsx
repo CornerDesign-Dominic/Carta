@@ -76,6 +76,16 @@ function routeFromLocation() {
     return { view: 'not-found', knowledgeSlug: null, documentId: 'overview', toolId: null };
   }
 
+  if (path === '/dokumente/rechnung') {
+    return {
+      view: 'documents',
+      knowledgeSlug: null,
+      documentId: 'write-invoice',
+      invoiceVariant: 'standard',
+      redirectPath: '/dokumente/rechnung/standard',
+    };
+  }
+
   const generatorDocumentId = generatorIdByPath.get(path);
   if (generatorDocumentId) {
     return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId, invoiceVariant: 'standard' };
@@ -88,7 +98,7 @@ function routeFromLocation() {
       documentId: 'write-invoice',
       invoiceVariant: 'standard',
       isSmallBusiness: true,
-      redirectPath: '/dokumente/rechnung',
+      redirectPath: '/dokumente/rechnung/standard',
     };
   }
 
@@ -155,6 +165,8 @@ function pathForNavigation(item) {
       if (item.invoiceVariant === 'goods') {
         return '/dokumente/rechnung/waren';
       }
+
+      return '/dokumente/rechnung/standard';
     }
 
     return generatorPathById.get(item.documentId) ?? '/dokumente';

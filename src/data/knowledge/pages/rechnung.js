@@ -70,7 +70,7 @@ const rechnung = {
   },
   generator: {
     label: "Rechnung erstellen",
-    href: "/dokumente/rechnung",
+    href: "/dokumente/rechnung/standard",
     text: "Nutze unseren kostenlosen, werbefreien und unbegrenzten interaktiven Generator, um deine individuelle Rechnung schnell und einfach zu erstellen.",
   },
   keyPoints: [

@@ -1646,9 +1646,12 @@ h1 {
 }
 
 .visual-toolbar {
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: max-content max-content minmax(max-content, 1fr) max-content;
+  grid-template-columns: max-content max-content minmax(0, 1fr) max-content;
   column-gap: 14px;
+  width: 100%;
+  max-width: 100%;
   padding: 9px;
   border: 1px solid rgba(201, 196, 186, 0.66);
   border-radius: 6px;
@@ -2336,6 +2339,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .invoice-variant-controls {
+  box-sizing: border-box;
   display: grid;
   gap: 14px;
   width: 100%;
@@ -2344,6 +2348,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .invoice-variant-controls .document-choice-bar {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
@@ -2368,6 +2373,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .invoice-small-business-toggle {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -9526,6 +9532,30 @@ body.tool-document-print-mode .tool-document-date-picker {
   grid-column: 1 / -1;
 }
 
+.tools-form-grid-break-even .tools-field-break-fixed {
+  order: 1;
+}
+
+.tools-form-grid-break-even .tools-field-break-fixed-period {
+  order: 2;
+}
+
+.tools-form-grid-break-even .tools-field-break-price {
+  order: 3;
+}
+
+.tools-form-grid-break-even .tools-field-break-variable {
+  order: 4;
+}
+
+.tools-form-grid-break-even-optional .tools-field-break-capacity {
+  order: 1;
+}
+
+.tools-form-grid-break-even-optional .tools-field-break-capacity-period {
+  order: 2;
+}
+
 .tools-form-grid-cost-comparison .tools-field-cost-label {
   order: 1;
   grid-column: 1 / -1;
@@ -9593,6 +9623,73 @@ body.tool-document-print-mode .tool-document-date-picker {
   min-height: 18px;
   margin: 0;
   accent-color: var(--accent-deep);
+}
+
+.tools-period-field {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.tools-period-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-height: 38px;
+  padding: 4px;
+  border: 1px solid rgba(190, 181, 167, 0.74);
+  border-radius: 6px;
+  background: rgba(248, 248, 245, 0.72);
+}
+
+.tools-period-switch button {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--accent-deep);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
+.tools-period-switch button:hover {
+  background: rgba(255, 255, 253, 0.8);
+}
+
+.tools-period-switch button.is-active {
+  border-color: rgba(45, 91, 83, 0.62);
+  background: var(--accent-deep);
+  color: #fffdfa;
+}
+
+.tools-optional-panel {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(201, 196, 186, 0.58);
+}
+
+.tools-optional-panel h3,
+.tools-break-even-capacity-result h3 {
+  margin: 0 0 12px;
+  color: var(--accent-deep);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.tools-break-even-capacity-result {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(79, 111, 104, 0.2);
+}
+
+.tools-result-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.52;
 }
 
 .tools-external-note {
