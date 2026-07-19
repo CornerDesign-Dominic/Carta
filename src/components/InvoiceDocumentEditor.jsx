@@ -304,7 +304,7 @@ function createInvoicePosition() {
     description: 'Leistung beschreiben',
     unitPrice: '0',
     quantity: '1',
-    unit: 'Stk.',
+    unit: 'pauschal',
     taxRate: '19',
   };
 }
@@ -313,7 +313,8 @@ const textInvoicePositionDefaults = {
   description: 'Leistung in Textform beschreiben',
   unitPrice: '150,00',
   quantity: '1',
-  unit: '3 Stunden',
+  unit: 'pauschal',
+  taxRate: '19 %',
 };
 
 function createTextInvoicePosition() {
@@ -329,26 +330,9 @@ const defaultInvoicePositionForCheck = {
   description: 'Leistung beschreiben',
   unitPrice: '0',
   quantity: '1',
-  unit: 'Stk.',
+  unit: 'pauschal',
   taxRate: '19',
 };
-
-const legacyTextInvoiceDefaultPositions = [
-  {
-    description: 'Leistung beschreiben',
-    unitPrice: '0',
-    quantity: '1',
-    unit: 'Stk.',
-    taxRate: '19',
-  },
-  {
-    description: 'Leistungsbeschreibung eintragen',
-    unitPrice: '0',
-    quantity: '1',
-    unit: 'pauschal',
-    taxRate: '19',
-  },
-];
 
 function createFieldConfig(fields) {
   return {
@@ -507,26 +491,42 @@ function normalizePositions(templatePositions) {
     description: String(position.description ?? 'Leistung beschreiben'),
     unitPrice: String(position.unitPrice ?? '0'),
     quantity: String(position.quantity ?? '1'),
-    unit: String(position.unit ?? 'Stk.'),
+    unit: String(position.unit ?? 'pauschal'),
     taxRate: String(position.taxRate ?? '19'),
   }));
 }
 
-function isLegacyTextInvoiceDefaultPosition(position) {
-  return legacyTextInvoiceDefaultPositions.some((defaultPosition) =>
-    Object.entries(defaultPosition).every(([field, value]) => String(position[field] ?? '') === value),
-  );
-}
-
 function normalizeTextInvoiceDefaultPosition(position) {
-  if (!isLegacyTextInvoiceDefaultPosition(position)) {
-    return position;
-  }
-
   return {
     ...position,
-    ...textInvoicePositionDefaults,
+    unit: String(position.unit ?? 'pauschal'),
+    taxRate: normalizeTaxRateDisplay(position.taxRate ?? textInvoicePositionDefaults.taxRate),
   };
+}
+
+function normalizeTaxRateDisplay(value, fallback = '19 %') {
+  const parsed = parseTaxRateNumber(value);
+
+  if (parsed === null || parsed < 0 || parsed > 100) {
+    return fallback;
+  }
+
+  return `${formatPercent(parsed)} %`;
+}
+
+function parseTaxRateNumber(value) {
+  const normalized = String(value ?? '')
+    .trim()
+    .replace(/[^\d,.-]/g, '')
+    .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+    .replace(',', '.');
+
+  if (!normalized) {
+    return null;
+  }
+
+  const parsed = Number.parseFloat(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function formatInvoiceFooterLine(field, value = '', footerLines = {}) {
@@ -805,7 +805,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         isActive: isDataCheckMode,
         positions,
         positionFields: isTextInvoice
-          ? ['description', 'unitPrice', 'unit']
+          ? ['description', 'unitPrice', 'unit', ...(isSmallBusinessInvoice ? [] : ['taxRate'])]
           : isGoodsInvoice
           ? [
               'articleNumber',
@@ -1156,7 +1156,12 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
       setLabels({ ...initialInvoiceLabels, ...(data.labels ?? {}) });
       setInvoiceData(normalizeInvoiceData(data));
-      setPositions(normalizePositions(data.positions));
+      const normalizedTemplatePositions = normalizePositions(data.positions);
+      setPositions(
+        templateInvoiceVariant === 'text'
+          ? normalizedTemplatePositions.map(normalizeTextInvoiceDefaultPosition)
+          : normalizedTemplatePositions,
+      );
       setActiveTextBlocks(normalizeTextBlocksForVariant(data.textBlocks, templateInvoiceVariant), templateInvoiceVariant);
       setSmallBusinessMode(templateSmallBusiness, { persist: false });
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
@@ -1401,12 +1406,14 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           autoResizeDescription
           calculatePosition={calculateCurrentPosition}
           dataCheckPositions={dataCheckState.positions}
+          formatUnitPriceOnBlur
           formatCurrency={formatCurrency}
           isGoodsInvoice={isGoodsInvoice}
           isTextInvoice={isTextInvoice}
           labels={labels}
           positions={positions}
           showTaxColumn={!isSmallBusinessInvoice}
+          useInvoiceColumnWidths
           variant="offer"
           onLabelChange={updateLabel}
           onMovePosition={movePosition}
@@ -1522,6 +1529,11 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
         <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
+          <InvoicePrintColumnGroup
+            isGoodsInvoice={isGoodsInvoice}
+            isSmallBusinessInvoice={isSmallBusinessInvoice}
+            isTextInvoice={isTextInvoice}
+          />
           {!isTextInvoice && (
             <thead>
               <tr data-measure-position-header>
@@ -1546,6 +1558,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
                     <>
                       <td>{position.description}</td>
                       <td>{position.unit}</td>
+                      {!isSmallBusinessInvoice && <td>{formatPercent(calculated.taxRate)} %</td>}
                       <td>{formatCurrency(calculated.net)}</td>
                     </>
                   ) : (
@@ -1572,6 +1585,38 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
     </div>
   );
 });
+
+function getInvoicePrintColumnWidths({ isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice }) {
+  if (isTextInvoice) {
+    return [];
+  }
+
+  if (isGoodsInvoice) {
+    return isSmallBusinessInvoice
+      ? ['5%', '17.4378%', '42.6%', '11.2%', '5.2%', '8.5622%', '10%']
+      : ['5%', '17.4378%', '37.8%', '11.2%', '5.2%', '8.5622%', '4.8%', '10%'];
+  }
+
+  return isSmallBusinessInvoice
+    ? ['5.5%', '49.7378%', '13.5%', '8.5%', '9.2622%', '14%']
+    : ['5.5%', '42.7378%', '13.5%', '8.5%', '9.2622%', '6.5%', '14%'];
+}
+
+function InvoicePrintColumnGroup({ isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice }) {
+  const widths = getInvoicePrintColumnWidths({ isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice });
+
+  if (widths.length === 0) {
+    return null;
+  }
+
+  return (
+    <colgroup>
+      {widths.map((width, index) => (
+        <col key={`${width}-${index}`} style={{ width }} />
+      ))}
+    </colgroup>
+  );
+}
 
 function measureInvoicePages(measureRoot, items) {
   if (!measureRoot) return null;
@@ -1882,6 +1927,11 @@ function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, is
 function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, labels, positionItems }) {
   return (
     <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
+      <InvoicePrintColumnGroup
+        isGoodsInvoice={isGoodsInvoice}
+        isSmallBusinessInvoice={isSmallBusinessInvoice}
+        isTextInvoice={isTextInvoice}
+      />
       {!isTextInvoice && (
         <thead>
           <tr>
@@ -1906,6 +1956,7 @@ function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition
                 <>
                   <td>{position.description}</td>
                   <td>{position.unit}</td>
+                  {!isSmallBusinessInvoice && <td>{formatPercent(calculated.taxRate)} %</td>}
                   <td>{formatCurrency(calculated.net)}</td>
                 </>
               ) : (

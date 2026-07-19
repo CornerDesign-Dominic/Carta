@@ -2,6 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
 import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
 
+function getInvoiceColumnWidths({ isGoodsInvoice, showTaxColumn }) {
+  if (isGoodsInvoice) {
+    return showTaxColumn
+      ? ['5%', '17.4378%', '37.8%', '11.2%', '5.2%', '8.5622%', '4.8%', '10%', '0']
+      : ['5%', '17.4378%', '42.6%', '11.2%', '5.2%', '8.5622%', '10%', '0'];
+  }
+
+  return showTaxColumn
+    ? ['5.5%', '42.7378%', '13.5%', '8.5%', '9.2622%', '6.5%', '14%', '0']
+    : ['5.5%', '49.7378%', '13.5%', '8.5%', '9.2622%', '14%', '0'];
+}
+
 export default function PositionTable({
   autoResizeDescription = false,
   calculatePosition,
@@ -9,6 +21,7 @@ export default function PositionTable({
   formatCurrency,
   isGoodsInvoice = false,
   isTextInvoice = false,
+  formatUnitPriceOnBlur = false,
   labels,
   onLabelChange,
   onMovePosition,
@@ -16,6 +29,7 @@ export default function PositionTable({
   onRemovePosition,
   positions,
   showTaxColumn = true,
+  useInvoiceColumnWidths = false,
   variant = 'offer',
 }) {
   const [focusedAmountPositionId, setFocusedAmountPositionId] = useState(null);
@@ -40,8 +54,11 @@ export default function PositionTable({
     ['total', 'Tabellenkopf Gesamt'],
   ];
   const descriptionRefs = useRef({});
+  const invoiceColumnWidths = useInvoiceColumnWidths && !isTextInvoice
+    ? getInvoiceColumnWidths({ isGoodsInvoice, showTaxColumn })
+    : [];
 
-  function normalizeAmountInput(value) {
+  function normalizeAmountInput(value, fallback = '0,00') {
     const numericValue = Number.parseFloat(
       String(value)
         .replace(/[^\d,.-]/g, '')
@@ -50,13 +67,61 @@ export default function PositionTable({
     );
 
     if (!Number.isFinite(numericValue)) {
-      return value;
+      return fallback;
     }
 
     return new Intl.NumberFormat('de-DE', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(numericValue);
+  }
+
+  function normalizeTaxRateInput(value, fallback = '19 %') {
+    const numericValue = Number.parseFloat(
+      String(value)
+        .replace(/[^\d,.-]/g, '')
+        .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+        .replace(',', '.'),
+    );
+
+    if (!Number.isFinite(numericValue) || numericValue < 0 || numericValue > 100) {
+      return fallback;
+    }
+
+    return `${new Intl.NumberFormat('de-DE', {
+      maximumFractionDigits: 2,
+    }).format(numericValue)} %`;
+  }
+
+  function handleTextInvoiceTaxChange(positionId, value) {
+    if (/^\s*\d*(?:[,.]\d*)?\s*%?\s*$/.test(value)) {
+      onPositionChange(positionId, 'taxRate', value);
+    }
+  }
+
+  function handleTableFocusCapture(event) {
+    const target = event.target;
+    const isAmountInput = target instanceof HTMLInputElement
+      && (
+        target.getAttribute('aria-label')?.startsWith('Einzelpreis Position')
+        || target.getAttribute('aria-label')?.startsWith('Betrag Position')
+      );
+
+    if (isAmountInput) {
+      return;
+    }
+
+    if (isTextInvoice || formatUnitPriceOnBlur) {
+      positions.forEach((position) => {
+        const normalizedUnitPrice = normalizeAmountInput(position.unitPrice);
+
+        if (normalizedUnitPrice !== position.unitPrice) {
+          onPositionChange(position.id, 'unitPrice', normalizedUnitPrice);
+        }
+      });
+    }
+
+    setFocusedAmountPositionId(null);
   }
 
   useEffect(() => {
@@ -70,7 +135,17 @@ export default function PositionTable({
   }, [autoResizeDescription, positions, showTaxColumn]);
 
   return (
-    <table className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
+    <table
+      className={`offer-position-table invoice-position-table document-position-table-${variant}${showTaxColumn ? '' : ' is-without-tax-column'}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}
+      onFocusCapture={handleTableFocusCapture}
+    >
+      {invoiceColumnWidths.length > 0 && (
+        <colgroup>
+          {invoiceColumnWidths.map((width, index) => (
+            <col key={`${width}-${index}`} style={{ width }} />
+          ))}
+        </colgroup>
+      )}
       {!isTextInvoice && (
         <thead>
           <tr>
@@ -91,6 +166,15 @@ export default function PositionTable({
       <tbody>
         {positions.map((position, index) => {
           const calculated = calculatePosition(position);
+          const shouldFormatUnitPrice = isTextInvoice || formatUnitPriceOnBlur;
+          const displayedUnitPrice = isTextInvoice
+            ? formatCurrency(calculated.net)
+            : formatCurrency(Number.parseFloat(
+                String(position.unitPrice)
+                  .replace(/[^\d,.-]/g, '')
+                  .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+                  .replace(',', '.'),
+              ) || 0);
 
           return (
             <tr key={position.id}>
@@ -171,24 +255,43 @@ export default function PositionTable({
                   />
                 </td>
               )}
+              {showTaxColumn && isTextInvoice && (
+                <td>
+                  <input
+                    className={`invoice-position-tax-input${dataCheckPositions[position.id]?.taxRate ? ' document-data-check-marker' : ''}`}
+                    aria-label={`Umsatzsteuer Position ${index + 1}`}
+                    inputMode="decimal"
+                    type="text"
+                    value={position.taxRate ?? '19 %'}
+                    onChange={(event) => handleTextInvoiceTaxChange(position.id, event.target.value)}
+                    onBlur={(event) => onPositionChange(position.id, 'taxRate', normalizeTaxRateInput(event.target.value))}
+                  />
+                </td>
+              )}
               <td>
                 <input
                   className={`${isTextInvoice ? 'invoice-position-amount-input' : ''}${dataCheckPositions[position.id]?.unitPrice ? ' document-data-check-marker' : ''}`.trim() || undefined}
                   aria-label={`${isTextInvoice ? 'Betrag' : 'Einzelpreis'} Position ${index + 1}`}
                   inputMode="decimal"
                   type="text"
-                  value={isTextInvoice && focusedAmountPositionId !== position.id
-                    ? formatCurrency(calculatePosition(position).net)
+                  value={shouldFormatUnitPrice && focusedAmountPositionId !== position.id
+                    ? displayedUnitPrice
                     : position.unitPrice}
                   onChange={(event) => onPositionChange(position.id, 'unitPrice', event.target.value)}
                   onBlur={(event) => {
-                    if (isTextInvoice) {
+                    if (shouldFormatUnitPrice) {
                       onPositionChange(position.id, 'unitPrice', normalizeAmountInput(event.target.value));
                       setFocusedAmountPositionId(null);
                     }
                   }}
                   onFocus={(event) => {
-                    if (isTextInvoice) {
+                    if (shouldFormatUnitPrice) {
+                      setFocusedAmountPositionId(position.id);
+                      event.target.select();
+                    }
+                  }}
+                  onClick={(event) => {
+                    if (shouldFormatUnitPrice) {
                       setFocusedAmountPositionId(position.id);
                       event.target.select();
                     }

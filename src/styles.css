@@ -3892,7 +3892,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table th:nth-child(2),
 .invoice-position-table td:nth-child(2) {
-  width: 43.5%;
+  width: 42.7378%;
 }
 
 .invoice-position-table th:nth-child(3),
@@ -3905,6 +3905,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .invoice-position-table th:nth-child(5),
 .invoice-position-table td:nth-child(5) {
   width: 8.5%;
+}
+
+.invoice-position-table th:nth-child(5),
+.invoice-position-table td:nth-child(5) {
+  width: 9.2622%;
 }
 
 .invoice-position-table th:nth-child(6),
@@ -3924,7 +3929,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-without-tax-column th:nth-child(2),
 .invoice-position-table.is-without-tax-column td:nth-child(2) {
-  width: 50.5%;
+  width: 49.7378%;
+}
+
+.invoice-position-table.is-without-tax-column th:nth-child(5),
+.invoice-position-table.is-without-tax-column td:nth-child(5) {
+  width: 9.2622%;
 }
 
 .invoice-position-table.is-without-tax-column th:nth-child(6),
@@ -3952,7 +3962,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-goods-invoice th:nth-child(2),
 .invoice-position-table.is-goods-invoice td:nth-child(2) {
-  width: 18.2%;
+  width: 17.4378%;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(3),
@@ -3973,7 +3983,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-goods-invoice th:nth-child(6),
 .invoice-position-table.is-goods-invoice td:nth-child(6) {
-  width: 7.8%;
+  width: 8.5622%;
 }
 
 .invoice-position-table.is-goods-invoice th:nth-child(7),
@@ -4038,12 +4048,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-text-invoice th:nth-child(2),
 .invoice-position-table.is-text-invoice td:nth-child(2) {
-  width: 72%;
+  width: 66%;
 }
 
 .invoice-position-table.is-text-invoice th:nth-child(3),
 .invoice-position-table.is-text-invoice td:nth-child(3) {
-  width: 12%;
+  width: 11%;
   color: #4d4b46;
   text-align: right;
 }
@@ -4054,11 +4064,34 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-text-invoice th:nth-child(4),
 .invoice-position-table.is-text-invoice td:nth-child(4) {
+  width: 8%;
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice th:nth-child(5),
+.invoice-position-table.is-text-invoice td:nth-child(5) {
+  width: 15%;
+  text-align: right;
+}
+
+.invoice-position-table.is-text-invoice.is-without-tax-column th:nth-child(2),
+.invoice-position-table.is-text-invoice.is-without-tax-column td:nth-child(2) {
+  width: 72%;
+}
+
+.invoice-position-table.is-text-invoice.is-without-tax-column th:nth-child(3),
+.invoice-position-table.is-text-invoice.is-without-tax-column td:nth-child(3) {
+  width: 12%;
+}
+
+.invoice-position-table.is-text-invoice.is-without-tax-column th:nth-child(4),
+.invoice-position-table.is-text-invoice.is-without-tax-column td:nth-child(4) {
   width: 16%;
   text-align: right;
 }
 
-.invoice-position-table.is-text-invoice .invoice-position-amount-input {
+.invoice-position-table.is-text-invoice .invoice-position-amount-input,
+.invoice-position-table.is-text-invoice .invoice-position-tax-input {
   text-align: right;
 }
 
@@ -4076,8 +4109,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 20px;
 }
 
-.invoice-position-table.is-text-invoice th:nth-child(5),
-.invoice-position-table.is-text-invoice td:nth-child(5) {
+.invoice-position-table.is-text-invoice th:nth-child(6),
+.invoice-position-table.is-text-invoice td:nth-child(6) {
+  position: relative;
+  width: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.invoice-position-table.is-text-invoice.is-without-tax-column th:nth-child(5),
+.invoice-position-table.is-text-invoice.is-without-tax-column td:nth-child(5) {
   position: relative;
   width: 0;
   padding-right: 0;
@@ -4158,7 +4199,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-goods-invoice.is-without-tax-column th:nth-child(2),
 .invoice-position-table.is-goods-invoice.is-without-tax-column td:nth-child(2) {
-  width: 18.2%;
+  width: 17.4378%;
 }
 
 .invoice-position-table.is-goods-invoice.is-without-tax-column th:nth-child(3),
@@ -4179,7 +4220,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-position-table.is-goods-invoice.is-without-tax-column th:nth-child(6),
 .invoice-position-table.is-goods-invoice.is-without-tax-column td:nth-child(6) {
-  width: 7.8%;
+  width: 8.5622%;
   text-align: left;
 }
 
@@ -4856,7 +4897,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table th:nth-child(2),
 .invoice-print-position-table td:nth-child(2) {
-  width: 43.5%;
+  width: 42.7378%;
   white-space: pre-wrap;
 }
 
@@ -4872,6 +4913,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: 8.5%;
 }
 
+.invoice-print-position-table th:nth-child(5),
+.invoice-print-position-table td:nth-child(5) {
+  width: 9.2622%;
+}
+
 .invoice-print-position-table th:nth-child(6),
 .invoice-print-position-table td:nth-child(6) {
   width: 6.5%;
@@ -4885,7 +4931,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-without-tax-column th:nth-child(2),
 .invoice-print-position-table.is-without-tax-column td:nth-child(2) {
-  width: 50.5%;
+  width: 49.7378%;
+}
+
+.invoice-print-position-table.is-without-tax-column th:nth-child(5),
+.invoice-print-position-table.is-without-tax-column td:nth-child(5) {
+  width: 9.2622%;
 }
 
 .invoice-print-position-table.is-without-tax-column th:nth-child(6),
@@ -4901,7 +4952,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(2),
 .invoice-print-position-table.is-goods-invoice td:nth-child(2) {
-  width: 18.2%;
+  width: 17.4378%;
   overflow-wrap: anywhere;
 }
 
@@ -4924,7 +4975,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(6),
 .invoice-print-position-table.is-goods-invoice td:nth-child(6) {
-  width: 7.8%;
+  width: 8.5622%;
 }
 
 .invoice-print-position-table.is-goods-invoice th:nth-child(7),
@@ -4953,7 +5004,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-goods-invoice.is-without-tax-column th:nth-child(2),
 .invoice-print-position-table.is-goods-invoice.is-without-tax-column td:nth-child(2) {
-  width: 18.2%;
+  width: 17.4378%;
 }
 
 .invoice-print-position-table.is-goods-invoice.is-without-tax-column th:nth-child(3),
@@ -4974,7 +5025,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-goods-invoice.is-without-tax-column th:nth-child(6),
 .invoice-print-position-table.is-goods-invoice.is-without-tax-column td:nth-child(6) {
-  width: 7.8%;
+  width: 8.5622%;
   text-align: left;
 }
 
@@ -5002,20 +5053,42 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.is-text-invoice th:nth-child(1),
 .invoice-print-position-table.is-text-invoice td:nth-child(1) {
-  width: 72%;
+  width: 66%;
   white-space: pre-wrap;
 }
 
 .invoice-print-position-table.is-text-invoice th:nth-child(2),
 .invoice-print-position-table.is-text-invoice td:nth-child(2) {
-  width: 12%;
+  width: 11%;
   text-align: right;
 }
 
 .invoice-print-position-table.is-text-invoice th:nth-child(3),
 .invoice-print-position-table.is-text-invoice td:nth-child(3) {
-  width: 16%;
+  width: 8%;
   text-align: right;
+  white-space: nowrap;
+}
+
+.invoice-print-position-table.is-text-invoice th:nth-child(4),
+.invoice-print-position-table.is-text-invoice td:nth-child(4) {
+  width: 15%;
+  text-align: right;
+}
+
+.invoice-print-position-table.is-text-invoice.is-without-tax-column th:nth-child(1),
+.invoice-print-position-table.is-text-invoice.is-without-tax-column td:nth-child(1) {
+  width: 72%;
+}
+
+.invoice-print-position-table.is-text-invoice.is-without-tax-column th:nth-child(2),
+.invoice-print-position-table.is-text-invoice.is-without-tax-column td:nth-child(2) {
+  width: 12%;
+}
+
+.invoice-print-position-table.is-text-invoice.is-without-tax-column th:nth-child(3),
+.invoice-print-position-table.is-text-invoice.is-without-tax-column td:nth-child(3) {
+  width: 16%;
 }
 
 .invoice-print-position-table.is-text-invoice th,
