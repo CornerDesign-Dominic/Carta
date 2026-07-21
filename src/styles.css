@@ -49,6 +49,10 @@
   --color-bg: #111318;
   --color-card: #1b1f27;
   --color-surface: #242a34;
+  --color-surface-strong: #171b22;
+  --color-control-surface: #181d25;
+  --color-input-surface: #151922;
+  --color-footer-surface: #0b0d12;
   --color-text: #f1f3f5;
   --color-muted: #aeb6c2;
   --color-border: #353d49;
@@ -10507,6 +10511,8 @@ h2,
 .invoice-panel-field select:focus,
 .feedback-widget-field textarea:focus {
   border-color: var(--color-focus);
+  background: var(--color-card);
+  color: var(--color-text);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 20%, transparent);
 }
 
@@ -10581,4 +10587,118 @@ select:focus-visible,
     width: auto;
     padding: 0;
   }
+}
+
+:root[data-theme="dark"] .site-footer {
+  background: var(--color-footer-surface);
+  border-top-color: var(--color-border);
+  color: var(--color-muted);
+}
+
+:root[data-theme="dark"] .site-footer button {
+  color: var(--color-muted);
+  text-decoration-color: transparent;
+}
+
+:root[data-theme="dark"] .site-footer button:hover,
+:root[data-theme="dark"] .site-footer button:focus-visible {
+  color: var(--color-primary-hover);
+  text-decoration-color: var(--color-primary-hover);
+}
+
+:root[data-theme="dark"] .visual-toolbar,
+:root[data-theme="dark"] .tool-document-toolbar,
+:root[data-theme="dark"] .document-choice-bar,
+:root[data-theme="dark"] .tools-mode-selector,
+:root[data-theme="dark"] .tools-period-switch,
+:root[data-theme="dark"] .tools-calculation-actions,
+:root[data-theme="dark"] .tools-panel-title-row {
+  background: var(--color-control-surface);
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .visual-toolbar-group + .visual-toolbar-group,
+:root[data-theme="dark"] .tool-document-toolbar-group + .tool-document-toolbar-group {
+  border-color: var(--color-border);
+}
+
+:root[data-theme="dark"] .visual-toolbar button,
+:root[data-theme="dark"] .tool-document-toolbar button,
+:root[data-theme="dark"] .document-choice-bar button,
+:root[data-theme="dark"] .tools-mode-selector button,
+:root[data-theme="dark"] .tools-period-switch button,
+:root[data-theme="dark"] .tools-reset-variant,
+:root[data-theme="dark"] .tools-remove-calculation {
+  background: var(--color-surface-strong);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .visual-toolbar button:hover,
+:root[data-theme="dark"] .tool-document-toolbar button:hover,
+:root[data-theme="dark"] .document-choice-bar button:hover,
+:root[data-theme="dark"] .tools-mode-selector button:hover,
+:root[data-theme="dark"] .tools-period-switch button:hover,
+:root[data-theme="dark"] .tools-reset-variant:hover,
+:root[data-theme="dark"] .tools-remove-calculation:hover {
+  background: var(--color-accent-surface);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
+}
+
+:root[data-theme="dark"] .visual-toolbar button.is-active,
+:root[data-theme="dark"] .tool-document-toolbar button.is-active,
+:root[data-theme="dark"] .document-choice-bar button.is-active,
+:root[data-theme="dark"] .tools-mode-selector button.is-active,
+:root[data-theme="dark"] .tools-period-switch button.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .tools-form-grid input,
+:root[data-theme="dark"] .tools-form-grid textarea,
+:root[data-theme="dark"] .tools-form-grid select,
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field textarea,
+:root[data-theme="dark"] .field select,
+:root[data-theme="dark"] .invoice-panel-field input,
+:root[data-theme="dark"] .invoice-panel-field textarea,
+:root[data-theme="dark"] .invoice-panel-field select,
+:root[data-theme="dark"] .feedback-widget-field textarea {
+  background: var(--color-input-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .tools-form-grid input:focus,
+:root[data-theme="dark"] .tools-form-grid textarea:focus,
+:root[data-theme="dark"] .tools-form-grid select:focus,
+:root[data-theme="dark"] .field input:focus,
+:root[data-theme="dark"] .field textarea:focus,
+:root[data-theme="dark"] .field select:focus,
+:root[data-theme="dark"] .invoice-panel-field input:focus,
+:root[data-theme="dark"] .invoice-panel-field textarea:focus,
+:root[data-theme="dark"] .invoice-panel-field select:focus,
+:root[data-theme="dark"] .feedback-widget-field textarea:focus {
+  background: var(--color-input-surface);
+  border-color: var(--color-focus);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .tools-form-grid input::placeholder,
+:root[data-theme="dark"] .tools-form-grid textarea::placeholder,
+:root[data-theme="dark"] .field input::placeholder,
+:root[data-theme="dark"] .field textarea::placeholder,
+:root[data-theme="dark"] .invoice-panel-field input::placeholder,
+:root[data-theme="dark"] .invoice-panel-field textarea::placeholder {
+  color: color-mix(in srgb, var(--color-muted) 78%, transparent);
+}
+
+:root[data-theme="dark"] .tools-cost-variant.is-cheapest .tools-result-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--card-shadow);
 }
