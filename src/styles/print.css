@@ -1,0 +1,323 @@
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html,
+  body.document-print-mode {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    background: #ffffff;
+    overflow: visible;
+  }
+
+  body.document-print-mode * {
+    visibility: hidden;
+  }
+
+  body.document-print-mode .site-shell,
+  body.document-print-mode .site-main,
+  body.document-print-mode .documents-layout,
+  body.document-print-mode .tools-layout,
+  body.document-print-mode .paper-page,
+  body.document-print-mode .document-paper,
+  body.document-print-mode .tools-paper,
+  body.document-print-mode .visual-editor {
+    display: block;
+    width: 0;
+    height: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    box-shadow: none;
+  }
+
+  body.document-print-mode .site-header,
+  body.document-print-mode .site-footer,
+  body.document-print-mode .document-sidebar,
+  body.document-print-mode .feedback-widget,
+  body.document-print-mode .invoice-form-panel,
+  body.document-print-mode .document-choice-bar,
+  body.document-print-mode .visual-toolbar,
+  body.document-print-mode .tool-document-toolbar {
+    display: none;
+  }
+
+  body.document-print-mode .document-mode-hint {
+    display: none;
+  }
+
+  body.document-print-mode .offer-sheet,
+  body.document-print-mode .offer-sheet * {
+    visibility: visible;
+  }
+
+  body.document-print-mode.receipt-print-mode .receipt-sheet,
+  body.document-print-mode.receipt-print-mode .receipt-sheet * {
+    visibility: visible;
+  }
+
+  body.document-print-mode .invoice-sheet,
+  body.document-print-mode .invoice-sheet * {
+    visibility: hidden;
+  }
+
+  body.document-print-mode .invoice-sheet {
+    display: none;
+  }
+
+  body.document-print-mode.offer-print-mode .invoice-sheet,
+  body.document-print-mode.offer-print-mode .invoice-sheet * {
+    visibility: visible;
+  }
+
+  body.document-print-mode.offer-print-mode .invoice-sheet {
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.document-print-mode .invoice-print-pages,
+  body.document-print-mode .invoice-print-pages * {
+    visibility: visible;
+  }
+
+  body.document-print-mode .tool-print-pages,
+  body.document-print-mode .tool-print-pages * {
+    visibility: visible;
+  }
+
+  body.document-print-mode .invoice-print-pages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 210mm;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.document-print-mode .tool-print-pages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 210mm;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.document-print-mode .tools-paper > :not(.tool-print-pages) {
+    display: none !important;
+  }
+
+  body.document-print-mode .tools-paper > .tool-print-pages {
+    display: block !important;
+  }
+
+  body.document-print-mode .offer-measure-root {
+    display: none;
+  }
+
+  body.document-print-mode .tool-document-measure-root {
+    display: none;
+  }
+
+  body.document-print-mode .offer-print-pages {
+    display: block;
+    width: 210mm;
+    height: auto;
+  }
+
+  body.document-print-mode .invoice-print-page {
+    width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  body.document-print-mode .tool-print-page {
+    display: grid;
+    grid-template-rows: auto minmax(0, var(--tool-print-content-max-height)) minmax(
+        var(--tool-print-small-safety-buffer),
+        1fr
+      ) var(--tool-print-page-number-height) auto;
+    box-sizing: border-box;
+    width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+    overflow: hidden;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  body.document-print-mode .tool-print-page:last-child {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  body.document-print-mode .offer-print-page {
+    display: grid;
+    grid-template-rows: auto minmax(0, var(--offer-print-content-max-height)) minmax(
+        var(--offer-print-small-safety-buffer),
+        1fr
+      ) var(--offer-print-page-number-height) auto;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  body.document-print-mode .offer-print-page .invoice-print-page-content {
+    height: var(--offer-print-content-max-height);
+    max-height: var(--offer-print-content-max-height);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  body.document-print-mode .tool-print-page .tool-print-page-content {
+    height: var(--tool-print-content-max-height);
+    max-height: var(--tool-print-content-max-height);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  body.document-print-mode .offer-sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 0;
+    padding: 19mm 17mm 16mm 19mm;
+    overflow: hidden;
+    border: 0;
+    box-shadow: none;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  body.document-print-mode .offer-sheet .invoice-icon-action,
+  body.document-print-mode .offer-sheet .invoice-field-actions,
+  body.document-print-mode .offer-sheet .invoice-hidden-field-actions,
+  body.document-print-mode .offer-sheet .invoice-position-actions,
+  body.document-print-mode .offer-sheet .offer-remove,
+  body.document-print-mode .offer-sheet .offer-add-position {
+    display: none;
+  }
+
+  body.document-print-mode .tool-document-a4 {
+    display: none;
+  }
+
+  body.document-print-mode .tool-document-field-actions,
+  body.document-print-mode .tool-document-hidden-field-actions {
+    display: none;
+  }
+
+  body.document-print-mode.receipt-print-mode .receipt-sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    height: 148mm;
+    min-height: 148mm;
+    max-height: 148mm;
+    margin: 0;
+    padding: 7.4mm 17mm 5.8mm 19mm;
+    overflow: hidden;
+    border: 0;
+    box-shadow: none;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  body.document-print-mode.receipt-print-mode .receipt-sheet .invoice-icon-action,
+  body.document-print-mode.receipt-print-mode .receipt-sheet .invoice-field-actions,
+  body.document-print-mode.receipt-print-mode .receipt-sheet .invoice-hidden-field-actions {
+    display: none;
+  }
+
+  body.document-print-mode .invoice-sheet {
+    --invoice-right-safe-offset: 0px;
+  }
+
+  .offer-sheet input,
+  .offer-sheet textarea,
+  .offer-sheet select,
+  .offer-sheet.is-highlight-mode input,
+  .offer-sheet.is-highlight-mode textarea,
+  .offer-sheet.is-highlight-mode select,
+  .offer-sheet.is-data-check-mode input,
+  .offer-sheet.is-data-check-mode textarea,
+  .offer-sheet.is-data-check-mode select,
+  .offer-sheet.is-export-mode input,
+  .offer-sheet.is-export-mode textarea,
+  .offer-sheet.is-export-mode select {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .offer-sheet select {
+    appearance: none;
+  }
+
+  .offer-sheet.is-data-check-mode .invoice-date-field.document-data-check-marker .invoice-date-display {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .receipt-sheet input,
+  .receipt-sheet textarea,
+  .receipt-sheet select,
+  .receipt-sheet.is-highlight-mode input,
+  .receipt-sheet.is-highlight-mode textarea,
+  .receipt-sheet.is-highlight-mode select,
+  .receipt-sheet.is-data-check-mode input,
+  .receipt-sheet.is-data-check-mode textarea,
+  .receipt-sheet.is-data-check-mode select,
+  .receipt-sheet.is-export-mode input,
+  .receipt-sheet.is-export-mode textarea,
+  .receipt-sheet.is-export-mode select {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .receipt-sheet select {
+    appearance: none;
+  }
+
+  .feedback-widget,
+  .cookie-consent-banner,
+  .cookie-consent-modal-backdrop {
+    display: none !important;
+  }
+}
