@@ -6,7 +6,7 @@ const quittung = {
   title: 'Quittung',
   description: 'Eine Quittung bestaetigt, dass ein Betrag oder eine Leistung empfangen wurde.',
   seo: {
-    title: 'Quittung einfach erklaert | Carta',
+    title: 'Quittung einfach erklaert | Belege24',
     description: 'Eine Quittung bestaetigt, dass ein Betrag oder eine Leistung empfangen wurde.',
     canonicalPath: '/wissen/quittung',
   },

@@ -37,7 +37,7 @@ const defaultInterestDocumentRecipient = {
 
 const defaultInterestSenderCompanyName = 'Belege24 Muster GmbH';
 
-const defaultInterestDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+const defaultInterestDocumentSenderLine = 'Belege24 Muster GmbH - Musterweg 1 - 10115 Berlin';
 
 const defaultInterestDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Zinsen auf Grundlage der angegebenen Werte.';

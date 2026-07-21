@@ -1094,7 +1094,7 @@ export default function OfferDocumentEditor() {
     return {
       documentType: 'offer',
       schemaVersion: offerSchemaVersion,
-      createdWith: 'Carta',
+      createdWith: 'Belege24',
       data: {
         labels,
         ...offerData,

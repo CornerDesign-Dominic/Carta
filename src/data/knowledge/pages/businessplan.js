@@ -6,7 +6,7 @@ const businessplan = {
   title: "Businessplan",
   description: "Ein Businessplan beschreibt Geschäftsidee, Markt, Strategie, Finanzierung und Umsetzung.",
   seo: {
-    title: "Businessplan einfach erklärt | Carta",
+    title: "Businessplan einfach erklärt | Belege24",
     description: "Ein Businessplan beschreibt Geschäftsidee, Markt, Strategie, Finanzierung und Umsetzung.",
     canonicalPath: "/wissen/businessplan",
   },

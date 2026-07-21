@@ -117,7 +117,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
             <h2>Passenden Generator nutzen</h2>
             <p>
               {generator.text
-                ?? 'Nutze den passenden Carta-Generator, um dein Dokument schnell und übersichtlich zu erstellen.'}
+                ?? 'Nutze den passenden Belege24-Generator, um dein Dokument schnell und übersichtlich zu erstellen.'}
             </p>
           </div>
           <button type="button" onClick={() => onOpenTool(generator.href)}>

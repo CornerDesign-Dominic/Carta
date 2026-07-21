@@ -1093,7 +1093,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       documentType: 'invoice',
       invoiceVariant: normalizedInvoiceVariant,
       schemaVersion: invoiceSchemaVersion,
-      createdWith: 'Carta',
+      createdWith: 'Belege24',
       data: {
         labels,
         ...invoiceData,

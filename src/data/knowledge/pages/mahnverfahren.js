@@ -6,7 +6,7 @@ const mahnverfahren = {
   title: "Mahnverfahren",
   description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen und möglichen nächsten Schritten.",
   seo: {
-    title: "Mahnverfahren einfach erklärt | Carta",
+    title: "Mahnverfahren einfach erklärt | Belege24",
     description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen und möglichen nächsten Schritten.",
     canonicalPath: "/wissen/mahnverfahren",
   },
@@ -124,7 +124,7 @@ const mahnverfahren = {
   generator: {
     label: "Mahnung erstellen",
     href: "/dokumente",
-    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und übersichtlich zu erstellen.",
+    text: "Nutze den passenden Belege24-Generator, um dein Dokument schnell und übersichtlich zu erstellen.",
   },
   keyPoints: [
     "klare Bezugnahme auf Rechnung und Fälligkeit",

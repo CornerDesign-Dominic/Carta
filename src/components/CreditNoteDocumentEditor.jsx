@@ -1016,7 +1016,7 @@ export default function CreditNoteDocumentEditor() {
     return {
       documentType: 'creditNote',
       schemaVersion: '1.0',
-      createdWith: 'Carta',
+      createdWith: 'Belege24',
       data: {
         labels,
         ...offerData,

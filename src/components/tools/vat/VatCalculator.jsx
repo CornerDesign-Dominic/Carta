@@ -36,7 +36,7 @@ const defaultVatDocumentRecipient = {
 };
 
 const defaultVatSenderCompanyName = 'Belege24 Muster GmbH';
-const defaultVatDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+const defaultVatDocumentSenderLine = 'Belege24 Muster GmbH - Musterweg 1 - 10115 Berlin';
 const defaultVatDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Umsatzsteuerbeträge auf Grundlage der angegebenen Werte.';
 const defaultVatDocumentTitle = 'Umsatzsteuerberechnung';

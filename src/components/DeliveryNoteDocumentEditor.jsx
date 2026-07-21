@@ -926,7 +926,7 @@ export default function DeliveryNoteDocumentEditor() {
     return {
       documentType: 'deliveryNote',
       schemaVersion: deliveryNoteSchemaVersion,
-      createdWith: 'Carta',
+      createdWith: 'Belege24',
       data: {
         labels,
         ...deliveryNoteData,

@@ -1,8 +1,8 @@
-# Wissensbereich von Carta
+# Wissensbereich von Belege24
 
 ## Zweck
 
-Der Wissensbereich von Carta ist eine strukturierte Wissensdatenbank fuer geschaeftliche Dokumente, kaufmaennische Grundlagen und spaeter auch BWL-Werkzeuge.
+Der Wissensbereich von Belege24 ist eine strukturierte Wissensdatenbank fuer geschaeftliche Dokumente, kaufmaennische Grundlagen und spaeter auch BWL-Werkzeuge.
 
 Er soll Nutzern helfen, schnell zu verstehen:
 
@@ -11,13 +11,13 @@ Er soll Nutzern helfen, schnell zu verstehen:
 - welche Angaben wichtig sind
 - wann es in der Praxis verwendet wird
 - welche typischen Fehler vermieden werden sollten
-- welches passende Carta-Werkzeug direkt weiterhilft
+- welches passende Belege24-Werkzeug direkt weiterhilft
 
 Der Wissensbereich ist kein Blog. Er soll nicht chronologisch, meinungsgetrieben oder magazinartig wirken, sondern wie ein klar gegliedertes Nachschlagewerk. Jede Seite beantwortet konkrete Fragen und fuehrt bei Bedarf direkt zum passenden Generator oder Tool.
 
 ## Projektkontext
 
-Carta ist eine Plattform, mit der Nutzer schnell, kostenlos und ohne Werbung professionelle geschaeftliche Dokumente erstellen koennen. Neben Dokumentgeneratoren bietet Carta BWL- und Unternehmenswerkzeuge sowie einen Wissensbereich.
+Belege24 ist eine Plattform, mit der Nutzer schnell, kostenlos und ohne Werbung professionelle geschaeftliche Dokumente erstellen koennen. Neben Dokumentgeneratoren bietet Belege24 BWL- und Unternehmenswerkzeuge sowie einen Wissensbereich.
 
 Der Wissensbereich verbindet diese Bereiche miteinander:
 
@@ -55,9 +55,9 @@ Eine gute Wissensseite erklaert:
 - welche Angaben oder Rechenschritte wichtig sind
 - welche Unterschiede zu verwandten Themen bestehen
 - welche Fehler in der Praxis haeufig vorkommen
-- welches Carta-Werkzeug zur direkten Umsetzung passt
+- welches Belege24-Werkzeug zur direkten Umsetzung passt
 
-Die Inhalte sollen nicht zu juristisch oder steuerlich tief werden. Carta gibt Orientierung, ersetzt aber keine Beratung.
+Die Inhalte sollen nicht zu juristisch oder steuerlich tief werden. Belege24 gibt Orientierung, ersetzt aber keine Beratung.
 
 Bei rechtlichen, steuerlichen oder kaufmaennischen Themen soll ein kurzer Hinweis verwendet werden:
 
@@ -109,7 +109,7 @@ Der Wissensbereich startet mit klaren Kategorien. Die Kategorien sollen auf der 
 
 ## Wissens-Landingpage
 
-Die Wissens-Landingpage ist der Einstieg in den Wissensbereich. Sie soll Nutzern schnell zeigen, welche Themen Carta erklaert und wie sie zu einer passenden Wissensseite kommen.
+Die Wissens-Landingpage ist der Einstieg in den Wissensbereich. Sie soll Nutzern schnell zeigen, welche Themen Belege24 erklaert und wie sie zu einer passenden Wissensseite kommen.
 
 Empfohlene Inhalte:
 
@@ -204,7 +204,7 @@ Beispiele:
 - Zinseszins berechnen
 - Abschreibung berechnen
 
-Der CTA soll inhaltlich eindeutig sein und direkt zur passenden Carta-Funktion fuehren.
+Der CTA soll inhaltlich eindeutig sein und direkt zur passenden Belege24-Funktion fuehren.
 
 ### 7. FAQ-Bereich
 
@@ -293,7 +293,7 @@ Dadurch wird der Wissensbereich nicht nur ein Nachschlagewerk, sondern ein Hilfe
 
 ## Layout-Idee
 
-Der Wissensbereich soll optisch zum Dokumentbereich von Carta passen.
+Der Wissensbereich soll optisch zum Dokumentbereich von Belege24 passen.
 
 Grundaufbau:
 
@@ -495,4 +495,4 @@ Empfohlene Reihenfolge:
 7. erste MVP-Inhalte einpflegen
 8. Generatoren spaeter mit passenden Wissensfragen verlinken
 
-Das Ziel ist ein Wissensbereich, der sich mit Carta weiterentwickeln kann: zuerst fuer Dokumente, danach fuer kaufmaennische Grundlagen und BWL-Werkzeuge.
+Das Ziel ist ein Wissensbereich, der sich mit Belege24 weiterentwickeln kann: zuerst fuer Dokumente, danach fuer kaufmaennische Grundlagen und BWL-Werkzeuge.

@@ -6,7 +6,7 @@ const angebot = {
   title: "Angebot",
   description: "Ein Angebot beschreibt Leistungen, Preise und Bedingungen, bevor ein Auftrag erteilt wird.",
   seo: {
-    title: "Angebot einfach erklärt | Carta",
+    title: "Angebot einfach erklärt | Belege24",
     description: "Ein Angebot beschreibt Leistungen, Preise und Bedingungen, bevor ein Auftrag erteilt wird.",
     canonicalPath: "/wissen/angebot",
   },
@@ -58,7 +58,7 @@ const angebot = {
   generator: {
     label: "Angebot erstellen",
     href: "/dokumente",
-    text: "Nutze den passenden Carta-Generator, um dein Dokument schnell und übersichtlich zu erstellen.",
+    text: "Nutze den passenden Belege24-Generator, um dein Dokument schnell und übersichtlich zu erstellen.",
   },
   keyPoints: [
     "Name und Anschrift von Anbieter und Kunde",

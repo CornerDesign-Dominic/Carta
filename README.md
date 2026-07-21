@@ -23,8 +23,6 @@ Diese Markdown-Dateien sind der Arbeitsstandard für die weitere Entwicklung:
 
 PDF läuft über die bestehende Projektlogik: Das Frontend sendet bereinigtes HTML an `/api/generate-pdf`; die API rendert daraus serverseitig ein PDF.
 
-`html2pdf.js` ist nicht der neue Standardweg und soll für neue PDF-Funktionen nicht verwendet werden.
-
 Lokal kann für Puppeteer ein eigener Chromium-Pfad über `PUPPETEER_EXECUTABLE_PATH` gesetzt werden.
 
 ## Technischer Hinweis

@@ -5,7 +5,7 @@ export const toolItems = [
     description: 'Berechne einfache Zinsen für Kapital, Zinssatz und Laufzeit.',
     path: '/tools/zinsrechner',
     seo: {
-      title: 'Zinsrechner | Carta',
+      title: 'Zinsrechner | Belege24',
       description: 'Berechne einfache Zinsen aus Kapital, Zinssatz und Laufzeit.',
       canonicalPath: '/tools/zinsrechner',
     },
@@ -16,7 +16,7 @@ export const toolItems = [
     description: 'Berechne Zinseszins mit Anfangskapital, monatlicher Rate und Laufzeit.',
     path: '/tools/zinseszins',
     seo: {
-      title: 'Zinseszins | Carta',
+      title: 'Zinseszins | Belege24',
       description: 'Berechne Zinseszins aus Anfangskapital, Sparrate, Zinssatz und Laufzeit.',
       canonicalPath: '/tools/zinseszins',
     },
@@ -27,7 +27,7 @@ export const toolItems = [
     description: 'Berechne Nettobetrag, Umsatzsteuerbetrag und Bruttobetrag.',
     path: '/tools/umsatzsteuerrechner',
     seo: {
-      title: 'Umsatzsteuerrechner | Carta',
+      title: 'Umsatzsteuerrechner | Belege24',
       description: 'Berechne Netto, Umsatzsteuer und Brutto mit 19 %, 7 %, 0 % oder eigenem Steuersatz.',
       canonicalPath: '/tools/umsatzsteuerrechner',
     },
@@ -38,7 +38,7 @@ export const toolItems = [
     description: 'Berechne reine Arbeitszeit aus Beginn, Ende und Pause.',
     path: '/tools/arbeitszeitrechner',
     seo: {
-      title: 'Arbeitszeitrechner | Carta',
+      title: 'Arbeitszeitrechner | Belege24',
       description: 'Berechne deine Arbeitszeit aus Arbeitsbeginn, Arbeitsende und Pausenzeit.',
       canonicalPath: '/tools/arbeitszeitrechner',
     },
@@ -49,7 +49,7 @@ export const toolItems = [
     description: 'Berechne das Fälligkeitsdatum aus Rechnungsdatum und Zahlungsziel.',
     path: '/tools/faelligkeitsrechner',
     seo: {
-      title: 'Fälligkeitsrechner | Carta',
+      title: 'Fälligkeitsrechner | Belege24',
       description: 'Berechne das Fälligkeitsdatum aus Rechnungsdatum und Zahlungsziel.',
       canonicalPath: '/tools/faelligkeitsrechner',
     },
@@ -60,7 +60,7 @@ export const toolItems = [
     description: 'Berechne Verzugstage, Verzugszinsen und Gesamtbetrag.',
     path: '/tools/verzugszinsenrechner',
     seo: {
-      title: 'Verzugszinsenrechner | Carta',
+      title: 'Verzugszinsenrechner | Belege24',
       description: 'Berechne Verzugszinsen aus offenem Betrag, Zeitraum und Zinssatz.',
       canonicalPath: '/tools/verzugszinsenrechner',
     },
@@ -71,7 +71,7 @@ export const toolItems = [
     description: 'Berechne deinen Stundenlohn aus Betrag und Arbeitszeit.',
     path: '/tools/stundenlohnrechner',
     seo: {
-      title: 'Stundenlohnrechner | Carta',
+      title: 'Stundenlohnrechner | Belege24',
       description: 'Berechne deinen Stundenlohn aus Betrag, Stunden und Minuten.',
       canonicalPath: '/tools/stundenlohnrechner',
     },
@@ -82,7 +82,7 @@ export const toolItems = [
     description: 'Berechne Absatzmenge, Umsatz und Zeit bis zum Break-even.',
     path: '/tools/break-even-rechner',
     seo: {
-      title: 'Break-even-Rechner | Carta',
+      title: 'Break-even-Rechner | Belege24',
       description: 'Berechne Break-even-Menge, Deckungsbeitrag, Umsatz und Zeit bis zum Break-even.',
       canonicalPath: '/tools/break-even-rechner',
     },
@@ -93,7 +93,7 @@ export const toolItems = [
     description: 'Vergleiche mehrere Varianten nach Gesamtkosten und laufenden Kosten.',
     path: '/tools/kostenvergleichsrechner',
     seo: {
-      title: 'Kostenvergleichsrechner | Carta',
+      title: 'Kostenvergleichsrechner | Belege24',
       description: 'Vergleiche Anschaffungskosten, laufende Kosten, Laufzeit und Restwert mehrerer Varianten.',
       canonicalPath: '/tools/kostenvergleichsrechner',
     },

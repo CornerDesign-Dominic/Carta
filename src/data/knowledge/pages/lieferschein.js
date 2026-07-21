@@ -6,7 +6,7 @@ const lieferschein = {
   title: "Lieferschein",
   description: "Ein Lieferschein dokumentiert, welche Waren geliefert wurden.",
   seo: {
-    title: "Lieferschein einfach erklärt | Carta",
+    title: "Lieferschein einfach erklärt | Belege24",
     description: "Ein Lieferschein dokumentiert, welche Waren geliefert wurden.",
     canonicalPath: "/wissen/lieferschein",
   },

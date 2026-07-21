@@ -1124,7 +1124,7 @@ export default function ReceiptDocumentEditor() {
     return {
       documentType: 'receipt',
       schemaVersion: receiptSchemaVersion,
-      createdWith: 'Carta',
+      createdWith: 'Belege24',
       data: {
         labels,
         ...receiptData,

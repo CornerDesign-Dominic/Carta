@@ -35,7 +35,7 @@ const defaultCostDocumentRecipient = {
 };
 
 const defaultCostSenderCompanyName = 'Belege24 Muster GmbH';
-const defaultCostDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+const defaultCostDocumentSenderLine = 'Belege24 Muster GmbH - Musterweg 1 - 10115 Berlin';
 const defaultCostDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der verglichenen Varianten auf Grundlage der angegebenen Werte.';
 

@@ -45,14 +45,14 @@ export function getKnowledgeSeo(slug) {
 
   if (!page) {
     return {
-      title: 'Wissensseite | Carta',
-      description: 'Wissensseite im Carta-Wissensbereich.',
+      title: 'Wissensseite | Belege24',
+      description: 'Wissensseite im Belege24-Wissensbereich.',
       canonicalPath: `/wissen/${slug}`,
     };
   }
 
   return {
-    title: page.seo?.title ?? `${page.title} | Carta`,
+    title: page.seo?.title ?? `${page.title} | Belege24`,
     description: page.seo?.description ?? page.description,
     canonicalPath: page.seo?.canonicalPath ?? `/wissen/${page.slug}`,
   };

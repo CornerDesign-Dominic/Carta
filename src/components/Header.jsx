@@ -4,10 +4,17 @@ const navigationItems = [
   { label: 'Wissen', view: 'knowledge' },
 ];
 
-export default function Header({ currentView, enableKnowledge = true, onNavigate }) {
+export default function Header({
+  currentView,
+  enableKnowledge = true,
+  theme = 'light',
+  onNavigate,
+  onToggleTheme,
+}) {
   const visibleNavigationItems = navigationItems.filter(
     (item) => item.view !== 'knowledge' || enableKnowledge,
   );
+  const isDarkMode = theme === 'dark';
 
   return (
     <header className="site-header" aria-label="Hauptnavigation">
@@ -35,6 +42,15 @@ export default function Header({ currentView, enableKnowledge = true, onNavigate
           );
         })}
       </nav>
+      <button
+        className="theme-toggle"
+        type="button"
+        onClick={onToggleTheme}
+        aria-pressed={isDarkMode}
+        aria-label={isDarkMode ? 'Light Mode aktivieren' : 'Dark Mode aktivieren'}
+      >
+        <span aria-hidden="true">{isDarkMode ? 'Light' : 'Dark'}</span>
+      </button>
     </header>
   );
 }

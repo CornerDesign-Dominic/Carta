@@ -833,7 +833,7 @@ export default function ReminderDocumentEditor() {
     return {
       documentType: 'reminder',
       schemaVersion: reminderSchemaVersion,
-      createdWith: 'Carta',
+      createdWith: 'Belege24',
       data: {
         labels,
         ...reminderData,

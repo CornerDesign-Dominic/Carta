@@ -6,7 +6,7 @@ const rechnung = {
   title: "Rechnung",
   description: "Eine Rechnung dokumentiert eine Lieferung oder Leistung und fordert den Empfänger zur Zahlung auf.",
   seo: {
-    title: "Rechnung einfach erklärt | Carta",
+    title: "Rechnung einfach erklärt | Belege24",
     description: "Eine Rechnung dokumentiert eine Lieferung oder Leistung und fordert den Empfänger zur Zahlung auf.",
     canonicalPath: "/wissen/rechnung",
   },

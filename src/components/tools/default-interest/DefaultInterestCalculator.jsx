@@ -27,7 +27,7 @@ const defaultDocumentRecipient = {
 };
 
 const defaultSenderCompanyName = 'Belege24 Muster GmbH';
-const defaultDocumentSenderLine = 'Carta Muster GmbH - Musterweg 1 - 10115 Berlin';
+const defaultDocumentSenderLine = 'Belege24 Muster GmbH - Musterweg 1 - 10115 Berlin';
 const defaultDocumentTitle = 'Verzugszinsberechnung';
 const defaultDocumentIntro =
   'Hiermit erhalten Sie eine Übersicht der berechneten Verzugszinsen auf Grundlage der angegebenen Werte.';

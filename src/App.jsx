@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import CookieConsentBanner from './components/CookieConsentBanner.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
@@ -17,9 +18,11 @@ import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
 import ToolsView from './views/ToolsView.jsx';
 import { documentSections } from './data/documents.js';
-import { findToolItemByPath } from './data/tools.js';
+import { findToolItem, findToolItemByPath } from './data/tools.js';
+import { findKnowledgePage } from './data/knowledgePages.js';
 
 const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE !== 'false';
+const THEME_STORAGE_KEY = 'belege24-theme-v1';
 const generatorPathById = new Map(
   documentSections.flatMap((section) =>
     (section.children ?? [])
@@ -30,118 +33,13 @@ const generatorPathById = new Map(
 const generatorIdByPath = new Map(
   [...generatorPathById.entries()].map(([documentId, path]) => [path, documentId]),
 );
-
-function routeFromLocation() {
-  const path = window.location.pathname.replace(/\/$/, '') || '/';
-
-  if (path === '/') {
-    return { view: 'home', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  if (path === '/wissen') {
-    if (!isKnowledgeEnabled) {
-      return { view: 'not-found', knowledgeSlug: null, documentId: 'overview' };
-    }
-
-    return { view: 'knowledge', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  if (path.startsWith('/wissen/')) {
-    if (!isKnowledgeEnabled) {
-      return { view: 'not-found', knowledgeSlug: null, documentId: 'overview' };
-    }
-
-    return {
-      view: 'knowledge',
-      knowledgeSlug: decodeURIComponent(path.replace('/wissen/', '')),
-      documentId: 'overview',
-    };
-  }
-
-  if (path === '/tools') {
-    return { view: 'tools', knowledgeSlug: null, documentId: 'overview', toolId: null };
-  }
-
-  if (path === '/basiszinssatz-tabelle') {
-    return { view: 'base-interest-rate-table', knowledgeSlug: null, documentId: 'overview', toolId: null };
-  }
-
-  if (path.startsWith('/tools/')) {
-    const toolItem = findToolItemByPath(path);
-
-    if (toolItem) {
-      return { view: 'tools', knowledgeSlug: null, documentId: 'overview', toolId: toolItem.id };
-    }
-
-    return { view: 'not-found', knowledgeSlug: null, documentId: 'overview', toolId: null };
-  }
-
-  if (path === '/dokumente/rechnung') {
-    return {
-      view: 'documents',
-      knowledgeSlug: null,
-      documentId: 'write-invoice',
-      invoiceVariant: 'standard',
-      redirectPath: '/dokumente/rechnung/standard',
-    };
-  }
-
-  const generatorDocumentId = generatorIdByPath.get(path);
-  if (generatorDocumentId) {
-    return { view: 'documents', knowledgeSlug: null, documentId: generatorDocumentId, invoiceVariant: 'standard' };
-  }
-
-  if (path === '/dokumente/rechnung/kleinunternehmer') {
-    return {
-      view: 'documents',
-      knowledgeSlug: null,
-      documentId: 'write-invoice',
-      invoiceVariant: 'standard',
-      isSmallBusiness: true,
-      redirectPath: '/dokumente/rechnung/standard',
-    };
-  }
-
-  if (path === '/dokumente/rechnung/text') {
-    return {
-      view: 'documents',
-      knowledgeSlug: null,
-      documentId: 'write-invoice',
-      invoiceVariant: 'text',
-    };
-  }
-
-  if (path === '/dokumente/rechnung/waren') {
-    return {
-      view: 'documents',
-      knowledgeSlug: null,
-      documentId: 'write-invoice',
-      invoiceVariant: 'goods',
-    };
-  }
-
-  if (path === '/dokumente/eigenbeleg') {
-    return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  if (path === '/dokumente') {
-    return { view: 'documents', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  if (path === '/impressum') {
-    return { view: 'legal:impressum', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  if (path === '/datenschutz') {
-    return { view: 'legal:datenschutz', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  if (path === '/agb') {
-    return { view: 'legal:agb', knowledgeSlug: null, documentId: 'overview' };
-  }
-
-  return { view: 'not-found', knowledgeSlug: null, documentId: 'overview' };
-}
+const invoicePaths = new Set([
+  '/dokumente/rechnung',
+  '/dokumente/rechnung/standard',
+  '/dokumente/rechnung/kleinunternehmer',
+  '/dokumente/rechnung/text',
+  '/dokumente/rechnung/waren',
+]);
 
 function pathForNavigation(item) {
   if (item.path) {
@@ -188,94 +86,239 @@ function pathForNavigation(item) {
     return '/agb';
   }
 
-  return window.location.pathname;
+  return '/';
+}
+
+function viewFromPath(pathname) {
+  if (pathname === '/') {
+    return 'home';
+  }
+
+  if (pathname === '/impressum' || pathname === '/datenschutz' || pathname === '/agb') {
+    return `legal:${pathname.slice(1)}`;
+  }
+
+  if (pathname === '/basiszinssatz-tabelle') {
+    return 'base-interest-rate-table';
+  }
+
+  if (
+    pathname === '/dokumente'
+    || pathname === '/dokumente/eigenbeleg'
+    || invoicePaths.has(pathname)
+    || generatorIdByPath.has(pathname)
+  ) {
+    return 'documents';
+  }
+
+  if (pathname === '/tools' || findToolItemByPath(pathname)) {
+    return 'tools';
+  }
+
+  if (pathname === '/wissen' || pathname.startsWith('/wissen/')) {
+    return isKnowledgeEnabled ? 'knowledge' : 'not-found';
+  }
+
+  return 'not-found';
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [pathname]);
+
+  return null;
+}
+
+function getSystemTheme() {
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return 'light';
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function readStoredTheme() {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : null;
+}
+
+function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard' }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  function handleNavigate(item, options = {}) {
+    navigate(pathForNavigation(item), {
+      replace: options.replace === true,
+      state: item.state ?? (item.isSmallBusiness ? { isSmallBusiness: true } : undefined),
+    });
+  }
+
+  return (
+    <DocumentsView
+      initialDocumentId={documentId}
+      initialInvoiceSmallBusiness={location.state?.isSmallBusiness}
+      initialInvoiceVariant={invoiceVariant}
+      onNavigate={handleNavigate}
+    />
+  );
+}
+
+function DocumentPathRoute() {
+  const { '*': documentPath = '' } = useParams();
+  const path = `/dokumente/${documentPath}`;
+  const documentId = generatorIdByPath.get(path);
+
+  if (!documentId) {
+    return <NotFoundRoute />;
+  }
+
+  return <DocumentsRoute documentId={documentId} />;
+}
+
+function ToolsRoute() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeTool = findToolItemByPath(location.pathname);
+
+  if (location.pathname !== '/tools' && !activeTool) {
+    return <NotFoundRoute />;
+  }
+
+  function handleSelectTool(toolId) {
+    navigate(toolId ? `/tools/${toolId}` : '/tools');
+  }
+
+  return <ToolsView activeToolId={activeTool?.id ?? null} onSelectTool={handleSelectTool} />;
+}
+
+function LegacyToolRoute() {
+  const { toolId } = useParams();
+  const navigate = useNavigate();
+  const activeTool = findToolItem(toolId);
+
+  if (!activeTool) {
+    return <NotFoundRoute />;
+  }
+
+  function handleSelectTool(nextToolId) {
+    navigate(nextToolId ? `/tools/${nextToolId}` : '/tools');
+  }
+
+  return <ToolsView activeToolId={activeTool.id} onSelectTool={handleSelectTool} />;
+}
+
+function KnowledgeRoute() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+
+  if (!isKnowledgeEnabled) {
+    return <NotFoundRoute />;
+  }
+
+  function handleNavigate(item, options = {}) {
+    navigate(pathForNavigation(item), {
+      replace: options.replace === true,
+      state: item.state ?? (item.isSmallBusiness ? { isSmallBusiness: true } : undefined),
+    });
+  }
+
+  function handleSelectSlug(nextSlug) {
+    navigate(nextSlug ? `/wissen/${nextSlug}` : '/wissen');
+  }
+
+  if (slug && !findKnowledgePage(slug)) {
+    return (
+      <KnowledgeView
+        activeSlug={slug}
+        onNavigate={handleNavigate}
+        onSelectSlug={handleSelectSlug}
+      />
+    );
+  }
+
+  return (
+    <KnowledgeView
+      activeSlug={slug ?? null}
+      onNavigate={handleNavigate}
+      onSelectSlug={handleSelectSlug}
+    />
+  );
+}
+
+function LegalRoute({ pageId }) {
+  return <LegalPage pageId={pageId} />;
+}
+
+function NotFoundRoute() {
+  const navigate = useNavigate();
+
+  function handleNavigate(item, options = {}) {
+    navigate(pathForNavigation(item), { replace: options.replace === true, state: item.state });
+  }
+
+  return <NotFoundView onNavigate={handleNavigate} />;
 }
 
 export default function App() {
-  const initialRoute = routeFromLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const initialConsent = readStoredConsent();
-  const [currentView, setCurrentView] = useState(initialRoute.view);
-  const [currentKnowledgeSlug, setCurrentKnowledgeSlug] = useState(initialRoute.knowledgeSlug);
-  const [currentDocumentId, setCurrentDocumentId] = useState(initialRoute.documentId);
-  const [currentInvoiceVariant, setCurrentInvoiceVariant] = useState(initialRoute.invoiceVariant ?? 'standard');
-  const [currentInvoiceSmallBusiness, setCurrentInvoiceSmallBusiness] = useState(initialRoute.isSmallBusiness);
-  const [currentToolId, setCurrentToolId] = useState(initialRoute.toolId ?? null);
-  const [documentsViewKey, setDocumentsViewKey] = useState(0);
   const [consent, setConsent] = useState(initialConsent ?? createDefaultConsent());
   const [hasResolvedConsent, setHasResolvedConsent] = useState(initialConsent !== null);
   const [isConsentSettingsOpen, setIsConsentSettingsOpen] = useState(false);
-
-  function applyRoute(route) {
-    setCurrentView(route.view);
-    setCurrentKnowledgeSlug(route.knowledgeSlug);
-    setCurrentDocumentId(route.documentId);
-    setCurrentInvoiceVariant(route.invoiceVariant ?? 'standard');
-    setCurrentInvoiceSmallBusiness(route.isSmallBusiness);
-    setCurrentToolId(route.toolId ?? null);
-  }
-
-  useEffect(() => {
-    if (initialRoute.redirectPath && window.location.pathname !== initialRoute.redirectPath) {
-      window.history.replaceState({}, '', initialRoute.redirectPath);
-    }
-  }, []);
-
-  useEffect(() => {
-    function handlePopState() {
-      const route = routeFromLocation();
-      applyRoute(route);
-
-      if (route.redirectPath && window.location.pathname !== route.redirectPath) {
-        window.history.replaceState({}, '', route.redirectPath);
-      }
-    }
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  const [systemTheme, setSystemTheme] = useState(getSystemTheme);
+  const [themePreference, setThemePreference] = useState(readStoredTheme);
+  const theme = themePreference ?? systemTheme;
+  const currentView = viewFromPath(location.pathname);
 
   useEffect(() => {
     syncAnalyticsConsent(consent.analytics === true);
   }, [consent.analytics]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
+  useEffect(() => {
+    if (!window.matchMedia) {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = (event) => {
+      setSystemTheme(event.matches ? 'dark' : 'light');
+    };
+
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
+  }, []);
+
+  useEffect(() => {
+    if (themePreference) {
+      window.localStorage.setItem(THEME_STORAGE_KEY, themePreference);
+    } else {
+      window.localStorage.removeItem(THEME_STORAGE_KEY);
+    }
+  }, [themePreference]);
 
   function handleNavigate(item, options = {}) {
     if (item.view === 'knowledge' && !isKnowledgeEnabled) {
       return;
     }
 
-    if (item.view === 'documents' && !options.preserveDocumentsView) {
-      setDocumentsViewKey((key) => key + 1);
-    }
-
-    setCurrentView(item.view);
-    setCurrentKnowledgeSlug(item.slug ?? null);
-    setCurrentDocumentId(item.documentId ?? 'overview');
-    setCurrentInvoiceVariant(item.invoiceVariant ?? 'standard');
-    setCurrentInvoiceSmallBusiness(item.isSmallBusiness);
-    setCurrentToolId(item.toolId ?? null);
-
     const nextPath = pathForNavigation(item);
-    if (options.replace && window.location.pathname !== nextPath) {
-      window.history.replaceState({}, '', nextPath);
-    } else if (!options.replace && window.location.pathname !== nextPath) {
-      window.history.pushState({}, '', nextPath);
-    }
-
-    window.scrollTo({ top: 0, behavior: options.instant ? 'auto' : 'smooth' });
-  }
-
-  function handleKnowledgeSlugChange(slug) {
-    if (!isKnowledgeEnabled) {
-      return;
-    }
-
-    handleNavigate({ view: 'knowledge', slug });
-  }
-
-  function handleToolChange(toolId) {
-    const toolPath = toolId ? `/tools/${toolId}` : '/tools';
-
-    handleNavigate({ view: 'tools', toolId, toolPath });
+    navigate(nextPath, {
+      replace: options.replace === true,
+      state: item.state ?? (item.isSmallBusiness ? { isSmallBusiness: true } : undefined),
+    });
   }
 
   function saveConsent(nextConsent) {
@@ -304,40 +347,44 @@ export default function App() {
 
   return (
     <div className="site-shell">
+      <ScrollToTop />
       <Header
         currentView={currentView}
         enableKnowledge={isKnowledgeEnabled}
+        theme={theme}
+        onToggleTheme={() => setThemePreference(theme === 'dark' ? 'light' : 'dark')}
         onNavigate={handleNavigate}
       />
       <div className="site-main">
-        {currentView === 'documents' && (
-          <DocumentsView
-            key={documentsViewKey}
-            initialDocumentId={currentDocumentId}
-            initialInvoiceSmallBusiness={currentInvoiceSmallBusiness}
-            initialInvoiceVariant={currentInvoiceVariant}
-            onNavigate={handleNavigate}
+        <Routes>
+          <Route path="/" element={<HomeView onNavigate={handleNavigate} />} />
+          <Route path="/dokumente" element={<DocumentsRoute />} />
+          <Route path="/dokumente/rechnung" element={<Navigate to="/dokumente/rechnung/standard" replace />} />
+          <Route path="/dokumente/rechnung/standard" element={<DocumentsRoute documentId="write-invoice" />} />
+          <Route
+            path="/dokumente/rechnung/kleinunternehmer"
+            element={<Navigate to="/dokumente/rechnung/standard" replace state={{ isSmallBusiness: true }} />}
           />
-        )}
-        {currentView === 'knowledge' && isKnowledgeEnabled && (
-          <KnowledgeView
-            activeSlug={currentKnowledgeSlug}
-            onNavigate={handleNavigate}
-            onSelectSlug={handleKnowledgeSlugChange}
+          <Route
+            path="/dokumente/rechnung/text"
+            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="text" />}
           />
-        )}
-        {currentView === 'tools' && (
-          <ToolsView
-            activeToolId={currentToolId}
-            onSelectTool={handleToolChange}
+          <Route
+            path="/dokumente/rechnung/waren"
+            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="goods" />}
           />
-        )}
-        {currentView === 'home' && <HomeView onNavigate={handleNavigate} />}
-        {currentView === 'base-interest-rate-table' && <BaseInterestRateTableView />}
-        {currentView.startsWith('legal:') && (
-          <LegalPage pageId={currentView.replace('legal:', '')} />
-        )}
-        {currentView === 'not-found' && <NotFoundView onNavigate={handleNavigate} />}
+          <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute />} />
+          <Route path="/dokumente/*" element={<DocumentPathRoute />} />
+          <Route path="/tools" element={<ToolsRoute />} />
+          <Route path="/tools/:toolId" element={<LegacyToolRoute />} />
+          <Route path="/basiszinssatz-tabelle" element={<BaseInterestRateTableView />} />
+          <Route path="/wissen" element={<KnowledgeRoute />} />
+          <Route path="/wissen/:slug" element={<KnowledgeRoute />} />
+          <Route path="/impressum" element={<LegalRoute pageId="impressum" />} />
+          <Route path="/datenschutz" element={<LegalRoute pageId="datenschutz" />} />
+          <Route path="/agb" element={<LegalRoute pageId="agb" />} />
+          <Route path="*" element={<NotFoundRoute />} />
+        </Routes>
       </div>
       <Footer
         onNavigate={handleNavigate}

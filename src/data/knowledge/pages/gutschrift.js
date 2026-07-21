@@ -6,7 +6,7 @@ const gutschrift = {
   title: "Gutschrift",
   description: "Eine Gutschrift korrigiert oder verrechnet Betraege zugunsten eines Kunden oder Geschaeftspartners.",
   seo: {
-    title: "Gutschrift einfach erklaert | Carta",
+    title: "Gutschrift einfach erklaert | Belege24",
     description: "Eine Gutschrift korrigiert oder verrechnet Betraege zugunsten eines Kunden oder Geschaeftspartners.",
     canonicalPath: "/wissen/gutschrift",
   },

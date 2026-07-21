@@ -9,11 +9,6 @@ import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
 import SelfReceiptDocumentEditor from '../components/SelfReceiptDocumentEditor.jsx';
 import { findDocumentItem } from '../data/documents.js';
 
-function pathForDocumentId(documentId) {
-  const { item } = findDocumentItem(documentId);
-  return item?.path ?? '/dokumente';
-}
-
 function pathForInvoiceVariant(variant) {
   if (variant === 'text') {
     return '/dokumente/rechnung/text';
@@ -205,10 +200,7 @@ export default function DocumentsView({
       setActiveInvoiceVariant('standard');
     }
 
-    const nextPath = pathForDocumentId(documentId);
-    if (window.location.pathname !== nextPath) {
-      window.history.pushState({}, '', nextPath);
-    }
+    onNavigate?.({ view: 'documents', documentId });
   }
 
   function handleInvoiceVariantChange(variant) {
@@ -222,10 +214,6 @@ export default function DocumentsView({
       isSmallBusiness: activeInvoiceSmallBusiness,
       path: nextPath,
     }, { preserveDocumentsView: true });
-
-    if (window.location.pathname !== nextPath) {
-      window.history.pushState({}, '', nextPath);
-    }
   }
 
   function handleInvoiceSmallBusinessChange(isSmallBusiness) {
