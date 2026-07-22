@@ -938,11 +938,13 @@ h1 {
   color: var(--muted);
 }
 
-.sidebar-title {
-  display: block;
+.sidebar-title,
+.tools-sidebar-title {
   width: 100%;
-  margin: 0 0 10px;
-  padding: 4px 9px 10px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 8px 9px;
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 760;
@@ -950,12 +952,36 @@ h1 {
   text-align: left;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.sidebar-home-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sidebar-home-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar-title-divider {
+  width: 100%;
+  margin: 8px 0 10px;
+  border-top: 1px solid var(--color-border);
 }
 
 .sidebar-title:hover,
-.sidebar-title.is-active {
-  color: var(--accent-deep);
+.tools-sidebar-title:hover {
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
 }
 
 .sidebar-nav {
@@ -975,6 +1001,7 @@ h1 {
   width: 100%;
   position: relative;
   display: block;
+  border: 1px solid transparent;
   border-radius: 6px;
   padding: 8px 9px;
   color: var(--muted);
@@ -991,33 +1018,21 @@ h1 {
 .sidebar-nav a:hover,
 .sidebar-subnav button:hover,
 .sidebar-subnav a:hover {
-  color: var(--ink);
-  background: rgba(223, 236, 232, 0.62);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
 }
 
+.sidebar-title.is-active,
+.tools-sidebar-title.is-active,
 .sidebar-nav button.is-active,
 .sidebar-nav a.is-active,
 .sidebar-subnav button.is-active,
 .sidebar-subnav a.is-active {
-  color: var(--accent-deep);
-  background: rgba(223, 236, 232, 0.92);
-  box-shadow:
-    inset 0 0 0 1px rgba(53, 107, 102, 0.18),
-    0 8px 20px rgba(53, 107, 102, 0.08);
-}
-
-.sidebar-nav button.is-active::before,
-.sidebar-nav a.is-active::before,
-.sidebar-subnav button.is-active::before,
-.sidebar-subnav a.is-active::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  bottom: 7px;
-  left: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--accent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-accent-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .sidebar-subnav {
@@ -1036,8 +1051,9 @@ h1 {
 
 .sidebar-subnav button.is-active,
 .sidebar-subnav a.is-active {
-  background: rgba(236, 233, 226, 0.72);
-  box-shadow: none;
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .document-paper {
@@ -1723,16 +1739,16 @@ h1 {
 }
 
 .visual-toolbar button.is-active {
-  border-color: rgba(45, 91, 83, 0.68);
-  background: var(--accent-deep);
-  color: #fffdfa;
-  box-shadow: 0 8px 18px rgba(45, 91, 83, 0.18);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .visual-toolbar button.is-active:hover {
-  border-color: rgba(45, 91, 83, 0.78);
-  background: #244d47;
-  color: #fffdfa;
+  border-color: var(--color-primary-hover);
+  background: var(--color-primary-hover);
+  color: #ffffff;
 }
 
 .visual-toolbar-new-button {
@@ -6807,13 +6823,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   }
 
   .sidebar-title {
-    margin-bottom: 10px;
-    padding: 0;
+    width: max-content;
   }
 
   .tools-sidebar-title {
-    margin-bottom: 10px;
-    padding: 0;
+    width: max-content;
   }
 
   .sidebar-nav {
@@ -7405,26 +7419,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: var(--muted);
 }
 
-.tools-sidebar-title {
-  display: block;
-  width: 100%;
-  margin: 0 0 10px;
-  padding: 4px 9px 10px;
-  color: var(--ink);
-  font-size: 0.82rem;
-  font-weight: 760;
-  letter-spacing: 0.1em;
-  text-align: left;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 160ms ease;
-}
-
-.tools-sidebar-title:hover,
-.tools-sidebar-title.is-active {
-  color: var(--accent-deep);
-}
-
 .tools-sidebar-nav {
   display: grid;
   gap: 6px;
@@ -7434,6 +7428,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: 100%;
   position: relative;
   display: block;
+  border: 1px solid transparent;
   border-radius: 6px;
   padding: 8px 9px;
   color: var(--muted);
@@ -7447,27 +7442,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-sidebar-link:hover {
-  color: var(--ink);
-  background: rgba(223, 236, 232, 0.62);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
 }
 
 .tools-sidebar-link.is-active {
-  color: var(--accent-deep);
-  background: rgba(223, 236, 232, 0.92);
-  box-shadow:
-    inset 0 0 0 1px rgba(53, 107, 102, 0.18),
-    0 8px 20px rgba(53, 107, 102, 0.08);
-}
-
-.tools-sidebar-link.is-active::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  bottom: 7px;
-  left: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--accent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-accent-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .tools-paper {
@@ -7988,10 +7972,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tool-document-toolbar button.is-active {
-  border-color: rgba(45, 91, 83, 0.68);
-  background: var(--accent-deep);
-  color: #fffdfa;
-  box-shadow: 0 8px 18px rgba(45, 91, 83, 0.18);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.tool-document-toolbar button.is-active:hover {
+  border-color: var(--color-primary-hover);
+  background: var(--color-primary-hover);
+  color: #ffffff;
 }
 
 .tool-document-header {
@@ -9924,8 +9914,10 @@ h2,
 }
 
 .home-card,
+.sidebar-title,
 .sidebar-nav a,
 .sidebar-nav button,
+.tools-sidebar-title,
 .tools-sidebar-link,
 .cookie-button,
 .tools-mode-selector button,
@@ -9939,8 +9931,10 @@ h2,
 }
 
 .home-card:hover,
+.sidebar-title:hover,
 .sidebar-nav a:hover,
 .sidebar-nav button:hover,
+.tools-sidebar-title:hover,
 .tools-sidebar-link:hover,
 .cookie-button:hover,
 .tools-mode-selector button:hover,
@@ -9961,8 +9955,6 @@ h2,
 .tools-sidebar-link.is-active,
 .tools-mode-selector button.is-active,
 .tools-period-switch button.is-active,
-.tool-document-toolbar button.is-active,
-.visual-toolbar button.is-active,
 .document-choice-bar button.is-active {
   border-color: var(--color-primary);
   color: var(--color-primary);
@@ -9972,6 +9964,8 @@ h2,
 
 .tools-mode-selector button.is-active,
 .tools-period-switch button.is-active,
+.tool-document-toolbar button.is-active,
+.visual-toolbar button.is-active,
 .cookie-button.primary,
 .home-hero-actions button,
 .hero-actions button,
@@ -9986,6 +9980,8 @@ h2,
 
 .tools-mode-selector button.is-active:hover,
 .tools-period-switch button.is-active:hover,
+.tool-document-toolbar button.is-active:hover,
+.visual-toolbar button.is-active:hover,
 .cookie-button.primary:hover,
 .home-hero-actions button:hover,
 .hero-actions button:hover,
@@ -10095,10 +10091,7 @@ h2,
 }
 
 .home-benefit-list li::before,
-.card-marker,
-.sidebar-nav a.is-active::before,
-.sidebar-nav button.is-active::before,
-.tools-sidebar-link.is-active::before {
+.card-marker {
   background: var(--color-primary);
 }
 
@@ -10271,6 +10264,13 @@ h2,
 :root[data-theme="dark"] .tools-period-switch button.is-active {
   background: var(--color-primary);
   border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .visual-toolbar button.is-active:hover,
+:root[data-theme="dark"] .tool-document-toolbar button.is-active:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
   color: #ffffff;
 }
 

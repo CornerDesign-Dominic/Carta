@@ -1,4 +1,5 @@
 import { documentSections } from '../data/documents.js';
+import SidebarHomeIcon from './SidebarHomeIcon.jsx';
 import { trackAnalyticsEvent } from '../utils/analytics.js';
 
 function isPlainLeftClick(event) {
@@ -32,12 +33,16 @@ export default function DocumentSidebar({ activeId, activeParentId, onSelect }) 
   return (
     <aside className="document-sidebar" aria-label="Dokumentnavigation">
       <a
-        className={activeId === 'overview' ? 'sidebar-title is-active' : 'sidebar-title'}
+        className={activeId === 'overview' ? 'sidebar-title sidebar-home-link is-active' : 'sidebar-title sidebar-home-link'}
         href="/dokumente"
+        aria-label="Zur Dokumentenübersicht"
+        title="Zur Dokumentenübersicht"
         onClick={(event) => handleNavigationClick(event, 'overview', 'Dokumente')}
       >
-        Dokumente
+        <SidebarHomeIcon />
+        <span>Dokumente</span>
       </a>
+      <div className="sidebar-title-divider" aria-hidden="true" />
       <nav className="sidebar-nav">
         {documentSections.map((item) => {
           const target = item.children?.[0] ?? item;

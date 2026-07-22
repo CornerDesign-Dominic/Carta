@@ -1,4 +1,5 @@
 import { toolItems } from '../../data/tools.js';
+import SidebarHomeIcon from '../SidebarHomeIcon.jsx';
 
 export default function ToolsSidebar({ activeToolId, onSelect, onShowOverview }) {
   function handleInternalLinkClick(event, callback) {
@@ -20,12 +21,16 @@ export default function ToolsSidebar({ activeToolId, onSelect, onShowOverview })
   return (
     <aside className="tools-sidebar" aria-label="Werkzeugnavigation">
       <a
-        className={!activeToolId ? 'tools-sidebar-title is-active' : 'tools-sidebar-title'}
+        className={!activeToolId ? 'tools-sidebar-title sidebar-home-link is-active' : 'tools-sidebar-title sidebar-home-link'}
         href="/tools"
+        aria-label="Zur Werkzeugübersicht"
+        title="Zur Werkzeugübersicht"
         onClick={(event) => handleInternalLinkClick(event, onShowOverview)}
       >
-        Werkzeuge
+        <SidebarHomeIcon />
+        <span>Werkzeuge</span>
       </a>
+      <div className="sidebar-title-divider" aria-hidden="true" />
 
       <nav className="tools-sidebar-nav">
         {toolItems.map((item) => (

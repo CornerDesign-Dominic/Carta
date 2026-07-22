@@ -1,4 +1,5 @@
 import { knowledgeCategories } from '../../data/knowledgePages.js';
+import SidebarHomeIcon from '../SidebarHomeIcon.jsx';
 
 const visibleKnowledgeSlugs = ['rechnung', 'gutschrift', 'quittung', 'mahnverfahren', 'businessplan'];
 
@@ -26,12 +27,16 @@ export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }
   return (
     <aside className="document-sidebar knowledge-sidebar" aria-label="Wissensnavigation">
       <a
-        className={!activeSlug ? 'sidebar-title is-active' : 'sidebar-title'}
+        className={!activeSlug ? 'sidebar-title sidebar-home-link is-active' : 'sidebar-title sidebar-home-link'}
         href="/wissen"
+        aria-label="Zur Wissensübersicht"
+        title="Zur Wissensübersicht"
         onClick={(event) => handleInternalLinkClick(event, onShowLanding)}
       >
-        Wissen
+        <SidebarHomeIcon />
+        <span>Wissen</span>
       </a>
+      <div className="sidebar-title-divider" aria-hidden="true" />
 
       <nav className="sidebar-nav knowledge-sidebar-nav">
         {visiblePages.map((page) => (
