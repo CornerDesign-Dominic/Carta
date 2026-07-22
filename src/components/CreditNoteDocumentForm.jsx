@@ -458,38 +458,33 @@ export default function CreditNoteDocumentForm({
             </div>
           </div>
 
-          <div className="invoice-panel-section invoice-panel-section-wide">
-            <h3>{creditNoteVariant === 'creditNote' ? 'Betreff' : 'Bezug'}</h3>
-            <div className="invoice-panel-grid">
-              <OfferPanelInput
-                className="invoice-panel-field-wide"
-                label="Betreff"
-                name="credit-note-subject"
-                value={correction.subject}
-                onChange={(value) => updateCorrection('subject', value)}
-              />
-              {referenceFields.map((definition) => (
-                definition.multiline ? (
-                  <OfferPanelTextarea
-                    key={definition.field}
-                    label={definition.field === 'cancellationReason' ? 'Stornogrund' : 'Korrekturgrund'}
-                    name={`credit-note-${definition.field}`}
-                    value={correction[definition.field]}
-                    onChange={(value) => updateCorrection(definition.field, value)}
-                  />
-                ) : (
-                  <OfferPanelInput
-                    key={definition.field}
-                    className="invoice-panel-field-wide"
-                    label="Urspruengliche Rechnungsnummer"
-                    name={`credit-note-${definition.field}`}
-                    value={correction[definition.field]}
-                    onChange={(value) => updateCorrection(definition.field, value)}
-                  />
-                )
-              ))}
+          {referenceFields.length > 0 && (
+            <div className="invoice-panel-section invoice-panel-section-wide">
+              <h3>Bezug</h3>
+              <div className="invoice-panel-grid">
+                {referenceFields.map((definition) => (
+                  definition.multiline ? (
+                    <OfferPanelTextarea
+                      key={definition.field}
+                      label={definition.field === 'cancellationReason' ? 'Stornogrund' : 'Korrekturgrund'}
+                      name={`credit-note-${definition.field}`}
+                      value={correction[definition.field]}
+                      onChange={(value) => updateCorrection(definition.field, value)}
+                    />
+                  ) : (
+                    <OfferPanelInput
+                      key={definition.field}
+                      className="invoice-panel-field-wide"
+                    label="Zu Rechnungsnummer"
+                      name={`credit-note-${definition.field}`}
+                      value={correction[definition.field]}
+                      onChange={(value) => updateCorrection(definition.field, value)}
+                    />
+                  )
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="invoice-panel-row">
             {introBlock && (
@@ -548,7 +543,7 @@ export default function CreditNoteDocumentForm({
             <p className="invoice-panel-note">
               {showTaxFields
                 ? `Gutschriftsbetrag: ${formatCurrency(totals.gross)} | USt.: ${formatCurrency(totals.tax)} (${totals.taxGroups.map((group) => `${formatPercent(group.taxRate)}%`).join(', ') || '0%'})`
-                : `Gutschriftsbetrag: ${formatCurrency(totals.gross)} | keine Umsatzsteuer nach Â§ 19 UStG`}
+                : `Gutschriftsbetrag: ${formatCurrency(totals.gross)} | keine Umsatzsteuer nach § 19 UStG`}
             </p>
           </div>
 

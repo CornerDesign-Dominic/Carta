@@ -20,7 +20,7 @@ import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const smallBusinessStorageKey = 'carta.creditNote.smallBusinessMode';
 const smallBusinessTaxNotice =
-  'Aufgrund der Anwendung der Kleinunternehmerregelung gemÃ¤ÃŸ Â§ 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
+  'Aufgrund der Anwendung der Kleinunternehmerregelung gemäß § 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
 
 const creditNoteVariants = [
   { id: 'creditNote', label: 'Gutschrift' },
@@ -31,19 +31,17 @@ const creditNoteVariantIds = creditNoteVariants.map((variant) => variant.id);
 const creditNoteVariantConfig = {
   creditNote: {
     title: 'Gutschrift',
-    subject: 'Gutschrift zu erbrachten Leistungen',
-    intro: 'fÃ¼r die unten aufgefÃ¼hrten Leistungen erstellen wir Ihnen die folgende Gutschrift:',
+    intro: 'für die unten aufgeführten Leistungen erstellen wir Ihnen die folgende Gutschrift:',
     closing:
-      'Bitte prÃ¼fen Sie die Angaben zu Leistungsdatum, Positionen und Betrag. FÃ¼r RÃ¼ckfragen stehen wir Ihnen jederzeit gerne zur VerfÃ¼gung.',
+      'Bitte prüfen Sie die Angaben zu Leistungsdatum, Positionen und Betrag. Für Rückfragen stehen wir Ihnen jederzeit gerne zur Verfügung.',
     referenceFields: [],
   },
   cancellationInvoice: {
     title: 'Stornorechnung',
-    subject: 'Stornierung einer urspruenglichen Rechnung',
     intro:
-      'mit diesem Dokument stornieren wir die unten bezeichnete urspruengliche Rechnung vollstaendig. Die Stornierung umfasst die nachfolgend aufgefuehrten Positionen:',
+      'mit diesem Dokument stornieren wir die unten bezeichnete ursprüngliche Rechnung vollständig. Die Stornierung umfasst die nachfolgend aufgeführten Positionen:',
     closing:
-      'Die urspruengliche Rechnung wird durch diese Stornorechnung vollstaendig aufgehoben. Bitte beruecksichtigen Sie diese Korrektur in Ihren Unterlagen.',
+      'Die ursprüngliche Rechnung wird durch diese Stornorechnung vollständig aufgehoben. Bitte berücksichtigen Sie diese Korrektur in Ihren Unterlagen.',
     referenceFields: [
       { field: 'originalInvoiceNumber', labelField: 'originalInvoiceNumber', multiline: false },
       { field: 'cancellationReason', labelField: 'cancellationReason', multiline: true },
@@ -51,11 +49,10 @@ const creditNoteVariantConfig = {
   },
   invoiceCorrection: {
     title: 'Rechnungskorrektur',
-    subject: 'Korrektur einer urspruenglichen Rechnung',
     intro:
-      'mit diesem Dokument korrigieren wir die unten bezeichnete urspruengliche Rechnung. Die Korrektur bezieht sich auf die nachfolgend aufgefuehrten Positionen:',
+      'mit diesem Dokument korrigieren wir die unten bezeichnete ursprüngliche Rechnung. Die Korrektur bezieht sich auf die nachfolgend aufgeführten Positionen:',
     closing:
-      'Diese Rechnungskorrektur ersetzt beziehungsweise ergaenzt die bezeichnete urspruengliche Rechnung im dargestellten Umfang.',
+      'Diese Rechnungskorrektur ersetzt beziehungsweise ergänzt die bezeichnete ursprüngliche Rechnung im dargestellten Umfang.',
     referenceFields: [
       { field: 'originalInvoiceNumber', labelField: 'originalInvoiceNumber', multiline: false },
       { field: 'correctionReason', labelField: 'correctionReason', multiline: true },
@@ -63,12 +60,10 @@ const creditNoteVariantConfig = {
   },
 };
 const creditNoteVariantTitles = Object.values(creditNoteVariantConfig).map((config) => config.title);
-const creditNoteVariantSubjects = Object.values(creditNoteVariantConfig).map((config) => config.subject);
 const creditNoteGrandTotalLabels = ['Gutschriftsbetrag', 'Stornobetrag', 'Korrekturbetrag'];
 
 const initialCreditNoteLabels = {
   title: 'Gutschrift',
-  subject: 'Betreff',
   creditNoteNumber: 'Gutschriftsnummer',
   creditNoteDate: 'Belegdatum',
   serviceDate: 'Leistungsdatum',
@@ -85,7 +80,7 @@ const initialCreditNoteLabels = {
   net: 'Nettobetrag',
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Gutschriftsbetrag',
-  originalInvoiceNumber: 'Urspruengliche Rechnungsnummer',
+  originalInvoiceNumber: 'Zu Rechnungsnummer',
   cancellationReason: 'Stornogrund',
   correctionReason: 'Korrekturgrund',
   contactEmail: 'E-Mail',
@@ -258,7 +253,11 @@ function normalizeOfferData(data = {}) {
     },
     details: { ...defaultOfferData.details, ...(data.details ?? {}) },
     references: { ...defaultOfferData.references, ...(data.references ?? {}) },
-    correction: { ...defaultOfferData.correction, ...(data.correction ?? {}) },
+    correction: {
+      originalInvoiceNumber: String(data.correction?.originalInvoiceNumber ?? defaultOfferData.correction.originalInvoiceNumber),
+      cancellationReason: String(data.correction?.cancellationReason ?? defaultOfferData.correction.cancellationReason),
+      correctionReason: String(data.correction?.correctionReason ?? defaultOfferData.correction.correctionReason),
+    },
     footer: {
       company: { ...defaultOfferData.footer.company, ...(data.footer?.company ?? {}) },
       tax: { ...defaultOfferData.footer.tax, ...(data.footer?.tax ?? {}) },
@@ -386,7 +385,6 @@ const defaultOfferData = {
     customerReference: 'K-2048',
   },
   correction: {
-    subject: creditNoteVariantConfig.creditNote.subject,
     originalInvoiceNumber: '',
     cancellationReason: '',
     correctionReason: '',
@@ -715,7 +713,6 @@ function createOfferPrintItems({
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
   const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
-  const subject = String(correction?.subject ?? '').trim();
   const visibleReferences = referenceFields
     .map((definition) => ({
       ...definition,
@@ -725,16 +722,6 @@ function createOfferPrintItems({
     .filter((definition) => definition.value);
 
   return [
-    ...(subject
-      ? [
-          {
-            type: 'subject',
-            id: 'subject',
-            label: labels.subject,
-            text: subject,
-          },
-        ]
-      : []),
     ...(visibleReferences.length
       ? [
           {
@@ -805,7 +792,7 @@ function validateOfferTemplate(template) {
 function CreditNoteVariantControls({ activeVariant, onSelect }) {
   return (
     <div className="invoice-variant-controls credit-note-variant-controls">
-      <div className="document-choice-bar" aria-label="Gutschriftsart auswÃ¤hlen">
+      <div className="document-choice-bar" aria-label="Gutschriftsart auswählen">
         {creditNoteVariants.map((variant) => (
           <button
             className={activeVariant === variant.id ? 'is-active' : undefined}
@@ -831,50 +818,42 @@ function CreditNoteReferenceBlock({
   onCorrectionChange,
   onLabelChange,
 }) {
+  if (referenceFields.length === 0) {
+    return null;
+  }
+
   return (
     <section className="credit-note-reference-block" aria-label="Gutschriftsreferenzen">
-      <label className="credit-note-subject-field">
-        <input
-          className="document-label-input"
-          aria-label="Beschriftung Betreff"
-          value={labels.subject}
-          onChange={(event) => onLabelChange('subject', event.target.value)}
-        />
-        <input
-          aria-label={labels.subject}
-          value={correction.subject}
-          onChange={(event) => onCorrectionChange('subject', event.target.value)}
-        />
-      </label>
-
-      {referenceFields.length > 0 && (
-        <div className="credit-note-reference-grid">
-          {referenceFields.map((definition) => (
-            <label className={definition.multiline ? 'is-multiline' : undefined} key={definition.field}>
-              <input
-                className="document-label-input"
-                aria-label={`Beschriftung ${labels[definition.labelField]}`}
-                value={labels[definition.labelField]}
-                onChange={(event) => onLabelChange(definition.labelField, event.target.value)}
+      <div className="credit-note-reference-grid">
+        {referenceFields.map((definition) => (
+          <label className={definition.multiline ? 'is-multiline' : undefined} key={definition.field}>
+            <input
+              className="document-label-input"
+              aria-label={`Beschriftung ${labels[definition.labelField]}`}
+              value={labels[definition.labelField]}
+              onChange={(event) => onLabelChange(definition.labelField, event.target.value)}
+            />
+            {definition.multiline ? (
+              <textarea
+                ref={(element) => resizeTextarea(element)}
+                aria-label={labels[definition.labelField]}
+                rows={1}
+                value={correction[definition.field]}
+                onChange={(event) => {
+                  onCorrectionChange(definition.field, event.target.value);
+                  resizeTextarea(event.target);
+                }}
               />
-              {definition.multiline ? (
-                <textarea
-                  aria-label={labels[definition.labelField]}
-                  rows={1}
-                  value={correction[definition.field]}
-                  onChange={(event) => onCorrectionChange(definition.field, event.target.value)}
-                />
-              ) : (
-                <input
-                  aria-label={labels[definition.labelField]}
-                  value={correction[definition.field]}
-                  onChange={(event) => onCorrectionChange(definition.field, event.target.value)}
-                />
-              )}
-            </label>
-          ))}
-        </div>
-      )}
+            ) : (
+              <input
+                aria-label={labels[definition.labelField]}
+                value={correction[definition.field]}
+                onChange={(event) => onCorrectionChange(definition.field, event.target.value)}
+              />
+            )}
+          </label>
+        ))}
+      </div>
     </section>
   );
 }
@@ -1045,16 +1024,6 @@ export default function CreditNoteDocumentEditor() {
         creditNoteGrandTotalLabels.includes(current.grandTotal)
           ? (nextVariant === 'creditNote' ? 'Gutschriftsbetrag' : nextConfig.title === 'Stornorechnung' ? 'Stornobetrag' : 'Korrekturbetrag')
           : current.grandTotal,
-    }));
-    setOfferData((current) => ({
-      ...current,
-      correction: {
-        ...current.correction,
-        subject:
-          !current.correction.subject || creditNoteVariantSubjects.includes(current.correction.subject)
-            ? nextConfig.subject
-            : current.correction.subject,
-      },
     }));
     setTextBlockSets((current) => ({
       ...createInitialTextBlockSets(),
@@ -1571,7 +1540,7 @@ export default function CreditNoteDocumentEditor() {
           checked={isSmallBusiness}
           onChange={handleSmallBusinessToggle}
         />
-        <span>Kleinunternehmerregelung nach Â§ 19 UStG anwenden</span>
+        <span>Kleinunternehmerregelung nach § 19 UStG anwenden</span>
       </label>
 
       <A4Page
@@ -1621,7 +1590,7 @@ export default function CreditNoteDocumentEditor() {
 
         <h2 className="invoice-document-title">
           <input
-            className="document-label-input document-title-label"
+            className="document-label-input document-title-label credit-note-title-label"
             aria-label="Dokumenttitel"
             value={labels.title}
             onChange={(event) => updateLabel('title', event.target.value)}
@@ -1750,7 +1719,6 @@ const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator(
         <div className="invoice-print-page-content" data-measure-follow-content />
       </div>
       <div className="offer-measure-content">
-        <div className="credit-note-print-subject" data-measure-subject-probe />
         <div className="credit-note-print-references" data-measure-references-probe />
         <p className="invoice-print-flow-text" data-measure-text-probe />
         <table className={`invoice-print-position-table${isSmallBusiness ? ' is-without-tax-column' : ''}`}>
@@ -1798,7 +1766,6 @@ function measureOfferPages(measureRoot, items) {
 
   const firstContent = measureRoot.querySelector('[data-measure-first-content]');
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
-  const subjectProbe = measureRoot.querySelector('[data-measure-subject-probe]');
   const referencesProbe = measureRoot.querySelector('[data-measure-references-probe]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
@@ -1810,7 +1777,7 @@ function measureOfferPages(measureRoot, items) {
     ]),
   );
 
-  if (!firstContent || !followContent || !subjectProbe || !referencesProbe || !textProbe || !summaryProbe || !positionHeader) {
+  if (!firstContent || !followContent || !referencesProbe || !textProbe || !summaryProbe || !positionHeader) {
     return null;
   }
 
@@ -1826,11 +1793,6 @@ function measureOfferPages(measureRoot, items) {
   }
 
   function getItemHeight(item) {
-    if (item.type === 'subject') {
-      subjectProbe.textContent = `${item.label}: ${item.text}`;
-      return getOuterHeight(subjectProbe);
-    }
-
     if (item.type === 'references') {
       referencesProbe.innerHTML = '';
       item.fields.forEach((field) => {
@@ -1902,10 +1864,6 @@ function arePrintItemsEqual(first, second) {
 
   if (first.type === 'text') {
     return first.id === second.id && first.text === second.text;
-  }
-
-  if (first.type === 'subject') {
-    return first.label === second.label && first.text === second.text;
   }
 
   if (first.type === 'references') {
@@ -2105,12 +2063,6 @@ function OfferPrintPageItems({ isSmallBusiness = false, items, labels, totals })
   while (index < items.length) {
     const item = items[index];
 
-    if (item.type === 'subject') {
-      renderedItems.push(
-        <CreditNotePrintSubject key="subject" label={item.label} text={item.text} />,
-      );
-    }
-
     if (item.type === 'references') {
       renderedItems.push(
         <CreditNotePrintReferences fields={item.fields} key="references" />,
@@ -2174,15 +2126,6 @@ function OfferPrintPageItems({ isSmallBusiness = false, items, labels, totals })
   }
 
   return renderedItems;
-}
-
-function CreditNotePrintSubject({ label, text }) {
-  return (
-    <p className="credit-note-print-subject">
-      <span>{label}</span>
-      <strong>{text}</strong>
-    </p>
-  );
 }
 
 function CreditNotePrintReferences({ fields }) {

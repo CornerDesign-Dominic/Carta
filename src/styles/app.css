@@ -2614,12 +2614,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   border-bottom: 1px solid #ebe6dc;
 }
 
-.credit-note-subject-field,
 .credit-note-reference-grid label {
   display: grid;
   grid-template-columns: minmax(112px, 0.34fr) minmax(0, 1fr);
   gap: 8px;
-  align-items: start;
+  align-items: stretch;
   min-width: 0;
 }
 
@@ -2630,7 +2629,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .credit-note-reference-block input,
 .credit-note-reference-block textarea {
+  box-sizing: border-box;
   min-width: 0;
+  min-height: 28px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   border: 1px solid transparent;
   background: transparent;
   color: #34312c;
@@ -2640,14 +2643,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .credit-note-reference-block textarea {
-  min-height: 1.8em;
-  resize: vertical;
+  overflow: hidden;
+  resize: none;
 }
 
 .credit-note-reference-block .document-label-input {
+  height: 100%;
   color: #77736b;
   font-size: 0.68rem;
   font-weight: 760;
+  text-align: left;
 }
 
 @media (max-width: 720px) {
@@ -2659,8 +2664,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .credit-note-reference-grid label,
-  .credit-note-subject-field {
+  .credit-note-reference-grid label {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -4051,6 +4055,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 44px;
 }
 
+.invoice-document-title .credit-note-title-label {
+  width: min(100%, 320px);
+  padding-right: 18px;
+  box-sizing: border-box;
+}
+
 .reminder-document-title {
   margin-top: -8px;
 }
@@ -5150,26 +5160,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-weight: 650;
 }
 
-.credit-note-print-subject {
-  display: grid;
-  grid-template-columns: minmax(92px, 0.28fr) minmax(0, 1fr);
-  gap: 8px;
-  margin: 0;
-  color: #34312c;
-  font-size: 0.78rem;
-  line-height: 1.35;
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-
-.credit-note-print-subject span,
 .credit-note-print-references span {
   color: #77736b;
   font-size: 0.68rem;
   font-weight: 760;
 }
 
-.credit-note-print-subject strong,
 .credit-note-print-references strong {
   color: #34312c;
   font-weight: 650;
@@ -5190,9 +5186,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: grid;
   grid-template-columns: minmax(92px, 0.28fr) minmax(0, 1fr);
   gap: 8px;
+  align-items: stretch;
   margin: 0;
   font-size: 0.74rem;
   line-height: 1.35;
+}
+
+.credit-note-print-references span,
+.credit-note-print-references strong {
+  display: flex;
+  align-items: center;
+  min-height: 1.85em;
 }
 
 .invoice-print-position-table {
