@@ -10100,7 +10100,8 @@ h2,
 
 .document-usage-row,
 .tools-usage-row {
-  box-shadow: 0 4px 14px rgba(22, 29, 38, 0.06);
+  border-color: var(--color-border);
+  box-shadow: none;
 }
 
 .home-page,
@@ -10308,11 +10309,6 @@ h2,
 :root[data-theme="dark"] .site-footer button:focus-visible {
   color: var(--color-primary-hover);
   text-decoration-color: var(--color-primary-hover);
-}
-
-:root[data-theme="dark"] .document-usage-row,
-:root[data-theme="dark"] .tools-usage-row {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
 }
 
 :root[data-theme="dark"] .document-usage-mini,
