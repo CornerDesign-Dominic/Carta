@@ -722,21 +722,21 @@ function createOfferPrintItems({
     .filter((definition) => definition.value);
 
   return [
-    ...(visibleReferences.length
-      ? [
-          {
-            type: 'references',
-            id: 'references',
-            fields: visibleReferences,
-          },
-        ]
-      : []),
     ...(introBlock?.visible
       ? [
           {
             type: 'text',
             id: 'intro',
             text: introBlock.value,
+          },
+        ]
+      : []),
+    ...(visibleReferences.length
+      ? [
+          {
+            type: 'references',
+            id: 'references',
+            fields: visibleReferences,
           },
         ]
       : []),
@@ -1597,6 +1597,8 @@ export default function CreditNoteDocumentEditor() {
           />
         </h2>
 
+        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
+
         <CreditNoteReferenceBlock
           correction={correction}
           labels={labels}
@@ -1604,8 +1606,6 @@ export default function CreditNoteDocumentEditor() {
           onCorrectionChange={updateCorrection}
           onLabelChange={updateLabel}
         />
-
-        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <PositionTable
           autoResizeDescription
