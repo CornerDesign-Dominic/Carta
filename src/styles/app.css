@@ -90,14 +90,28 @@ output {
   justify-self: start;
   min-height: 34px;
   color: var(--color-text);
+  font-family:
+    "Segoe UI Variable",
+    "Inter",
+    "Segoe UI",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: clamp(1.32rem, 1.8vw, 1.62rem);
-  font-weight: 840;
+  font-weight: 650;
   letter-spacing: 0;
   line-height: 1;
 }
 
-.brand:hover {
-  color: var(--color-primary-hover);
+.brand-word {
+  color: var(--color-text);
+}
+
+.brand-number {
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .nav-links {
@@ -154,16 +168,17 @@ output {
 }
 
 .theme-toggle {
+  display: inline-grid;
+  place-items: center;
   justify-self: end;
+  width: 38px;
   min-height: 38px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 0;
   background: var(--color-card);
-  color: var(--color-primary);
-  font-size: 0.86rem;
-  font-weight: 760;
-  line-height: 1.2;
+  color: var(--color-text);
+  line-height: 1;
 }
 
 .theme-toggle:hover {
@@ -171,6 +186,11 @@ output {
   background: var(--color-accent-surface);
   color: var(--color-primary-hover);
   box-shadow: none;
+}
+
+.theme-toggle-icon {
+  width: 19px;
+  height: 19px;
 }
 
 .paper-page {
@@ -6434,8 +6454,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: flex;
   margin-top: auto;
   padding: 20px max(28px, calc((100vw - 1000px) / 2));
-  background: rgba(236, 229, 219, 0.7);
-  border-top: 1px solid rgba(199, 186, 168, 0.7);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
   color: var(--color-muted);
   justify-content: flex-end;
   gap: 24px;
@@ -6451,7 +6471,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .site-footer button {
-  color: var(--muted);
+  color: var(--color-muted);
   font-weight: 560;
   transition:
     color 160ms ease,
@@ -6461,9 +6481,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-underline-offset: 4px;
 }
 
-.site-footer button:hover {
-  color: var(--accent-deep);
-  text-decoration-color: rgba(53, 107, 102, 0.46);
+.site-footer button:hover,
+.site-footer button:focus,
+.site-footer button:focus-visible {
+  color: var(--color-primary-hover);
+  text-decoration-color: var(--color-primary-hover);
 }
 
 @media (max-width: 1516px) {
@@ -9464,15 +9486,16 @@ body.tool-document-print-mode .tool-document-date-picker {
 
 .tools-info-paper {
   padding: clamp(28px, 5vw, 52px);
-  border: 1px solid rgba(214, 209, 200, 0.76);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: rgba(255, 254, 250, 0.86);
-  box-shadow: 0 18px 48px rgba(56, 48, 38, 0.08);
+  background: var(--color-card);
+  color: var(--color-text);
+  box-shadow: var(--card-shadow);
 }
 
 .tools-info-paper h1 {
   margin: 0;
-  color: var(--ink);
+  color: var(--color-text);
   font-size: clamp(2rem, 4vw, 3.1rem);
   line-height: 1.06;
 }
@@ -9483,7 +9506,7 @@ body.tool-document-print-mode .tool-document-date-picker {
 
 .tools-info-meta {
   margin: 18px 0 0;
-  color: var(--muted);
+  color: var(--color-muted);
   line-height: 1.6;
 }
 
@@ -9493,10 +9516,10 @@ body.tool-document-print-mode .tool-document-date-picker {
   width: 100%;
   margin-top: 22px;
   padding: 10px 12px;
-  border: 1px solid rgba(214, 209, 200, 0.72);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: rgba(247, 244, 237, 0.5);
-  color: var(--muted);
+  background: var(--color-surface);
+  color: var(--color-muted);
   font-size: 0.88rem;
   line-height: 1.45;
 }
@@ -9506,12 +9529,12 @@ body.tool-document-print-mode .tool-document-date-picker {
 }
 
 .tools-info-disclaimer a {
-  color: var(--accent-deep);
+  color: var(--color-primary);
   font-weight: 760;
 }
 
 .tools-info-legal-basis {
-  color: #6f6b63;
+  color: var(--color-muted);
   font-size: 0.84rem;
 }
 
@@ -9524,19 +9547,20 @@ body.tool-document-print-mode .tool-document-date-picker {
   width: 100%;
   min-width: 720px;
   border-collapse: collapse;
-  color: var(--ink);
+  color: var(--color-text);
   font-size: 0.96rem;
 }
 
 .tools-info-table th,
 .tools-info-table td {
   padding: 12px 10px;
-  border-bottom: 1px solid rgba(214, 209, 200, 0.74);
+  border-bottom: 1px solid var(--color-border);
   text-align: left;
 }
 
 .tools-info-table th {
-  color: var(--accent-deep);
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
   font-weight: 780;
 }
 
@@ -10192,6 +10216,7 @@ h2,
 }
 
 :root[data-theme="dark"] .site-footer button:hover,
+:root[data-theme="dark"] .site-footer button:focus,
 :root[data-theme="dark"] .site-footer button:focus-visible {
   color: var(--color-primary-hover);
   text-decoration-color: var(--color-primary-hover);
