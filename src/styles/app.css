@@ -1778,13 +1778,19 @@ h1 {
 
 .document-choice-bar button {
   border: 1px solid rgba(201, 196, 186, 0.72);
-  border-radius: 5px;
+  border-radius: 6px;
+  min-height: 38px;
   padding: 8px 12px;
   background: rgba(255, 255, 253, 0.86);
   color: var(--accent-deep);
   font-size: 0.88rem;
   font-weight: 650;
   line-height: 1.2;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .document-choice-bar button:hover {
@@ -1794,9 +1800,10 @@ h1 {
 }
 
 .document-choice-bar button.is-active {
-  border-color: rgba(45, 91, 83, 0.68);
-  background: var(--accent-deep);
-  color: #fffdfa;
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .document-mode-hint {
@@ -7701,7 +7708,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   flex: 1 1 130px;
   min-height: 38px;
   border: 1px solid rgba(201, 196, 186, 0.72);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 12px;
   background: rgba(255, 255, 253, 0.86);
   color: var(--accent-deep);
@@ -7722,16 +7729,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .tools-mode-selector button.is-active {
-  border-color: rgba(45, 91, 83, 0.68);
-  background: var(--accent-deep);
-  color: #fffdfa;
-  box-shadow: 0 8px 18px rgba(45, 91, 83, 0.18);
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .tools-mode-selector button.is-active:hover {
-  border-color: rgba(45, 91, 83, 0.78);
-  background: #244d47;
-  color: #fffdfa;
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
 }
 
 .tools-calculation-list {
@@ -7803,24 +7810,26 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .tools-add-calculation button {
   width: 100%;
-  border: 1px solid rgba(79, 111, 104, 0.46);
+  border: 1px solid var(--color-primary);
   border-radius: 6px;
   padding: 12px 14px;
-  background: var(--accent);
-  color: #fffefd;
+  background: var(--color-card);
+  color: var(--color-primary);
   font-weight: 720;
   line-height: 1.2;
-  box-shadow: 0 10px 20px rgba(36, 35, 31, 0.08);
+  box-shadow: none;
   transition:
     background-color 160ms ease,
-    transform 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
     box-shadow 160ms ease;
 }
 
 .tools-add-calculation button:hover {
-  background: #455f5a;
-  transform: translateY(-1px);
-  box-shadow: 0 14px 24px rgba(36, 35, 31, 0.1);
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
+  box-shadow: none;
 }
 
 .tools-add-calculation p {
@@ -9408,22 +9417,33 @@ body.tool-document-print-mode .tool-document-date-picker {
 
 .tools-period-switch button {
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
+  min-height: 38px;
+  padding: 8px 12px;
   background: transparent;
   color: var(--accent-deep);
   font: inherit;
-  font-size: 0.82rem;
-  font-weight: 720;
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.2;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .tools-period-switch button:hover {
-  background: rgba(255, 255, 253, 0.8);
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
 }
 
 .tools-period-switch button.is-active {
-  border-color: rgba(45, 91, 83, 0.62);
-  background: var(--accent-deep);
-  color: #fffdfa;
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .tools-optional-panel {
@@ -9962,14 +9982,20 @@ h2,
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
-.tools-mode-selector button.is-active,
-.tools-period-switch button.is-active,
+.tools-mode-selector button.is-active:hover,
+.tools-period-switch button.is-active:hover,
+.document-choice-bar button.is-active:hover {
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary-hover) 20%, transparent);
+}
+
 .tool-document-toolbar button.is-active,
 .visual-toolbar button.is-active,
 .cookie-button.primary,
 .home-hero-actions button,
 .hero-actions button,
-.tools-add-calculation button,
 .knowledge-cta-section button,
 .not-found-actions button:last-child {
   border-color: var(--color-primary);
@@ -9978,14 +10004,11 @@ h2,
   box-shadow: none;
 }
 
-.tools-mode-selector button.is-active:hover,
-.tools-period-switch button.is-active:hover,
 .tool-document-toolbar button.is-active:hover,
 .visual-toolbar button.is-active:hover,
 .cookie-button.primary:hover,
 .home-hero-actions button:hover,
 .hero-actions button:hover,
-.tools-add-calculation button:hover,
 .knowledge-cta-section button:hover,
 .not-found-actions button:last-child:hover {
   border-color: var(--color-primary-hover);
@@ -10093,6 +10116,20 @@ h2,
 .home-benefit-list li::before,
 .card-marker {
   background: var(--color-primary);
+}
+
+.tools-add-calculation button {
+  border-color: var(--color-primary);
+  background: var(--color-card);
+  color: var(--color-primary);
+  box-shadow: none;
+}
+
+.tools-add-calculation button:hover {
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
+  box-shadow: none;
 }
 
 .home-section-heading,
@@ -10258,13 +10295,19 @@ h2,
 }
 
 :root[data-theme="dark"] .visual-toolbar button.is-active,
-:root[data-theme="dark"] .tool-document-toolbar button.is-active,
-:root[data-theme="dark"] .document-choice-bar button.is-active,
-:root[data-theme="dark"] .tools-mode-selector button.is-active,
-:root[data-theme="dark"] .tools-period-switch button.is-active {
+:root[data-theme="dark"] .tool-document-toolbar button.is-active {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: #ffffff;
+}
+
+:root[data-theme="dark"] .document-choice-bar button.is-active,
+:root[data-theme="dark"] .tools-mode-selector button.is-active,
+:root[data-theme="dark"] .tools-period-switch button.is-active {
+  background: var(--color-accent-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 :root[data-theme="dark"] .visual-toolbar button.is-active:hover,
@@ -10272,6 +10315,15 @@ h2,
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
   color: #ffffff;
+}
+
+:root[data-theme="dark"] .document-choice-bar button.is-active:hover,
+:root[data-theme="dark"] .tools-mode-selector button.is-active:hover,
+:root[data-theme="dark"] .tools-period-switch button.is-active:hover,
+:root[data-theme="dark"] .tools-add-calculation button:hover {
+  background: var(--color-accent-surface);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
 }
 
 :root[data-theme="dark"] .tools-form-grid input,
