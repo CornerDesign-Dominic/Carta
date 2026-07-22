@@ -4,7 +4,6 @@ import KnowledgeFaqCard from './KnowledgeFaqCard.jsx';
 function MissingArticle() {
   return (
     <>
-      <p className="eyebrow">WISSEN</p>
       <h1 id="knowledge-title">Wissensseite nicht gefunden</h1>
       <p className="intro document-intro">
         Diese Seite ist aktuell nicht Teil des aktiven Wissensbereichs.
@@ -77,7 +76,6 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
 
   return (
     <>
-      <p className="eyebrow">WISSEN / {article.category}</p>
       <h1 id="knowledge-title">{article.title}</h1>
       <p className="intro document-intro">{articleIntro}</p>
 

@@ -107,7 +107,6 @@ function ToolOverview() {
 
   return (
     <>
-      <p className="eyebrow">WERKZEUGE</p>
       <h1 id="tools-title">Nutze deine Werkzeuge</h1>
       <p className="intro tools-intro">
         Mit unseren Online-Rechnern kannst du wichtige Werte direkt im

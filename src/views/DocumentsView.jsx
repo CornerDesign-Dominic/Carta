@@ -125,7 +125,6 @@ function DocumentOverview() {
 
   return (
     <>
-      <p className="eyebrow">DOKUMENTE</p>
       <h1 id="document-title">Erstelle dein Dokument</h1>
       <p className="intro document-intro">
         Mit unseren interaktiven Online-Dokumenten erstellst du dein
@@ -240,7 +239,6 @@ export default function DocumentsView({
 
         {!isOverview && (
           <>
-            <p className="eyebrow">DOKUMENTE</p>
             <h1 id="document-title">{activeDocument.title}</h1>
             {showDocumentDescription && (
               <p className="intro document-intro">{activeDocument.description}</p>

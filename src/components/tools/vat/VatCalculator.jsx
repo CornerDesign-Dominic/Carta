@@ -233,7 +233,6 @@ export default function VatCalculator() {
 
   return (
     <>
-      <p className="eyebrow">WERKZEUGE</p>
       <h1 id="tools-title">Umsatzsteuer</h1>
 
       <div className="tools-mode-selector" aria-label="Berechnungsart auswählen">

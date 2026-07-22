@@ -216,7 +216,6 @@ export default function CompoundInterestCalculator() {
 
   return (
     <>
-      <p className="eyebrow">WERKZEUGE</p>
       <h1 id="tools-title">Zinseszins</h1>
 
       <div className="tools-calculation-list">
