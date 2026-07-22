@@ -2601,7 +2601,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   width: min(100%, 365px);
 }
 
-.credit-note-variant-controls .document-choice-bar {
+.credit-note-variant-choice-bar {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 

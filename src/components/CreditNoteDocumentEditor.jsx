@@ -791,8 +791,7 @@ function validateOfferTemplate(template) {
 
 function CreditNoteVariantControls({ activeVariant, onSelect }) {
   return (
-    <div className="invoice-variant-controls credit-note-variant-controls">
-      <div className="document-choice-bar" aria-label="Gutschriftsart auswählen">
+    <div className="document-choice-bar credit-note-variant-choice-bar" aria-label="Gutschriftsart auswählen">
         {creditNoteVariants.map((variant) => (
           <button
             className={activeVariant === variant.id ? 'is-active' : undefined}
@@ -804,9 +803,6 @@ function CreditNoteVariantControls({ activeVariant, onSelect }) {
             {variant.label}
           </button>
         ))}
-      </div>
-
-      <div className="invoice-variant-controls-divider" aria-hidden="true" />
     </div>
   );
 }
@@ -1512,36 +1508,40 @@ export default function CreditNoteDocumentEditor() {
         />
       )}
 
-      <CreditNoteVariantControls
-        activeVariant={normalizedCreditNoteVariant}
-        onSelect={handleCreditNoteVariantSelect}
-      />
+      <div className="invoice-variant-controls credit-note-variant-controls">
+        <CreditNoteVariantControls
+          activeVariant={normalizedCreditNoteVariant}
+          onSelect={handleCreditNoteVariantSelect}
+        />
 
-      <DocumentToolbar
-        ariaLabel="Gutschrift Werkzeuge"
-        isDataCheckActive={isDataCheckMode}
-        isEditable={highlightFields}
-        isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
-        onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
-        onNewDocument={handleNewDocument}
-        onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
-        onToggleDataCheck={toggleDataCheckMode}
-        onToggleEditable={toggleEditableMode}
-      />
+        <label className={`invoice-small-business-toggle${isSmallBusiness ? ' is-active' : ''}`}>
+          <input
+            type="checkbox"
+            checked={isSmallBusiness}
+            onChange={handleSmallBusinessToggle}
+          />
+          <span>Kleinunternehmerregelung nach § 19 UStG anwenden</span>
+        </label>
+
+        <div className="invoice-variant-controls-divider" aria-hidden="true" />
+
+        <DocumentToolbar
+          ariaLabel="Gutschrift Werkzeuge"
+          isDataCheckActive={isDataCheckMode}
+          isEditable={highlightFields}
+          isExporting={isExporting}
+          jsonInputRef={jsonInputRef}
+          onCreatePdf={handleCreatePdf}
+          onLoadJson={handleLoadJson}
+          onNewDocument={handleNewDocument}
+          onPrint={handlePrint}
+          onSaveJson={handleSaveJson}
+          onToggleDataCheck={toggleDataCheckMode}
+          onToggleEditable={toggleEditableMode}
+        />
+      </div>
 
       <p className="document-mode-hint">{viewModeHint}</p>
-
-      <label className={`invoice-small-business-toggle${isSmallBusiness ? ' is-active' : ''}`}>
-        <input
-          type="checkbox"
-          checked={isSmallBusiness}
-          onChange={handleSmallBusinessToggle}
-        />
-        <span>Kleinunternehmerregelung nach § 19 UStG anwenden</span>
-      </label>
 
       <A4Page
         ref={sheetRef}
