@@ -18,6 +18,18 @@ function pathForInvoiceVariant(variant) {
     return '/dokumente/rechnung/waren';
   }
 
+  if (variant === 'progressInvoice') {
+    return '/dokumente/rechnung/abschlag';
+  }
+
+  if (variant === 'partialInvoice') {
+    return '/dokumente/rechnung/teilrechnung';
+  }
+
+  if (variant === 'finalInvoice') {
+    return '/dokumente/rechnung/schlussrechnung';
+  }
+
   return '/dokumente/rechnung/standard';
 }
 

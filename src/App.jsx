@@ -39,6 +39,9 @@ const invoicePaths = new Set([
   '/dokumente/rechnung/kleinunternehmer',
   '/dokumente/rechnung/text',
   '/dokumente/rechnung/waren',
+  '/dokumente/rechnung/abschlag',
+  '/dokumente/rechnung/teilrechnung',
+  '/dokumente/rechnung/schlussrechnung',
 ]);
 
 function pathForNavigation(item) {
@@ -62,6 +65,18 @@ function pathForNavigation(item) {
 
       if (item.invoiceVariant === 'goods') {
         return '/dokumente/rechnung/waren';
+      }
+
+      if (item.invoiceVariant === 'progressInvoice') {
+        return '/dokumente/rechnung/abschlag';
+      }
+
+      if (item.invoiceVariant === 'partialInvoice') {
+        return '/dokumente/rechnung/teilrechnung';
+      }
+
+      if (item.invoiceVariant === 'finalInvoice') {
+        return '/dokumente/rechnung/schlussrechnung';
       }
 
       return '/dokumente/rechnung/standard';
@@ -372,6 +387,18 @@ export default function App() {
           <Route
             path="/dokumente/rechnung/waren"
             element={<DocumentsRoute documentId="write-invoice" invoiceVariant="goods" />}
+          />
+          <Route
+            path="/dokumente/rechnung/abschlag"
+            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="progressInvoice" />}
+          />
+          <Route
+            path="/dokumente/rechnung/teilrechnung"
+            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="partialInvoice" />}
+          />
+          <Route
+            path="/dokumente/rechnung/schlussrechnung"
+            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
           />
           <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute />} />
           <Route path="/dokumente/*" element={<DocumentPathRoute />} />

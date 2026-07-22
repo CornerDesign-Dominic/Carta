@@ -18,8 +18,57 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
+const smallBusinessStorageKey = 'carta.creditNote.smallBusinessMode';
+const smallBusinessTaxNotice =
+  'Aufgrund der Anwendung der Kleinunternehmerregelung gemÃ¤ÃŸ Â§ 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
+
+const creditNoteVariants = [
+  { id: 'creditNote', label: 'Gutschrift' },
+  { id: 'cancellationInvoice', label: 'Stornorechnung' },
+  { id: 'invoiceCorrection', label: 'Rechnungskorrektur' },
+];
+const creditNoteVariantIds = creditNoteVariants.map((variant) => variant.id);
+const creditNoteVariantConfig = {
+  creditNote: {
+    title: 'Gutschrift',
+    subject: 'Gutschrift zu erbrachten Leistungen',
+    intro: 'fÃ¼r die unten aufgefÃ¼hrten Leistungen erstellen wir Ihnen die folgende Gutschrift:',
+    closing:
+      'Bitte prÃ¼fen Sie die Angaben zu Leistungsdatum, Positionen und Betrag. FÃ¼r RÃ¼ckfragen stehen wir Ihnen jederzeit gerne zur VerfÃ¼gung.',
+    referenceFields: [],
+  },
+  cancellationInvoice: {
+    title: 'Stornorechnung',
+    subject: 'Stornierung einer urspruenglichen Rechnung',
+    intro:
+      'mit diesem Dokument stornieren wir die unten bezeichnete urspruengliche Rechnung vollstaendig. Die Stornierung umfasst die nachfolgend aufgefuehrten Positionen:',
+    closing:
+      'Die urspruengliche Rechnung wird durch diese Stornorechnung vollstaendig aufgehoben. Bitte beruecksichtigen Sie diese Korrektur in Ihren Unterlagen.',
+    referenceFields: [
+      { field: 'originalInvoiceNumber', labelField: 'originalInvoiceNumber', multiline: false },
+      { field: 'cancellationReason', labelField: 'cancellationReason', multiline: true },
+    ],
+  },
+  invoiceCorrection: {
+    title: 'Rechnungskorrektur',
+    subject: 'Korrektur einer urspruenglichen Rechnung',
+    intro:
+      'mit diesem Dokument korrigieren wir die unten bezeichnete urspruengliche Rechnung. Die Korrektur bezieht sich auf die nachfolgend aufgefuehrten Positionen:',
+    closing:
+      'Diese Rechnungskorrektur ersetzt beziehungsweise ergaenzt die bezeichnete urspruengliche Rechnung im dargestellten Umfang.',
+    referenceFields: [
+      { field: 'originalInvoiceNumber', labelField: 'originalInvoiceNumber', multiline: false },
+      { field: 'correctionReason', labelField: 'correctionReason', multiline: true },
+    ],
+  },
+};
+const creditNoteVariantTitles = Object.values(creditNoteVariantConfig).map((config) => config.title);
+const creditNoteVariantSubjects = Object.values(creditNoteVariantConfig).map((config) => config.subject);
+const creditNoteGrandTotalLabels = ['Gutschriftsbetrag', 'Stornobetrag', 'Korrekturbetrag'];
+
 const initialCreditNoteLabels = {
   title: 'Gutschrift',
+  subject: 'Betreff',
   creditNoteNumber: 'Gutschriftsnummer',
   creditNoteDate: 'Belegdatum',
   serviceDate: 'Leistungsdatum',
@@ -36,6 +85,9 @@ const initialCreditNoteLabels = {
   net: 'Nettobetrag',
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Gutschriftsbetrag',
+  originalInvoiceNumber: 'Urspruengliche Rechnungsnummer',
+  cancellationReason: 'Stornogrund',
+  correctionReason: 'Korrekturgrund',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactFax: 'Fax',
@@ -144,7 +196,7 @@ function combineLabelValue(label, value) {
   return [String(label ?? '').trim(), String(value ?? '').trim()].filter(Boolean).join(' ');
 }
 
-function createOfferViewData({ sender, recipient, details, references, footer }) {
+function createOfferViewData({ sender, recipient, details, references, correction, footer }) {
   return {
     sender: {
       company: sender.companyName,
@@ -165,6 +217,7 @@ function createOfferViewData({ sender, recipient, details, references, footer })
       ...details,
       ...references,
     },
+    correction: { ...correction },
     footerLines: {
       companyName: footer.company.companyName,
       companyStreetName: footer.company.street,
@@ -205,6 +258,7 @@ function normalizeOfferData(data = {}) {
     },
     details: { ...defaultOfferData.details, ...(data.details ?? {}) },
     references: { ...defaultOfferData.references, ...(data.references ?? {}) },
+    correction: { ...defaultOfferData.correction, ...(data.correction ?? {}) },
     footer: {
       company: { ...defaultOfferData.footer.company, ...(data.footer?.company ?? {}) },
       tax: { ...defaultOfferData.footer.tax, ...(data.footer?.tax ?? {}) },
@@ -331,6 +385,12 @@ const defaultOfferData = {
     externalReference: 'EXT-4711',
     customerReference: 'K-2048',
   },
+  correction: {
+    subject: creditNoteVariantConfig.creditNote.subject,
+    originalInvoiceNumber: '',
+    cancellationReason: '',
+    correctionReason: '',
+  },
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
@@ -371,6 +431,12 @@ const defaultOfferTextBlocks = [
     label: 'Schlusstext',
     value:
       'Bitte prüfen Sie die Angaben zu Leistungsdatum, Positionen und Betrag. Für Rückfragen stehen wir Ihnen jederzeit gerne zur Verfügung.',
+    visible: true,
+  },
+  {
+    id: 'smallBusinessNotice',
+    label: 'Hinweis Kleinunternehmerregelung',
+    value: smallBusinessTaxNotice,
     visible: true,
   },
 ];
@@ -464,9 +530,25 @@ function formatGermanDate(value) {
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
 
-function calculatePosition(position) {
+function readSmallBusinessPreference() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return window.localStorage.getItem(smallBusinessStorageKey) === 'true';
+}
+
+function writeSmallBusinessPreference(isSmallBusiness) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(smallBusinessStorageKey, isSmallBusiness ? 'true' : 'false');
+}
+
+function calculatePosition(position, { isSmallBusiness = false } = {}) {
   const net = toNumber(position.unitPrice) * toNumber(position.quantity);
-  const taxRate = Math.max(0, toNumber(position.taxRate));
+  const taxRate = isSmallBusiness ? 0 : Math.max(0, toNumber(position.taxRate));
   const tax = net * (taxRate / 100);
 
   return { net, tax, gross: net + tax, taxRate };
@@ -554,6 +636,54 @@ function normalizeTextBlocks(templateTextBlocks, legacyIntroText, legacyClosingT
   return normalized;
 }
 
+function createCreditNoteTextBlocks(variant = 'creditNote') {
+  const config = creditNoteVariantConfig[variant] ?? creditNoteVariantConfig.creditNote;
+
+  return normalizeTextBlocks().map((block) => {
+    if (block.id === 'intro') {
+      return { ...block, value: config.intro };
+    }
+
+    if (block.id === 'closing') {
+      return { ...block, value: config.closing };
+    }
+
+    return block;
+  });
+}
+
+function createInitialTextBlockSets() {
+  return Object.fromEntries(
+    creditNoteVariants.map((variant) => [variant.id, createCreditNoteTextBlocks(variant.id)]),
+  );
+}
+
+function normalizeTextBlocksForVariant(templateTextBlocks, variant = 'creditNote') {
+  if (!Array.isArray(templateTextBlocks)) {
+    return createCreditNoteTextBlocks(variant);
+  }
+
+  return normalizeTextBlocks(templateTextBlocks);
+}
+
+function normalizeTextBlockSets(templateTextBlockSets, fallbackTextBlocks, variant = 'creditNote') {
+  const initialSets = createInitialTextBlockSets();
+
+  if (templateTextBlockSets && typeof templateTextBlockSets === 'object') {
+    return Object.fromEntries(
+      creditNoteVariants.map((entry) => [
+        entry.id,
+        normalizeTextBlocksForVariant(templateTextBlockSets[entry.id], entry.id),
+      ]),
+    );
+  }
+
+  return {
+    ...initialSets,
+    [variant]: normalizeTextBlocksForVariant(fallbackTextBlocks, variant),
+  };
+}
+
 function normalizePositions(templatePositions) {
   if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
     return [createCreditNotePosition()];
@@ -574,11 +704,46 @@ const offerPrintLayout = {
   smallSafetyBuffer: 8,
 };
 
-function createOfferPrintItems({ positions, textBlocks }) {
+function createOfferPrintItems({
+  correction,
+  isSmallBusiness = false,
+  labels,
+  positions,
+  referenceFields,
+  textBlocks,
+}) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
+  const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
+  const subject = String(correction?.subject ?? '').trim();
+  const visibleReferences = referenceFields
+    .map((definition) => ({
+      ...definition,
+      label: labels[definition.labelField],
+      value: String(correction?.[definition.field] ?? '').trim(),
+    }))
+    .filter((definition) => definition.value);
 
   return [
+    ...(subject
+      ? [
+          {
+            type: 'subject',
+            id: 'subject',
+            label: labels.subject,
+            text: subject,
+          },
+        ]
+      : []),
+    ...(visibleReferences.length
+      ? [
+          {
+            type: 'references',
+            id: 'references',
+            fields: visibleReferences,
+          },
+        ]
+      : []),
     ...(introBlock?.visible
       ? [
           {
@@ -596,6 +761,15 @@ function createOfferPrintItems({ positions, textBlocks }) {
     {
       type: 'summary',
     },
+    ...(isSmallBusiness && smallBusinessNoticeBlock?.visible
+      ? [
+          {
+            type: 'text',
+            id: 'smallBusinessNotice',
+            text: smallBusinessNoticeBlock.value,
+          },
+        ]
+      : []),
     ...(closingBlock?.visible
       ? [
           {
@@ -628,6 +802,83 @@ function validateOfferTemplate(template) {
   return template.data;
 }
 
+function CreditNoteVariantControls({ activeVariant, onSelect }) {
+  return (
+    <div className="invoice-variant-controls credit-note-variant-controls">
+      <div className="document-choice-bar" aria-label="Gutschriftsart auswÃ¤hlen">
+        {creditNoteVariants.map((variant) => (
+          <button
+            className={activeVariant === variant.id ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={activeVariant === variant.id}
+            key={variant.id}
+            onClick={() => onSelect(variant.id)}
+          >
+            {variant.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="invoice-variant-controls-divider" aria-hidden="true" />
+    </div>
+  );
+}
+
+function CreditNoteReferenceBlock({
+  correction,
+  labels,
+  referenceFields,
+  onCorrectionChange,
+  onLabelChange,
+}) {
+  return (
+    <section className="credit-note-reference-block" aria-label="Gutschriftsreferenzen">
+      <label className="credit-note-subject-field">
+        <input
+          className="document-label-input"
+          aria-label="Beschriftung Betreff"
+          value={labels.subject}
+          onChange={(event) => onLabelChange('subject', event.target.value)}
+        />
+        <input
+          aria-label={labels.subject}
+          value={correction.subject}
+          onChange={(event) => onCorrectionChange('subject', event.target.value)}
+        />
+      </label>
+
+      {referenceFields.length > 0 && (
+        <div className="credit-note-reference-grid">
+          {referenceFields.map((definition) => (
+            <label className={definition.multiline ? 'is-multiline' : undefined} key={definition.field}>
+              <input
+                className="document-label-input"
+                aria-label={`Beschriftung ${labels[definition.labelField]}`}
+                value={labels[definition.labelField]}
+                onChange={(event) => onLabelChange(definition.labelField, event.target.value)}
+              />
+              {definition.multiline ? (
+                <textarea
+                  aria-label={labels[definition.labelField]}
+                  rows={1}
+                  value={correction[definition.field]}
+                  onChange={(event) => onCorrectionChange(definition.field, event.target.value)}
+                />
+              ) : (
+                <input
+                  aria-label={labels[definition.labelField]}
+                  value={correction[definition.field]}
+                  onChange={(event) => onCorrectionChange(definition.field, event.target.value)}
+                />
+              )}
+            </label>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function CreditNoteDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
@@ -647,9 +898,17 @@ export default function CreditNoteDocumentEditor() {
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [offerData, setOfferData] = useState(defaultOfferData);
-  const [textBlocks, setTextBlocks] = useState(defaultOfferTextBlocks);
+  const [creditNoteVariant, setCreditNoteVariant] = useState('creditNote');
+  const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState([createCreditNotePosition()]);
-  const { sender, recipient, details, footerLines } = useMemo(
+  const [isSmallBusiness, setIsSmallBusiness] = useState(readSmallBusinessPreference);
+  const normalizedCreditNoteVariant = creditNoteVariantIds.includes(creditNoteVariant)
+    ? creditNoteVariant
+    : 'creditNote';
+  const activeVariantConfig = creditNoteVariantConfig[normalizedCreditNoteVariant];
+  const referenceFields = activeVariantConfig.referenceFields;
+  const textBlocks = textBlockSets[normalizedCreditNoteVariant] ?? textBlockSets.creditNote;
+  const { sender, recipient, details, correction, footerLines } = useMemo(
     () => createOfferViewData(offerData),
     [offerData],
   );
@@ -665,7 +924,7 @@ export default function CreditNoteDocumentEditor() {
   const totals = useMemo(() => {
     const summary = positions.reduce(
       (current, position) => {
-        const calculated = calculatePosition(position);
+        const calculated = calculatePosition(position, { isSmallBusiness });
         const taxKey = String(calculated.taxRate);
         const taxGroup = current.taxGroups.get(taxKey) ?? {
           taxRate: calculated.taxRate,
@@ -688,11 +947,19 @@ export default function CreditNoteDocumentEditor() {
       gross: summary.net + summary.tax,
       taxGroups: [...summary.taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate),
     };
-  }, [positions]);
+  }, [isSmallBusiness, positions]);
 
   const printItems = useMemo(
-    () => createOfferPrintItems({ positions, textBlocks }),
-    [positions, textBlocks],
+    () =>
+      createOfferPrintItems({
+        correction,
+        isSmallBusiness,
+        labels,
+        positions,
+        referenceFields,
+        textBlocks,
+      }),
+    [correction, isSmallBusiness, labels, positions, referenceFields, textBlocks],
   );
   const dataCheckState = useMemo(
     () =>
@@ -746,6 +1013,54 @@ export default function CreditNoteDocumentEditor() {
   function toggleDataCheckMode() {
     setHighlightFields(false);
     setIsDataCheckMode((current) => !current);
+  }
+
+  function handleSmallBusinessToggle(event) {
+    const nextValue = event.target.checked;
+    setIsSmallBusiness(nextValue);
+    writeSmallBusinessPreference(nextValue);
+  }
+
+  function updateCorrection(field, value) {
+    setOfferData((current) => ({
+      ...current,
+      correction: {
+        ...current.correction,
+        [field]: value,
+      },
+    }));
+  }
+
+  function handleCreditNoteVariantSelect(nextVariant) {
+    if (!creditNoteVariantIds.includes(nextVariant)) {
+      return;
+    }
+
+    const nextConfig = creditNoteVariantConfig[nextVariant];
+    setCreditNoteVariant(nextVariant);
+    setLabels((current) => ({
+      ...current,
+      title: creditNoteVariantTitles.includes(current.title) ? nextConfig.title : current.title,
+      grandTotal:
+        creditNoteGrandTotalLabels.includes(current.grandTotal)
+          ? (nextVariant === 'creditNote' ? 'Gutschriftsbetrag' : nextConfig.title === 'Stornorechnung' ? 'Stornobetrag' : 'Korrekturbetrag')
+          : current.grandTotal,
+    }));
+    setOfferData((current) => ({
+      ...current,
+      correction: {
+        ...current.correction,
+        subject:
+          !current.correction.subject || creditNoteVariantSubjects.includes(current.correction.subject)
+            ? nextConfig.subject
+            : current.correction.subject,
+      },
+    }));
+    setTextBlockSets((current) => ({
+      ...createInitialTextBlockSets(),
+      ...current,
+      [nextVariant]: current[nextVariant] ?? createCreditNoteTextBlocks(nextVariant),
+    }));
   }
 
   function updateSender(field, value) {
@@ -999,17 +1314,21 @@ export default function CreditNoteDocumentEditor() {
   }
 
   function updateTextBlock(blockId, patch) {
-    setTextBlocks((current) =>
-      current.map((block) => (block.id === blockId ? { ...block, ...patch } : block)),
-    );
+    setTextBlockSets((current) => ({
+      ...current,
+      [normalizedCreditNoteVariant]: (current[normalizedCreditNoteVariant] ?? createCreditNoteTextBlocks(normalizedCreditNoteVariant)).map((block) =>
+        block.id === blockId ? { ...block, ...patch } : block,
+      ),
+    }));
   }
 
   function toggleTextBlockVisibility(blockId) {
-    setTextBlocks((current) =>
-      current.map((block) =>
+    setTextBlockSets((current) => ({
+      ...current,
+      [normalizedCreditNoteVariant]: (current[normalizedCreditNoteVariant] ?? createCreditNoteTextBlocks(normalizedCreditNoteVariant)).map((block) =>
         block.id === blockId ? { ...block, visible: !block.visible } : block,
       ),
-    );
+    }));
   }
 
   function createOfferTemplate() {
@@ -1019,9 +1338,12 @@ export default function CreditNoteDocumentEditor() {
       createdWith: 'Belege24',
       data: {
         labels,
+        creditNoteVariant: normalizedCreditNoteVariant,
+        isSmallBusiness,
         ...offerData,
         positions,
         textBlocks,
+        textBlockSets,
         fieldConfig,
       },
     };
@@ -1034,8 +1356,10 @@ export default function CreditNoteDocumentEditor() {
   function handleNewDocument() {
     setLabels(initialCreditNoteLabels);
     setOfferData(defaultOfferData);
-    setTextBlocks(defaultOfferTextBlocks);
+    setCreditNoteVariant('creditNote');
+    setTextBlockSets(createInitialTextBlockSets());
     setPositions([createCreditNotePosition()]);
+    setIsSmallBusiness(readSmallBusinessPreference());
     setFieldConfig({
       contact: createFieldConfig(offerContactFields),
       details: createFieldConfig(offerMetaFields),
@@ -1066,12 +1390,17 @@ export default function CreditNoteDocumentEditor() {
     try {
       const template = JSON.parse(await file.text());
       const data = validateOfferTemplate(template);
+      const templateVariant = creditNoteVariantIds.includes(data.creditNoteVariant)
+        ? data.creditNoteVariant
+        : 'creditNote';
 
       setLabels({ ...initialCreditNoteLabels, ...(data.labels ?? {}) });
       setOfferData(normalizeOfferData(data));
       setPositions(normalizePositions(data.positions));
-      setTextBlocks(normalizeTextBlocks(data.textBlocks));
+      setCreditNoteVariant(templateVariant);
+      setTextBlockSets(normalizeTextBlockSets(data.textBlockSets, data.textBlocks, templateVariant));
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
+      setIsSmallBusiness(data.isSmallBusiness === true);
       setIsDataCheckMode(false);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
@@ -1189,6 +1518,8 @@ export default function CreditNoteDocumentEditor() {
           footerData={offerData.footer}
           formatCurrency={formatCurrency}
           formatPercent={formatPercent}
+          correction={offerData.correction}
+          creditNoteVariant={normalizedCreditNoteVariant}
           isOpen={isFormPanelOpen}
           movePosition={movePosition}
           onToggle={() => setIsFormPanelOpen((current) => !current)}
@@ -1197,6 +1528,8 @@ export default function CreditNoteDocumentEditor() {
           references={offerData.references}
           removePosition={removePosition}
           sender={offerData.sender}
+          showTaxFields={!isSmallBusiness}
+          referenceFields={referenceFields}
           textBlocks={textBlocks}
           toggleTextBlockVisibility={toggleTextBlockVisibility}
           totals={totals}
@@ -1206,8 +1539,14 @@ export default function CreditNoteDocumentEditor() {
           updateRecipient={updateRecipient}
           updateSender={updateSender}
           updateTextBlock={updateTextBlock}
+          updateCorrection={updateCorrection}
         />
       )}
+
+      <CreditNoteVariantControls
+        activeVariant={normalizedCreditNoteVariant}
+        onSelect={handleCreditNoteVariantSelect}
+      />
 
       <DocumentToolbar
         ariaLabel="Gutschrift Werkzeuge"
@@ -1225,6 +1564,15 @@ export default function CreditNoteDocumentEditor() {
       />
 
       <p className="document-mode-hint">{viewModeHint}</p>
+
+      <label className={`invoice-small-business-toggle${isSmallBusiness ? ' is-active' : ''}`}>
+        <input
+          type="checkbox"
+          checked={isSmallBusiness}
+          onChange={handleSmallBusinessToggle}
+        />
+        <span>Kleinunternehmerregelung nach Â§ 19 UStG anwenden</span>
+      </label>
 
       <A4Page
         ref={sheetRef}
@@ -1280,15 +1628,24 @@ export default function CreditNoteDocumentEditor() {
           />
         </h2>
 
+        <CreditNoteReferenceBlock
+          correction={correction}
+          labels={labels}
+          referenceFields={referenceFields}
+          onCorrectionChange={updateCorrection}
+          onLabelChange={updateLabel}
+        />
+
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0)}
 
         <PositionTable
           autoResizeDescription
-          calculatePosition={calculatePosition}
+          calculatePosition={(position) => calculatePosition(position, { isSmallBusiness })}
           dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
           labels={labels}
           positions={positions}
+          showTaxColumn={!isSmallBusiness}
           variant="offer"
           onLabelChange={updateLabel}
           onMovePosition={movePosition}
@@ -1305,11 +1662,14 @@ export default function CreditNoteDocumentEditor() {
           formatCurrency={formatCurrency}
           formatPercent={formatPercent}
           labels={labels}
+          showTaxDetails={!isSmallBusiness}
           totals={totals}
           onLabelChange={updateLabel}
         />
 
-        {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1)}
+        {isSmallBusiness && renderTextBlock(textBlocks.find((block) => block.id === 'smallBusinessNotice'), 1)}
+
+        {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 2)}
 
         <FooterBlock
           columns={[
@@ -1332,6 +1692,7 @@ export default function CreditNoteDocumentEditor() {
         <>
           <MeasuredOfferPaginator
             ref={paginatorRef}
+            isSmallBusiness={isSmallBusiness}
             items={printItems}
             labels={labels}
             totals={totals}
@@ -1341,6 +1702,7 @@ export default function CreditNoteDocumentEditor() {
             ref={printPagesRef}
             details={details}
             footerLines={footerLines}
+            isSmallBusiness={isSmallBusiness}
             labels={labels}
             pages={printPages}
             recipient={recipient}
@@ -1365,7 +1727,10 @@ export default function CreditNoteDocumentEditor() {
   );
 }
 
-const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator({ items, labels, totals }, ref) {
+const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator(
+  { isSmallBusiness = false, items, labels, totals },
+  ref,
+) {
   const measureRootRef = useRef(null);
 
   function measureNow() {
@@ -1385,8 +1750,10 @@ const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator({ item
         <div className="invoice-print-page-content" data-measure-follow-content />
       </div>
       <div className="offer-measure-content">
+        <div className="credit-note-print-subject" data-measure-subject-probe />
+        <div className="credit-note-print-references" data-measure-references-probe />
         <p className="invoice-print-flow-text" data-measure-text-probe />
-        <table className="invoice-print-position-table">
+        <table className={`invoice-print-position-table${isSmallBusiness ? ' is-without-tax-column' : ''}`}>
           <thead>
             <tr data-measure-position-header>
               <th>{labels.position}</th>
@@ -1394,13 +1761,13 @@ const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator({ item
               <th>{labels.unitPrice}</th>
               <th>{labels.quantity}</th>
               <th>{labels.unit}</th>
-              <th>{labels.tax}</th>
+              {!isSmallBusiness && <th>{labels.tax}</th>}
               <th>{labels.total}</th>
             </tr>
           </thead>
           <tbody>
             {positionItems.map(({ index, position }) => {
-              const calculated = calculatePosition(position);
+              const calculated = calculatePosition(position, { isSmallBusiness });
 
               return (
                 <tr data-measure-position-row={String(index)} key={position.id}>
@@ -1409,7 +1776,7 @@ const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator({ item
                   <td>{formatCurrency(toNumber(position.unitPrice))}</td>
                   <td>{position.quantity}</td>
                   <td>{position.unit}</td>
-                  <td>{formatPercent(calculated.taxRate)}%</td>
+                  {!isSmallBusiness && <td>{formatPercent(calculated.taxRate)}%</td>}
                   <td>{formatCurrency(calculated.net)}</td>
                 </tr>
               );
@@ -1417,7 +1784,7 @@ const MeasuredOfferPaginator = forwardRef(function MeasuredOfferPaginator({ item
           </tbody>
         </table>
         <div data-measure-summary>
-          <OfferPrintSummary labels={labels} totals={totals} />
+          <OfferPrintSummary isSmallBusiness={isSmallBusiness} labels={labels} totals={totals} />
         </div>
       </div>
     </div>
@@ -1431,6 +1798,8 @@ function measureOfferPages(measureRoot, items) {
 
   const firstContent = measureRoot.querySelector('[data-measure-first-content]');
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
+  const subjectProbe = measureRoot.querySelector('[data-measure-subject-probe]');
+  const referencesProbe = measureRoot.querySelector('[data-measure-references-probe]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
@@ -1441,7 +1810,7 @@ function measureOfferPages(measureRoot, items) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader) {
+  if (!firstContent || !followContent || !subjectProbe || !referencesProbe || !textProbe || !summaryProbe || !positionHeader) {
     return null;
   }
 
@@ -1457,6 +1826,26 @@ function measureOfferPages(measureRoot, items) {
   }
 
   function getItemHeight(item) {
+    if (item.type === 'subject') {
+      subjectProbe.textContent = `${item.label}: ${item.text}`;
+      return getOuterHeight(subjectProbe);
+    }
+
+    if (item.type === 'references') {
+      referencesProbe.innerHTML = '';
+      item.fields.forEach((field) => {
+        const row = document.createElement('p');
+        const label = document.createElement('span');
+        const value = document.createElement('strong');
+        label.textContent = field.label;
+        value.textContent = field.value;
+        row.append(label, value);
+        referencesProbe.append(row);
+      });
+
+      return getOuterHeight(referencesProbe);
+    }
+
     if (item.type === 'text') {
       return measureTextHeight(item.text);
     }
@@ -1515,6 +1904,21 @@ function arePrintItemsEqual(first, second) {
     return first.id === second.id && first.text === second.text;
   }
 
+  if (first.type === 'subject') {
+    return first.label === second.label && first.text === second.text;
+  }
+
+  if (first.type === 'references') {
+    return (
+      first.fields.length === second.fields.length &&
+      first.fields.every((field, index) => (
+        field.field === second.fields[index].field &&
+        field.label === second.fields[index].label &&
+        field.value === second.fields[index].value
+      ))
+    );
+  }
+
   if (first.type === 'position') {
     return (
       first.index === second.index &&
@@ -1554,6 +1958,7 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
   {
     details,
     footerLines,
+    isSmallBusiness,
     labels,
     pages,
     recipient,
@@ -1592,7 +1997,12 @@ const OfferPrintPages = forwardRef(function OfferPrintPages(
           )}
 
           <div className="invoice-print-page-content">
-            <OfferPrintPageItems items={page.items} labels={labels} totals={totals} />
+            <OfferPrintPageItems
+              isSmallBusiness={isSmallBusiness}
+              items={page.items}
+              labels={labels}
+              totals={totals}
+            />
           </div>
 
           <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
@@ -1688,12 +2098,24 @@ function OfferPrintDetailRow({ emphasized = false, label, value }) {
   );
 }
 
-function OfferPrintPageItems({ items, labels, totals }) {
+function OfferPrintPageItems({ isSmallBusiness = false, items, labels, totals }) {
   const renderedItems = [];
   let index = 0;
 
   while (index < items.length) {
     const item = items[index];
+
+    if (item.type === 'subject') {
+      renderedItems.push(
+        <CreditNotePrintSubject key="subject" label={item.label} text={item.text} />,
+      );
+    }
+
+    if (item.type === 'references') {
+      renderedItems.push(
+        <CreditNotePrintReferences fields={item.fields} key="references" />,
+      );
+    }
 
     if (item.type === 'position') {
       const blockStartIndex = index;
@@ -1708,6 +2130,7 @@ function OfferPrintPageItems({ items, labels, totals }) {
         <OfferPrintPositionTable
           className={items[blockStartIndex - 1]?.type === 'text' ? 'credit-note-print-table-after-text' : undefined}
           key={`positions-${positionItems[0].index}`}
+          isSmallBusiness={isSmallBusiness}
           labels={labels}
           positionItems={positionItems}
         />,
@@ -1719,6 +2142,7 @@ function OfferPrintPageItems({ items, labels, totals }) {
       renderedItems.push(
         <OfferPrintSummary
           className={items[index - 1]?.type === 'position' ? 'credit-note-print-summary-after-table' : undefined}
+          isSmallBusiness={isSmallBusiness}
           key="summary"
           labels={labels}
           totals={totals}
@@ -1752,9 +2176,33 @@ function OfferPrintPageItems({ items, labels, totals }) {
   return renderedItems;
 }
 
-function OfferPrintPositionTable({ className = '', labels, positionItems }) {
+function CreditNotePrintSubject({ label, text }) {
   return (
-    <table className={`invoice-print-position-table${className ? ` ${className}` : ''}`}>
+    <p className="credit-note-print-subject">
+      <span>{label}</span>
+      <strong>{text}</strong>
+    </p>
+  );
+}
+
+function CreditNotePrintReferences({ fields }) {
+  return (
+    <section className="credit-note-print-references">
+      {fields.map((field) => (
+        <p key={field.field}>
+          <span>{field.label}</span>
+          <strong>{field.value}</strong>
+        </p>
+      ))}
+    </section>
+  );
+}
+
+function OfferPrintPositionTable({ className = '', isSmallBusiness = false, labels, positionItems }) {
+  return (
+    <table
+      className={`invoice-print-position-table${isSmallBusiness ? ' is-without-tax-column' : ''}${className ? ` ${className}` : ''}`}
+    >
       <thead>
         <tr>
           <th>{labels.position}</th>
@@ -1762,13 +2210,13 @@ function OfferPrintPositionTable({ className = '', labels, positionItems }) {
           <th>{labels.unitPrice}</th>
           <th>{labels.quantity}</th>
           <th>{labels.unit}</th>
-          <th>{labels.tax}</th>
+          {!isSmallBusiness && <th>{labels.tax}</th>}
           <th>{labels.total}</th>
         </tr>
       </thead>
       <tbody>
         {positionItems.map(({ index, position }) => {
-          const calculated = calculatePosition(position);
+          const calculated = calculatePosition(position, { isSmallBusiness });
 
           return (
             <tr key={position.id}>
@@ -1777,7 +2225,7 @@ function OfferPrintPositionTable({ className = '', labels, positionItems }) {
               <td>{formatCurrency(toNumber(position.unitPrice))}</td>
               <td>{position.quantity}</td>
               <td>{position.unit}</td>
-              <td>{formatPercent(calculated.taxRate)}%</td>
+              {!isSmallBusiness && <td>{formatPercent(calculated.taxRate)}%</td>}
               <td>{formatCurrency(calculated.net)}</td>
             </tr>
           );
@@ -1787,14 +2235,14 @@ function OfferPrintPositionTable({ className = '', labels, positionItems }) {
   );
 }
 
-function OfferPrintSummary({ className = '', labels, totals }) {
+function OfferPrintSummary({ className = '', isSmallBusiness = false, labels, totals }) {
   return (
     <aside className={`invoice-print-summary${className ? ` ${className}` : ''}`} aria-label="Gutschriftssummen">
       <div>
         <span>{labels.net}</span>
         <strong>{formatCurrency(totals.net)}</strong>
       </div>
-      {totals.taxGroups.map((group) => (
+      {!isSmallBusiness && totals.taxGroups.map((group) => (
         <div key={group.taxRate}>
           <span>
             {labels.taxAmount} {formatPercent(group.taxRate)}%

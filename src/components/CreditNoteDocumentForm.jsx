@@ -340,6 +340,8 @@ function CreditNoteLabeledFooterValueInput({ field, label, footerLines, updateFo
 
 export default function CreditNoteDocumentForm({
   addPosition,
+  correction,
+  creditNoteVariant,
   details,
   footerData,
   footerLines,
@@ -349,10 +351,12 @@ export default function CreditNoteDocumentForm({
   movePosition,
   onToggle,
   positions,
+  referenceFields = [],
   recipient,
   references,
   removePosition,
   sender,
+  showTaxFields = true,
   textBlocks,
   toggleTextBlockVisibility,
   totals,
@@ -362,9 +366,11 @@ export default function CreditNoteDocumentForm({
   updateRecipient,
   updateSender,
   updateTextBlock,
+  updateCorrection,
 }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
+  const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
   const senderAddress = sender.address;
   const recipientStreet = recipient.address;
   const recipientCity = recipient.address;
@@ -452,6 +458,39 @@ export default function CreditNoteDocumentForm({
             </div>
           </div>
 
+          <div className="invoice-panel-section invoice-panel-section-wide">
+            <h3>{creditNoteVariant === 'creditNote' ? 'Betreff' : 'Bezug'}</h3>
+            <div className="invoice-panel-grid">
+              <OfferPanelInput
+                className="invoice-panel-field-wide"
+                label="Betreff"
+                name="credit-note-subject"
+                value={correction.subject}
+                onChange={(value) => updateCorrection('subject', value)}
+              />
+              {referenceFields.map((definition) => (
+                definition.multiline ? (
+                  <OfferPanelTextarea
+                    key={definition.field}
+                    label={definition.field === 'cancellationReason' ? 'Stornogrund' : 'Korrekturgrund'}
+                    name={`credit-note-${definition.field}`}
+                    value={correction[definition.field]}
+                    onChange={(value) => updateCorrection(definition.field, value)}
+                  />
+                ) : (
+                  <OfferPanelInput
+                    key={definition.field}
+                    className="invoice-panel-field-wide"
+                    label="Urspruengliche Rechnungsnummer"
+                    name={`credit-note-${definition.field}`}
+                    value={correction[definition.field]}
+                    onChange={(value) => updateCorrection(definition.field, value)}
+                  />
+                )
+              ))}
+            </div>
+          </div>
+
           <div className="invoice-panel-row">
             {introBlock && (
               <TextBlockFormSection
@@ -467,6 +506,13 @@ export default function CreditNoteDocumentForm({
                 onUpdate={updateTextBlock}
               />
             )}
+            {!showTaxFields && smallBusinessNoticeBlock && (
+              <TextBlockFormSection
+                block={smallBusinessNoticeBlock}
+                onToggleVisible={() => toggleTextBlockVisibility(smallBusinessNoticeBlock.id)}
+                onUpdate={updateTextBlock}
+              />
+            )}
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
@@ -479,7 +525,9 @@ export default function CreditNoteDocumentForm({
                   <OfferPanelInput inputMode="decimal" label="Einzelpreis" name={`position-${index + 1}-unit-price`} value={position.unitPrice} onChange={(value) => updatePosition(position.id, 'unitPrice', value)} />
                   <OfferPanelInput inputMode="decimal" label="Anzahl" name={`position-${index + 1}-quantity`} value={position.quantity} onChange={(value) => updatePosition(position.id, 'quantity', value)} />
                   <OfferPanelInput label="Einheit" name={`position-${index + 1}-unit`} value={position.unit} onChange={(value) => updatePosition(position.id, 'unit', value)} />
-                  <OfferPanelInput inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
+                  {showTaxFields && (
+                    <OfferPanelInput inputMode="decimal" label="USt." name={`position-${index + 1}-tax-rate`} value={position.taxRate} onChange={(value) => updatePosition(position.id, 'taxRate', value)} />
+                  )}
                   <div className="invoice-panel-position-actions">
                     <button className="invoice-panel-remove" type="button" aria-label={`Position ${index + 1} löschen`} disabled={positions.length === 1} onClick={() => removePosition(position.id)}>
                       x
@@ -497,6 +545,11 @@ export default function CreditNoteDocumentForm({
             <button className="invoice-panel-add" type="button" onClick={addPosition}>
               + Position hinzufügen
             </button>
+            <p className="invoice-panel-note">
+              {showTaxFields
+                ? `Gutschriftsbetrag: ${formatCurrency(totals.gross)} | USt.: ${formatCurrency(totals.tax)} (${totals.taxGroups.map((group) => `${formatPercent(group.taxRate)}%`).join(', ') || '0%'})`
+                : `Gutschriftsbetrag: ${formatCurrency(totals.gross)} | keine Umsatzsteuer nach Â§ 19 UStG`}
+            </p>
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">

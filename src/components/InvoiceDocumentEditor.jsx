@@ -25,13 +25,47 @@ const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
   { id: 'goods', label: 'Warenrechnung' },
   { id: 'text', label: 'Textrechnung' },
+  { id: 'progressInvoice', label: 'Abschlagsrechnung' },
+  { id: 'partialInvoice', label: 'Teilrechnung' },
+  { id: 'finalInvoice', label: 'Schlussrechnung' },
 ];
+const invoiceVariantIds = invoiceVariants.map((variant) => variant.id);
+const tradeInvoiceVariantIds = ['progressInvoice', 'partialInvoice', 'finalInvoice'];
+const invoiceVariantTitles = {
+  standard: 'Rechnung',
+  goods: 'Rechnung',
+  text: 'Rechnung',
+  progressInvoice: 'Abschlagsrechnung',
+  partialInvoice: 'Teilrechnung',
+  finalInvoice: 'Schlussrechnung',
+};
 const smallBusinessTaxNotice =
   'Aufgrund der Anwendung der Kleinunternehmerregelung gemäß § 19 UStG wird keine Umsatzsteuer erhoben und ausgewiesen.';
 const textInvoiceIntro =
   'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag und das entgegengebrachte Vertrauen.\n\nFür meine Leistungen erlaube ich mir, Ihnen folgende Positionen in Rechnung zu stellen:';
 const textInvoiceClosing =
   'Bitte begleichen Sie den Gesamtbetrag innerhalb der angegebenen Zahlungsfrist auf das unten genannte Konto.\n\nBei Rückfragen stehe ich Ihnen gerne zur Verfügung.\n\nMit freundlichen Grüßen';
+
+const tradeInvoiceTextDefaults = {
+  progressInvoice: {
+    intro:
+      'fuer das unten genannte Projekt stellen wir Ihnen den vereinbarten Abschlag entsprechend dem aktuellen Leistungsstand in Rechnung:',
+    closing:
+      'Dieser Abschlag bezieht sich auf den angegebenen Abrechnungsabschnitt und stellt keine abschliessende Abrechnung des Gesamtauftrags dar.',
+  },
+  partialInvoice: {
+    intro:
+      'die unten aufgefuehrte, abgegrenzte Teilleistung wurde fertiggestellt. Diese Teilleistung rechnen wir hiermit endgueltig ab:',
+    closing:
+      'Diese Teilrechnung betrifft ausschliesslich die beschriebene abgeschlossene Teilleistung. Weitere Leistungen bleiben davon unberuehrt.',
+  },
+  finalInvoice: {
+    intro:
+      'nach Fertigstellung der vereinbarten Leistungen erstellen wir Ihnen die Schlussrechnung fuer das unten genannte Projekt:',
+    closing:
+      'Bereits vereinnahmte Abschlagszahlungen wurden in der Schlussrechnung beruecksichtigt. Bitte begleichen Sie den verbleibenden Restbetrag.',
+  },
+};
 
 const initialInvoiceLabels = {
   title: 'Rechnung',
@@ -52,6 +86,28 @@ const initialInvoiceLabels = {
   net: 'Nettobetrag',
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Rechnungsbetrag',
+  progressPaymentNumber: 'Abschlag',
+  projectName: 'Projekt / Bauvorhaben',
+  orderNumber: 'Auftrags- oder Angebotsnummer',
+  billingSection: 'Leistungsstand / Abrechnungsabschnitt',
+  partialService: 'Abgeschlossene Teilleistung',
+  completionDate: 'Fertigstellung / Leistungszeitraum',
+  previousPayments: 'Fruehere Abschlaege',
+  previousPaymentLabel: 'Abschlag',
+  previousPaymentInvoiceNumber: 'Rechnungsnummer',
+  previousPaymentInvoiceDate: 'Rechnungsdatum',
+  previousPaymentNet: 'Nettobetrag',
+  previousPaymentTaxRate: 'USt.',
+  previousPaymentTaxAmount: 'USt.-Betrag',
+  previousPaymentGross: 'Bruttobetrag',
+  previousPaymentStatus: 'Status',
+  serviceTotal: 'Gesamtbetrag der Leistungen',
+  serviceTax: 'enthaltene Umsatzsteuer',
+  deductedPayments: 'beruecksichtigte Abschlagszahlungen',
+  deductedPaymentTax: 'darin enthaltene Umsatzsteuer',
+  remainingNet: 'verbleibender Nettobetrag',
+  remainingTax: 'verbleibende Umsatzsteuer',
+  remainingGross: 'verbleibender Restbetrag',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactFax: 'Fax',
@@ -175,6 +231,14 @@ const defaultInvoiceData = {
     externalNumber: 'EXT-4711',
     customerNumber: 'K-2048',
   },
+  project: {
+    progressPaymentNumber: '1. Abschlag',
+    projectName: 'Sanierung Musterobjekt',
+    orderNumber: 'ANG-2026-014',
+    billingSection: 'Leistungsstand bis 30.05.2026',
+    partialService: 'Abgeschlossene Montagearbeiten im Erdgeschoss',
+    completionDate: 'Leistungszeitraum 01.05.2026 bis 30.05.2026',
+  },
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
@@ -244,7 +308,7 @@ function createReturnAddress(sender) {
     .join(' - ');
 }
 
-function createInvoiceViewData({ sender, recipient, deliveryAddress, details, references, footer }) {
+function createInvoiceViewData({ sender, recipient, deliveryAddress, details, references, project, footer }) {
   return {
     sender: {
       company: sender.companyName,
@@ -272,6 +336,7 @@ function createInvoiceViewData({ sender, recipient, deliveryAddress, details, re
       ...details,
       ...references,
     },
+    project: { ...project },
     footerLines: {
       companyName: footer.company.companyName,
       companyStreetName: footer.company.street,
@@ -397,6 +462,7 @@ function normalizeInvoiceData(data = {}) {
     },
     details: { ...defaultInvoiceData.details, ...(data.details ?? {}) },
     references: { ...defaultInvoiceData.references, ...(data.references ?? {}) },
+    project: { ...defaultInvoiceData.project, ...(data.project ?? {}) },
     footer: {
       company: { ...defaultInvoiceData.footer.company, ...(data.footer?.company ?? {}) },
       tax: { ...defaultInvoiceData.footer.tax, ...(data.footer?.tax ?? {}) },
@@ -445,20 +511,45 @@ function createTextInvoiceTextBlocks() {
   });
 }
 
+function createTradeInvoiceTextBlocks(invoiceVariant) {
+  const defaults = tradeInvoiceTextDefaults[invoiceVariant];
+
+  return normalizeTextBlocks().map((block) => {
+    if (block.id === 'intro') {
+      return { ...block, value: defaults?.intro ?? block.value };
+    }
+
+    if (block.id === 'closing') {
+      return { ...block, value: defaults?.closing ?? block.value };
+    }
+
+    return block;
+  });
+}
+
 function getTextBlockSetKey(invoiceVariant) {
-  return invoiceVariant === 'text' ? 'text' : 'default';
+  return invoiceVariant === 'text' || tradeInvoiceVariantIds.includes(invoiceVariant)
+    ? invoiceVariant
+    : 'default';
 }
 
 function createInitialTextBlockSets() {
   return {
     default: normalizeTextBlocks(),
     text: createTextInvoiceTextBlocks(),
+    progressInvoice: createTradeInvoiceTextBlocks('progressInvoice'),
+    partialInvoice: createTradeInvoiceTextBlocks('partialInvoice'),
+    finalInvoice: createTradeInvoiceTextBlocks('finalInvoice'),
   };
 }
 
 function normalizeTextBlocksForVariant(templateTextBlocks, invoiceVariant) {
   if (invoiceVariant === 'text' && !Array.isArray(templateTextBlocks)) {
     return createTextInvoiceTextBlocks();
+  }
+
+  if (tradeInvoiceVariantIds.includes(invoiceVariant) && !Array.isArray(templateTextBlocks)) {
+    return createTradeInvoiceTextBlocks(invoiceVariant);
   }
 
   return normalizeTextBlocks(templateTextBlocks);
@@ -493,6 +584,34 @@ function normalizePositions(templatePositions) {
     quantity: String(position.quantity ?? '1'),
     unit: String(position.unit ?? 'pauschal'),
     taxRate: String(position.taxRate ?? '19'),
+  }));
+}
+
+function createPreviousPayment(index = 1) {
+  return {
+    id: crypto.randomUUID(),
+    label: `${index}. Abschlag`,
+    invoiceNumber: `AR-2026-${String(index).padStart(3, '0')}`,
+    invoiceDate: '2026-05-07',
+    netAmount: '0',
+    taxRate: '19',
+    status: index === 1 ? 'paid' : 'open',
+  };
+}
+
+function normalizePreviousPayments(templatePayments) {
+  if (!Array.isArray(templatePayments) || templatePayments.length === 0) {
+    return [createPreviousPayment()];
+  }
+
+  return templatePayments.map((payment, index) => ({
+    id: typeof payment.id === 'string' && payment.id ? payment.id : crypto.randomUUID(),
+    label: String(payment.label ?? `${index + 1}. Abschlag`),
+    invoiceNumber: String(payment.invoiceNumber ?? ''),
+    invoiceDate: String(payment.invoiceDate ?? ''),
+    netAmount: String(payment.netAmount ?? '0'),
+    taxRate: String(payment.taxRate ?? '19'),
+    status: payment.status === 'open' ? 'open' : 'paid',
   }));
 }
 
@@ -602,6 +721,114 @@ function calculatePosition(position, { isSmallBusinessInvoice = false, isTextInv
   return { net, tax, gross: net + tax, taxRate };
 }
 
+function calculatePreviousPayment(payment, { isSmallBusinessInvoice = false } = {}) {
+  const net = toNumber(payment.netAmount);
+  const taxRate = isSmallBusinessInvoice ? 0 : Math.max(0, toNumber(payment.taxRate));
+  const tax = net * (taxRate / 100);
+
+  return { net, tax, gross: net + tax, taxRate };
+}
+
+function emptyTaxGroupSummary() {
+  return { net: 0, tax: 0, taxGroups: new Map() };
+}
+
+function addToTaxGroup(summary, calculated) {
+  const taxKey = String(calculated.taxRate);
+  const taxGroup = summary.taxGroups.get(taxKey) ?? {
+    taxRate: calculated.taxRate,
+    net: 0,
+    tax: 0,
+    gross: 0,
+  };
+
+  taxGroup.net += calculated.net;
+  taxGroup.tax += calculated.tax;
+  taxGroup.gross += calculated.gross;
+  summary.taxGroups.set(taxKey, taxGroup);
+  summary.net += calculated.net;
+  summary.tax += calculated.tax;
+}
+
+function toSortedTaxGroups(taxGroups) {
+  return [...taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate);
+}
+
+function createInvoiceTotals({
+  isFinalInvoice,
+  isSmallBusinessInvoice,
+  isTextInvoice,
+  positions,
+  previousPayments,
+}) {
+  const service = positions.reduce((summary, position) => {
+    const calculated = calculatePosition(position, { isSmallBusinessInvoice, isTextInvoice });
+    addToTaxGroup(summary, calculated);
+    return summary;
+  }, emptyTaxGroupSummary());
+  const deducted = previousPayments.reduce((summary, payment) => {
+    if (payment.status !== 'paid') {
+      return summary;
+    }
+
+    addToTaxGroup(summary, calculatePreviousPayment(payment, { isSmallBusinessInvoice }));
+    return summary;
+  }, emptyTaxGroupSummary());
+  const remainingGroups = new Map();
+
+  toSortedTaxGroups(service.taxGroups).forEach((group) => {
+    const deductedGroup = deducted.taxGroups.get(String(group.taxRate)) ?? { net: 0, tax: 0, gross: 0 };
+    remainingGroups.set(String(group.taxRate), {
+      taxRate: group.taxRate,
+      net: group.net - deductedGroup.net,
+      tax: group.tax - deductedGroup.tax,
+      gross: group.gross - deductedGroup.gross,
+    });
+  });
+
+  deducted.taxGroups.forEach((group, taxKey) => {
+    if (!remainingGroups.has(taxKey)) {
+      remainingGroups.set(taxKey, {
+        taxRate: group.taxRate,
+        net: -group.net,
+        tax: -group.tax,
+        gross: -group.gross,
+      });
+    }
+  });
+
+  const remaining = {
+    net: service.net - deducted.net,
+    tax: service.tax - deducted.tax,
+    taxGroups: remainingGroups,
+  };
+
+  return {
+    net: isFinalInvoice ? remaining.net : service.net,
+    tax: isFinalInvoice ? remaining.tax : service.tax,
+    gross: isFinalInvoice ? remaining.net + remaining.tax : service.net + service.tax,
+    taxGroups: toSortedTaxGroups(isFinalInvoice ? remaining.taxGroups : service.taxGroups),
+    service: {
+      net: service.net,
+      tax: service.tax,
+      gross: service.net + service.tax,
+      taxGroups: toSortedTaxGroups(service.taxGroups),
+    },
+    deducted: {
+      net: deducted.net,
+      tax: deducted.tax,
+      gross: deducted.net + deducted.tax,
+      taxGroups: toSortedTaxGroups(deducted.taxGroups),
+    },
+    remaining: {
+      net: remaining.net,
+      tax: remaining.tax,
+      gross: remaining.net + remaining.tax,
+      taxGroups: toSortedTaxGroups(remaining.taxGroups),
+    },
+  };
+}
+
 function createPdfFileName(title, number, invoiceVariant = 'standard') {
   const cleanTitle = createSlug(
     invoiceVariant === 'text'
@@ -661,20 +888,60 @@ function validateInvoiceTemplate(template) {
   return template.data;
 }
 
-function createInvoicePrintItems({ isSmallBusinessInvoice, positions, textBlocks }) {
+function createInvoicePrintItems({
+  isFinalInvoice,
+  isSmallBusinessInvoice,
+  positions,
+  previousPayments,
+  projectInfo,
+  textBlocks,
+  visibleProjectFields,
+}) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
   const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
 
   return [
     ...(introBlock?.visible ? [{ type: 'text', id: 'intro', text: introBlock.value }] : []),
+    ...(visibleProjectFields.length > 0 ? [{ type: 'projectInfo', projectInfo, visibleProjectFields }] : []),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
+    ...(isFinalInvoice ? previousPayments.map((payment, index) => ({ type: 'previousPayment', index, payment })) : []),
     { type: 'summary' },
     ...(closingBlock?.visible ? [{ type: 'text', id: 'closing', text: closingBlock.value }] : []),
     ...(isSmallBusinessInvoice && smallBusinessNoticeBlock?.visible
       ? [{ type: 'text', id: 'smallBusinessNotice', text: smallBusinessNoticeBlock.value }]
       : []),
   ];
+}
+
+function getProjectFieldDefinitions(invoiceVariant) {
+  if (invoiceVariant === 'progressInvoice') {
+    return [
+      { field: 'progressPaymentNumber', labelField: 'progressPaymentNumber' },
+      { field: 'projectName', labelField: 'projectName' },
+      { field: 'orderNumber', labelField: 'orderNumber' },
+      { field: 'billingSection', labelField: 'billingSection' },
+    ];
+  }
+
+  if (invoiceVariant === 'partialInvoice') {
+    return [
+      { field: 'projectName', labelField: 'projectName' },
+      { field: 'orderNumber', labelField: 'orderNumber' },
+      { field: 'partialService', labelField: 'partialService' },
+      { field: 'completionDate', labelField: 'completionDate' },
+    ];
+  }
+
+  if (invoiceVariant === 'finalInvoice') {
+    return [
+      { field: 'projectName', labelField: 'projectName' },
+      { field: 'orderNumber', labelField: 'orderNumber' },
+      { field: 'completionDate', labelField: 'completionDate' },
+    ];
+  }
+
+  return [];
 }
 
 function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
@@ -695,12 +962,198 @@ function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
   );
 }
 
+function InvoiceProjectBlock({ labels, project, visibleFields, onChange }) {
+  if (visibleFields.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="invoice-project-block" aria-label="Projektangaben">
+      {visibleFields.map(({ field, labelField }) => (
+        <label className="invoice-project-field" key={field}>
+          <input
+            className="document-label-input"
+            aria-label={`Beschriftung ${labels[labelField]}`}
+            value={labels[labelField]}
+            readOnly
+          />
+          <input
+            aria-label={labels[labelField]}
+            value={project[field] ?? ''}
+            onChange={(event) => onChange(field, event.target.value)}
+          />
+        </label>
+      ))}
+    </section>
+  );
+}
+
+function PreviousPaymentsTable({
+  calculatePayment,
+  formatCurrency: formatPaymentCurrency,
+  labels,
+  onAddPayment,
+  onPaymentChange,
+  onRemovePayment,
+  payments,
+}) {
+  return (
+    <section className="invoice-previous-payments" aria-label={labels.previousPayments}>
+      <h3>{labels.previousPayments}</h3>
+      <table className="invoice-previous-payments-table">
+        <thead>
+          <tr>
+            <th>{labels.previousPaymentLabel}</th>
+            <th>{labels.previousPaymentInvoiceNumber}</th>
+            <th>{labels.previousPaymentInvoiceDate}</th>
+            <th>{labels.previousPaymentNet}</th>
+            <th>{labels.previousPaymentTaxRate}</th>
+            <th>{labels.previousPaymentTaxAmount}</th>
+            <th>{labels.previousPaymentGross}</th>
+            <th>{labels.previousPaymentStatus}</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {payments.map((payment, index) => {
+            const calculated = calculatePayment(payment);
+
+            return (
+              <tr key={payment.id}>
+                <td>
+                  <input
+                    aria-label={`${labels.previousPaymentLabel} ${index + 1}`}
+                    value={payment.label}
+                    onChange={(event) => onPaymentChange(payment.id, 'label', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    aria-label={`${labels.previousPaymentInvoiceNumber} ${index + 1}`}
+                    value={payment.invoiceNumber}
+                    onChange={(event) => onPaymentChange(payment.id, 'invoiceNumber', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    aria-label={`${labels.previousPaymentInvoiceDate} ${index + 1}`}
+                    type="date"
+                    value={payment.invoiceDate}
+                    onChange={(event) => onPaymentChange(payment.id, 'invoiceDate', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    aria-label={`${labels.previousPaymentNet} ${index + 1}`}
+                    inputMode="decimal"
+                    value={payment.netAmount}
+                    onChange={(event) => onPaymentChange(payment.id, 'netAmount', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <span className="invoice-tax-rate-cell">
+                    <input
+                      aria-label={`${labels.previousPaymentTaxRate} ${index + 1}`}
+                      inputMode="decimal"
+                      value={payment.taxRate}
+                      onChange={(event) => onPaymentChange(payment.id, 'taxRate', event.target.value)}
+                    />
+                    <span>%</span>
+                  </span>
+                </td>
+                <td>{formatPaymentCurrency(calculated.tax)}</td>
+                <td>{formatPaymentCurrency(calculated.gross)}</td>
+                <td>
+                  <select
+                    aria-label={`${labels.previousPaymentStatus} ${index + 1}`}
+                    value={payment.status}
+                    onChange={(event) => onPaymentChange(payment.id, 'status', event.target.value)}
+                  >
+                    <option value="paid">vereinnahmt</option>
+                    <option value="open">gestellt</option>
+                  </select>
+                </td>
+                <td>
+                  <button
+                    aria-label={`${labels.previousPaymentLabel} ${index + 1} entfernen`}
+                    className="invoice-position-action invoice-position-delete"
+                    type="button"
+                    disabled={payments.length === 1}
+                    onClick={() => onRemovePayment(payment.id)}
+                  >
+                    &times;
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <button className="offer-add-position" type="button" onClick={onAddPayment}>
+        + Abschlag hinzufuegen
+      </button>
+      <p className="invoice-previous-payments-note">
+        Nur als vereinnahmt markierte Abschlaege werden vom Restbetrag abgezogen.
+      </p>
+    </section>
+  );
+}
+
+function FinalInvoiceSummary({ formatCurrency: formatSummaryCurrency, formatPercent: formatSummaryPercent, labels, totals }) {
+  return (
+    <aside className="offer-summary invoice-document-summary final-invoice-summary" aria-label="Schlussrechnungssummen">
+      <div>
+        <span>{labels.serviceTotal}</span>
+        <strong>{formatSummaryCurrency(totals.service.gross)}</strong>
+      </div>
+      {totals.service.taxGroups.map((group) => (
+        <div key={`service-${group.taxRate}`}>
+          <span>
+            {labels.serviceTax} {formatSummaryPercent(group.taxRate)}%
+          </span>
+          <strong>{formatSummaryCurrency(group.tax)}</strong>
+        </div>
+      ))}
+      <div>
+        <span>{labels.deductedPayments}</span>
+        <strong>-{formatSummaryCurrency(totals.deducted.gross)}</strong>
+      </div>
+      {totals.deducted.taxGroups.map((group) => (
+        <div key={`deducted-${group.taxRate}`}>
+          <span>
+            {labels.deductedPaymentTax} {formatSummaryPercent(group.taxRate)}%
+          </span>
+          <strong>-{formatSummaryCurrency(group.tax)}</strong>
+        </div>
+      ))}
+      <div>
+        <span>{labels.remainingNet}</span>
+        <strong>{formatSummaryCurrency(totals.remaining.net)}</strong>
+      </div>
+      {totals.remaining.taxGroups.map((group) => (
+        <div key={`remaining-${group.taxRate}`}>
+          <span>
+            {labels.remainingTax} {formatSummaryPercent(group.taxRate)}%
+          </span>
+          <strong>{formatSummaryCurrency(group.tax)}</strong>
+        </div>
+      ))}
+      <div>
+        <span>{labels.remainingGross}</span>
+        <strong>{formatSummaryCurrency(totals.remaining.gross)}</strong>
+      </div>
+    </aside>
+  );
+}
+
 export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVariant = 'standard', onInvoiceVariantChange, onSmallBusinessChange }) {
-  const normalizedInvoiceVariant = ['standard', 'text', 'goods'].includes(invoiceVariant)
+  const normalizedInvoiceVariant = invoiceVariantIds.includes(invoiceVariant)
     ? invoiceVariant
     : 'standard';
   const isTextInvoice = normalizedInvoiceVariant === 'text';
   const isGoodsInvoice = normalizedInvoiceVariant === 'goods';
+  const isFinalInvoice = normalizedInvoiceVariant === 'finalInvoice';
+  const projectFieldDefinitions = getProjectFieldDefinitions(normalizedInvoiceVariant);
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -725,7 +1178,8 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   );
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState(() => [isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
-  const { sender, recipient, deliveryAddress, details, footerLines } = useMemo(
+  const [previousPayments, setPreviousPayments] = useState(() => [createPreviousPayment()]);
+  const { sender, recipient, deliveryAddress, details, project, footerLines } = useMemo(
     () => createInvoiceViewData(invoiceData),
     [invoiceData],
   );
@@ -737,6 +1191,36 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       setIsSmallBusinessInvoice(initialSmallBusiness);
     }
   }, [initialSmallBusiness]);
+
+  useEffect(() => {
+    setTextBlockSets((current) => {
+      const textBlockSetKey = getTextBlockSetKey(normalizedInvoiceVariant);
+
+      if (current[textBlockSetKey]) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [textBlockSetKey]: normalizeTextBlocksForVariant(undefined, normalizedInvoiceVariant),
+      };
+    });
+
+    setLabels((current) => {
+      const nextTitle = invoiceVariantTitles[normalizedInvoiceVariant] ?? invoiceVariantTitles.standard;
+      const knownTitles = new Set(Object.values(invoiceVariantTitles));
+
+      if (knownTitles.has(current.title)) {
+        return {
+          ...current,
+          title: nextTitle,
+          grandTotal: normalizedInvoiceVariant === 'finalInvoice' ? 'Offener Restbetrag' : initialInvoiceLabels.grandTotal,
+        };
+      }
+
+      return current;
+    });
+  }, [normalizedInvoiceVariant]);
 
   useEffect(() => {
     textBlocks.forEach((block) => {
@@ -754,42 +1238,38 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setPositions((current) => current.map(normalizeTextInvoiceDefaultPosition));
   }, [isTextInvoice]);
 
-  const totals = useMemo(() => {
-    const summary = positions.reduce(
-      (current, position) => {
-        const calculated = calculatePosition(position, { isSmallBusinessInvoice, isTextInvoice });
-
-        if (!isSmallBusinessInvoice) {
-          const taxKey = String(calculated.taxRate);
-          const taxGroup = current.taxGroups.get(taxKey) ?? { taxRate: calculated.taxRate, tax: 0 };
-
-          taxGroup.tax += calculated.tax;
-          current.taxGroups.set(taxKey, taxGroup);
-        }
-
-        current.net += calculated.net;
-        current.tax += calculated.tax;
-
-        return current;
-      },
-      { net: 0, tax: 0, taxGroups: new Map() },
-    );
-
-    return {
-      net: summary.net,
-      tax: summary.tax,
-      gross: summary.net + summary.tax,
-      taxGroups: [...summary.taxGroups.values()].sort((first, second) => first.taxRate - second.taxRate),
-    };
-  }, [isSmallBusinessInvoice, isTextInvoice, positions]);
+  const totals = useMemo(
+    () =>
+      createInvoiceTotals({
+        isFinalInvoice,
+        isSmallBusinessInvoice,
+        isTextInvoice,
+        positions,
+        previousPayments,
+      }),
+    [isFinalInvoice, isSmallBusinessInvoice, isTextInvoice, positions, previousPayments],
+  );
 
   const calculateCurrentPosition = useMemo(
     () => (position) => calculatePosition(position, { isSmallBusinessInvoice, isTextInvoice }),
     [isSmallBusinessInvoice, isTextInvoice],
   );
+  const calculateCurrentPreviousPayment = useMemo(
+    () => (payment) => calculatePreviousPayment(payment, { isSmallBusinessInvoice }),
+    [isSmallBusinessInvoice],
+  );
   const printItems = useMemo(
-    () => createInvoicePrintItems({ isSmallBusinessInvoice, positions, textBlocks }),
-    [isSmallBusinessInvoice, positions, textBlocks],
+    () =>
+      createInvoicePrintItems({
+        isFinalInvoice,
+        isSmallBusinessInvoice,
+        positions,
+        previousPayments,
+        projectInfo: project,
+        textBlocks,
+        visibleProjectFields: projectFieldDefinitions,
+      }),
+    [isFinalInvoice, isSmallBusinessInvoice, positions, previousPayments, project, projectFieldDefinitions, textBlocks],
   );
   const dataCheckState = useMemo(
     () =>
@@ -907,6 +1387,16 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     });
   }
 
+  function updateProjectField(field, value) {
+    setInvoiceData((current) => ({
+      ...current,
+      project: {
+        ...current.project,
+        [field]: value,
+      },
+    }));
+  }
+
   function updateFooterLine(field, value) {
     setInvoiceData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
@@ -951,6 +1441,22 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
   function addPosition() {
     setPositions((current) => [...current, isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
+  }
+
+  function addPreviousPayment() {
+    setPreviousPayments((current) => [...current, createPreviousPayment(current.length + 1)]);
+  }
+
+  function updatePreviousPayment(paymentId, field, value) {
+    setPreviousPayments((current) =>
+      current.map((payment) => (payment.id === paymentId ? { ...payment, [field]: value } : payment)),
+    );
+  }
+
+  function removePreviousPayment(paymentId) {
+    setPreviousPayments((current) =>
+      current.length === 1 ? current : current.filter((payment) => payment.id !== paymentId),
+    );
   }
 
   function updateDeliveryAddress(field, value) {
@@ -1055,6 +1561,14 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     onSmallBusinessChange?.(isSmallBusiness);
   }
 
+  function handleInvoiceVariantSelect(nextVariant) {
+    if (!invoiceVariantIds.includes(nextVariant)) {
+      return;
+    }
+
+    onInvoiceVariantChange?.(nextVariant);
+  }
+
   function updateTextBlock(blockId, patch) {
     setTextBlockSets((current) => (
       {
@@ -1099,6 +1613,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         ...invoiceData,
         isSmallBusiness: isSmallBusinessInvoice,
         positions,
+        previousPayments,
         textBlocks,
         fieldConfig,
       },
@@ -1115,6 +1630,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setLabels(initialInvoiceLabels);
     setInvoiceData(defaultInvoiceData);
     setPositions([isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
+    setPreviousPayments([createPreviousPayment()]);
     setTextBlockSets(createInitialTextBlockSets());
     setSmallBusinessMode(resetSmallBusinessMode);
     setFieldConfig({
@@ -1148,7 +1664,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     try {
       const template = JSON.parse(await file.text());
       const data = validateInvoiceTemplate(template);
-      const templateInvoiceVariant = ['standard', 'text', 'goods'].includes(data.invoiceVariant)
+      const templateInvoiceVariant = invoiceVariantIds.includes(data.invoiceVariant)
         ? data.invoiceVariant
         : normalizedInvoiceVariant;
       const templateSmallBusiness =
@@ -1162,13 +1678,12 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           ? normalizedTemplatePositions.map(normalizeTextInvoiceDefaultPosition)
           : normalizedTemplatePositions,
       );
+      setPreviousPayments(normalizePreviousPayments(data.previousPayments));
       setActiveTextBlocks(normalizeTextBlocksForVariant(data.textBlocks, templateInvoiceVariant), templateInvoiceVariant);
       setSmallBusinessMode(templateSmallBusiness, { persist: false });
       setFieldConfig(normalizeFieldConfig(data.fieldConfig));
       if (
-        data.invoiceVariant === 'standard' ||
-        data.invoiceVariant === 'text' ||
-        data.invoiceVariant === 'goods'
+        invoiceVariantIds.includes(data.invoiceVariant)
       ) {
         onInvoiceVariantChange?.(templateInvoiceVariant);
       }
@@ -1294,7 +1809,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       <div className="invoice-variant-controls">
         <InvoiceVariantChoiceBar
           activeVariant={normalizedInvoiceVariant}
-          onChange={onInvoiceVariantChange}
+          onChange={handleInvoiceVariantSelect}
         />
 
         <label className="invoice-small-business-toggle">
@@ -1400,6 +1915,13 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           />
         </h2>
 
+        <InvoiceProjectBlock
+          labels={labels}
+          project={project}
+          visibleFields={projectFieldDefinitions}
+          onChange={updateProjectField}
+        />
+
         {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <PositionTable
@@ -1425,16 +1947,37 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           + Position hinzufügen
         </button>
 
-        <TotalsBox
-          ariaLabel="Rechnungssummen"
-          formatCurrency={formatCurrency}
-          formatPercent={formatPercent}
-          labels={labels}
-          showNetTotal={!isSmallBusinessInvoice}
-          showTaxDetails={!isSmallBusinessInvoice}
-          totals={totals}
-          onLabelChange={updateLabel}
-        />
+        {isFinalInvoice && (
+          <PreviousPaymentsTable
+            calculatePayment={calculateCurrentPreviousPayment}
+            formatCurrency={formatCurrency}
+            labels={labels}
+            payments={previousPayments}
+            onAddPayment={addPreviousPayment}
+            onPaymentChange={updatePreviousPayment}
+            onRemovePayment={removePreviousPayment}
+          />
+        )}
+
+        {isFinalInvoice ? (
+          <FinalInvoiceSummary
+            formatCurrency={formatCurrency}
+            formatPercent={formatPercent}
+            labels={labels}
+            totals={totals}
+          />
+        ) : (
+          <TotalsBox
+            ariaLabel="Rechnungssummen"
+            formatCurrency={formatCurrency}
+            formatPercent={formatPercent}
+            labels={labels}
+            showNetTotal={!isSmallBusinessInvoice}
+            showTaxDetails={!isSmallBusinessInvoice}
+            totals={totals}
+            onLabelChange={updateLabel}
+          />
+        )}
 
         {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1, isSmallBusinessInvoice ? 2 : 1)}
 
@@ -1462,6 +2005,8 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           <MeasuredInvoicePaginator
             ref={paginatorRef}
             calculatePosition={calculateCurrentPosition}
+            calculatePreviousPayment={calculateCurrentPreviousPayment}
+            isFinalInvoice={isFinalInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isTextInvoice={isTextInvoice}
@@ -1472,9 +2017,11 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           <InvoicePrintPages
             ref={printPagesRef}
             calculatePosition={calculateCurrentPosition}
+            calculatePreviousPayment={calculateCurrentPreviousPayment}
             details={details}
             deliveryAddress={deliveryAddress}
             footerLines={footerLines}
+            isFinalInvoice={isFinalInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isTextInvoice={isTextInvoice}
@@ -1506,11 +2053,22 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 }
 
 const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
-  { calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, items, labels, totals },
+  {
+    calculatePosition: calculateInvoicePosition,
+    calculatePreviousPayment: calculateInvoicePreviousPayment,
+    isFinalInvoice,
+    isGoodsInvoice,
+    isSmallBusinessInvoice,
+    isTextInvoice,
+    items,
+    labels,
+    totals,
+  },
   ref,
 ) {
   const measureRootRef = useRef(null);
   const positionItems = items.filter((item) => item.type === 'position');
+  const previousPaymentItems = items.filter((item) => item.type === 'previousPayment');
 
   function measureNow() {
     return measureInvoicePages(measureRootRef.current, items);
@@ -1579,8 +2137,28 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
           </tbody>
         </table>
         <div data-measure-summary>
-          <InvoicePrintSummary isSmallBusinessInvoice={isSmallBusinessInvoice} labels={labels} totals={totals} />
+          <InvoicePrintSummary isFinalInvoice={isFinalInvoice} isSmallBusinessInvoice={isSmallBusinessInvoice} labels={labels} totals={totals} />
         </div>
+        <table className="invoice-print-position-table invoice-print-previous-payments-table">
+          <tbody>
+            {previousPaymentItems.map(({ index, payment }) => {
+              const calculated = calculateInvoicePreviousPayment(payment);
+
+              return (
+                <tr data-measure-previous-payment-row={String(index)} key={payment.id}>
+                  <td>{payment.label}</td>
+                  <td>{payment.invoiceNumber}</td>
+                  <td>{formatGermanDate(payment.invoiceDate)}</td>
+                  <td>{formatCurrency(calculated.net)}</td>
+                  <td>{formatPercent(calculated.taxRate)}%</td>
+                  <td>{formatCurrency(calculated.tax)}</td>
+                  <td>{formatCurrency(calculated.gross)}</td>
+                  <td>{payment.status === 'paid' ? 'vereinnahmt' : 'gestellt'}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -1632,6 +2210,12 @@ function measureInvoicePages(measureRoot, items) {
       getOuterHeight(row),
     ]),
   );
+  const previousPaymentRows = new Map(
+    [...measureRoot.querySelectorAll('[data-measure-previous-payment-row]')].map((row) => [
+      row.dataset.measurePreviousPaymentRow,
+      getOuterHeight(row),
+    ]),
+  );
 
   if (!firstContent || !followContent || !textProbe || !summaryProbe) return null;
 
@@ -1648,7 +2232,15 @@ function measureInvoicePages(measureRoot, items) {
 
   function getItemHeight(item) {
     if (item.type === 'text') return measureTextHeight(item.text);
+    if (item.type === 'projectInfo') {
+      return measureTextHeight(
+        item.visibleProjectFields
+          .map(({ field, labelField }) => `${initialInvoiceLabels[labelField]}: ${item.projectInfo[field]}`)
+          .join('\n'),
+      );
+    }
     if (item.type === 'position') return positionRows.get(String(item.index)) || 0;
+    if (item.type === 'previousPayment') return previousPaymentRows.get(String(item.index)) || 0;
     if (item.type === 'summary') return getOuterHeight(summaryProbe);
     return 0;
   }
@@ -1656,9 +2248,14 @@ function measureInvoicePages(measureRoot, items) {
   function getItemGap(page, item) {
     const previousItem = page.items[page.items.length - 1];
     const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
-    const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
+    const startsPreviousPaymentTable = item.type === 'previousPayment' && previousItem?.type !== 'previousPayment';
+    const startsNewBlock = page.items.length > 0
+      && !(item.type === 'position' && previousItem?.type === 'position')
+      && !(item.type === 'previousPayment' && previousItem?.type === 'previousPayment');
 
-    return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
+    return (startsNewBlock ? blockGap : 0)
+      + (startsPositionTable ? positionHeaderHeight : 0)
+      + (startsPreviousPaymentTable ? positionHeaderHeight : 0);
   }
 
   return paginateMeasuredItems({
@@ -1684,6 +2281,13 @@ function arePrintPagesEqual(currentPages, nextPages) {
 function arePrintItemsEqual(first, second) {
   if (first.type !== second.type) return false;
   if (first.type === 'text') return first.id === second.id && first.text === second.text;
+  if (first.type === 'projectInfo') {
+    return (
+      first.visibleProjectFields.map(({ field }) => field).join('|') ===
+        second.visibleProjectFields.map(({ field }) => field).join('|') &&
+      first.visibleProjectFields.every(({ field }) => first.projectInfo[field] === second.projectInfo[field])
+    );
+  }
   if (first.type === 'position') {
     return (
       first.index === second.index &&
@@ -1696,6 +2300,18 @@ function arePrintItemsEqual(first, second) {
       first.position.taxRate === second.position.taxRate
     );
   }
+  if (first.type === 'previousPayment') {
+    return (
+      first.index === second.index &&
+      first.payment.id === second.payment.id &&
+      first.payment.label === second.payment.label &&
+      first.payment.invoiceNumber === second.payment.invoiceNumber &&
+      first.payment.invoiceDate === second.payment.invoiceDate &&
+      first.payment.netAmount === second.payment.netAmount &&
+      first.payment.taxRate === second.payment.taxRate &&
+      first.payment.status === second.payment.status
+    );
+  }
 
   return true;
 }
@@ -1703,9 +2319,11 @@ function arePrintItemsEqual(first, second) {
 const InvoicePrintPages = forwardRef(function InvoicePrintPages(
   {
     calculatePosition: calculateInvoicePosition,
+    calculatePreviousPayment: calculateInvoicePreviousPayment,
     details,
     deliveryAddress,
     footerLines,
+    isFinalInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
     isTextInvoice,
@@ -1753,6 +2371,8 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
           <div className="invoice-print-page-content">
             <InvoicePrintPageItems
               calculatePosition={calculateInvoicePosition}
+              calculatePreviousPayment={calculateInvoicePreviousPayment}
+              isFinalInvoice={isFinalInvoice}
               isGoodsInvoice={isGoodsInvoice}
               isSmallBusinessInvoice={isSmallBusinessInvoice}
               isTextInvoice={isTextInvoice}
@@ -1870,7 +2490,17 @@ function PrintDetailRow({ emphasized = false, label, value }) {
   );
 }
 
-function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, items, labels, totals }) {
+function InvoicePrintPageItems({
+  calculatePosition: calculateInvoicePosition,
+  calculatePreviousPayment: calculateInvoicePreviousPayment,
+  isFinalInvoice,
+  isGoodsInvoice,
+  isSmallBusinessInvoice,
+  isTextInvoice,
+  items,
+  labels,
+  totals,
+}) {
   const renderedItems = [];
   let index = 0;
 
@@ -1899,9 +2529,29 @@ function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, is
       continue;
     }
 
+    if (item.type === 'previousPayment') {
+      const previousPaymentItems = [];
+
+      while (items[index]?.type === 'previousPayment') {
+        previousPaymentItems.push(items[index]);
+        index += 1;
+      }
+
+      renderedItems.push(
+        <InvoicePrintPreviousPaymentsTable
+          calculatePreviousPayment={calculateInvoicePreviousPayment}
+          key={`previous-payments-${previousPaymentItems[0].index}`}
+          labels={labels}
+          previousPaymentItems={previousPaymentItems}
+        />,
+      );
+      continue;
+    }
+
     if (item.type === 'summary') {
       renderedItems.push(
         <InvoicePrintSummary
+          isFinalInvoice={isFinalInvoice}
           isSmallBusinessInvoice={isSmallBusinessInvoice}
           key="summary"
           labels={labels}
@@ -1918,10 +2568,74 @@ function InvoicePrintPageItems({ calculatePosition: calculateInvoicePosition, is
       );
     }
 
+    if (item.type === 'projectInfo') {
+      renderedItems.push(
+        <InvoicePrintProjectInfo
+          key={`project-${index}`}
+          labels={labels}
+          projectInfo={item.projectInfo}
+          visibleProjectFields={item.visibleProjectFields}
+        />,
+      );
+    }
+
     index += 1;
   }
 
   return renderedItems;
+}
+
+function InvoicePrintProjectInfo({ labels, projectInfo, visibleProjectFields }) {
+  return (
+    <section className="invoice-print-project-info">
+      {visibleProjectFields.map(({ field, labelField }) => (
+        <p key={field}>
+          <span>{labels[labelField]}</span>
+          <strong>{projectInfo[field]}</strong>
+        </p>
+      ))}
+    </section>
+  );
+}
+
+function InvoicePrintPreviousPaymentsTable({ calculatePreviousPayment: calculateInvoicePreviousPayment, labels, previousPaymentItems }) {
+  return (
+    <section className="invoice-print-previous-payments">
+      <h3>{labels.previousPayments}</h3>
+      <table className="invoice-print-position-table invoice-print-previous-payments-table">
+        <thead>
+          <tr>
+            <th>{labels.previousPaymentLabel}</th>
+            <th>{labels.previousPaymentInvoiceNumber}</th>
+            <th>{labels.previousPaymentInvoiceDate}</th>
+            <th>{labels.previousPaymentNet}</th>
+            <th>{labels.previousPaymentTaxRate}</th>
+            <th>{labels.previousPaymentTaxAmount}</th>
+            <th>{labels.previousPaymentGross}</th>
+            <th>{labels.previousPaymentStatus}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {previousPaymentItems.map(({ payment }) => {
+            const calculated = calculateInvoicePreviousPayment(payment);
+
+            return (
+              <tr key={payment.id}>
+                <td>{payment.label}</td>
+                <td>{payment.invoiceNumber}</td>
+                <td>{formatGermanDate(payment.invoiceDate)}</td>
+                <td>{formatCurrency(calculated.net)}</td>
+                <td>{formatPercent(calculated.taxRate)}%</td>
+                <td>{formatCurrency(calculated.tax)}</td>
+                <td>{formatCurrency(calculated.gross)}</td>
+                <td>{payment.status === 'paid' ? 'vereinnahmt' : 'gestellt'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </section>
+  );
 }
 
 function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, labels, positionItems }) {
@@ -1979,7 +2693,54 @@ function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition
   );
 }
 
-function InvoicePrintSummary({ isSmallBusinessInvoice = false, labels, totals }) {
+function InvoicePrintSummary({ isFinalInvoice = false, isSmallBusinessInvoice = false, labels, totals }) {
+  if (isFinalInvoice) {
+    return (
+      <aside className="invoice-print-summary final-invoice-print-summary" aria-label="Schlussrechnungssummen">
+        <div>
+          <span>{labels.serviceTotal}</span>
+          <strong>{formatCurrency(totals.service.gross)}</strong>
+        </div>
+        {!isSmallBusinessInvoice && totals.service.taxGroups.map((group) => (
+          <div key={`service-${group.taxRate}`}>
+            <span>
+              {labels.serviceTax} {formatPercent(group.taxRate)}%
+            </span>
+            <strong>{formatCurrency(group.tax)}</strong>
+          </div>
+        ))}
+        <div>
+          <span>{labels.deductedPayments}</span>
+          <strong>-{formatCurrency(totals.deducted.gross)}</strong>
+        </div>
+        {!isSmallBusinessInvoice && totals.deducted.taxGroups.map((group) => (
+          <div key={`deducted-${group.taxRate}`}>
+            <span>
+              {labels.deductedPaymentTax} {formatPercent(group.taxRate)}%
+            </span>
+            <strong>-{formatCurrency(group.tax)}</strong>
+          </div>
+        ))}
+        <div>
+          <span>{labels.remainingNet}</span>
+          <strong>{formatCurrency(totals.remaining.net)}</strong>
+        </div>
+        {!isSmallBusinessInvoice && totals.remaining.taxGroups.map((group) => (
+          <div key={`remaining-${group.taxRate}`}>
+            <span>
+              {labels.remainingTax} {formatPercent(group.taxRate)}%
+            </span>
+            <strong>{formatCurrency(group.tax)}</strong>
+          </div>
+        ))}
+        <div>
+          <span>{labels.remainingGross}</span>
+          <strong>{formatCurrency(totals.remaining.gross)}</strong>
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className="invoice-print-summary" aria-label="Rechnungssummen">
       {!isSmallBusinessInvoice && (

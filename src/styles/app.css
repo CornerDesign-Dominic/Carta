@@ -2365,6 +2365,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .invoice-visual-editor {
+  grid-template-columns: minmax(0, 1fr);
   margin-top: 42px;
   padding: 0 0 88px;
   overflow: auto;
@@ -2471,8 +2472,195 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   width: 100%;
 }
 
+.invoice-project-block {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin: 0 0 14px;
+  padding: 10px 0 2px;
+  border-top: 1px solid #ebe6dc;
+  border-bottom: 1px solid #ebe6dc;
+}
+
+.invoice-project-field {
+  display: grid;
+  grid-template-columns: minmax(112px, 0.44fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.invoice-project-field input {
+  min-width: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #34312c;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.invoice-project-field .document-label-input {
+  color: #77736b;
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
+.invoice-previous-payments {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 4px;
+}
+
+.invoice-previous-payments h3 {
+  margin: 0;
+  color: #34312c;
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.invoice-previous-payments-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.64rem;
+}
+
+.invoice-previous-payments-table th,
+.invoice-previous-payments-table td {
+  padding: 4px 3px;
+  border-bottom: 1px solid #e8e4dc;
+  vertical-align: top;
+}
+
+.invoice-previous-payments-table th {
+  border-top: 1px solid #d8d1c6;
+  color: #4d4b46;
+  font-weight: 760;
+  text-align: left;
+}
+
+.invoice-previous-payments-table input,
+.invoice-previous-payments-table select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #34312c;
+  font: inherit;
+  line-height: 1.25;
+}
+
+.invoice-previous-payments-table th:nth-child(1),
+.invoice-previous-payments-table td:nth-child(1) {
+  width: 12%;
+}
+
+.invoice-previous-payments-table th:nth-child(2),
+.invoice-previous-payments-table td:nth-child(2) {
+  width: 15%;
+}
+
+.invoice-previous-payments-table th:nth-child(3),
+.invoice-previous-payments-table td:nth-child(3) {
+  width: 14%;
+}
+
+.invoice-previous-payments-table th:nth-child(4),
+.invoice-previous-payments-table td:nth-child(4),
+.invoice-previous-payments-table th:nth-child(6),
+.invoice-previous-payments-table td:nth-child(6),
+.invoice-previous-payments-table th:nth-child(7),
+.invoice-previous-payments-table td:nth-child(7) {
+  width: 11%;
+}
+
+.invoice-previous-payments-table th:nth-child(5),
+.invoice-previous-payments-table td:nth-child(5) {
+  width: 7%;
+}
+
+.invoice-previous-payments-table th:nth-child(8),
+.invoice-previous-payments-table td:nth-child(8) {
+  width: 12%;
+}
+
+.invoice-previous-payments-table th:nth-child(9),
+.invoice-previous-payments-table td:nth-child(9) {
+  width: 6%;
+}
+
+.invoice-previous-payments-note {
+  margin: 0;
+  color: #77736b;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.final-invoice-summary {
+  width: min(100%, 365px);
+}
+
+.credit-note-variant-controls .document-choice-bar {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.credit-note-reference-block {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 8px 0 2px;
+  border-top: 1px solid #ebe6dc;
+  border-bottom: 1px solid #ebe6dc;
+}
+
+.credit-note-subject-field,
+.credit-note-reference-grid label {
+  display: grid;
+  grid-template-columns: minmax(112px, 0.34fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  min-width: 0;
+}
+
+.credit-note-reference-grid {
+  display: grid;
+  gap: 7px;
+}
+
+.credit-note-reference-block input,
+.credit-note-reference-block textarea {
+  min-width: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #34312c;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.credit-note-reference-block textarea {
+  min-height: 1.8em;
+  resize: vertical;
+}
+
+.credit-note-reference-block .document-label-input {
+  color: #77736b;
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
 @media (max-width: 720px) {
   .invoice-variant-controls .document-choice-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .invoice-project-block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .credit-note-reference-grid label,
+  .credit-note-subject-field {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -4931,6 +5119,82 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   white-space: pre-wrap;
 }
 
+.invoice-print-project-info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 18px;
+  padding: 8px 0;
+  border-top: 1px solid #e8e4dc;
+  border-bottom: 1px solid #e8e4dc;
+  color: #4d4b46;
+  font-size: 0.76rem;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.invoice-print-project-info p {
+  display: grid;
+  grid-template-columns: minmax(86px, 0.42fr) minmax(0, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.invoice-print-project-info span {
+  color: #77736b;
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
+.invoice-print-project-info strong {
+  color: #34312c;
+  font-weight: 650;
+}
+
+.credit-note-print-subject {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.28fr) minmax(0, 1fr);
+  gap: 8px;
+  margin: 0;
+  color: #34312c;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.credit-note-print-subject span,
+.credit-note-print-references span {
+  color: #77736b;
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
+.credit-note-print-subject strong,
+.credit-note-print-references strong {
+  color: #34312c;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.credit-note-print-references {
+  display: grid;
+  gap: 4px;
+  padding: 7px 0;
+  border-top: 1px solid #e8e4dc;
+  border-bottom: 1px solid #e8e4dc;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.credit-note-print-references p {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.28fr) minmax(0, 1fr);
+  gap: 8px;
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
 .invoice-print-position-table {
   width: calc(100% - var(--invoice-right-safe-offset));
   max-width: calc(100% - var(--invoice-right-safe-offset));
@@ -4956,6 +5220,28 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: #3f3b35;
   font-weight: 760;
   text-align: left;
+}
+
+.invoice-print-previous-payments {
+  display: grid;
+  gap: 5px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.invoice-print-previous-payments h3 {
+  margin: 0;
+  color: #34312c;
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+.invoice-print-previous-payments-table {
+  font-size: 0.62rem;
+}
+
+.final-invoice-print-summary {
+  width: min(100%, 365px);
 }
 
 .invoice-print-position-table th:nth-child(1),
@@ -6551,6 +6837,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
   .documents-layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
 
