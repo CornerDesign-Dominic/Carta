@@ -46,7 +46,7 @@ function DocumentUsageMiniVisual({ type }) {
         <span>12345 Musterstadt</span>
       </div>
       <div className="document-usage-mini-title">
-        {type === 'template' ? 'Vorlage' : 'Rechnung'}
+        Rechnung
       </div>
 
       {type === 'edit' && (
@@ -78,14 +78,6 @@ function DocumentUsageMiniVisual({ type }) {
             <span>PDF</span>
             <span>Drucken</span>
           </div>
-        </div>
-      )}
-
-      {type === 'template' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line">Dokumentdaten</span>
-          <span className="document-usage-mini-line is-code">beleg-vorlage.json</span>
-          <span className="document-usage-mini-line">später laden</span>
         </div>
       )}
 
@@ -126,12 +118,6 @@ function DocumentOverview() {
       text:
         'Beispieldaten können mit dem Daten-Prüfer erkannt und hervorgehoben werden. Vor dem Erstellen sollten diese Daten angepasst sowie Tippfehler und unvollständige Angaben geprüft werden.',
       visual: 'check',
-    },
-    {
-      title: 'Vorlagen',
-      text:
-        'Beim Erstellen können die Dokumentdaten als JSON-Datei gespeichert werden. Diese Datei lässt sich später wieder hochladen und als Vorlage nutzen.',
-      visual: 'template',
     },
   ];
 

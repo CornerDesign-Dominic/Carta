@@ -18,7 +18,6 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
-const reminderSchemaVersion = '1.0';
 
 const initialReminderLabels = {
   title: 'Mahnung',
@@ -440,50 +439,12 @@ function createPdfFileName(title, number) {
   return `${cleanTitle || 'mahnung'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(number) {
-  const cleanNumber = createSlug(number || '');
-
-  return cleanNumber ? `mahnung-${cleanNumber}.json` : 'mahnung-vorlage.json';
-}
-
 function createSlug(value) {
   return String(value || '')
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9aouess]+/gi, '-')
     .replace(/^-+|-+$/g, '');
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function validateReminderTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gültiges Mahnungsdokument.');
-  }
-
-  if (template.documentType !== 'reminder') {
-    throw new Error('Diese JSON-Datei ist keine Mahnung.');
-  }
-
-  if (template.schemaVersion !== reminderSchemaVersion) {
-    throw new Error('Diese Mahnungsversion wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Mahnungsdaten.');
-  }
-
-  return template.data;
 }
 
 function createReminderPrintItems({ openItems, textBlocks }) {
@@ -517,7 +478,6 @@ export default function ReminderDocumentEditor() {
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [reminderData, setReminderData] = useState(defaultReminderData);
@@ -829,26 +789,6 @@ export default function ReminderDocumentEditor() {
     );
   }
 
-  function createReminderTemplate() {
-    return {
-      documentType: 'reminder',
-      schemaVersion: reminderSchemaVersion,
-      createdWith: 'Belege24',
-      data: {
-        labels,
-        ...reminderData,
-        openItems,
-        charges,
-        textBlocks,
-        fieldConfig,
-      },
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createReminderTemplate(), createJsonFileName(details.reminderNumber));
-  }
-
   function handleNewDocument() {
     setLabels(initialReminderLabels);
     setReminderData(defaultReminderData);
@@ -867,35 +807,6 @@ export default function ReminderDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
-  }
-
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswählen.');
-      return;
-    }
-
-    try {
-      const template = JSON.parse(await file.text());
-      const data = validateReminderTemplate(template);
-
-      setLabels({ ...initialReminderLabels, ...(data.labels ?? {}) });
-      setReminderData(normalizeReminderData(data));
-      setOpenItems(normalizeOpenItems(data.openItems));
-      setCharges({ interest: '0', reminderFee: '5.00', ...(data.charges ?? {}) });
-      setTextBlocks(normalizeTextBlocks(data.textBlocks));
-      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      setIsDataCheckMode(false);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
-    }
   }
 
   async function handleCreatePdf() {
@@ -1011,12 +922,9 @@ export default function ReminderDocumentEditor() {
         isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}
         onToggleEditable={toggleEditableMode}
       />

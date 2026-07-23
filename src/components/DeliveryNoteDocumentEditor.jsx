@@ -17,7 +17,6 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
-const deliveryNoteSchemaVersion = '1.0';
 
 const initialDeliveryNoteLabels = {
   title: 'Lieferschein',
@@ -411,21 +410,6 @@ const defaultDeliveryNotePositionForCheck = {
   description: 'Artikel oder Leistung beschreiben',
 };
 
-function normalizePositions(templatePositions) {
-  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
-    return [createDeliveryNotePosition()];
-  }
-
-  return templatePositions.map((position) => ({
-    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
-    quantity: String(position.quantity ?? '1'),
-    unit: String(position.unit ?? 'Stk.'),
-    description: String(position.description ?? 'Artikel oder Leistung beschreiben'),
-    deliveryDate: String(position.deliveryDate ?? ''),
-    note: String(position.note ?? ''),
-  }));
-}
-
 function createFieldConfig(fields) {
   return {
     hidden: [],
@@ -476,32 +460,6 @@ function resizeTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
-function normalizeTextBlocks(templateTextBlocks) {
-  const defaults = defaultDeliveryNoteTextBlocks.map((block) => ({ ...block }));
-
-  if (!Array.isArray(templateTextBlocks)) {
-    return defaults;
-  }
-
-  const knownBlocks = new Map(defaults.map((block) => [block.id, block]));
-  const normalized = templateTextBlocks
-    .filter((block) => knownBlocks.has(block?.id))
-    .map((block) => ({
-      ...knownBlocks.get(block.id),
-      label: typeof block.label === 'string' && block.label ? block.label : knownBlocks.get(block.id).label,
-      value: typeof block.value === 'string' ? block.value : knownBlocks.get(block.id).value,
-      visible: typeof block.visible === 'boolean' ? block.visible : true,
-    }));
-
-  defaults.forEach((block) => {
-    if (!normalized.some((entry) => entry.id === block.id)) {
-      normalized.push(block);
-    }
-  });
-
-  return normalized;
-}
-
 function createDeliveryNotePrintItems({ positions, textBlocks }) {
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
@@ -515,26 +473,6 @@ function createDeliveryNotePrintItems({ positions, textBlocks }) {
     })),
     ...(closingBlock?.visible ? [{ type: 'text', id: 'closing', text: closingBlock.value }] : []),
   ];
-}
-
-function validateDeliveryNoteTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gültiger Lieferschein.');
-  }
-
-  if (template.documentType !== 'deliveryNote') {
-    throw new Error('Diese JSON-Datei ist kein Lieferschein.');
-  }
-
-  if (template.schemaVersion !== deliveryNoteSchemaVersion) {
-    throw new Error('Diese Lieferscheinversion wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Lieferscheindaten.');
-  }
-
-  return template.data;
 }
 
 function formatGermanDate(value) {
@@ -558,24 +496,6 @@ function createPdfFileName(title, number) {
   return `${cleanTitle || 'lieferschein'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(number) {
-  const cleanNumber = createSlug(number || '');
-
-  return cleanNumber ? `lieferschein-${cleanNumber}.json` : 'lieferschein-vorlage.json';
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
 export default function DeliveryNoteDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
@@ -591,7 +511,6 @@ export default function DeliveryNoteDocumentEditor() {
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [deliveryNoteData, setDeliveryNoteData] = useState(defaultDeliveryNoteData);
@@ -922,25 +841,6 @@ export default function DeliveryNoteDocumentEditor() {
     }
   }
 
-  function createDeliveryNoteTemplate() {
-    return {
-      documentType: 'deliveryNote',
-      schemaVersion: deliveryNoteSchemaVersion,
-      createdWith: 'Belege24',
-      data: {
-        labels,
-        ...deliveryNoteData,
-        positions,
-        textBlocks,
-        fieldConfig,
-      },
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createDeliveryNoteTemplate(), createJsonFileName(details.deliveryNoteNumber));
-  }
-
   function handleNewDocument() {
     setLabels(initialDeliveryNoteLabels);
     setDeliveryNoteData(defaultDeliveryNoteData);
@@ -958,37 +858,6 @@ export default function DeliveryNoteDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
-  }
-
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswählen.');
-      return;
-    }
-
-    try {
-      const template = JSON.parse(await file.text());
-      const data = validateDeliveryNoteTemplate(template);
-
-      setLabels({
-        ...initialDeliveryNoteLabels,
-        ...(data.labels ?? {}),
-      });
-      setDeliveryNoteData(normalizeDeliveryNoteData(data));
-      setPositions(normalizePositions(data.positions));
-      setTextBlocks(normalizeTextBlocks(data.textBlocks));
-      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      setIsDataCheckMode(false);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
-    }
   }
 
   async function handleCreatePdf() {
@@ -1101,12 +970,9 @@ export default function DeliveryNoteDocumentEditor() {
         isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}
         onToggleEditable={toggleEditableMode}
       />

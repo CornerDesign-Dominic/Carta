@@ -5,15 +5,15 @@
   },
   {
     title: 'Lieferscheine',
-    text: 'Lieferscheine mit Positionen, Lieferdaten, Hinweisen, Vorlagen, PDF und Druck direkt im Browser erstellen.',
+    text: 'Lieferscheine mit Positionen, Lieferdaten, Hinweisen, PDF und Druck direkt im Browser erstellen.',
   },
   {
     title: 'Rechnungen',
-    text: 'Ãœbersichtliche Rechnungen mit Formular, Positionen, Steuerangaben, Vorlagen, PDF und Druck.',
+    text: 'Ãœbersichtliche Rechnungen mit Formular, Positionen, Steuerangaben, PDF und Druck.',
   },
   {
     title: 'Gutschriften',
-    text: 'Sauber aufgebaute Gutschriften mit Positionen, Summen, Vorlagen, PDF und Druck direkt im Browser.',
+    text: 'Sauber aufgebaute Gutschriften mit Positionen, Summen, PDF und Druck direkt im Browser.',
   },
   {
     title: 'Mahnungen',
@@ -31,7 +31,7 @@ const allDocumentSections = [
     label: 'Rechnungen',
     title: 'Rechnungen',
     description:
-      'Erstelle klare Rechnungsdokumente im Browser mit Formular, Positionen, Steuerangaben, Vorlagen, PDF und Druck.',
+      'Erstelle klare Rechnungsdokumente im Browser mit Formular, Positionen, Steuerangaben, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Rechnung?',
@@ -54,7 +54,7 @@ const allDocumentSections = [
       {
         heading: 'Digitale Rechnungserstellung im Browser',
         paragraphs: [
-          'Ein browserbasiertes Werkzeug kann helfen, Rechnungen ohne schwere Software vorzubereiten. Vorlagen, wiederkehrende Angaben und ein konsistentes Layout schaffen eine verlÃ¤ssliche Grundlage fÃ¼r einen schnellen Dokumentenprozess.',
+          'Ein browserbasiertes Werkzeug kann helfen, Rechnungen ohne schwere Software vorzubereiten. Wiederkehrende Angaben und ein konsistentes Layout schaffen eine verlÃ¤ssliche Grundlage fÃ¼r einen schnellen Dokumentenprozess.',
         ],
       },
     ],
@@ -110,7 +110,7 @@ const allDocumentSections = [
         path: '/dokumente/angebot',
         formType: 'offer',
         description:
-          'Erstelle Angebote mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
+          'Erstelle Angebote mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
       },
     ],
   },
@@ -119,7 +119,7 @@ const allDocumentSections = [
     label: 'Lieferscheine',
     title: 'Lieferscheine',
     description:
-      'Erstelle Lieferscheine mit Formular, direkter Dokumentbearbeitung, Positionsliste, JSON-Vorlagen, PDF und Druck.',
+      'Erstelle Lieferscheine mit Formular, direkter Dokumentbearbeitung, Positionsliste, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist ein Lieferschein?',
@@ -148,7 +148,7 @@ const allDocumentSections = [
         path: '/dokumente/lieferschein',
         formType: 'deliveryNote',
         description:
-          'Erstelle Lieferscheine mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
+          'Erstelle Lieferscheine mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
       },
     ],
   },
@@ -157,7 +157,7 @@ const allDocumentSections = [
     label: 'Gutschriften',
     title: 'Gutschriften',
     description:
-      'Erstelle Gutschriften mit klarer Struktur fÃ¼r Leistungspositionen, Steuerangaben, Vorlagen, PDF und Druck.',
+      'Erstelle Gutschriften mit klarer Struktur fÃ¼r Leistungspositionen, Steuerangaben, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Gutschrift?',
@@ -186,7 +186,7 @@ const allDocumentSections = [
         path: '/dokumente/gutschrift',
         formType: 'creditNote',
         description:
-          'Erstelle Gutschriften mit Formular, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
+          'Erstelle Gutschriften mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
       },
     ],
   },
@@ -195,7 +195,7 @@ const allDocumentSections = [
     label: 'Mahnungen',
     title: 'Mahnungen',
     description:
-      'Erstelle klare Zahlungserinnerungen und Mahnungen mit Formular, direkter Dokumentbearbeitung, Vorlagen, PDF und Druck.',
+      'Erstelle klare Zahlungserinnerungen und Mahnungen mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Mahnung?',
@@ -218,7 +218,7 @@ const allDocumentSections = [
         path: '/dokumente/mahnung',
         formType: 'reminder',
         description:
-          'Erstelle Mahnungen mit offenen Posten, Summen, direkter Dokumentbearbeitung, JSON-Vorlagen, PDF und Druck.',
+          'Erstelle Mahnungen mit offenen Posten, Summen, direkter Dokumentbearbeitung, PDF und Druck.',
       },
     ],
   },
@@ -227,7 +227,7 @@ const allDocumentSections = [
     label: 'Quittungen',
     title: 'Quittungen',
     description:
-      'Erstelle kompakte Quittungen im DIN-A5-Querformat mit Formular, direkter Dokumentbearbeitung, Vorlagen, PDF und Druck.',
+      'Erstelle kompakte Quittungen im DIN-A5-Querformat mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist eine Quittung?',
@@ -250,7 +250,7 @@ const allDocumentSections = [
         path: '/dokumente/quittung',
         formType: 'receipt',
         description:
-          'Erstelle eine Quittung im DIN-A5-Querformat mit Betragsdarstellung, Leistungstext, Referenzen, JSON-Vorlagen, PDF und Druck.',
+          'Erstelle eine Quittung im DIN-A5-Querformat mit Betragsdarstellung, Leistungstext, Referenzen, PDF und Druck.',
       },
     ],
   },
@@ -259,7 +259,7 @@ const allDocumentSections = [
     label: 'Eigenbelege',
     title: 'Eigenbelege',
     description:
-      'Erstelle Eigenbelege fÃ¼r Ausgaben ohne vorhandenen Fremdbeleg mit Formular, direkter Dokumentbearbeitung, Vorlagen, PDF und Druck.',
+      'Erstelle Eigenbelege fÃ¼r Ausgaben ohne vorhandenen Fremdbeleg mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
     contentSections: [
       {
         heading: 'Was ist ein Eigenbeleg?',
@@ -282,7 +282,7 @@ const allDocumentSections = [
         path: '/dokumente/eigenbeleg',
         formType: 'selfReceipt',
         description:
-          'Erstelle Eigenbelege mit Formular, direkter Dokumentbearbeitung, eigener Ausgabentabelle, JSON-Vorlagen, PDF und Druck.',
+          'Erstelle Eigenbelege mit Formular, direkter Dokumentbearbeitung, eigener Ausgabentabelle, PDF und Druck.',
       },
     ],
   },

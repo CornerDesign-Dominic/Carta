@@ -7,7 +7,6 @@ import { getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
-const receiptSchemaVersion = '1.0';
 
 const initialReceiptLabels = {
   title: 'Quittung',
@@ -625,73 +624,6 @@ function createPdfFileName(title, receiptId) {
   return `${baseTitle || 'quittung'}-${baseId || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(receiptId) {
-  const cleanId = String(receiptId || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9äöüß]+/gi, '-')
-    .replace(/^-+|-+$/g, '');
-
-  return cleanId ? `quittung-${cleanId}.json` : 'quittung-vorlage.json';
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function normalizeTextBlocks(templateTextBlocks) {
-  const knownBlocks = new Map(defaultReceiptTextBlocks.map((block) => [block.id, block]));
-
-  if (!Array.isArray(templateTextBlocks)) {
-    return defaultReceiptTextBlocks.map((block) => ({ ...block }));
-  }
-
-  const normalized = templateTextBlocks
-    .filter((block) => knownBlocks.has(block?.id))
-    .map((block) => ({
-      ...knownBlocks.get(block.id),
-      label: typeof block.label === 'string' && block.label ? block.label : knownBlocks.get(block.id).label,
-      value: typeof block.value === 'string' ? block.value : knownBlocks.get(block.id).value,
-      visible: typeof block.visible === 'boolean' ? block.visible : true,
-    }));
-
-  defaultReceiptTextBlocks.forEach((block) => {
-    if (!normalized.some((entry) => entry.id === block.id)) {
-      normalized.push({ ...block });
-    }
-  });
-
-  return normalized;
-}
-
-function validateReceiptTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist ungültig.');
-  }
-
-  if (template.documentType !== 'receipt') {
-    throw new Error('Diese JSON-Datei ist keine Quittung.');
-  }
-
-  if (template.schemaVersion !== receiptSchemaVersion) {
-    throw new Error('Diese Quittungsversion wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Quittungsdaten.');
-  }
-
-  return template.data;
-}
-
 function ReceiptHeaderAddress({
   dataCheckFields = {},
   hiddenFields = [],
@@ -787,7 +719,6 @@ export default function ReceiptDocumentEditor() {
     footerMiddle: createFieldConfig(receiptFooterColumns[1]),
   });
   const sheetRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const dateInputRefs = useRef({});
   const { sender, details, amount } = useMemo(
     () => createViewData(receiptData),
@@ -1120,25 +1051,6 @@ export default function ReceiptDocumentEditor() {
     });
   }
 
-  function createReceiptTemplate() {
-    return {
-      documentType: 'receipt',
-      schemaVersion: receiptSchemaVersion,
-      createdWith: 'Belege24',
-      data: {
-        labels,
-        ...receiptData,
-        amount: { ...receiptData.amount, grossAmount: amount.grossAmount },
-        textBlocks,
-        fieldConfig,
-      },
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createReceiptTemplate(), createJsonFileName(details.receiptId));
-  }
-
   function handleNewDocument() {
     setLabels(initialReceiptLabels);
     setReceiptData(emptyReceiptData);
@@ -1155,33 +1067,6 @@ export default function ReceiptDocumentEditor() {
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
     setIsExporting(false);
-  }
-
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswählen.');
-      return;
-    }
-
-    try {
-      const template = JSON.parse(await file.text());
-      const data = validateReceiptTemplate(template);
-
-      setLabels({ ...initialReceiptLabels, ...(data.labels ?? {}) });
-      setReceiptData(mergeWithDefaults(data));
-      setTextBlocks(normalizeTextBlocks(data.textBlocks));
-      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      setIsDataCheckMode(false);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
-    }
   }
 
   async function handleCreatePdf() {
@@ -1237,12 +1122,9 @@ export default function ReceiptDocumentEditor() {
         isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}
         onToggleEditable={toggleEditableMode}
       />

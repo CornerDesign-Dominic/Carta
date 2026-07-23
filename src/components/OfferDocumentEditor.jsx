@@ -287,7 +287,6 @@ function parseOfferFooterLine(field, value = '') {
   };
 }
 
-const offerSchemaVersion = '1.0';
 
 const defaultOfferData = {
   sender: {
@@ -503,79 +502,6 @@ function createPdfFileName(title, number) {
   return `${baseTitle || 'angebot'}-${baseNumber || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(number) {
-  const cleanNumber = String(number || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9äöüß]+/gi, '-')
-    .replace(/^-+|-+$/g, '');
-
-  return cleanNumber ? `angebot-${cleanNumber}.json` : 'angebot-vorlage.json';
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function normalizeTextBlocks(templateTextBlocks, legacyIntroText, legacyClosingText) {
-  const defaults = defaultOfferTextBlocks.map((block) => ({ ...block }));
-
-  if (!Array.isArray(templateTextBlocks)) {
-    return defaults.map((block) => {
-      if (block.id === 'intro' && typeof legacyIntroText === 'string') {
-        return { ...block, value: legacyIntroText };
-      }
-
-      if (block.id === 'closing' && typeof legacyClosingText === 'string') {
-        return { ...block, value: legacyClosingText };
-      }
-
-      return block;
-    });
-  }
-
-  const knownBlocks = new Map(defaults.map((block) => [block.id, block]));
-  const normalized = templateTextBlocks
-    .filter((block) => knownBlocks.has(block?.id))
-    .map((block) => ({
-      ...knownBlocks.get(block.id),
-      label: typeof block.label === 'string' && block.label ? block.label : knownBlocks.get(block.id).label,
-      value: typeof block.value === 'string' ? block.value : knownBlocks.get(block.id).value,
-      visible: typeof block.visible === 'boolean' ? block.visible : true,
-    }));
-
-  defaults.forEach((block) => {
-    if (!normalized.some((entry) => entry.id === block.id)) {
-      normalized.push(block);
-    }
-  });
-
-  return normalized;
-}
-
-function normalizePositions(templatePositions) {
-  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
-    return [createOfferPosition()];
-  }
-
-  return templatePositions.map((position) => ({
-    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
-    description: String(position.description ?? 'Leistung beschreiben'),
-    unitPrice: String(position.unitPrice ?? '0'),
-    quantity: String(position.quantity ?? '1'),
-    unit: String(position.unit ?? 'Stk.'),
-    taxRate: String(position.taxRate ?? '19'),
-  }));
-}
-
 const offerPrintLayout = {
   blockGap: 16,
   smallSafetyBuffer: 8,
@@ -615,26 +541,6 @@ function createOfferPrintItems({ positions, textBlocks }) {
   ];
 }
 
-function validateOfferTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gültiges Angebotsdokument.');
-  }
-
-  if (template.documentType !== 'offer') {
-    throw new Error('Diese JSON-Datei ist kein Angebot.');
-  }
-
-  if (template.schemaVersion !== offerSchemaVersion) {
-    throw new Error('Diese Angebotsversion wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Angebotsdaten.');
-  }
-
-  return template.data;
-}
-
 export default function OfferDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
@@ -650,7 +556,6 @@ export default function OfferDocumentEditor() {
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [offerData, setOfferData] = useState(defaultOfferData);
@@ -1090,25 +995,6 @@ export default function OfferDocumentEditor() {
     );
   }
 
-  function createOfferTemplate() {
-    return {
-      documentType: 'offer',
-      schemaVersion: offerSchemaVersion,
-      createdWith: 'Belege24',
-      data: {
-        labels,
-        ...offerData,
-        positions,
-        textBlocks,
-        fieldConfig,
-      },
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createOfferTemplate(), createJsonFileName(details.offerNumber));
-  }
-
   function handleNewDocument() {
     setLabels(initialOfferLabels);
     setOfferData(defaultOfferData);
@@ -1126,34 +1012,6 @@ export default function OfferDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
-  }
-
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswählen.');
-      return;
-    }
-
-    try {
-      const template = JSON.parse(await file.text());
-      const data = validateOfferTemplate(template);
-
-      setLabels({ ...initialOfferLabels, ...(data.labels ?? {}) });
-      setOfferData(normalizeOfferData(data));
-      setPositions(normalizePositions(data.positions));
-      setTextBlocks(normalizeTextBlocks(data.textBlocks));
-      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      setIsDataCheckMode(false);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
-    }
   }
 
   function runWithCleanDocument(callback) {
@@ -1293,12 +1151,9 @@ export default function OfferDocumentEditor() {
         isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
         onToggleDataCheck={toggleDataCheckMode}
         onToggleEditable={toggleEditableMode}
       />

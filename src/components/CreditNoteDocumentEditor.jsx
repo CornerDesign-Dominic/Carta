@@ -344,7 +344,6 @@ function parseOfferFooterLine(field, value = '') {
   };
 }
 
-const offerSchemaVersion = '1.0';
 
 const defaultOfferData = {
   sender: {
@@ -576,28 +575,6 @@ function createPdfFileName(title, number) {
   return `${baseTitle || 'gutschrift'}-${baseNumber || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(number) {
-  const cleanNumber = String(number || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9äöüß]+/gi, '-')
-    .replace(/^-+|-+$/g, '');
-
-  return cleanNumber ? `gutschrift-${cleanNumber}.json` : 'gutschrift-vorlage.json';
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
 function normalizeTextBlocks(templateTextBlocks, legacyIntroText, legacyClosingText) {
   const defaults = defaultOfferTextBlocks.map((block) => ({ ...block }));
 
@@ -662,39 +639,6 @@ function normalizeTextBlocksForVariant(templateTextBlocks, variant = 'creditNote
   }
 
   return normalizeTextBlocks(templateTextBlocks);
-}
-
-function normalizeTextBlockSets(templateTextBlockSets, fallbackTextBlocks, variant = 'creditNote') {
-  const initialSets = createInitialTextBlockSets();
-
-  if (templateTextBlockSets && typeof templateTextBlockSets === 'object') {
-    return Object.fromEntries(
-      creditNoteVariants.map((entry) => [
-        entry.id,
-        normalizeTextBlocksForVariant(templateTextBlockSets[entry.id], entry.id),
-      ]),
-    );
-  }
-
-  return {
-    ...initialSets,
-    [variant]: normalizeTextBlocksForVariant(fallbackTextBlocks, variant),
-  };
-}
-
-function normalizePositions(templatePositions) {
-  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
-    return [createCreditNotePosition()];
-  }
-
-  return templatePositions.map((position) => ({
-    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
-    description: String(position.description ?? 'Leistung beschreiben'),
-    unitPrice: String(position.unitPrice ?? '0'),
-    quantity: String(position.quantity ?? '1'),
-    unit: String(position.unit ?? 'Stk.'),
-    taxRate: String(position.taxRate ?? '19'),
-  }));
 }
 
 const offerPrintLayout = {
@@ -767,26 +711,6 @@ function createOfferPrintItems({
         ]
       : []),
   ];
-}
-
-function validateOfferTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gültiges Gutschriftsdokument.');
-  }
-
-  if (template.documentType !== 'creditNote') {
-    throw new Error('Diese JSON-Datei ist keine Gutschrift.');
-  }
-
-  if (template.schemaVersion !== offerSchemaVersion) {
-    throw new Error('Diese Gutschriftsversion wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Gutschriftdaten.');
-  }
-
-  return template.data;
 }
 
 function CreditNoteVariantControls({ activeVariant, onSelect }) {
@@ -869,7 +793,6 @@ export default function CreditNoteDocumentEditor() {
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [offerData, setOfferData] = useState(defaultOfferData);
@@ -1296,28 +1219,6 @@ export default function CreditNoteDocumentEditor() {
     }));
   }
 
-  function createOfferTemplate() {
-    return {
-      documentType: 'creditNote',
-      schemaVersion: '1.0',
-      createdWith: 'Belege24',
-      data: {
-        labels,
-        creditNoteVariant: normalizedCreditNoteVariant,
-        isSmallBusiness,
-        ...offerData,
-        positions,
-        textBlocks,
-        textBlockSets,
-        fieldConfig,
-      },
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createOfferTemplate(), createJsonFileName(details.creditNoteNumber));
-  }
-
   function handleNewDocument() {
     setLabels(initialCreditNoteLabels);
     setOfferData(defaultOfferData);
@@ -1337,39 +1238,6 @@ export default function CreditNoteDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
-  }
-
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswählen.');
-      return;
-    }
-
-    try {
-      const template = JSON.parse(await file.text());
-      const data = validateOfferTemplate(template);
-      const templateVariant = creditNoteVariantIds.includes(data.creditNoteVariant)
-        ? data.creditNoteVariant
-        : 'creditNote';
-
-      setLabels({ ...initialCreditNoteLabels, ...(data.labels ?? {}) });
-      setOfferData(normalizeOfferData(data));
-      setPositions(normalizePositions(data.positions));
-      setCreditNoteVariant(templateVariant);
-      setTextBlockSets(normalizeTextBlockSets(data.textBlockSets, data.textBlocks, templateVariant));
-      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      setIsSmallBusiness(data.isSmallBusiness === true);
-      setIsDataCheckMode(false);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
-    }
   }
 
   function runWithCleanDocument(callback) {
@@ -1530,12 +1398,9 @@ export default function CreditNoteDocumentEditor() {
           isDataCheckActive={isDataCheckMode}
           isEditable={highlightFields}
           isExporting={isExporting}
-          jsonInputRef={jsonInputRef}
           onCreatePdf={handleCreatePdf}
-          onLoadJson={handleLoadJson}
           onNewDocument={handleNewDocument}
           onPrint={handlePrint}
-          onSaveJson={handleSaveJson}
           onToggleDataCheck={toggleDataCheckMode}
           onToggleEditable={toggleEditableMode}
         />

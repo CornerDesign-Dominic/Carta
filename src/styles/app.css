@@ -1220,14 +1220,6 @@ h1 {
   text-decoration: line-through;
 }
 
-.document-usage-mini-line.is-code {
-  border: 1px solid rgba(216, 208, 196, 0.9);
-  border-radius: 3px;
-  background: rgba(246, 242, 235, 0.72);
-  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
-  color: var(--accent-deep);
-}
-
 .document-usage-mini-line.is-marked {
   border: 1px solid rgba(203, 155, 67, 0.38);
   border-radius: 3px;
@@ -1827,10 +1819,6 @@ h1 {
   line-height: 1.35;
   text-align: center;
   box-shadow: none;
-}
-
-.invoice-template-input {
-  display: none;
 }
 
 .offer-sheet {

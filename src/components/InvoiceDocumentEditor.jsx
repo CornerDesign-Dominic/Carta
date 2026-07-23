@@ -18,8 +18,8 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { mapStandardInvoiceToDocument } from '../documentModel/invoiceMapping.js';
 
-const invoiceSchemaVersion = '1.0';
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
@@ -295,7 +295,10 @@ const invoicePrintLayout = {
 };
 
 function joinLine(...parts) {
-  return parts.map((part) => String(part ?? '').trim()).filter(Boolean).join(' ');
+  const sourceParts = parts.map((part) => String(part ?? ''));
+  const nonEmptyParts = sourceParts.filter((part) => part !== '');
+  if (nonEmptyParts.length === 1) return nonEmptyParts[0];
+  return sourceParts.map((part) => part.trim()).filter(Boolean).join(' ');
 }
 
 function createReturnAddress(sender) {
@@ -571,22 +574,6 @@ function writeStoredSmallBusinessMode(isSmallBusiness) {
   window.localStorage.setItem(smallBusinessStorageKey, isSmallBusiness ? 'true' : 'false');
 }
 
-function normalizePositions(templatePositions) {
-  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
-    return [createInvoicePosition()];
-  }
-
-  return templatePositions.map((position) => ({
-    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
-    articleNumber: String(position.articleNumber ?? ''),
-    description: String(position.description ?? 'Leistung beschreiben'),
-    unitPrice: String(position.unitPrice ?? '0'),
-    quantity: String(position.quantity ?? '1'),
-    unit: String(position.unit ?? 'pauschal'),
-    taxRate: String(position.taxRate ?? '19'),
-  }));
-}
-
 function createPreviousPayment(index = 1) {
   return {
     id: crypto.randomUUID(),
@@ -664,7 +651,7 @@ function parseInvoiceFooterLine(field, value = '') {
   const labelField = invoiceFooterLabeledFields[field];
 
   if (!labelField) {
-    return String(value ?? '').trim();
+    return String(value ?? '');
   }
 
   const source = String(value ?? '').trim();
@@ -842,50 +829,12 @@ function createPdfFileName(title, number, invoiceVariant = 'standard') {
   return `${cleanTitle || 'rechnung'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(number) {
-  const cleanNumber = createSlug(number || '');
-
-  return cleanNumber ? `rechnung-${cleanNumber}.json` : 'rechnung-vorlage.json';
-}
-
 function createSlug(value) {
   return String(value || '')
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9aouess]+/gi, '-')
     .replace(/^-+|-+$/g, '');
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function validateInvoiceTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gültiges Rechnungsdokument.');
-  }
-
-  if (template.documentType !== 'invoice') {
-    throw new Error('Diese JSON-Datei ist keine Rechnung.');
-  }
-
-  if (template.schemaVersion !== invoiceSchemaVersion) {
-    throw new Error('Diese Rechnungsversion wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Rechnungsdaten.');
-  }
-
-  return template.data;
 }
 
 function createInvoicePrintItems({
@@ -1169,7 +1118,6 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [invoiceData, setInvoiceData] = useState(defaultInvoiceData);
@@ -1185,6 +1133,20 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   );
   const activeTextBlockSetKey = getTextBlockSetKey(normalizedInvoiceVariant);
   const textBlocks = textBlockSets[activeTextBlockSetKey] ?? textBlockSets.default;
+  const initialGeneratorStateRef = useRef(null);
+  const currentGeneratorState = {
+    invoiceVariant: normalizedInvoiceVariant,
+    labels,
+    invoiceData,
+    positions,
+    previousPayments,
+    textBlocks,
+    isSmallBusinessInvoice,
+    fieldConfig,
+  };
+  if (initialGeneratorStateRef.current === null) {
+    initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
+  }
 
   useEffect(() => {
     if (typeof initialSmallBusiness === 'boolean') {
@@ -1373,6 +1335,26 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         return { ...current, recipient: { ...current.recipient, address: { ...current.recipient.address, ...value } } };
       }
 
+      if (field === 'street') {
+        return {
+          ...current,
+          recipient: {
+            ...current.recipient,
+            address: { ...current.recipient.address, street: value, houseNumber: '' },
+          },
+        };
+      }
+
+      if (field === 'cityLine') {
+        return {
+          ...current,
+          recipient: {
+            ...current.recipient,
+            address: { ...current.recipient.address, postalCode: value, city: '' },
+          },
+        };
+      }
+
       return { ...current, recipient: { ...current.recipient, [field]: value } };
     });
   }
@@ -1412,8 +1394,16 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         if (entryField === 'companyName') footer.company.companyName = normalizedValue;
         if (entryField === 'companyStreetName') footer.company.street = normalizedValue;
         if (entryField === 'companyHouseNumber') footer.company.houseNumber = normalizedValue;
+        if (entryField === 'companyStreet') {
+          footer.company.street = String(entryValue ?? '');
+          footer.company.houseNumber = '';
+        }
         if (entryField === 'companyPostalCode') footer.company.postalCode = normalizedValue;
         if (entryField === 'companyCityName') footer.company.city = normalizedValue;
+        if (entryField === 'companyCity') {
+          footer.company.postalCode = String(entryValue ?? '');
+          footer.company.city = '';
+        }
         if (entryField === 'companyExtra') footer.company.extra = normalizedValue;
         if (entryField === 'vatIdLabel') footer.tax.vatIdLabel = normalizedValue;
         if (entryField === 'vatId') footer.tax.vatId = normalizedValue;
@@ -1471,6 +1461,26 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           deliveryAddress: {
             ...current.deliveryAddress,
             address: { ...current.deliveryAddress.address, ...value },
+          },
+        };
+      }
+
+      if (field === 'street') {
+        return {
+          ...current,
+          deliveryAddress: {
+            ...current.deliveryAddress,
+            address: { ...current.deliveryAddress.address, street: value, houseNumber: '' },
+          },
+        };
+      }
+
+      if (field === 'cityLine') {
+        return {
+          ...current,
+          deliveryAddress: {
+            ...current.deliveryAddress,
+            address: { ...current.deliveryAddress.address, postalCode: value, city: '' },
           },
         };
       }
@@ -1602,28 +1612,6 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     ));
   }
 
-  function createInvoiceTemplate() {
-    return {
-      documentType: 'invoice',
-      invoiceVariant: normalizedInvoiceVariant,
-      schemaVersion: invoiceSchemaVersion,
-      createdWith: 'Belege24',
-      data: {
-        labels,
-        ...invoiceData,
-        isSmallBusiness: isSmallBusinessInvoice,
-        positions,
-        previousPayments,
-        textBlocks,
-        fieldConfig,
-      },
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createInvoiceTemplate(), createJsonFileName(details.invoiceNumber));
-  }
-
   function handleNewDocument() {
     const resetSmallBusinessMode = readStoredSmallBusinessMode();
 
@@ -1648,66 +1636,30 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
   }
 
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-
-    if (!file) {
-      return;
-    }
-
-    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
-      window.alert('Bitte eine JSON-Datei auswÃ¤hlen.');
-      return;
-    }
-
-    try {
-      const template = JSON.parse(await file.text());
-      const data = validateInvoiceTemplate(template);
-      const templateInvoiceVariant = invoiceVariantIds.includes(data.invoiceVariant)
-        ? data.invoiceVariant
-        : normalizedInvoiceVariant;
-      const templateSmallBusiness =
-        data.invoiceVariant === 'smallBusiness' ? true : data.isSmallBusiness === true;
-
-      setLabels({ ...initialInvoiceLabels, ...(data.labels ?? {}) });
-      setInvoiceData(normalizeInvoiceData(data));
-      const normalizedTemplatePositions = normalizePositions(data.positions);
-      setPositions(
-        templateInvoiceVariant === 'text'
-          ? normalizedTemplatePositions.map(normalizeTextInvoiceDefaultPosition)
-          : normalizedTemplatePositions,
-      );
-      setPreviousPayments(normalizePreviousPayments(data.previousPayments));
-      setActiveTextBlocks(normalizeTextBlocksForVariant(data.textBlocks, templateInvoiceVariant), templateInvoiceVariant);
-      setSmallBusinessMode(templateSmallBusiness, { persist: false });
-      setFieldConfig(normalizeFieldConfig(data.fieldConfig));
-      if (
-        invoiceVariantIds.includes(data.invoiceVariant)
-      ) {
-        onInvoiceVariantChange?.(templateInvoiceVariant);
-      }
-
-      if (data.invoiceVariant === 'smallBusiness') {
-        onInvoiceVariantChange?.('standard');
-      }
-      setIsDataCheckMode(false);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die JSON-Datei konnte nicht geladen werden.');
-    }
-  }
-
-
   async function handleCreatePdf() {
     setIsExporting(true);
 
     try {
       await refreshPrintPages();
+      const belege24Document = normalizedInvoiceVariant === 'standard'
+        ? mapStandardInvoiceToDocument({
+            invoiceVariant: normalizedInvoiceVariant,
+            labels,
+            invoiceData,
+            positions,
+            previousPayments,
+            textBlocks,
+            isSmallBusinessInvoice,
+            fieldConfig,
+          })
+        : undefined;
+
       await requestPdfDownload({
         sheet: sheetRef.current,
         exportRoot: printPagesRef.current,
         documentType: 'invoice',
         filename: createPdfFileName(labels.title, details.invoiceNumber, normalizedInvoiceVariant),
+        belege24Document,
       });
     } catch (error) {
       window.alert(
@@ -1717,6 +1669,54 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       setIsExportRenderActive(false);
       setIsExporting(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (
+      !(file instanceof File)
+      || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))
+    ) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+
+    let importResult;
+    try {
+      const { importStandardInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
+      importResult = await importStandardInvoicePdf(await file.arrayBuffer());
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+    if (importResult.status !== 'valid') {
+      window.alert(importResult.message);
+      return;
+    }
+
+    const { confirmStandardInvoiceOverwrite } = await import('../documentModel/invoicePdfImport.js');
+    const mayOverwrite = confirmStandardInvoiceOverwrite(
+      currentGeneratorState,
+      initialGeneratorStateRef.current,
+      () => window.confirm(
+        'Die aktuelle Standardrechnung enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?',
+      ),
+    );
+    if (!mayOverwrite) return;
+
+    const restored = importResult.state;
+    setLabels(restored.labels);
+    setInvoiceData(restored.invoiceData);
+    setPositions(restored.positions);
+    setPreviousPayments(restored.previousPayments);
+    setActiveTextBlocks(restored.textBlocks, 'standard');
+    setSmallBusinessMode(restored.isSmallBusinessInvoice, { persist: false });
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    window.alert(importResult.message);
   }
 
   async function handlePrint() {
@@ -1828,12 +1828,10 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           isDataCheckActive={isDataCheckMode}
           isEditable={highlightFields}
           isExporting={isExporting}
-          jsonInputRef={jsonInputRef}
           onCreatePdf={handleCreatePdf}
-          onLoadJson={handleLoadJson}
+          onLoadPdf={normalizedInvoiceVariant === 'standard' ? handleLoadPdf : undefined}
           onNewDocument={handleNewDocument}
           onPrint={handlePrint}
-          onSaveJson={handleSaveJson}
           onToggleDataCheck={toggleDataCheckMode}
           onToggleEditable={toggleEditableMode}
         />

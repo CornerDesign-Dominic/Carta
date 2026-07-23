@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { trackAnalyticsEvent } from '../../utils/analytics.js';
 
 const toolbarGeneratorMeta = {
@@ -17,16 +18,15 @@ export default function DocumentToolbar({
   isEditable,
   isDataCheckActive = false,
   isExporting,
-  jsonInputRef,
   onCreatePdf,
+  onLoadPdf,
   onToggleDataCheck,
-  onLoadJson,
   onNewDocument,
   onPrint,
-  onSaveJson,
   onToggleEditable,
   previewLabel = 'Vorschau',
 }) {
+  const pdfInputRef = useRef(null);
   const documentName = String(ariaLabel ?? '').replace(/\s+Werkzeuge$/, '');
   const analyticsMeta = toolbarGeneratorMeta[documentName];
 
@@ -75,6 +75,32 @@ export default function DocumentToolbar({
         )}
       </div>
       <div className="visual-toolbar-group">
+        {onLoadPdf && (
+          <>
+            <input
+              ref={pdfInputRef}
+              type="file"
+              accept="application/pdf,.pdf"
+              hidden
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                event.target.value = '';
+                if (file) onLoadPdf(file);
+              }}
+            />
+            <button
+              type="button"
+              title="Belege24-PDF laden"
+              aria-label="Belege24-PDF laden"
+              onClick={() => {
+                trackDocumentAction('load_pdf');
+                pdfInputRef.current?.click();
+              }}
+            >
+              PDF laden
+            </button>
+          </>
+        )}
         <button
           type="button"
           title="Druckdialog öffnen"
@@ -98,44 +124,6 @@ export default function DocumentToolbar({
         >
           {isExporting ? exportingLabel : 'PDF erstellen'}
         </button>
-      </div>
-      <div className="visual-toolbar-group">
-        {onSaveJson && (
-          <button
-            type="button"
-            title="Dokument als Vorlage speichern"
-            aria-label="Dokument als Vorlage speichern"
-            onClick={() => {
-              trackDocumentAction('save_template');
-              onSaveJson?.();
-            }}
-          >
-            Vorlage erstellen
-          </button>
-        )}
-        {onLoadJson && (
-          <>
-            <button
-              type="button"
-              title="Dokument aus Vorlage laden"
-              aria-label="Dokument aus Vorlage laden"
-              onClick={() => {
-                trackDocumentAction('load_template');
-                jsonInputRef?.current?.click();
-              }}
-            >
-              Vorlage laden
-            </button>
-            <input
-              ref={jsonInputRef}
-              className="invoice-template-input"
-              type="file"
-              accept="application/json,.json"
-              aria-label="Vorlage laden"
-              onChange={onLoadJson}
-            />
-          </>
-        )}
       </div>
       {onNewDocument && (
         <div className="visual-toolbar-group visual-toolbar-new-group">

@@ -6,17 +6,23 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@sparticuz/chromium": "latest",
+    "pdf-lib": "^1.17.1",
     "puppeteer-core": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "@vitejs/plugin-react": "latest",
-    "vite": "latest"
+    "typescript": "^7.0.2",
+    "vite": "latest",
+    "vitest": "^4.1.10"
   }
 }

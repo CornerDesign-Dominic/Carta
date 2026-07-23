@@ -14,7 +14,6 @@ import { paginateMeasuredItems, takeMeasuredText } from './documentExport/Measur
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
-const selfReceiptSchemaVersion = '1.0';
 
 const initialSelfReceiptLabels = {
   title: 'Eigenbeleg',
@@ -503,64 +502,6 @@ function createPdfFileName(title, number) {
   return `${cleanTitle || 'eigenbeleg'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-function createJsonFileName(number) {
-  const cleanNumber = createSlug(number || '');
-  return cleanNumber ? `eigenbeleg-${cleanNumber}.json` : 'eigenbeleg-vorlage.json';
-}
-
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function normalizeTextBlocks(templateTextBlocks) {
-  const defaults = defaultSelfReceiptTextBlocks.map((block) => ({ ...block }));
-
-  if (!Array.isArray(templateTextBlocks)) {
-    return defaults;
-  }
-
-  const knownBlocks = new Map(defaults.map((block) => [block.id, block]));
-  const normalized = templateTextBlocks
-    .filter((block) => knownBlocks.has(block?.id))
-    .map((block) => ({
-      ...knownBlocks.get(block.id),
-      label: typeof block.label === 'string' && block.label ? block.label : knownBlocks.get(block.id).label,
-      value: typeof block.value === 'string' ? block.value : knownBlocks.get(block.id).value,
-      visible: typeof block.visible === 'boolean' ? block.visible : true,
-    }));
-
-  defaults.forEach((block) => {
-    if (!normalized.some((entry) => entry.id === block.id)) {
-      normalized.push(block);
-    }
-  });
-
-  return normalized;
-}
-
-function normalizePositions(templatePositions) {
-  if (!Array.isArray(templatePositions) || templatePositions.length === 0) {
-    return [createSelfReceiptPosition()];
-  }
-
-  return templatePositions.map((position) => ({
-    id: typeof position.id === 'string' && position.id ? position.id : crypto.randomUUID(),
-    expenseDate: String(position.expenseDate ?? '2026-05-07'),
-    category: String(position.category ?? 'Bewirtung'),
-    description: String(position.description ?? 'Besprechung mit Projektpartnern inkl. Verpflegung'),
-    netAmount: String(position.netAmount ?? '0'),
-    taxRate: String(position.taxRate ?? '19'),
-  }));
-}
-
 function normalizeExpenseInfo(expenseInfo = {}) {
   return {
     occasion: String(expenseInfo.occasion ?? defaultSelfReceiptData.expenseInfo.occasion),
@@ -589,26 +530,6 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, textBlocks }) {
   ];
 }
 
-function validateSelfReceiptTemplate(template) {
-  if (!template || typeof template !== 'object') {
-    throw new Error('Die JSON-Datei ist kein gültiger Eigenbeleg.');
-  }
-
-  if (template.documentType !== 'selfReceipt') {
-    throw new Error('Diese JSON-Datei ist kein Eigenbeleg.');
-  }
-
-  if (template.schemaVersion !== selfReceiptSchemaVersion) {
-    throw new Error('Diese Eigenbeleg-Version wird nicht unterstützt.');
-  }
-
-  if (!template.data || typeof template.data !== 'object') {
-    throw new Error('Die JSON-Datei enthält keine Eigenbelegdaten.');
-  }
-
-  return template;
-}
-
 export default function SelfReceiptDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -623,7 +544,6 @@ export default function SelfReceiptDocumentEditor() {
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const jsonInputRef = useRef(null);
   const textBlockRefs = useRef({});
   const detailTextareaRefs = useRef({});
   const positionTextareaRefs = useRef({});
@@ -859,22 +779,6 @@ export default function SelfReceiptDocumentEditor() {
     dateInputRefs.current[field]?.focus();
   }
 
-  function createTemplatePayload() {
-    return {
-      documentType: 'selfReceipt',
-      schemaVersion: selfReceiptSchemaVersion,
-      labels,
-      fieldConfig,
-      data: selfReceiptData,
-      textBlocks,
-      positions,
-    };
-  }
-
-  function handleSaveJson() {
-    downloadJson(createTemplatePayload(), createJsonFileName(details.selfReceiptId));
-  }
-
   function handleNewDocument() {
     setLabels(initialSelfReceiptLabels);
     setFieldConfig({
@@ -891,27 +795,6 @@ export default function SelfReceiptDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
-  }
-
-  async function handleLoadJson(event) {
-    const file = event.target.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    try {
-      const template = validateSelfReceiptTemplate(JSON.parse(await file.text()));
-      setLabels({ ...initialSelfReceiptLabels, ...(template.labels ?? {}) });
-      setFieldConfig(normalizeFieldConfig(template.fieldConfig));
-      setSelfReceiptData(normalizeSelfReceiptData(template.data));
-      setTextBlocks(normalizeTextBlocks(template.textBlocks));
-      setPositions(normalizePositions(template.positions));
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Die Vorlage konnte nicht geladen werden.');
-    } finally {
-      event.target.value = '';
-    }
   }
 
   async function handleCreatePdf() {
@@ -1131,12 +1014,9 @@ export default function SelfReceiptDocumentEditor() {
         ariaLabel="Eigenbeleg Werkzeuge"
         isEditable={highlightFields}
         isExporting={isExporting}
-        jsonInputRef={jsonInputRef}
         onCreatePdf={handleCreatePdf}
-        onLoadJson={handleLoadJson}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
-        onSaveJson={handleSaveJson}
         onToggleEditable={() => setHighlightFields((current) => !current)}
       />
 

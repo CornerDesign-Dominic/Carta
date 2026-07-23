@@ -206,7 +206,13 @@ function isPdfArrayBuffer(arrayBuffer) {
   );
 }
 
-export async function requestPdfDownload({ sheet, exportRoot, documentType, filename }) {
+export async function requestPdfDownload({
+  sheet,
+  exportRoot,
+  documentType,
+  filename,
+  belege24Document,
+}) {
   if (!sheet) {
     throw new Error('Kein Dokument zum Exportieren gefunden.');
   }
@@ -220,6 +226,7 @@ export async function requestPdfDownload({ sheet, exportRoot, documentType, file
       documentType,
       filename,
       html: buildExportHtml(sheet, exportRoot),
+      belege24Document,
     }),
   });
 

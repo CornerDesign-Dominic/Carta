@@ -1,0 +1,246 @@
+{
+  "format": "belege24-document",
+  "schemaVersion": "1.0.0",
+  "document": {
+    "documentType": "invoice",
+    "documentId": "123e4567-e89b-42d3-a456-426614174000",
+    "createdAt": "2026-07-23T12:00:00.000Z",
+    "generatorVersion": "0.1.0"
+  },
+  "sharedData": {
+    "sender": {
+      "brandName": "Belege24 Muster GmbH",
+      "senderLine": "Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin",
+      "address": {
+        "street": "Musterstraße",
+        "houseNumber": "12",
+        "postalCode": "10115",
+        "city": "Berlin"
+      },
+      "companyFooter": {
+        "columns": [
+          {
+            "fields": [
+              { "key": "companyName", "value": "Belege24 Muster GmbH" },
+              { "key": "streetAndNumber", "value": "Musterstraße 12" },
+              { "key": "postalCodeAndCity", "value": "10115 Berlin" },
+              { "key": "custom", "value": "" }
+            ]
+          },
+          {
+            "fields": [
+              { "key": "vatId", "value": "DE123456789" },
+              { "key": "taxNumber", "value": "12/345/67890" },
+              { "key": "commercialRegister", "value": "HRB 123456" },
+              { "key": "custom", "value": "Geschäftsführer: Max Mustermann" }
+            ]
+          },
+          {
+            "fields": [
+              { "key": "bankName", "value": "Musterbank" },
+              { "key": "iban", "value": "DE00 0000 0000 0000 0000 00" },
+              { "key": "bic", "value": "COBADEFFXXX" },
+              { "key": "custom", "value": "" }
+            ]
+          }
+        ],
+        "companyAddress": {
+          "street": "Musterstraße",
+          "houseNumber": "12",
+          "postalCode": "10115",
+          "city": "Berlin"
+        }
+      }
+    },
+    "recipient": {
+      "company": "Beispielkunde GmbH",
+      "contactPerson": "z. Hd. Frau Beispiel",
+      "department": "Buchhaltung",
+      "streetAndNumber": "Kundenstraße 8",
+      "countryPostalCodeAndCity": "20095 Hamburg",
+      "address": {
+        "street": "Kundenstraße",
+        "houseNumber": "8",
+        "postalCode": "20095",
+        "city": "Hamburg"
+      },
+      "customerNumber": "K-2048"
+    }
+  },
+  "documentData": {
+    "invoiceVariant": "standard",
+    "labels": {
+      "title": "Rechnung",
+      "invoiceNumber": "Rechnungsnummer",
+      "invoiceDate": "Belegdatum",
+      "serviceDate": "Leistungsdatum",
+      "internalNumber": "Interne Nummer",
+      "externalNumber": "Externe Nummer",
+      "customerNumber": "Kundennummer",
+      "position": "Pos.",
+      "articleNumber": "Artikelnummer",
+      "description": "Beschreibung",
+      "unitPrice": "Einzelpreis",
+      "quantity": "Anzahl",
+      "unit": "Einheit",
+      "tax": "USt.",
+      "total": "Gesamt",
+      "net": "Nettobetrag",
+      "taxAmount": "Umsatzsteuer",
+      "grandTotal": "Rechnungsbetrag",
+      "progressPaymentNumber": "Abschlag",
+      "projectName": "Projekt / Bauvorhaben",
+      "orderNumber": "Auftrags- oder Angebotsnummer",
+      "billingSection": "Leistungsstand / Abrechnungsabschnitt",
+      "partialService": "Abgeschlossene Teilleistung",
+      "completionDate": "Fertigstellung / Leistungszeitraum",
+      "previousPayments": "Fruehere Abschlaege",
+      "previousPaymentLabel": "Abschlag",
+      "previousPaymentInvoiceNumber": "Rechnungsnummer",
+      "previousPaymentInvoiceDate": "Rechnungsdatum",
+      "previousPaymentNet": "Nettobetrag",
+      "previousPaymentTaxRate": "USt.",
+      "previousPaymentTaxAmount": "USt.-Betrag",
+      "previousPaymentGross": "Bruttobetrag",
+      "previousPaymentStatus": "Status",
+      "serviceTotal": "Gesamtbetrag der Leistungen",
+      "serviceTax": "enthaltene Umsatzsteuer",
+      "deductedPayments": "beruecksichtigte Abschlagszahlungen",
+      "deductedPaymentTax": "darin enthaltene Umsatzsteuer",
+      "remainingNet": "verbleibender Nettobetrag",
+      "remainingTax": "verbleibende Umsatzsteuer",
+      "remainingGross": "verbleibender Restbetrag",
+      "contactEmail": "E-Mail",
+      "contactPhone": "Telefon",
+      "contactFax": "Fax",
+      "contactWebsite": "Website"
+    },
+    "invoice": {
+      "invoiceNumber": "RE-2026-001",
+      "invoiceDate": "2026-05-07",
+      "serviceDate": "2026-05-07",
+      "internalNumber": "INT-1001",
+      "externalNumber": "EXT-4711"
+    },
+    "senderContact": {
+      "email": "kontakt@belege24.com",
+      "phone": "+49 30 123456",
+      "fax": "+49 30 123457",
+      "website": "www.belege24.com"
+    },
+    "deliveryAddress": {
+      "company": "Beispielkunde GmbH",
+      "contactPerson": "z. Hd. Warenannahme",
+      "department": "Logistik",
+      "street": "Lieferstrasse",
+      "houseNumber": "3",
+      "postalCode": "20097",
+      "city": "Hamburg"
+    },
+    "project": {
+      "progressPaymentNumber": "1. Abschlag",
+      "projectName": "Sanierung Musterobjekt",
+      "orderNumber": "ANG-2026-014",
+      "billingSection": "Leistungsstand bis 30.05.2026",
+      "partialService": "Abgeschlossene Montagearbeiten im Erdgeschoss",
+      "completionDate": "Leistungszeitraum 01.05.2026 bis 30.05.2026"
+    },
+    "positions": [
+      {
+        "id": "8bf150ca-6401-4d76-81bf-31b4ef697f1e",
+        "articleNumber": "",
+        "description": "Beratungsleistung",
+        "unitPrice": "125.50",
+        "quantity": "2",
+        "unit": "Stunde",
+        "taxRate": "19",
+        "generatorInput": {
+          "unitPrice": "125.50",
+          "quantity": "2",
+          "taxRate": "19"
+        },
+        "calculated": {
+          "netAmount": "251.00",
+          "taxAmount": "47.69",
+          "grossAmount": "298.69"
+        }
+      }
+    ],
+    "previousPayments": [
+      {
+        "id": "f369f75d-79cd-47f5-9414-305742c03083",
+        "label": "1. Abschlag",
+        "invoiceNumber": "AR-2026-001",
+        "invoiceDate": "2026-05-07",
+        "netAmount": "0.00",
+        "taxRate": "19",
+        "status": "paid",
+        "generatorInput": {
+          "netAmount": "0",
+          "taxRate": "19"
+        },
+        "calculated": { "taxAmount": "0.00", "grossAmount": "0.00" }
+      }
+    ],
+    "textBlocks": [
+      {
+        "id": "intro",
+        "label": "Vorlauftext",
+        "value": "vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:",
+        "visible": true
+      },
+      {
+        "id": "closing",
+        "label": "Nachlauftext",
+        "value": "Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist.",
+        "visible": true
+      },
+      {
+        "id": "smallBusinessNotice",
+        "label": "Hinweis Kleinunternehmerregelung",
+        "value": "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
+        "visible": true
+      }
+    ],
+    "smallBusinessRule": { "enabled": false },
+    "footerFieldLabels": {
+      "vatId": "USt-IdNr.:",
+      "taxNumber": "Steuernummer:",
+      "iban": "IBAN:",
+      "bic": "BIC:"
+    },
+    "fieldConfiguration": {
+      "contact": { "hidden": [], "order": ["email", "phone", "fax", "website"] },
+      "details": { "hidden": [], "order": ["invoiceNumber", "invoiceDate", "serviceDate", "internalNumber", "externalNumber", "customerNumber"] },
+      "deliveryAddress": { "hidden": [], "order": ["attention", "name"] },
+      "recipient": { "hidden": [], "order": ["attention", "name"] },
+      "footerMiddle": { "hidden": [], "order": ["vatId", "taxNumber", "commercialRegister", "managingDirector"] }
+    },
+    "calculated": {
+      "invoiceTotals": {
+        "netAmount": "251.00",
+        "taxAmount": "47.69",
+        "grossAmount": "298.69",
+        "taxGroups": [{ "taxRate": "19", "netAmount": "251.00", "taxAmount": "47.69", "grossAmount": "298.69" }]
+      },
+      "serviceTotals": {
+        "netAmount": "251.00",
+        "taxAmount": "47.69",
+        "grossAmount": "298.69",
+        "taxGroups": [{ "taxRate": "19", "netAmount": "251.00", "taxAmount": "47.69", "grossAmount": "298.69" }]
+      },
+      "deductedPayments": {
+        "netAmount": "0.00",
+        "taxAmount": "0.00",
+        "grossAmount": "0.00",
+        "taxGroups": [{ "taxRate": "19", "netAmount": "0.00", "taxAmount": "0.00", "grossAmount": "0.00" }]
+      },
+      "remainingTotals": {
+        "netAmount": "251.00",
+        "taxAmount": "47.69",
+        "grossAmount": "298.69",
+        "taxGroups": [{ "taxRate": "19", "netAmount": "251.00", "taxAmount": "47.69", "grossAmount": "298.69" }]
+      }
+    }
+  }
+}

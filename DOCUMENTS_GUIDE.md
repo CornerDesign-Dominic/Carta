@@ -18,7 +18,6 @@ Belege sind interaktive DIN-A4-Dokumente.
 
 ## Daten
 
-- Vorlagen als Datei speichern und laden.
 - Keine serverseitige Speicherung von Dokumentdaten.
 - Datenprüfung markiert Beispieldaten, fehlende Angaben und auffällige Felder.
 
