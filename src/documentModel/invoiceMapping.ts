@@ -94,6 +94,10 @@ export interface StandardInvoiceGeneratorState {
   };
 }
 
+export type GoodsInvoiceGeneratorState = Omit<StandardInvoiceGeneratorState, 'invoiceVariant'> & {
+  invoiceVariant: 'goods';
+};
+
 export interface MappingOptions {
   documentId?: string;
   createdAt?: string;
@@ -348,4 +352,11 @@ export function mapStandardInvoiceToDocument(
       },
     },
   };
+}
+
+export function mapGoodsInvoiceToDocument(
+  state: GoodsInvoiceGeneratorState,
+  options: MappingOptions = {},
+): StandardInvoiceDocument {
+  return mapStandardInvoiceToDocument({ ...state, invoiceVariant: 'goods' }, options);
 }

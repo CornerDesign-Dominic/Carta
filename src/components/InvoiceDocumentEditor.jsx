@@ -18,7 +18,7 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
-import { mapStandardInvoiceToDocument } from '../documentModel/invoiceMapping.js';
+import { mapGoodsInvoiceToDocument, mapStandardInvoiceToDocument } from '../documentModel/invoiceMapping.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
@@ -1652,7 +1652,18 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             isSmallBusinessInvoice,
             fieldConfig,
           })
-        : undefined;
+        : isGoodsInvoice
+          ? mapGoodsInvoiceToDocument({
+              invoiceVariant: 'goods',
+              labels,
+              invoiceData,
+              positions,
+              previousPayments,
+              textBlocks,
+              isSmallBusinessInvoice,
+              fieldConfig,
+            })
+          : undefined;
 
       await requestPdfDownload({
         sheet: sheetRef.current,
@@ -1682,8 +1693,10 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
     let importResult;
     try {
-      const { importStandardInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
-      importResult = await importStandardInvoicePdf(await file.arrayBuffer());
+      const { importGoodsInvoicePdf, importStandardInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
+      importResult = normalizedInvoiceVariant === 'goods'
+        ? await importGoodsInvoicePdf(await file.arrayBuffer())
+        : await importStandardInvoicePdf(await file.arrayBuffer());
     } catch {
       window.alert('Die PDF konnte nicht gelesen werden.');
       return;
@@ -1693,12 +1706,15 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       return;
     }
 
-    const { confirmStandardInvoiceOverwrite } = await import('../documentModel/invoicePdfImport.js');
-    const mayOverwrite = confirmStandardInvoiceOverwrite(
+    const { confirmGoodsInvoiceOverwrite, confirmStandardInvoiceOverwrite } = await import('../documentModel/invoicePdfImport.js');
+    const confirmOverwrite = normalizedInvoiceVariant === 'goods'
+      ? confirmGoodsInvoiceOverwrite
+      : confirmStandardInvoiceOverwrite;
+    const mayOverwrite = confirmOverwrite(
       currentGeneratorState,
       initialGeneratorStateRef.current,
       () => window.confirm(
-        'Die aktuelle Standardrechnung enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?',
+        `Die aktuelle ${isGoodsInvoice ? 'Warenrechnung' : 'Standardrechnung'} enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?`,
       ),
     );
     if (!mayOverwrite) return;
@@ -1708,7 +1724,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setInvoiceData(restored.invoiceData);
     setPositions(restored.positions);
     setPreviousPayments(restored.previousPayments);
-    setActiveTextBlocks(restored.textBlocks, 'standard');
+    setActiveTextBlocks(restored.textBlocks, normalizedInvoiceVariant);
     setSmallBusinessMode(restored.isSmallBusinessInvoice, { persist: false });
     setFieldConfig(restored.fieldConfig);
     setHighlightFields(false);
@@ -1829,7 +1845,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           isEditable={highlightFields}
           isExporting={isExporting}
           onCreatePdf={handleCreatePdf}
-          onLoadPdf={normalizedInvoiceVariant === 'standard' ? handleLoadPdf : undefined}
+          onLoadPdf={normalizedInvoiceVariant === 'standard' || isGoodsInvoice ? handleLoadPdf : undefined}
           onNewDocument={handleNewDocument}
           onPrint={handlePrint}
           onToggleDataCheck={toggleDataCheckMode}

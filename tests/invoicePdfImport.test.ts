@@ -5,9 +5,13 @@ import { PDFDocument } from 'pdf-lib';
 import {
   BELEGE24_ATTACHMENT_FILE_NAME,
   BELEGE24_ATTACHMENT_MIME_TYPE,
+  confirmGoodsInvoiceOverwrite,
   confirmStandardInvoiceOverwrite,
   embedBelege24DocumentInPdf,
+  importGoodsInvoicePdf,
   importStandardInvoicePdf,
+  mapGoodsInvoiceToDocument,
+  restoreStandardInvoiceState,
   type StandardInvoiceGeneratorState,
 } from '../src/documentModel/index.js';
 
@@ -81,5 +85,88 @@ describe('visible standard-invoice PDF import', () => {
 
     confirm.mockReturnValue(true);
     expect(confirmStandardInvoiceOverwrite(changed, initial, confirm)).toBe(true);
+  });
+});
+
+function createGoodsInvoiceState() {
+  const restored = restoreStandardInvoiceState(readExampleDocument());
+  if (restored.status !== 'valid') throw new Error('Example invoice must be restorable.');
+
+  return {
+    ...restored.state,
+    invoiceVariant: 'goods' as const,
+    positions: [
+      {
+        ...restored.state.positions[0],
+        articleNumber: 'ART-Ä 01',
+        description: 'Ölfilter  mit  Sonderzeichen',
+        unitPrice: '0012,340',
+        quantity: '2,50',
+        unit: 'Stück ',
+        taxRate: '7,50',
+      },
+      {
+        ...restored.state.positions[0],
+        id: 'f8b0d9ba-dda1-4ed5-a3b8-e38e89ec98ae',
+        articleNumber: '',
+        description: 'Zusatzteil',
+        unitPrice: '0.10',
+        quantity: '3',
+        unit: '',
+        taxRate: '19',
+      },
+    ],
+  };
+}
+
+describe('visible goods-invoice PDF import', () => {
+  it('roundtrips all goods inputs through mapping, PDF attachment and restoration', async () => {
+    const sourceState = createGoodsInvoiceState();
+    sourceState.isSmallBusinessInvoice = true;
+    const document = mapGoodsInvoiceToDocument(sourceState, {
+      documentId: '123e4567-e89b-42d3-a456-426614174000',
+      createdAt: '2026-07-24T12:00:00.000Z',
+    });
+    const result = await importGoodsInvoicePdf(
+      await embedBelege24DocumentInPdf(await createPlainPdf(), document),
+    );
+
+    expect(result.status).toBe('valid');
+    if (result.status !== 'valid') throw new Error(result.message);
+    expect(result.state).toEqual(sourceState);
+    expect(result.state.positions[0]).toMatchObject({
+      articleNumber: 'ART-Ä 01',
+      unitPrice: '0012,340',
+      quantity: '2,50',
+      taxRate: '7,50',
+    });
+  });
+
+  it('rejects missing data and the standard-invoice variant without producing a state', async () => {
+    const plainResult = await importGoodsInvoicePdf(await createPlainPdf());
+    const standardDocument = readExampleDocument();
+    const variantResult = await importGoodsInvoicePdf(
+      await embedBelege24DocumentInPdf(await createPlainPdf(), standardDocument),
+    );
+
+    expect(plainResult).toMatchObject({ status: 'not-found' });
+    expect(variantResult).toEqual({
+      status: 'wrong-invoice-variant',
+      message: 'Diese Belege24-PDF ist keine Warenrechnung.',
+    });
+  });
+
+  it('only asks before overwriting changed goods-invoice input', () => {
+    const initial = createGoodsInvoiceState();
+    const changed = structuredClone(initial);
+    changed.positions[0].description = 'Geändert';
+    const confirm = vi.fn(() => false);
+
+    expect(confirmGoodsInvoiceOverwrite(initial, initial, confirm)).toBe(true);
+    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmGoodsInvoiceOverwrite(changed, initial, confirm)).toBe(false);
+    expect(confirm).toHaveBeenCalledOnce();
+    confirm.mockReturnValue(true);
+    expect(confirmGoodsInvoiceOverwrite(changed, initial, confirm)).toBe(true);
   });
 });

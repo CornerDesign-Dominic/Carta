@@ -2,7 +2,7 @@ import {
   BELEGE24_DOCUMENT_FORMAT,
   BELEGE24_SCHEMA_VERSION,
 } from './constants.js';
-import type { StandardInvoiceGeneratorState } from './invoiceMapping.js';
+import type { GoodsInvoiceGeneratorState, StandardInvoiceGeneratorState } from './invoiceMapping.js';
 import type {
   FieldConfiguration,
   FooterField,
@@ -15,6 +15,14 @@ import type {
 export type RestoreStandardInvoiceResult =
   | { status: 'valid'; state: StandardInvoiceGeneratorState }
   | { status: 'wrong-document-type'; documentType: unknown }
+  | { status: 'unsupported'; format: unknown; schemaVersion: unknown }
+  | { status: 'incomplete-data'; errors: string[] }
+  | { status: 'invalid-field-values'; errors: string[] };
+
+export type RestoreGoodsInvoiceResult =
+  | { status: 'valid'; state: GoodsInvoiceGeneratorState }
+  | { status: 'wrong-document-type'; documentType: unknown }
+  | { status: 'wrong-invoice-variant'; invoiceVariant: unknown }
   | { status: 'unsupported'; format: unknown; schemaVersion: unknown }
   | { status: 'incomplete-data'; errors: string[] }
   | { status: 'invalid-field-values'; errors: string[] };
@@ -138,7 +146,10 @@ function requireAddress(
   );
 }
 
-export function restoreStandardInvoiceState(document: unknown): RestoreStandardInvoiceResult {
+function restoreInvoiceState(
+  document: unknown,
+  expectedInvoiceVariant: 'standard' | 'goods',
+): RestoreStandardInvoiceResult | RestoreGoodsInvoiceResult {
   if (!isRecord(document)) {
     return { status: 'incomplete-data', errors: ['root must be an object'] };
   }
@@ -254,8 +265,11 @@ export function restoreStandardInvoiceState(document: unknown): RestoreStandardI
   if (invoice && typeof invoice.serviceDate === 'string' && invoice.serviceDate !== '' && !datePattern.test(invoice.serviceDate)) {
     invalidErrors.push('documentData.invoice.serviceDate must be empty or YYYY-MM-DD');
   }
-  if (documentData?.invoiceVariant !== 'standard') {
-    invalidErrors.push('documentData.invoiceVariant must be "standard"');
+  if (documentData?.invoiceVariant !== expectedInvoiceVariant) {
+    return {
+      status: 'wrong-invoice-variant',
+      invoiceVariant: documentData?.invoiceVariant,
+    };
   }
   if (!isStringRecord(documentData?.labels)) {
     invalidErrors.push('documentData.labels must contain string values');
@@ -302,7 +316,7 @@ export function restoreStandardInvoiceState(document: unknown): RestoreStandardI
   return {
     status: 'valid',
     state: {
-      invoiceVariant: 'standard',
+      invoiceVariant: expectedInvoiceVariant,
       labels: { ...data.labels },
       invoiceData: {
         sender: {
@@ -382,4 +396,16 @@ export function restoreStandardInvoiceState(document: unknown): RestoreStandardI
       },
     },
   };
+}
+
+export function restoreStandardInvoiceState(document: unknown): RestoreStandardInvoiceResult {
+  const restored = restoreInvoiceState(document, 'standard');
+  if (restored.status === 'wrong-invoice-variant') {
+    return { status: 'invalid-field-values', errors: ['documentData.invoiceVariant must be "standard"'] };
+  }
+  return restored as RestoreStandardInvoiceResult;
+}
+
+export function restoreGoodsInvoiceState(document: unknown): RestoreGoodsInvoiceResult {
+  return restoreInvoiceState(document, 'goods') as RestoreGoodsInvoiceResult;
 }
