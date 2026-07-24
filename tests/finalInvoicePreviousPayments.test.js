@@ -13,19 +13,17 @@ const labels = {
   previousPaymentInvoiceNumber: 'Rechnungsnr.',
   previousPaymentInvoiceDate: 'Datum',
   previousPaymentNet: 'Netto',
-  previousPaymentTaxRate: 'USt.',
-  previousPaymentTaxAmount: 'USt.-Betrag',
+  previousPaymentTaxAmount: 'USt.',
   previousPaymentGross: 'Brutto',
 };
 
 describe('final invoice previous payments', () => {
-  it('uses exactly the six compact columns with correct umlauts', () => {
+  it('uses exactly the five compact columns with direct tax amounts', () => {
     expect(getFinalInvoicePreviousPaymentColumns()).toEqual([
       { field: 'invoiceNumber', labelField: 'previousPaymentInvoiceNumber', label: 'Rechnungsnr.' },
       { field: 'invoiceDate', labelField: 'previousPaymentInvoiceDate', label: 'Datum' },
       { field: 'netAmount', labelField: 'previousPaymentNet', label: 'Netto' },
-      { field: 'taxRate', labelField: 'previousPaymentTaxRate', label: 'USt.' },
-      { field: 'taxAmount', labelField: 'previousPaymentTaxAmount', label: 'USt.-Betrag' },
+      { field: 'taxAmount', labelField: 'previousPaymentTaxAmount', label: 'USt.' },
       { field: 'grossAmount', labelField: 'previousPaymentGross', label: 'Brutto' },
     ]);
   });
@@ -38,7 +36,7 @@ describe('final invoice previous payments', () => {
 
   it('places the editor remove action in the first cell without an action column', () => {
     const markup = renderToStaticMarkup(createElement(PreviousPaymentsTable, {
-      calculatePayment: () => ({ net: 0, taxRate: 19, tax: 0, gross: 0 }),
+      calculatePayment: () => ({ net: 0, tax: 0, gross: 0 }),
       formatCurrency: (value) => new Intl.NumberFormat('de-DE', {
         style: 'currency',
         currency: 'EUR',
@@ -52,22 +50,21 @@ describe('final invoice previous payments', () => {
         invoiceNumber: 'AR-2026-001',
         invoiceDate: '2026-05-07',
         netAmount: '0',
-        taxRate: '19',
+        taxAmount: '0',
       }],
     }));
 
     expect(markup).toMatch(/value="0,00\s€"/);
     expect(markup).toContain('invoice-previous-payment-actions');
-    expect(markup.match(/<td/g)).toHaveLength(6);
+    expect(markup.match(/<td/g)).toHaveLength(5);
   });
 
   it('prints multiple payments without the former payment label or status column', () => {
     const markup = renderToStaticMarkup(createElement(InvoicePrintPreviousPaymentsTable, {
       calculatePreviousPayment: (payment) => ({
         net: Number(payment.netAmount),
-        taxRate: Number(payment.taxRate),
-        tax: Number(payment.netAmount) * Number(payment.taxRate) / 100,
-        gross: Number(payment.netAmount) * (1 + Number(payment.taxRate) / 100),
+        tax: Number(payment.taxAmount),
+        gross: Number(payment.netAmount) + Number(payment.taxAmount),
       }),
       labels,
       previousPaymentItems: [
@@ -79,7 +76,7 @@ describe('final invoice previous payments', () => {
             invoiceNumber: 'AR-2026-LANGE-REFERENZ-0001',
             invoiceDate: '2026-05-07',
             netAmount: '1000',
-            taxRate: '19',
+            taxAmount: '190',
             status: 'paid',
           },
         },
@@ -91,7 +88,7 @@ describe('final invoice previous payments', () => {
             invoiceNumber: 'AR-2026-002',
             invoiceDate: '2026-06-07',
             netAmount: '500',
-            taxRate: '7',
+            taxAmount: '35',
             status: 'open',
           },
         },

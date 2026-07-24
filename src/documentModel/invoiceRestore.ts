@@ -82,8 +82,23 @@ function isPosition(value: unknown): value is InvoicePositionInput & { calculate
     && isRecord(value.calculated);
 }
 
-function isPreviousPayment(value: unknown): value is PreviousPaymentInput & { calculated: unknown } {
+function isPreviousPayment(value: unknown): boolean {
   const generatorInput = isRecord(value) ? value.generatorInput : undefined;
+  const calculated = isRecord(value) ? value.calculated : undefined;
+  const hasDirectTaxAmount = isRecord(value)
+    && typeof value.taxAmount === 'string'
+    && decimalPattern.test(value.taxAmount)
+    && isRecord(generatorInput)
+    && typeof generatorInput.taxAmount === 'string';
+  const hasLegacyTaxRate = isRecord(value)
+    && typeof value.taxRate === 'string'
+    && decimalPattern.test(value.taxRate)
+    && isRecord(generatorInput)
+    && typeof generatorInput.taxRate === 'string'
+    && isRecord(calculated)
+    && typeof calculated.taxAmount === 'string'
+    && decimalPattern.test(calculated.taxAmount);
+
   return isRecord(value)
     && typeof value.id === 'string'
     && uuidPattern.test(value.id)
@@ -93,13 +108,26 @@ function isPreviousPayment(value: unknown): value is PreviousPaymentInput & { ca
     && (value.invoiceDate === '' || datePattern.test(value.invoiceDate))
     && typeof value.netAmount === 'string'
     && decimalPattern.test(value.netAmount)
-    && typeof value.taxRate === 'string'
-    && decimalPattern.test(value.taxRate)
     && isRecord(generatorInput)
     && typeof generatorInput.netAmount === 'string'
-    && typeof generatorInput.taxRate === 'string'
     && (value.status === 'paid' || value.status === 'open')
-    && isRecord(value.calculated);
+    && isRecord(calculated)
+    && (hasDirectTaxAmount || hasLegacyTaxRate);
+}
+
+function restorePreviousPayment(value: unknown): PreviousPaymentInput {
+  const payment = value as Record<string, unknown>;
+  const generatorInput = payment.generatorInput as Record<string, unknown>;
+  const calculated = payment.calculated as Record<string, unknown>;
+  const { calculated: _calculated, generatorInput: _generatorInput, taxRate: _taxRate, ...rest } = payment;
+
+  return {
+    ...rest,
+    netAmount: String(generatorInput.netAmount),
+    taxAmount: typeof generatorInput.taxAmount === 'string'
+      ? generatorInput.taxAmount
+      : String(calculated.taxAmount),
+  } as PreviousPaymentInput;
 }
 
 function requireRecord(
@@ -381,10 +409,7 @@ function restoreInvoiceState(
         ...position,
         ...generatorInput,
       })),
-      previousPayments: data.previousPayments.map(({ calculated: _calculated, generatorInput, ...payment }) => ({
-        ...payment,
-        ...generatorInput,
-      })),
+      previousPayments: data.previousPayments.map(restorePreviousPayment),
       textBlocks: data.textBlocks.map((block) => ({ ...block })),
       isSmallBusinessInvoice: data.smallBusinessRule.enabled,
       fieldConfig: {

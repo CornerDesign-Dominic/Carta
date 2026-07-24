@@ -112,17 +112,16 @@ export interface PreviousPaymentInput {
   invoiceNumber: string;
   invoiceDate: IsoDate | '';
   netAmount: MoneyDecimal;
-  taxRate: DecimalString;
+  taxAmount: MoneyDecimal;
   status: 'paid' | 'open';
 }
 
 export interface CalculatedPreviousPayment extends PreviousPaymentInput {
   generatorInput: {
     netAmount: string;
-    taxRate: string;
+    taxAmount: string;
   };
   calculated: {
-    taxAmount: MoneyDecimal;
     grossAmount: MoneyDecimal;
   };
 }

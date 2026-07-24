@@ -167,6 +167,14 @@ function addAmount(
   summary.tax += calculated.tax;
 }
 
+function addDirectAmount(
+  summary: ReturnType<typeof emptySummary>,
+  calculated: { net: number; tax: number; gross: number },
+) {
+  summary.net += calculated.net;
+  summary.tax += calculated.tax;
+}
+
 function amountSummary(
   net: number,
   tax: number,
@@ -217,44 +225,39 @@ export function mapStandardInvoiceToDocument(
     };
   });
 
+  let hasDirectPreviousPayment = false;
   const previousPayments = state.previousPayments.map((payment) => {
     const net = parseDecimal(payment.netAmount);
-    const taxRate = state.isSmallBusinessInvoice ? 0 : Math.max(0, parseDecimal(payment.taxRate));
-    const tax = net * (taxRate / 100);
-    const calculated = { net, tax, gross: net + tax, taxRate };
-    if (payment.status === 'paid') addAmount(deducted, calculated);
+    const tax = state.isSmallBusinessInvoice ? 0 : Math.max(0, parseDecimal(payment.taxAmount));
+    const calculated = { net, tax, gross: net + tax };
+    if (payment.status === 'paid') {
+      addDirectAmount(deducted, calculated);
+      hasDirectPreviousPayment = true;
+    }
     return {
       ...payment,
       netAmount: money(net),
-      taxRate: decimalString(payment.taxRate),
+      taxAmount: money(tax),
       generatorInput: {
         netAmount: payment.netAmount,
-        taxRate: payment.taxRate,
+        taxAmount: payment.taxAmount,
       },
-      calculated: { taxAmount: money(tax), grossAmount: money(net + tax) },
+      calculated: { grossAmount: money(net + tax) },
     };
   });
 
   const remainingGroups = new Map<string, { taxRate: number; net: number; tax: number; gross: number }>();
-  service.groups.forEach((group, key) => {
-    const paid = deducted.groups.get(key) ?? { net: 0, tax: 0, gross: 0 };
-    remainingGroups.set(key, {
-      taxRate: group.taxRate,
-      net: group.net - paid.net,
-      tax: group.tax - paid.tax,
-      gross: group.gross - paid.gross,
-    });
-  });
-  deducted.groups.forEach((group, key) => {
-    if (!remainingGroups.has(key)) {
+  if (!hasDirectPreviousPayment) {
+    service.groups.forEach((group, key) => {
+      const paid = deducted.groups.get(key) ?? { net: 0, tax: 0, gross: 0 };
       remainingGroups.set(key, {
         taxRate: group.taxRate,
-        net: -group.net,
-        tax: -group.tax,
-        gross: -group.gross,
+        net: group.net - paid.net,
+        tax: group.tax - paid.tax,
+        gross: group.gross - paid.gross,
       });
-    }
-  });
+    });
+  }
 
   const remainingNet = service.net - deducted.net;
   const remainingTax = service.tax - deducted.tax;

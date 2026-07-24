@@ -2543,35 +2543,29 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .invoice-previous-payments-table th:nth-child(1),
 .invoice-previous-payments-table td:nth-child(1) {
   position: relative;
-  width: 25%;
+  width: 27%;
 }
 
 .invoice-previous-payments-table th:nth-child(2),
 .invoice-previous-payments-table td:nth-child(2) {
-  width: 16%;
+  width: 17%;
 }
 
 .invoice-previous-payments-table th:nth-child(3),
 .invoice-previous-payments-table td:nth-child(3) {
-  width: 16%;
+  width: 19%;
   text-align: right;
 }
 
 .invoice-previous-payments-table th:nth-child(4),
 .invoice-previous-payments-table td:nth-child(4) {
-  width: 9%;
+  width: 18%;
   text-align: right;
 }
 
 .invoice-previous-payments-table th:nth-child(5),
 .invoice-previous-payments-table td:nth-child(5) {
-  width: 17%;
-  text-align: right;
-}
-
-.invoice-previous-payments-table th:nth-child(6),
-.invoice-previous-payments-table td:nth-child(6) {
-  width: 17%;
+  width: 19%;
   text-align: right;
 }
 
@@ -2585,10 +2579,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .invoice-previous-payments-table td:nth-child(3) input,
 .invoice-previous-payments-table td:nth-child(4) input {
   text-align: right;
-}
-
-.invoice-previous-payments-table .invoice-tax-rate-cell {
-  justify-content: end;
 }
 
 .invoice-previous-payment-actions {
@@ -5273,33 +5263,31 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .invoice-print-position-table.invoice-print-previous-payments-table th:nth-child(1),
 .invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(1) {
-  width: 23%;
+  width: 27%;
 }
 
 .invoice-print-position-table.invoice-print-previous-payments-table th:nth-child(2),
 .invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(2) {
-  width: 15%;
+  width: 17%;
 }
 
 .invoice-print-position-table.invoice-print-previous-payments-table th:nth-child(3),
 .invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(3) {
-  width: 17%;
+  width: 19%;
   text-align: right;
   white-space: nowrap;
 }
 
 .invoice-print-position-table.invoice-print-previous-payments-table th:nth-child(4),
 .invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(4) {
-  width: 9%;
+  width: 18%;
   text-align: right;
   white-space: nowrap;
 }
 
 .invoice-print-position-table.invoice-print-previous-payments-table th:nth-child(5),
-.invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(5),
-.invoice-print-position-table.invoice-print-previous-payments-table th:nth-child(6),
-.invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(6) {
-  width: 18%;
+.invoice-print-position-table.invoice-print-previous-payments-table td:nth-child(5) {
+  width: 19%;
   text-align: right;
   white-space: nowrap;
 }

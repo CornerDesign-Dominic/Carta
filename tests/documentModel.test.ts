@@ -12,6 +12,7 @@ import {
   embedBelege24DocumentInPdf,
   mapStandardInvoiceToDocument,
   readBelege24DocumentFromPdf,
+  restoreFinalInvoiceState,
   restoreStandardInvoiceState,
   validateBelege24Document,
   type StandardInvoiceDocument,
@@ -120,7 +121,7 @@ function createState(): StandardInvoiceGeneratorState {
         invoiceNumber: '',
         invoiceDate: '',
         netAmount: '0',
-        taxRate: '19',
+        taxAmount: '0',
         status: 'open',
       },
     ],
@@ -222,6 +223,61 @@ describe('standard invoice mapping', () => {
       grossAmount: '0.36',
     });
     expect(validateBelege24Document(document).valid).toBe(true);
+  });
+
+  it('uses direct tax amounts for final-invoice deductions without assigning mixed rates incorrectly', () => {
+    const base = createState();
+    const state: StandardInvoiceGeneratorState = {
+      ...base,
+      invoiceVariant: 'finalInvoice',
+      positions: [
+        { ...base.positions[0], unitPrice: '100', quantity: '1', taxRate: '19' },
+        {
+          ...base.positions[0],
+          id: 'f8b0d9ba-dda1-4ed5-a3b8-e38e89ec98ae',
+          unitPrice: '100',
+          quantity: '1',
+          taxRate: '7',
+        },
+      ],
+      previousPayments: [{
+        ...base.previousPayments[0],
+        netAmount: '150',
+        taxAmount: '20',
+        status: 'paid',
+      }],
+    };
+
+    const document = mapStandardInvoiceToDocument(state, {
+      documentId: fixedUuid,
+      createdAt: fixedDate,
+    });
+
+    expect(document.documentData.previousPayments[0]).toMatchObject({
+      netAmount: '150.00',
+      taxAmount: '20.00',
+      generatorInput: { netAmount: '150', taxAmount: '20' },
+      calculated: { grossAmount: '170.00' },
+    });
+    expect(document.documentData.calculated.deductedPayments).toMatchObject({
+      netAmount: '150.00',
+      taxAmount: '20.00',
+      grossAmount: '170.00',
+      taxGroups: [],
+    });
+    expect(document.documentData.calculated.remainingTotals).toMatchObject({
+      netAmount: '50.00',
+      taxAmount: '6.00',
+      grossAmount: '56.00',
+      taxGroups: [],
+    });
+
+    const restored = restoreFinalInvoiceState(document);
+    if (restored.status !== 'valid') throw new Error(JSON.stringify(restored));
+    expect(restored).toMatchObject({
+      status: 'valid',
+      state: { previousPayments: [{ netAmount: '150', taxAmount: '20' }] },
+    });
   });
 });
 
@@ -359,7 +415,7 @@ function createExtendedRoundtripState(): StandardInvoiceGeneratorState {
     invoiceNumber: 'AR-2026-002',
     invoiceDate: '2026-06-01',
     netAmount: '100.25',
-    taxRate: '7.5',
+    taxAmount: '7.52',
     status: 'paid',
   });
   state.textBlocks[0] = {
@@ -381,6 +437,57 @@ function createExtendedRoundtripState(): StandardInvoiceGeneratorState {
 }
 
 describe('standard invoice restoration', () => {
+  it('migrates legacy previous-payment tax rates to direct tax amounts', () => {
+    const examplePath = fileURLToPath(
+      new URL('../docs/examples/standard-invoice-1.0.0.json', import.meta.url),
+    );
+    const legacyDocument = JSON.parse(readFileSync(examplePath, 'utf8'));
+
+    const restored = restoreStandardInvoiceState(legacyDocument);
+    if (restored.status !== 'valid') throw new Error(`Unexpected result: ${restored.status}`);
+
+    expect(restored).toMatchObject({
+      status: 'valid',
+      state: {
+        previousPayments: [{
+          invoiceNumber: 'AR-2026-001',
+          netAmount: '0',
+          taxAmount: '0.00',
+        }],
+      },
+    });
+    expect(restored.state.previousPayments[0]).not.toHaveProperty('taxRate');
+  });
+
+  it('migrates a legacy embedded PDF with a non-zero tax rate without changing its amounts', async () => {
+    const state = createState();
+    state.previousPayments[0] = {
+      ...state.previousPayments[0],
+      netAmount: '100',
+      taxAmount: '19',
+      status: 'paid',
+    };
+    const legacyDocument = structuredClone(mapStandardInvoiceToDocument(state, {
+      documentId: fixedUuid,
+      createdAt: fixedDate,
+    })) as any;
+    const payment = legacyDocument.documentData.previousPayments[0];
+    delete payment.taxAmount;
+    payment.taxRate = '19';
+    payment.generatorInput = { netAmount: '100', taxRate: '19' };
+    payment.calculated = { taxAmount: '19.00', grossAmount: '119.00' };
+
+    const pdfBytes = await embedBelege24DocumentInPdf(await createPlainPdf(), legacyDocument);
+    const read = await readBelege24DocumentFromPdf(pdfBytes);
+
+    expect(read.status).toBe('valid');
+    if (read.status !== 'valid') throw new Error(`Unexpected result: ${read.status}`);
+    expect(restoreStandardInvoiceState(read.document)).toMatchObject({
+      status: 'valid',
+      state: { previousPayments: [{ netAmount: '100', taxAmount: '19.00' }] },
+    });
+  });
+
   it('roundtrips generator state through PDF, validation and reverse mapping', async () => {
     const sourceState = createExtendedRoundtripState();
     const mapped = mapStandardInvoiceToDocument(sourceState, {

@@ -97,8 +97,7 @@ const initialInvoiceLabels = {
   previousPaymentInvoiceNumber: 'Rechnungsnr.',
   previousPaymentInvoiceDate: 'Datum',
   previousPaymentNet: 'Netto',
-  previousPaymentTaxRate: 'USt.',
-  previousPaymentTaxAmount: 'USt.-Betrag',
+  previousPaymentTaxAmount: 'USt.',
   previousPaymentGross: 'Brutto',
   previousPaymentStatus: 'Status',
   serviceTotal: 'Gesamtbetrag der Leistungen',
@@ -125,7 +124,6 @@ const finalInvoicePreviousPaymentColumns = [
   { field: 'invoiceNumber', labelField: 'previousPaymentInvoiceNumber' },
   { field: 'invoiceDate', labelField: 'previousPaymentInvoiceDate' },
   { field: 'netAmount', labelField: 'previousPaymentNet' },
-  { field: 'taxRate', labelField: 'previousPaymentTaxRate' },
   { field: 'taxAmount', labelField: 'previousPaymentTaxAmount' },
   { field: 'grossAmount', labelField: 'previousPaymentGross' },
 ];
@@ -597,7 +595,7 @@ function createPreviousPayment(index = 1) {
     invoiceNumber: `AR-2026-${String(index).padStart(3, '0')}`,
     invoiceDate: '2026-05-07',
     netAmount: '0',
-    taxRate: '19',
+    taxAmount: '0',
     status: index === 1 ? 'paid' : 'open',
   };
 }
@@ -613,7 +611,9 @@ function normalizePreviousPayments(templatePayments) {
     invoiceNumber: String(payment.invoiceNumber ?? ''),
     invoiceDate: String(payment.invoiceDate ?? ''),
     netAmount: String(payment.netAmount ?? '0'),
-    taxRate: String(payment.taxRate ?? '19'),
+    taxAmount: typeof payment.taxAmount === 'string'
+      ? payment.taxAmount
+      : String(Math.round(toNumber(payment.netAmount) * Math.max(0, toNumber(payment.taxRate)) / 100 * 100) / 100),
     status: payment.status === 'open' ? 'open' : 'paid',
   }));
 }
@@ -734,14 +734,13 @@ function calculatePosition(position, { isSmallBusinessInvoice = false, isTextInv
 
 function calculatePreviousPayment(payment, { isSmallBusinessInvoice = false } = {}) {
   const net = toNumber(payment.netAmount);
-  const taxRate = isSmallBusinessInvoice ? 0 : Math.max(0, toNumber(payment.taxRate));
-  const tax = net * (taxRate / 100);
+  const tax = isSmallBusinessInvoice ? 0 : Math.max(0, toNumber(payment.taxAmount));
 
-  return { net, tax, gross: net + tax, taxRate };
+  return { net, tax, gross: net + tax };
 }
 
 function emptyTaxGroupSummary() {
-  return { net: 0, tax: 0, taxGroups: new Map() };
+  return { net: 0, tax: 0, taxGroups: new Map(), hasDirectPreviousPayments: false };
 }
 
 function addToTaxGroup(summary, calculated) {
@@ -759,6 +758,12 @@ function addToTaxGroup(summary, calculated) {
   summary.taxGroups.set(taxKey, taxGroup);
   summary.net += calculated.net;
   summary.tax += calculated.tax;
+}
+
+function addDirectPreviousPayment(summary, calculated) {
+  summary.net += calculated.net;
+  summary.tax += calculated.tax;
+  summary.hasDirectPreviousPayments = true;
 }
 
 function toSortedTaxGroups(taxGroups) {
@@ -782,31 +787,22 @@ function createInvoiceTotals({
       return summary;
     }
 
-    addToTaxGroup(summary, calculatePreviousPayment(payment, { isSmallBusinessInvoice }));
+    addDirectPreviousPayment(summary, calculatePreviousPayment(payment, { isSmallBusinessInvoice }));
     return summary;
   }, emptyTaxGroupSummary());
   const remainingGroups = new Map();
 
-  toSortedTaxGroups(service.taxGroups).forEach((group) => {
-    const deductedGroup = deducted.taxGroups.get(String(group.taxRate)) ?? { net: 0, tax: 0, gross: 0 };
-    remainingGroups.set(String(group.taxRate), {
-      taxRate: group.taxRate,
-      net: group.net - deductedGroup.net,
-      tax: group.tax - deductedGroup.tax,
-      gross: group.gross - deductedGroup.gross,
-    });
-  });
-
-  deducted.taxGroups.forEach((group, taxKey) => {
-    if (!remainingGroups.has(taxKey)) {
-      remainingGroups.set(taxKey, {
+  if (!deducted.hasDirectPreviousPayments) {
+    toSortedTaxGroups(service.taxGroups).forEach((group) => {
+      const deductedGroup = deducted.taxGroups.get(String(group.taxRate)) ?? { net: 0, tax: 0, gross: 0 };
+      remainingGroups.set(String(group.taxRate), {
         taxRate: group.taxRate,
-        net: -group.net,
-        tax: -group.tax,
-        gross: -group.gross,
+        net: group.net - deductedGroup.net,
+        tax: group.tax - deductedGroup.tax,
+        gross: group.gross - deductedGroup.gross,
       });
-    }
-  });
+    });
+  }
 
   const remaining = {
     net: service.net - deducted.net,
@@ -830,12 +826,14 @@ function createInvoiceTotals({
       tax: deducted.tax,
       gross: deducted.net + deducted.tax,
       taxGroups: toSortedTaxGroups(deducted.taxGroups),
+      hasDirectPreviousPayments: deducted.hasDirectPreviousPayments,
     },
     remaining: {
       net: remaining.net,
       tax: remaining.tax,
       gross: remaining.net + remaining.tax,
       taxGroups: toSortedTaxGroups(remaining.taxGroups),
+      hasDirectPreviousPayments: deducted.hasDirectPreviousPayments,
     },
   };
 }
@@ -975,7 +973,7 @@ export function PreviousPaymentsTable({
   payments,
 }) {
   const columns = getFinalInvoicePreviousPaymentColumns(labels);
-  const [focusedNetPaymentId, setFocusedNetPaymentId] = useState(null);
+  const [focusedAmountField, setFocusedAmountField] = useState(null);
 
   return (
     <section className="invoice-previous-payments" aria-label={labels.previousPayments}>
@@ -1023,35 +1021,45 @@ export function PreviousPaymentsTable({
                     aria-label={`${labels.previousPaymentNet} ${index + 1}`}
                     inputMode="decimal"
                     type="text"
-                    value={focusedNetPaymentId === payment.id
+                    value={focusedAmountField === `${payment.id}:netAmount`
                       ? payment.netAmount
                       : formatPreviousPaymentNetAmount(payment.netAmount)}
                     onChange={(event) => onPaymentChange(payment.id, 'netAmount', event.target.value)}
                     onBlur={() => {
-                      setFocusedNetPaymentId(null);
+                      setFocusedAmountField(null);
                     }}
                     onFocus={(event) => {
-                      setFocusedNetPaymentId(payment.id);
+                      setFocusedAmountField(`${payment.id}:netAmount`);
                       event.target.select();
                     }}
                     onClick={(event) => {
-                      setFocusedNetPaymentId(payment.id);
+                      setFocusedAmountField(`${payment.id}:netAmount`);
                       event.target.select();
                     }}
                   />
                 </td>
                 <td>
-                  <span className="invoice-tax-rate-cell">
-                    <input
-                      aria-label={`${labels.previousPaymentTaxRate} ${index + 1}`}
-                      inputMode="decimal"
-                      value={payment.taxRate}
-                      onChange={(event) => onPaymentChange(payment.id, 'taxRate', event.target.value)}
-                    />
-                    <span>%</span>
-                  </span>
+                  <input
+                    aria-label={`${labels.previousPaymentTaxAmount} ${index + 1}`}
+                    inputMode="decimal"
+                    type="text"
+                    value={focusedAmountField === `${payment.id}:taxAmount`
+                      ? payment.taxAmount
+                      : formatPreviousPaymentNetAmount(payment.taxAmount)}
+                    onChange={(event) => onPaymentChange(payment.id, 'taxAmount', event.target.value)}
+                    onBlur={() => {
+                      setFocusedAmountField(null);
+                    }}
+                    onFocus={(event) => {
+                      setFocusedAmountField(`${payment.id}:taxAmount`);
+                      event.target.select();
+                    }}
+                    onClick={(event) => {
+                      setFocusedAmountField(`${payment.id}:taxAmount`);
+                      event.target.select();
+                    }}
+                  />
                 </td>
-                <td>{formatPaymentCurrency(calculated.tax)}</td>
                 <td>{formatPaymentCurrency(calculated.gross)}</td>
               </tr>
             );
@@ -1095,6 +1103,12 @@ function FinalInvoiceSummary({ formatCurrency: formatSummaryCurrency, formatPerc
           <strong>-{formatSummaryCurrency(group.tax)}</strong>
         </div>
       ))}
+      {totals.deducted.hasDirectPreviousPayments && (
+        <div>
+          <span>{labels.deductedPaymentTax}</span>
+          <strong>-{formatSummaryCurrency(totals.deducted.tax)}</strong>
+        </div>
+      )}
       <div>
         <span>{labels.remainingNet}</span>
         <strong>{formatSummaryCurrency(totals.remaining.net)}</strong>
@@ -1107,6 +1121,12 @@ function FinalInvoiceSummary({ formatCurrency: formatSummaryCurrency, formatPerc
           <strong>{formatSummaryCurrency(group.tax)}</strong>
         </div>
       ))}
+      {totals.remaining.hasDirectPreviousPayments && (
+        <div>
+          <span>{labels.remainingTax}</span>
+          <strong>{formatSummaryCurrency(totals.remaining.tax)}</strong>
+        </div>
+      )}
       <div>
         <span>{labels.remainingGross}</span>
         <strong>{formatSummaryCurrency(totals.remaining.gross)}</strong>
@@ -2384,7 +2404,7 @@ function arePrintItemsEqual(first, second) {
       first.payment.invoiceNumber === second.payment.invoiceNumber &&
       first.payment.invoiceDate === second.payment.invoiceDate &&
       first.payment.netAmount === second.payment.netAmount &&
-      first.payment.taxRate === second.payment.taxRate &&
+      first.payment.taxAmount === second.payment.taxAmount &&
       first.payment.status === second.payment.status
     );
   }
@@ -2704,7 +2724,6 @@ export function InvoicePrintPreviousPaymentsTable({
                 <td>{payment.invoiceNumber}</td>
                 <td>{formatGermanDate(payment.invoiceDate)}</td>
                 <td>{formatCurrency(calculated.net)}</td>
-                <td>{formatPercent(calculated.taxRate)}%</td>
                 <td>{formatCurrency(calculated.tax)}</td>
                 <td>{formatCurrency(calculated.gross)}</td>
               </tr>
@@ -2799,6 +2818,12 @@ function InvoicePrintSummary({ isFinalInvoice = false, isSmallBusinessInvoice = 
             <strong>-{formatCurrency(group.tax)}</strong>
           </div>
         ))}
+        {!isSmallBusinessInvoice && totals.deducted.hasDirectPreviousPayments && (
+          <div>
+            <span>{labels.deductedPaymentTax}</span>
+            <strong>-{formatCurrency(totals.deducted.tax)}</strong>
+          </div>
+        )}
         <div>
           <span>{labels.remainingNet}</span>
           <strong>{formatCurrency(totals.remaining.net)}</strong>
@@ -2811,6 +2836,12 @@ function InvoicePrintSummary({ isFinalInvoice = false, isSmallBusinessInvoice = 
             <strong>{formatCurrency(group.tax)}</strong>
           </div>
         ))}
+        {!isSmallBusinessInvoice && totals.remaining.hasDirectPreviousPayments && (
+          <div>
+            <span>{labels.remainingTax}</span>
+            <strong>{formatCurrency(totals.remaining.tax)}</strong>
+          </div>
+        )}
         <div>
           <span>{labels.remainingGross}</span>
           <strong>{formatCurrency(totals.remaining.gross)}</strong>

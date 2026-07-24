@@ -1,6 +1,14 @@
 export const patchnotes = [
   {
     date: '2026-07-25',
+    title: 'Schlussrechnung: Abschlags-USt. als Betrag',
+    changes: [
+      'Abschlagsrechnungen erfassen die Umsatzsteuer jetzt direkt als Geldbetrag; Brutto wird automatisch berechnet.',
+      'Bestehende Abschläge mit Steuersatz werden beim Import eindeutig in den USt.-Betrag überführt.',
+    ],
+  },
+  {
+    date: '2026-07-25',
     title: 'Schlussrechnung: Abschlagsbeträge im Editor formatiert',
     changes: [
       'Nettobeträge zeigen im Editor das deutsche Euroformat mit zwei Nachkommastellen.',
