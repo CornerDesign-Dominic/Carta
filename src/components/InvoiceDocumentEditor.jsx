@@ -694,6 +694,10 @@ function formatPercent(value) {
   }).format(value);
 }
 
+export function formatPrintTaxRate(value, isStandardInvoice) {
+  return `${formatPercent(value)}${isStandardInvoice ? ' %' : '%'}`;
+}
+
 function formatGermanDate(value) {
   const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
 
@@ -1099,6 +1103,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const normalizedInvoiceVariant = invoiceVariantIds.includes(invoiceVariant)
     ? invoiceVariant
     : 'standard';
+  const isStandardInvoice = normalizedInvoiceVariant === 'standard';
   const isTextInvoice = normalizedInvoiceVariant === 'text';
   const isGoodsInvoice = normalizedInvoiceVariant === 'goods';
   const isFinalInvoice = normalizedInvoiceVariant === 'finalInvoice';
@@ -1955,6 +1960,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           dataCheckPositions={dataCheckState.positions}
           formatUnitPriceOnBlur
           formatCurrency={formatCurrency}
+          normalizeTaxRateOnBlur={isStandardInvoice}
           isGoodsInvoice={isGoodsInvoice}
           isTextInvoice={isTextInvoice}
           labels={labels}
@@ -2034,6 +2040,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             isFinalInvoice={isFinalInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
+            isStandardInvoice={isStandardInvoice}
             isTextInvoice={isTextInvoice}
             items={printItems}
             labels={labels}
@@ -2049,6 +2056,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             isFinalInvoice={isFinalInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
+            isStandardInvoice={isStandardInvoice}
             isTextInvoice={isTextInvoice}
             labels={labels}
             pages={printPages}
@@ -2084,6 +2092,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
     isFinalInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
+    isStandardInvoice,
     isTextInvoice,
     items,
     labels,
@@ -2152,7 +2161,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
                       <td>{formatCurrency(toNumber(position.unitPrice))}</td>
                       <td>{position.quantity}</td>
                       <td>{position.unit}</td>
-                      {!isSmallBusinessInvoice && <td>{formatPercent(calculated.taxRate)}%</td>}
+                      {!isSmallBusinessInvoice && <td>{formatPrintTaxRate(calculated.taxRate, isStandardInvoice)}</td>}
                       <td>{formatCurrency(calculated.net)}</td>
                     </>
                   )}
@@ -2351,6 +2360,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
     isFinalInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
+    isStandardInvoice,
     isTextInvoice,
     labels,
     pages,
@@ -2400,6 +2410,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
               isFinalInvoice={isFinalInvoice}
               isGoodsInvoice={isGoodsInvoice}
               isSmallBusinessInvoice={isSmallBusinessInvoice}
+              isStandardInvoice={isStandardInvoice}
               isTextInvoice={isTextInvoice}
               items={page.items}
               labels={labels}
@@ -2521,6 +2532,7 @@ function InvoicePrintPageItems({
   isFinalInvoice,
   isGoodsInvoice,
   isSmallBusinessInvoice,
+  isStandardInvoice,
   isTextInvoice,
   items,
   labels,
@@ -2545,6 +2557,7 @@ function InvoicePrintPageItems({
           calculatePosition={calculateInvoicePosition}
           isGoodsInvoice={isGoodsInvoice}
           isSmallBusinessInvoice={isSmallBusinessInvoice}
+          isStandardInvoice={isStandardInvoice}
           isTextInvoice={isTextInvoice}
           key={`positions-${positionItems[0].index}`}
           labels={labels}
@@ -2663,7 +2676,7 @@ function InvoicePrintPreviousPaymentsTable({ calculatePreviousPayment: calculate
   );
 }
 
-function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, labels, positionItems }) {
+function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition, isGoodsInvoice, isSmallBusinessInvoice, isStandardInvoice, isTextInvoice, labels, positionItems }) {
   return (
     <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
       <InvoicePrintColumnGroup
@@ -2706,7 +2719,7 @@ function InvoicePrintPositionTable({ calculatePosition: calculateInvoicePosition
                   <td>{formatCurrency(toNumber(position.unitPrice))}</td>
                   <td>{position.quantity}</td>
                   <td>{position.unit}</td>
-                  {!isSmallBusinessInvoice && <td>{formatPercent(calculated.taxRate)}%</td>}
+                  {!isSmallBusinessInvoice && <td>{formatPrintTaxRate(calculated.taxRate, isStandardInvoice)}</td>}
                   <td>{formatCurrency(calculated.net)}</td>
                 </>
               )}

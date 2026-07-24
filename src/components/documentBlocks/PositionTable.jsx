@@ -2,6 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
 import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
 
+export function normalizeTaxRateInput(value, fallback = '19') {
+  const numericValue = Number.parseFloat(
+    String(value)
+      .replace(/[^\d,.-]/g, '')
+      .replace(/\.(?=\d{3}(?:\D|$))/g, '')
+      .replace(',', '.'),
+  );
+
+  if (!Number.isFinite(numericValue) || numericValue < 0 || numericValue > 100) {
+    return fallback;
+  }
+
+  return new Intl.NumberFormat('de-DE', {
+    maximumFractionDigits: 2,
+  }).format(numericValue);
+}
+
+export function formatTaxRateInputValue(value) {
+  return String(value ?? '').replace(/%/g, '').trim();
+}
+
 function getInvoiceColumnWidths({ isGoodsInvoice, showTaxColumn }) {
   if (isGoodsInvoice) {
     return showTaxColumn
@@ -19,6 +40,7 @@ export default function PositionTable({
   calculatePosition,
   dataCheckPositions = {},
   formatCurrency,
+  normalizeTaxRateOnBlur = false,
   isGoodsInvoice = false,
   isTextInvoice = false,
   formatUnitPriceOnBlur = false,
@@ -74,23 +96,6 @@ export default function PositionTable({
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(numericValue);
-  }
-
-  function normalizeTaxRateInput(value, fallback = '19 %') {
-    const numericValue = Number.parseFloat(
-      String(value)
-        .replace(/[^\d,.-]/g, '')
-        .replace(/\.(?=\d{3}(?:\D|$))/g, '')
-        .replace(',', '.'),
-    );
-
-    if (!Number.isFinite(numericValue) || numericValue < 0 || numericValue > 100) {
-      return fallback;
-    }
-
-    return `${new Intl.NumberFormat('de-DE', {
-      maximumFractionDigits: 2,
-    }).format(numericValue)} %`;
   }
 
   function handleTextInvoiceTaxChange(positionId, value) {
@@ -264,7 +269,7 @@ export default function PositionTable({
                     type="text"
                     value={position.taxRate ?? '19 %'}
                     onChange={(event) => handleTextInvoiceTaxChange(position.id, event.target.value)}
-                    onBlur={(event) => onPositionChange(position.id, 'taxRate', normalizeTaxRateInput(event.target.value))}
+                    onBlur={(event) => onPositionChange(position.id, 'taxRate', `${normalizeTaxRateInput(event.target.value)} %`)}
                   />
                 </td>
               )}
@@ -328,8 +333,13 @@ export default function PositionTable({
                       aria-label={`Umsatzsteuer Position ${index + 1}`}
                       inputMode="decimal"
                       type="text"
-                      value={position.taxRate}
+                      value={normalizeTaxRateOnBlur ? formatTaxRateInputValue(position.taxRate) : position.taxRate}
                       onChange={(event) => onPositionChange(position.id, 'taxRate', event.target.value)}
+                      onBlur={(event) => {
+                        if (normalizeTaxRateOnBlur) {
+                          onPositionChange(position.id, 'taxRate', normalizeTaxRateInput(event.target.value));
+                        }
+                      }}
                     />
                     <span>%</span>
                   </span>
