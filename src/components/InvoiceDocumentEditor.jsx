@@ -1133,7 +1133,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   );
   const activeTextBlockSetKey = getTextBlockSetKey(normalizedInvoiceVariant);
   const textBlocks = textBlockSets[activeTextBlockSetKey] ?? textBlockSets.default;
-  const initialGeneratorStateRef = useRef(null);
+  const initialGeneratorStatesRef = useRef({});
   const currentGeneratorState = {
     invoiceVariant: normalizedInvoiceVariant,
     labels,
@@ -1144,8 +1144,8 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     isSmallBusinessInvoice,
     fieldConfig,
   };
-  if (initialGeneratorStateRef.current === null) {
-    initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
+  if (!initialGeneratorStatesRef.current[normalizedInvoiceVariant]) {
+    initialGeneratorStatesRef.current[normalizedInvoiceVariant] = structuredClone(currentGeneratorState);
   }
 
   useEffect(() => {
@@ -1634,6 +1634,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    delete initialGeneratorStatesRef.current[normalizedInvoiceVariant];
   }
 
   async function handleCreatePdf() {
@@ -1712,9 +1713,9 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       : confirmStandardInvoiceOverwrite;
     const mayOverwrite = confirmOverwrite(
       currentGeneratorState,
-      initialGeneratorStateRef.current,
+      initialGeneratorStatesRef.current[normalizedInvoiceVariant],
       () => window.confirm(
-        `Die aktuelle ${isGoodsInvoice ? 'Warenrechnung' : 'Standardrechnung'} enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?`,
+        `Die aktuelle ${invoiceVariants.find((variant) => variant.id === normalizedInvoiceVariant)?.label ?? 'Rechnung'} enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?`,
       ),
     );
     if (!mayOverwrite) return;
