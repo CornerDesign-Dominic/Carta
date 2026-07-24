@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isDevelopmentOnly } from '../src/config/development.js';
+import { isPatchnotesEnabledForEnvironment } from '../src/config/development.js';
 import { filterPatchnotes, patchnotes } from '../src/data/patchnotes.js';
 
 describe('patchnotes', () => {
@@ -15,9 +15,16 @@ describe('patchnotes', () => {
     expect(filterPatchnotes(patchnotes, 'nicht vorhanden')).toEqual([]);
   });
 
-  it('enables the internal page only for development builds', () => {
-    expect(isDevelopmentOnly(true)).toBe(true);
-    expect(isDevelopmentOnly(false)).toBe(false);
-    expect(isDevelopmentOnly(undefined)).toBe(false);
+  it('enables patchnotes locally, for the exact dev hostname, or through the deployment variable', () => {
+    expect(isPatchnotesEnabledForEnvironment({ isDev: true, hostname: 'localhost' })).toBe(true);
+    expect(isPatchnotesEnabledForEnvironment({ hostname: 'dev.belege24.com' })).toBe(true);
+    expect(isPatchnotesEnabledForEnvironment({ enablePatchnotes: true, hostname: 'belege24.com' })).toBe(true);
+  });
+
+  it('keeps patchnotes unavailable for production and non-exact hostnames', () => {
+    expect(isPatchnotesEnabledForEnvironment({ hostname: 'belege24.com' })).toBe(false);
+    expect(isPatchnotesEnabledForEnvironment({ hostname: 'preview.belege24.com' })).toBe(false);
+    expect(isPatchnotesEnabledForEnvironment({ hostname: 'dev.belege24.com.example.org' })).toBe(false);
+    expect(isPatchnotesEnabledForEnvironment()).toBe(false);
   });
 });
