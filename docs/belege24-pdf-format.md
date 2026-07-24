@@ -78,7 +78,7 @@ Angebote (`offer`), Lieferscheine (`deliveryNote`) und Quittungen (`receipt`) we
 
 ## Mapping und Rückmapping
 
-`sharedData` speichert Absender, unveränderte Absenderzeile, strukturierte Adressen, Empfänger, Kundennummer und die drei Fußspalten mit je vier Feldern. `documentData` enthält je nach Dokumenttyp Beschriftungen, Rechnungs-, Gutschrift- oder Mahnungsdaten, Kontakt-, Liefer-, Referenz-, Korrektur-, Projekt- und Textdaten, Positionen beziehungsweise offene Posten, frühere Abschläge, Kleinunternehmerstatus und Feldkonfiguration.
+`sharedData` speichert Absender, unveränderte Absenderzeile, strukturierte Adressen, Empfänger, Kundennummer und die drei Fußspalten mit je vier Feldern. `documentData` enthält je nach Dokumenttyp Beschriftungen, Rechnungs-, Gutschrift-, Mahnungs-, Angebots-, Lieferschein- oder Quittungsdaten, Kontakt-, Liefer-, Referenz-, Korrektur-, Projekt- und Textdaten, Positionen beziehungsweise offene Posten, frühere Abschläge, Kleinunternehmerstatus und Feldkonfiguration.
 
 Positionen und frühere Abschläge enthalten neben normalisierten Darstellungs- und Berechnungswerten `generatorInput`. Rückmapping verwendet diese Originalstrings für Preis, Menge, Steuersatz und Abschlagsbeträge. Leere Werte, Reihenfolgen, Sonderzeichen und freie Texte werden kopiert; Adressen und Anzeigezeilen werden nicht heuristisch zerlegt. Berechnete Summen werden nach dem Import durch die bestehende Editorlogik neu berechnet.
 
@@ -86,7 +86,7 @@ Positionen und frühere Abschläge enthalten neben normalisierten Darstellungs- 
 
 Die Validierung prüft Dokumenttyp, Schema und vollständige Datenstruktur. Rechnungen werden über ihre Rechnungsvalidierung geprüft; Gutschriften verlangen `documentType: "creditNote"`, einen bekannten Variantenschlüssel und die jeweiligen variantenspezifischen Pflichtfelder. Eine fremde Variante oder eine Variante, die nicht zum geöffneten Editor passt, wird nicht übernommen. Lesefehler, fehlende Anlage, ungültiges JSON, nicht unterstützte Versionen und unvollständige oder ungültige Daten liefern verständliche Importergebnisse.
 
-Der Editor übernimmt State erst nach erfolgreich abgeschlossenem Lesen, Validieren und Rückmapping. Der Überschreibschutz vergleicht den gesamten aktuellen Generatorzustand mit einem je Variante beziehungsweise Dokument gespeicherten Initialzustand. Nach „Neu“ und nach einem erfolgreichen Mahnungsimport werden die Initialzustände neu erfasst; bei Änderungen erscheint eine Bestätigung.
+Der Editor übernimmt State erst nach erfolgreich abgeschlossenem Lesen, Validieren und Rückmapping. Der Überschreibschutz vergleicht den gesamten aktuellen Generatorzustand mit einem je Variante beziehungsweise Dokument gespeicherten Initialzustand. Nach „Neu“ und nach jedem erfolgreichen Import werden die Initialzustände neu erfasst; bei Änderungen erscheint eine Bestätigung.
 
 ## Weitere Belegtypen ergänzen
 

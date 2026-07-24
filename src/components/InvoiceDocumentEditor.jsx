@@ -1733,6 +1733,16 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setIsFormPanelOpen(false);
     setIsExportRenderActive(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStatesRef.current[normalizedInvoiceVariant] = structuredClone({
+      invoiceVariant: normalizedInvoiceVariant,
+      labels: restored.labels,
+      invoiceData: restored.invoiceData,
+      positions: restored.positions,
+      previousPayments: restored.previousPayments,
+      textBlocks: restored.textBlocks,
+      isSmallBusinessInvoice: restored.isSmallBusinessInvoice,
+      fieldConfig: restored.fieldConfig,
+    });
     window.alert(importResult.message);
   }
 

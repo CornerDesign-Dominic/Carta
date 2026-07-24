@@ -9,8 +9,16 @@ import {
   confirmStandardInvoiceOverwrite,
   embedBelege24DocumentInPdf,
   importGoodsInvoicePdf,
+  importFinalInvoicePdf,
+  importPartialInvoicePdf,
+  importProgressInvoicePdf,
   importStandardInvoicePdf,
+  importTextInvoicePdf,
+  mapFinalInvoiceToDocument,
   mapGoodsInvoiceToDocument,
+  mapPartialInvoiceToDocument,
+  mapProgressInvoiceToDocument,
+  mapTextInvoiceToDocument,
   restoreStandardInvoiceState,
   type StandardInvoiceGeneratorState,
 } from '../src/documentModel/index.js';
@@ -82,6 +90,8 @@ describe('visible standard-invoice PDF import', () => {
     expect(confirm).not.toHaveBeenCalled();
     expect(confirmStandardInvoiceOverwrite(changed, initial, confirm)).toBe(false);
     expect(confirm).toHaveBeenCalledOnce();
+
+    expect(confirmStandardInvoiceOverwrite(changed, changed, confirm)).toBe(true);
 
     confirm.mockReturnValue(true);
     expect(confirmStandardInvoiceOverwrite(changed, initial, confirm)).toBe(true);
@@ -168,5 +178,20 @@ describe('visible goods-invoice PDF import', () => {
     expect(confirm).toHaveBeenCalledOnce();
     confirm.mockReturnValue(true);
     expect(confirmGoodsInvoiceOverwrite(changed, initial, confirm)).toBe(true);
+  });
+});
+
+describe('remaining invoice-variant PDF imports', () => {
+  it('roundtrips text, progress, partial and final invoices through their selected import routes', async () => {
+    const source = createGoodsInvoiceState();
+    const text = { ...source, invoiceVariant: 'text' as const };
+    const progress = { ...source, invoiceVariant: 'progressInvoice' as const };
+    const partial = { ...source, invoiceVariant: 'partialInvoice' as const };
+    const final = { ...source, invoiceVariant: 'finalInvoice' as const };
+
+    await expect(importTextInvoicePdf(await embedBelege24DocumentInPdf(await createPlainPdf(), mapTextInvoiceToDocument(text)))).resolves.toMatchObject({ status: 'valid', state: text });
+    await expect(importProgressInvoicePdf(await embedBelege24DocumentInPdf(await createPlainPdf(), mapProgressInvoiceToDocument(progress)))).resolves.toMatchObject({ status: 'valid', state: progress });
+    await expect(importPartialInvoicePdf(await embedBelege24DocumentInPdf(await createPlainPdf(), mapPartialInvoiceToDocument(partial)))).resolves.toMatchObject({ status: 'valid', state: partial });
+    await expect(importFinalInvoicePdf(await embedBelege24DocumentInPdf(await createPlainPdf(), mapFinalInvoiceToDocument(final)))).resolves.toMatchObject({ status: 'valid', state: final });
   });
 });

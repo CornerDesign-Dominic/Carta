@@ -1361,6 +1361,7 @@ export default function CreditNoteDocumentEditor() {
     setIsFormPanelOpen(false);
     setIsExportRenderActive(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStatesRef.current[restored.creditNoteVariant] = structuredClone(restored);
     window.alert(importResult.message);
   }
 
