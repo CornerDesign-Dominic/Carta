@@ -2542,7 +2542,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .invoice-previous-payments-table th:nth-child(1),
 .invoice-previous-payments-table td:nth-child(1) {
-  width: 21%;
+  position: relative;
+  width: 25%;
 }
 
 .invoice-previous-payments-table th:nth-child(2),
@@ -2574,14 +2575,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   text-align: right;
 }
 
-.invoice-previous-payments-table th:nth-child(7),
-.invoice-previous-payments-table td:nth-child(7) {
-  width: 4%;
-  padding-right: 0;
-  padding-left: 0;
-  text-align: right;
-}
-
 .invoice-previous-payments-table td:nth-child(1) input,
 .invoice-previous-payments-table td:nth-child(2) input,
 .invoice-previous-payments-table td:nth-child(3) input,
@@ -2596,6 +2589,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .invoice-previous-payments-table .invoice-tax-rate-cell {
   justify-content: end;
+}
+
+.invoice-previous-payment-actions {
+  position: absolute;
+  top: 4px;
+  right: calc(100% + 4px);
+  z-index: 3;
+  display: inline-flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.invoice-previous-payments-table tbody tr:hover .invoice-previous-payment-actions,
+.invoice-previous-payments-table tbody tr:focus-within .invoice-previous-payment-actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .invoice-previous-payments-note {

@@ -704,6 +704,10 @@ function formatCurrency(value) {
   }).format(value);
 }
 
+export function formatPreviousPaymentNetAmount(value) {
+  return formatCurrency(toNumber(value));
+}
+
 function formatPercent(value) {
   return new Intl.NumberFormat('de-DE', {
     maximumFractionDigits: 2,
@@ -961,7 +965,7 @@ function InvoiceProjectBlock({ labels, project, visibleFields, onChange }) {
   );
 }
 
-function PreviousPaymentsTable({
+export function PreviousPaymentsTable({
   calculatePayment,
   formatCurrency: formatPaymentCurrency,
   labels,
@@ -971,6 +975,7 @@ function PreviousPaymentsTable({
   payments,
 }) {
   const columns = getFinalInvoicePreviousPaymentColumns(labels);
+  const [focusedNetPaymentId, setFocusedNetPaymentId] = useState(null);
 
   return (
     <section className="invoice-previous-payments" aria-label={labels.previousPayments}>
@@ -979,7 +984,6 @@ function PreviousPaymentsTable({
         <thead>
           <tr>
             {columns.map((column) => <th key={column.field}>{column.label}</th>)}
-            <th />
           </tr>
         </thead>
         <tbody>
@@ -989,6 +993,17 @@ function PreviousPaymentsTable({
             return (
               <tr key={payment.id}>
                 <td>
+                  <span className="invoice-previous-payment-actions">
+                    <button
+                      aria-label={`${labels.previousPaymentInvoiceNumber} ${index + 1} entfernen`}
+                      className="invoice-position-action invoice-position-delete"
+                      type="button"
+                      disabled={payments.length === 1}
+                      onClick={() => onRemovePayment(payment.id)}
+                    >
+                      &times;
+                    </button>
+                  </span>
                   <input
                     aria-label={`${labels.previousPaymentInvoiceNumber} ${index + 1}`}
                     value={payment.invoiceNumber}
@@ -1007,8 +1022,22 @@ function PreviousPaymentsTable({
                   <input
                     aria-label={`${labels.previousPaymentNet} ${index + 1}`}
                     inputMode="decimal"
-                    value={payment.netAmount}
+                    type="text"
+                    value={focusedNetPaymentId === payment.id
+                      ? payment.netAmount
+                      : formatPreviousPaymentNetAmount(payment.netAmount)}
                     onChange={(event) => onPaymentChange(payment.id, 'netAmount', event.target.value)}
+                    onBlur={() => {
+                      setFocusedNetPaymentId(null);
+                    }}
+                    onFocus={(event) => {
+                      setFocusedNetPaymentId(payment.id);
+                      event.target.select();
+                    }}
+                    onClick={(event) => {
+                      setFocusedNetPaymentId(payment.id);
+                      event.target.select();
+                    }}
                   />
                 </td>
                 <td>
@@ -1024,17 +1053,6 @@ function PreviousPaymentsTable({
                 </td>
                 <td>{formatPaymentCurrency(calculated.tax)}</td>
                 <td>{formatPaymentCurrency(calculated.gross)}</td>
-                <td>
-                  <button
-                    aria-label={`${labels.previousPaymentInvoiceNumber} ${index + 1} entfernen`}
-                    className="invoice-position-action invoice-position-delete"
-                    type="button"
-                    disabled={payments.length === 1}
-                    onClick={() => onRemovePayment(payment.id)}
-                  >
-                    &times;
-                  </button>
-                </td>
               </tr>
             );
           })}

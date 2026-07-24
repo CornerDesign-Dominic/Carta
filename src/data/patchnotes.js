@@ -1,5 +1,13 @@
 export const patchnotes = [
   {
+    date: '2026-07-25',
+    title: 'Schlussrechnung: Abschlagsbeträge im Editor formatiert',
+    changes: [
+      'Nettobeträge zeigen im Editor das deutsche Euroformat mit zwei Nachkommastellen.',
+      'Der Entfernen-Button erscheint platzneutral links nur bei Zeilen-Hover oder Fokus.',
+    ],
+  },
+  {
     date: '2026-07-24',
     title: 'Schlussrechnung: Abschlagsrechnungen übersichtlicher',
     changes: [

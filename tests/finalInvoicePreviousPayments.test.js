@@ -2,8 +2,10 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
+  formatPreviousPaymentNetAmount,
   getFinalInvoicePreviousPaymentColumns,
   InvoicePrintPreviousPaymentsTable,
+  PreviousPaymentsTable,
 } from '../src/components/InvoiceDocumentEditor.jsx';
 
 const labels = {
@@ -26,6 +28,37 @@ describe('final invoice previous payments', () => {
       { field: 'taxAmount', labelField: 'previousPaymentTaxAmount', label: 'USt.-Betrag' },
       { field: 'grossAmount', labelField: 'previousPaymentGross', label: 'Brutto' },
     ]);
+  });
+
+  it('formats the editable net amount as a German euro amount without altering its stored value', () => {
+    expect(formatPreviousPaymentNetAmount('0')).toMatch(/^0,00\s€$/);
+    expect(formatPreviousPaymentNetAmount('1234.5')).toMatch(/^1\.234,50\s€$/);
+    expect(formatPreviousPaymentNetAmount('1.234,5 €')).toMatch(/^1\.234,50\s€$/);
+  });
+
+  it('places the editor remove action in the first cell without an action column', () => {
+    const markup = renderToStaticMarkup(createElement(PreviousPaymentsTable, {
+      calculatePayment: () => ({ net: 0, taxRate: 19, tax: 0, gross: 0 }),
+      formatCurrency: (value) => new Intl.NumberFormat('de-DE', {
+        style: 'currency',
+        currency: 'EUR',
+      }).format(value),
+      labels,
+      onAddPayment: () => {},
+      onPaymentChange: () => {},
+      onRemovePayment: () => {},
+      payments: [{
+        id: 'payment-1',
+        invoiceNumber: 'AR-2026-001',
+        invoiceDate: '2026-05-07',
+        netAmount: '0',
+        taxRate: '19',
+      }],
+    }));
+
+    expect(markup).toMatch(/value="0,00\s€"/);
+    expect(markup).toContain('invoice-previous-payment-actions');
+    expect(markup.match(/<td/g)).toHaveLength(6);
   });
 
   it('prints multiple payments without the former payment label or status column', () => {
