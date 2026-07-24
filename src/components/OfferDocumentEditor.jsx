@@ -13,6 +13,7 @@ import OfferDocumentForm from './OfferDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { mapOfferToDocument } from '../documentModel/additionalDocumentModel.js';
 
 const initialOfferLabels = {
   title: 'Angebot',
@@ -561,6 +562,9 @@ export default function OfferDocumentEditor() {
   const [offerData, setOfferData] = useState(defaultOfferData);
   const [textBlocks, setTextBlocks] = useState(defaultOfferTextBlocks);
   const [positions, setPositions] = useState([createOfferPosition()]);
+  const initialGeneratorStateRef = useRef(null);
+  const currentGeneratorState = { labels, offerData, positions, textBlocks, fieldConfig };
+  if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
   const { sender, recipient, details, footerLines } = useMemo(
     () => createOfferViewData(offerData),
     [offerData],
@@ -1012,6 +1016,7 @@ export default function OfferDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = null;
   }
 
   function runWithCleanDocument(callback) {
@@ -1046,6 +1051,7 @@ export default function OfferDocumentEditor() {
         exportRoot: printPagesRef.current,
         documentType: 'offer',
         filename: createPdfFileName(labels.title, details.offerNumber),
+        belege24Document: mapOfferToDocument(currentGeneratorState),
       });
     } catch (error) {
       window.alert(
@@ -1055,6 +1061,37 @@ export default function OfferDocumentEditor() {
       setIsExportRenderActive(false);
       setIsExporting(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (!(file instanceof File) || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+    let result;
+    try {
+      const { importOfferPdf } = await import('../documentModel/additionalDocumentModel.js');
+      result = await importOfferPdf(await file.arrayBuffer());
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+    if (result.status !== 'valid') { window.alert(result.message); return; }
+    const { confirmOfferOverwrite } = await import('../documentModel/additionalDocumentModel.js');
+    if (!confirmOfferOverwrite(currentGeneratorState, initialGeneratorStateRef.current, () => window.confirm('Das aktuelle Angebot enthält Änderungen. Möchtest du es vollständig durch die Daten aus der PDF ersetzen?'))) return;
+    const restored = result.state;
+    setLabels(restored.labels);
+    setOfferData(restored.offerData);
+    setPositions(restored.positions);
+    setTextBlocks(restored.textBlocks);
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = structuredClone(restored);
+    window.alert(result.message);
   }
 
   async function handlePrint() {
@@ -1152,6 +1189,7 @@ export default function OfferDocumentEditor() {
         isEditable={highlightFields}
         isExporting={isExporting}
         onCreatePdf={handleCreatePdf}
+        onLoadPdf={handleLoadPdf}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onToggleDataCheck={toggleDataCheckMode}

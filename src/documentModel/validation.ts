@@ -3,6 +3,8 @@ import {
   BELEGE24_SCHEMA_VERSION,
 } from './constants.js';
 import { restoreCreditNoteState } from './creditNoteRestore.js';
+import { restoreReminderState } from './reminderRestore.js';
+import { validateDeliveryNoteDocument, validateOfferDocument, validateReceiptDocument } from './additionalDocumentModel.js';
 import type { Belege24SupportedDocument } from './types.js';
 
 export interface ValidationResult {
@@ -138,6 +140,15 @@ export function validateCreditNoteDocument(value: unknown): ValidationResult {
   return { valid: false, errors: ['credit note document is invalid'] };
 }
 
+export function validateReminderDocument(value: unknown): ValidationResult {
+  const restored = restoreReminderState(value);
+  if (restored.status === 'valid') return { valid: true, errors: [] };
+  if (restored.status === 'wrong-document-type') {
+    return { valid: false, errors: ['document.documentType must be "reminder"'] };
+  }
+  return { valid: false, errors: ['reminder document is invalid'] };
+}
+
 export function validateBelege24Document(value: unknown): ValidationResult {
   if (!isRecord(value) || !isRecord(value.document)) {
     return { valid: false, errors: ['document.documentType is not supported'] };
@@ -148,6 +159,14 @@ export function validateBelege24Document(value: unknown): ValidationResult {
       return validateInvoiceDocument(value);
     case 'creditNote':
       return validateCreditNoteDocument(value);
+    case 'reminder':
+      return validateReminderDocument(value);
+    case 'offer':
+      return validateOfferDocument(value);
+    case 'deliveryNote':
+      return validateDeliveryNoteDocument(value);
+    case 'receipt':
+      return validateReceiptDocument(value);
     default:
       return { valid: false, errors: ['document.documentType is not supported'] };
   }

@@ -16,6 +16,7 @@ import {
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { mapDeliveryNoteToDocument } from '../documentModel/additionalDocumentModel.js';
 
 
 const initialDeliveryNoteLabels = {
@@ -516,6 +517,9 @@ export default function DeliveryNoteDocumentEditor() {
   const [deliveryNoteData, setDeliveryNoteData] = useState(defaultDeliveryNoteData);
   const [textBlocks, setTextBlocks] = useState(defaultDeliveryNoteTextBlocks);
   const [positions, setPositions] = useState([createDeliveryNotePosition()]);
+  const initialGeneratorStateRef = useRef(null);
+  const currentGeneratorState = { labels, deliveryNoteData, positions, textBlocks, fieldConfig };
+  if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const { sender, recipient, details, footerLines } = useMemo(
@@ -858,6 +862,7 @@ export default function DeliveryNoteDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = null;
   }
 
   async function handleCreatePdf() {
@@ -870,6 +875,7 @@ export default function DeliveryNoteDocumentEditor() {
         exportRoot: printPagesRef.current,
         documentType: 'deliveryNote',
         filename: createPdfFileName(labels.title, details.deliveryNoteNumber),
+        belege24Document: mapDeliveryNoteToDocument(currentGeneratorState),
       });
     } catch (error) {
       window.alert(
@@ -879,6 +885,37 @@ export default function DeliveryNoteDocumentEditor() {
       setIsExportRenderActive(false);
       setIsExporting(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (!(file instanceof File) || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+    let result;
+    try {
+      const { importDeliveryNotePdf } = await import('../documentModel/additionalDocumentModel.js');
+      result = await importDeliveryNotePdf(await file.arrayBuffer());
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+    if (result.status !== 'valid') { window.alert(result.message); return; }
+    const { confirmDeliveryNoteOverwrite } = await import('../documentModel/additionalDocumentModel.js');
+    if (!confirmDeliveryNoteOverwrite(currentGeneratorState, initialGeneratorStateRef.current, () => window.confirm('Der aktuelle Lieferschein enthält Änderungen. Möchtest du ihn vollständig durch die Daten aus der PDF ersetzen?'))) return;
+    const restored = result.state;
+    setLabels(restored.labels);
+    setDeliveryNoteData(restored.deliveryNoteData);
+    setPositions(restored.positions);
+    setTextBlocks(restored.textBlocks);
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = structuredClone(restored);
+    window.alert(result.message);
   }
 
   async function handlePrint() {
@@ -971,6 +1008,7 @@ export default function DeliveryNoteDocumentEditor() {
         isEditable={highlightFields}
         isExporting={isExporting}
         onCreatePdf={handleCreatePdf}
+        onLoadPdf={handleLoadPdf}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onToggleDataCheck={toggleDataCheckMode}

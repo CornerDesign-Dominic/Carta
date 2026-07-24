@@ -17,6 +17,7 @@ import {
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { mapReminderToDocument } from '../documentModel/reminderMapping.js';
 
 
 const initialReminderLabels = {
@@ -484,6 +485,18 @@ export default function ReminderDocumentEditor() {
   const [textBlocks, setTextBlocks] = useState(defaultReminderTextBlocks);
   const [openItems, setOpenItems] = useState([createOpenItem()]);
   const [charges, setCharges] = useState({ interest: '0', reminderFee: '5.00' });
+  const initialGeneratorStateRef = useRef(null);
+  const currentGeneratorState = {
+    labels,
+    reminderData,
+    openItems,
+    charges,
+    textBlocks,
+    fieldConfig,
+  };
+  if (!initialGeneratorStateRef.current) {
+    initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
+  }
   const { sender, recipient, details, footerLines } = useMemo(
     () => createReminderViewData(reminderData),
     [reminderData],
@@ -807,6 +820,7 @@ export default function ReminderDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = null;
   }
 
   async function handleCreatePdf() {
@@ -819,6 +833,7 @@ export default function ReminderDocumentEditor() {
         exportRoot: printPagesRef.current,
         documentType: 'reminder',
         filename: createPdfFileName(labels.title, details.reminderNumber),
+        belege24Document: mapReminderToDocument(currentGeneratorState),
       });
     } catch (error) {
       window.alert(
@@ -828,6 +843,54 @@ export default function ReminderDocumentEditor() {
       setIsExportRenderActive(false);
       setIsExporting(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (
+      !(file instanceof File)
+      || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))
+    ) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+
+    let importResult;
+    try {
+      const { importReminderPdf } = await import('../documentModel/reminderPdfImport.js');
+      importResult = await importReminderPdf(await file.arrayBuffer());
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+    if (importResult.status !== 'valid') {
+      window.alert(importResult.message);
+      return;
+    }
+
+    const { confirmReminderOverwrite } = await import('../documentModel/reminderPdfImport.js');
+    const mayOverwrite = confirmReminderOverwrite(
+      currentGeneratorState,
+      initialGeneratorStateRef.current,
+      () => window.confirm(
+        'Die aktuelle Mahnung enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?',
+      ),
+    );
+    if (!mayOverwrite) return;
+
+    const restored = importResult.state;
+    setLabels(restored.labels);
+    setReminderData(restored.reminderData);
+    setOpenItems(restored.openItems);
+    setCharges(restored.charges);
+    setTextBlocks(restored.textBlocks);
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = structuredClone(restored);
+    window.alert(importResult.message);
   }
 
   async function handlePrint() {
@@ -923,6 +986,7 @@ export default function ReminderDocumentEditor() {
         isEditable={highlightFields}
         isExporting={isExporting}
         onCreatePdf={handleCreatePdf}
+        onLoadPdf={handleLoadPdf}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onToggleDataCheck={toggleDataCheckMode}

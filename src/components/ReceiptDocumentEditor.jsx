@@ -6,6 +6,7 @@ import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
 import { getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { mapReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
 
 
 const initialReceiptLabels = {
@@ -718,6 +719,9 @@ export default function ReceiptDocumentEditor() {
     recipient: createFieldConfig(receiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(receiptFooterColumns[1]),
   });
+  const initialGeneratorStateRef = useRef(null);
+  const currentGeneratorState = { labels, receiptData, amountCalculationSource, textBlocks, fieldConfig };
+  if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
   const sheetRef = useRef(null);
   const dateInputRefs = useRef({});
   const { sender, details, amount } = useMemo(
@@ -1067,6 +1071,7 @@ export default function ReceiptDocumentEditor() {
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
     setIsExporting(false);
+    initialGeneratorStateRef.current = null;
   }
 
   async function handleCreatePdf() {
@@ -1077,6 +1082,7 @@ export default function ReceiptDocumentEditor() {
         sheet: sheetRef.current,
         documentType: 'receipt',
         filename: createPdfFileName(labels.title, details.receiptId),
+        belege24Document: mapReceiptToDocument(currentGeneratorState),
       });
     } catch (error) {
       window.alert(
@@ -1085,6 +1091,35 @@ export default function ReceiptDocumentEditor() {
     } finally {
       setIsExporting(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (!(file instanceof File) || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+    let result;
+    try {
+      const { importReceiptPdf } = await import('../documentModel/additionalDocumentModel.js');
+      result = await importReceiptPdf(await file.arrayBuffer());
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+    if (result.status !== 'valid') { window.alert(result.message); return; }
+    const { confirmReceiptOverwrite } = await import('../documentModel/additionalDocumentModel.js');
+    if (!confirmReceiptOverwrite(currentGeneratorState, initialGeneratorStateRef.current, () => window.confirm('Die aktuelle Quittung enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?'))) return;
+    const restored = result.state;
+    setLabels(restored.labels);
+    setReceiptData(restored.receiptData);
+    setAmountCalculationSource(restored.amountCalculationSource);
+    setTextBlocks(restored.textBlocks);
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    initialGeneratorStateRef.current = structuredClone(restored);
+    window.alert(result.message);
   }
 
   function handlePrint() {
@@ -1123,6 +1158,7 @@ export default function ReceiptDocumentEditor() {
         isEditable={highlightFields}
         isExporting={isExporting}
         onCreatePdf={handleCreatePdf}
+        onLoadPdf={handleLoadPdf}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
         onToggleDataCheck={toggleDataCheckMode}

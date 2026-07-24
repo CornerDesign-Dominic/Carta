@@ -254,8 +254,8 @@ describe('Belege24 PDF attachment roundtrip', () => {
     expect(result.document.schemaVersion).toBe(BELEGE24_SCHEMA_VERSION);
     expect(result.document.sharedData.recipient.company).toBe('Beispielkunde GmbH');
     expect(invoiceDocument.documentData.invoice.invoiceNumber).toBe('RE-2026-001');
-    expect(result.document.documentData.textBlocks[1].value).toBe('Zahlbar sofort.');
-    expect(result.document.documentData.positions[0]).toMatchObject({
+    expect(invoiceDocument.documentData.textBlocks[1].value).toBe('Zahlbar sofort.');
+    expect(invoiceDocument.documentData.positions[0]).toMatchObject({
       description: 'Beratung',
       unitPrice: '0.10',
       quantity: '3',

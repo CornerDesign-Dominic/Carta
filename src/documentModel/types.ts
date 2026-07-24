@@ -258,4 +258,120 @@ export type CreditNoteDocumentData =
 
 export type CreditNoteDocument = Belege24Document<'creditNote', CreditNoteDocumentData>;
 
-export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument;
+export interface ReminderOpenItem {
+  id: Uuid;
+  invoiceNumber: string;
+  externalNumber: string;
+  dueDate: string;
+  overdueDays: string;
+  amount: string;
+}
+
+export interface ReminderDocumentData {
+  labels: Record<string, string>;
+  details: {
+    reminderNumber: string;
+    reminderDate: string;
+    customerNumber: string;
+  };
+  senderContact: {
+    email: string;
+    phone: string;
+    fax: string;
+    website: string;
+  };
+  openItems: ReminderOpenItem[];
+  charges: {
+    interest: string;
+    reminderFee: string;
+  };
+  textBlocks: InvoiceTextBlock[];
+  footerFieldLabels: {
+    vatId: string;
+    taxNumber: string;
+    iban: string;
+    bic: string;
+  };
+  fieldConfiguration: {
+    contact: FieldConfiguration;
+    details: FieldConfiguration;
+    recipient: FieldConfiguration;
+    footerMiddle: FieldConfiguration;
+  };
+}
+
+export type ReminderDocument = Belege24Document<'reminder', ReminderDocumentData>;
+
+export interface OfferDocumentData {
+  state: OfferGeneratorState;
+}
+
+export interface DeliveryNoteDocumentData {
+  state: DeliveryNoteGeneratorState;
+}
+
+export interface ReceiptDocumentData {
+  state: ReceiptPersistedGeneratorState;
+}
+
+export interface DocumentAddress {
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  city: string;
+}
+
+export interface DocumentFooter {
+  company: { companyName: string; street: string; houseNumber: string; postalCode: string; city: string; extra: string };
+  tax: { vatIdLabel: string; vatId: string; taxNumberLabel: string; taxNumber: string; commercialRegister: string; representation: string };
+  bank: { bankName: string; ibanLabel: string; iban: string; bicLabel: string; bic: string; bankExtra: string };
+}
+
+export interface BusinessDocumentState<TPosition> {
+  labels: Record<string, string>;
+  documentData: {
+    sender: { companyName: string; returnAddress: string; address: DocumentAddress; contact: { email: string; phone: string; fax: string; website: string } };
+    recipient: { companyName: string; attention: string; name: string; address: DocumentAddress };
+    details: Record<string, string>;
+    references: Record<string, string>;
+    footer: DocumentFooter;
+  };
+  positions: TPosition[];
+  textBlocks: InvoiceTextBlock[];
+  fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
+}
+
+export type OfferGeneratorState = BusinessDocumentState<{
+  id: Uuid; description: string; unitPrice: string; quantity: string; unit: string; taxRate: string;
+}>;
+
+export type DeliveryNoteGeneratorState = BusinessDocumentState<{
+  id: Uuid; quantity: string; unit: string; description: string; deliveryDate: string; note: string;
+}>;
+
+export interface ReceiptGeneratorState {
+  labels: Record<string, string>;
+  receiptData: {
+    sender: { companyName: string; returnAddress: string; address: DocumentAddress; contact: { email: string; phone: string; website: string } };
+    recipient: { companyName: string; attention: string; name: string; address: DocumentAddress };
+    details: { receiptId: string; receiptDate: string; paymentDate: string; place: string; from: string; purpose: string; bookingNote: string; receiverSignature: string };
+    references: { internalReference: string; externalReference: string };
+    amount: { netAmount: string; taxRate: string; taxAmount: string; grossAmount: string; amountInWords: string; settlementMethod: string };
+    footer: { company: DocumentFooter['company']; tax: { vatIdLabel: string; vatId: string; taxIdLabel: string; taxId: string; representation: string }; bank: { bankName: string; ibanLabel: string; iban: string; bicLabel: string; bic: string } };
+  };
+  amountCalculationSource: 'netAmount' | 'grossAmount';
+  textBlocks: InvoiceTextBlock[];
+  fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; header: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
+}
+
+export interface ReceiptPersistedGeneratorState extends Omit<ReceiptGeneratorState, 'receiptData'> {
+  receiptData: Omit<ReceiptGeneratorState['receiptData'], 'amount'> & {
+    amount: { calculationSource: 'netAmount' | 'grossAmount'; sourceAmount: string; taxRate: string; amountInWords: string; settlementMethod: string };
+  };
+}
+
+export type OfferDocument = Belege24Document<'offer', OfferDocumentData>;
+export type DeliveryNoteDocument = Belege24Document<'deliveryNote', DeliveryNoteDocumentData>;
+export type ReceiptDocument = Belege24Document<'receipt', ReceiptDocumentData>;
+
+export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument | ReminderDocument | OfferDocument | DeliveryNoteDocument | ReceiptDocument;

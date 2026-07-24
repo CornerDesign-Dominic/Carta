@@ -1,4 +1,5 @@
 export * from './constants.js';
+export * from './additionalDocumentModel.js';
 export * from './creditNoteMapping.js';
 export * from './creditNotePdfImport.js';
 export * from './creditNoteRestore.js';
@@ -6,5 +7,8 @@ export * from './invoiceMapping.js';
 export * from './invoicePdfImport.js';
 export * from './invoiceRestore.js';
 export * from './pdfAttachment.js';
+export * from './reminderMapping.js';
+export * from './reminderPdfImport.js';
+export * from './reminderRestore.js';
 export * from './types.js';
 export * from './validation.js';
