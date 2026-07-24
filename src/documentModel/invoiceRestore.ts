@@ -2,7 +2,7 @@ import {
   BELEGE24_DOCUMENT_FORMAT,
   BELEGE24_SCHEMA_VERSION,
 } from './constants.js';
-import type { GoodsInvoiceGeneratorState, StandardInvoiceGeneratorState } from './invoiceMapping.js';
+import type { GoodsInvoiceGeneratorState, StandardInvoiceGeneratorState, TextInvoiceGeneratorState } from './invoiceMapping.js';
 import type {
   FieldConfiguration,
   FooterField,
@@ -148,7 +148,7 @@ function requireAddress(
 
 function restoreInvoiceState(
   document: unknown,
-  expectedInvoiceVariant: 'standard' | 'goods',
+  expectedInvoiceVariant: 'standard' | 'goods' | 'text',
 ): RestoreStandardInvoiceResult | RestoreGoodsInvoiceResult {
   if (!isRecord(document)) {
     return { status: 'incomplete-data', errors: ['root must be an object'] };
@@ -409,3 +409,4 @@ export function restoreStandardInvoiceState(document: unknown): RestoreStandardI
 export function restoreGoodsInvoiceState(document: unknown): RestoreGoodsInvoiceResult {
   return restoreInvoiceState(document, 'goods') as RestoreGoodsInvoiceResult;
 }
+export function restoreTextInvoiceState(document: unknown) { return restoreInvoiceState(document, 'text') as RestoreGoodsInvoiceResult & { state: TextInvoiceGeneratorState }; }

@@ -18,7 +18,7 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
-import { mapGoodsInvoiceToDocument, mapStandardInvoiceToDocument } from '../documentModel/invoiceMapping.js';
+import { mapGoodsInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
@@ -1663,7 +1663,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
               isSmallBusinessInvoice,
               fieldConfig,
             })
-          : undefined;
+          : normalizedInvoiceVariant === 'text' ? mapTextInvoiceToDocument({ invoiceVariant: 'text', labels, invoiceData, positions, previousPayments, textBlocks, isSmallBusinessInvoice, fieldConfig }) : undefined;
 
       await requestPdfDownload({
         sheet: sheetRef.current,
@@ -1693,10 +1693,10 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
     let importResult;
     try {
-      const { importGoodsInvoicePdf, importStandardInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
+      const { importGoodsInvoicePdf, importStandardInvoicePdf, importTextInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
       importResult = normalizedInvoiceVariant === 'goods'
         ? await importGoodsInvoicePdf(await file.arrayBuffer())
-        : await importStandardInvoicePdf(await file.arrayBuffer());
+        : normalizedInvoiceVariant === 'text' ? await importTextInvoicePdf(await file.arrayBuffer()) : await importStandardInvoicePdf(await file.arrayBuffer());
     } catch {
       window.alert('Die PDF konnte nicht gelesen werden.');
       return;
@@ -1845,7 +1845,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           isEditable={highlightFields}
           isExporting={isExporting}
           onCreatePdf={handleCreatePdf}
-          onLoadPdf={normalizedInvoiceVariant === 'standard' || isGoodsInvoice ? handleLoadPdf : undefined}
+          onLoadPdf={['standard', 'goods', 'text'].includes(normalizedInvoiceVariant) ? handleLoadPdf : undefined}
           onNewDocument={handleNewDocument}
           onPrint={handlePrint}
           onToggleDataCheck={toggleDataCheckMode}

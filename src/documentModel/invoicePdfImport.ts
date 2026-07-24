@@ -1,6 +1,6 @@
-import type { GoodsInvoiceGeneratorState, StandardInvoiceGeneratorState } from './invoiceMapping.js';
+import type { GoodsInvoiceGeneratorState, StandardInvoiceGeneratorState, TextInvoiceGeneratorState } from './invoiceMapping.js';
 import { readBelege24DocumentFromPdf } from './pdfAttachment.js';
-import { restoreGoodsInvoiceState, restoreStandardInvoiceState } from './invoiceRestore.js';
+import { restoreGoodsInvoiceState, restoreStandardInvoiceState, restoreTextInvoiceState } from './invoiceRestore.js';
 
 export type StandardInvoicePdfImportResult =
   | { status: 'valid'; state: StandardInvoiceGeneratorState; message: string }
@@ -26,6 +26,7 @@ export type GoodsInvoicePdfImportResult =
         | 'unreadable-pdf';
       message: string;
     };
+export type TextInvoicePdfImportResult = GoodsInvoicePdfImportResult & { state?: TextInvoiceGeneratorState };
 
 export function areStandardInvoiceStatesEqual(
   first: StandardInvoiceGeneratorState,
@@ -49,6 +50,7 @@ export function confirmGoodsInvoiceOverwrite(
 ): boolean {
   return areStandardInvoiceStatesEqual(currentState, initialState) || confirmOverwrite();
 }
+export const confirmTextInvoiceOverwrite = confirmGoodsInvoiceOverwrite;
 
 export async function importStandardInvoicePdf(
   pdfBytes: ArrayBuffer | Uint8Array,
@@ -129,5 +131,18 @@ export async function importGoodsInvoicePdf(
     return { status: 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungÃ¼ltig oder beschÃ¤digt.' };
   }
 
+  return { status: 'valid', state: restored.state, message: 'PDF erfolgreich geladen.' };
+}
+
+export async function importTextInvoicePdf(pdfBytes: ArrayBuffer | Uint8Array): Promise<TextInvoicePdfImportResult> {
+  const readResult = await readBelege24DocumentFromPdf(pdfBytes);
+  if (readResult.status === 'not-found') return { status: 'not-found', message: 'Diese PDF enthält keine Belege24-Daten.' };
+  if (readResult.status === 'unsupported') return { status: 'unsupported', message: 'Die Format- oder Schema-Version dieser Belege24-PDF wird nicht unterstützt.' };
+  if (readResult.status === 'unreadable-pdf') return { status: 'unreadable-pdf', message: 'Die PDF konnte nicht gelesen werden.' };
+  if (readResult.status === 'invalid-json' || readResult.status === 'invalid-document') return { status: 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungültig oder beschädigt.' };
+  const restored = restoreTextInvoiceState(readResult.document);
+  if (restored.status === 'wrong-invoice-variant') return { status: 'wrong-invoice-variant', message: 'Diese Belege24-PDF ist keine Textrechnung.' };
+  if (restored.status === 'wrong-document-type') return { status: 'wrong-document-type', message: 'Die PDF enthält keinen Belege24-Datensatz für eine Textrechnung.' };
+  if (restored.status !== 'valid') return { status: restored.status === 'unsupported' ? 'unsupported' : 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungültig oder beschädigt.' };
   return { status: 'valid', state: restored.state, message: 'PDF erfolgreich geladen.' };
 }
