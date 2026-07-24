@@ -13,7 +13,7 @@ import {
   BELEGE24_DOCUMENT_FORMAT,
   BELEGE24_SCHEMA_VERSION,
 } from './constants.js';
-import type { StandardInvoiceDocument } from './types.js';
+import type { Belege24SupportedDocument } from './types.js';
 import { validateBelege24Document } from './validation.js';
 
 export const BELEGE24_ATTACHMENT_FILE_NAME = 'belege24-document.json' as const;
@@ -25,7 +25,7 @@ export type ReadBelege24PdfResult =
       status: 'valid';
       fileName: typeof BELEGE24_ATTACHMENT_FILE_NAME;
       mimeType: string | undefined;
-      document: StandardInvoiceDocument;
+      document: Belege24SupportedDocument;
     }
   | { status: 'not-found' }
   | { status: 'invalid-json'; error: string }
@@ -80,7 +80,7 @@ function findBelege24Attachment(pdfDocument: PDFDocument) {
 
 export async function embedBelege24DocumentInPdf(
   pdfBytes: Uint8Array | ArrayBuffer,
-  document: StandardInvoiceDocument,
+  document: Belege24SupportedDocument,
 ): Promise<Uint8Array> {
   const validation = validateBelege24Document(document);
   if (!validation.valid) {
@@ -146,7 +146,9 @@ export async function readBelege24DocumentFromPdf(
     };
   }
 
-  const candidate = document as Record<string, unknown>;
+  const candidate = typeof document === 'object' && document !== null
+    ? document as Record<string, unknown>
+    : undefined;
   if (
     candidate?.format !== BELEGE24_DOCUMENT_FORMAT
     || candidate?.schemaVersion !== BELEGE24_SCHEMA_VERSION
@@ -167,6 +169,6 @@ export async function readBelege24DocumentFromPdf(
     status: 'valid',
     fileName: BELEGE24_ATTACHMENT_FILE_NAME,
     mimeType: attachment.mimeType,
-    document: document as StandardInvoiceDocument,
+    document: document as Belege24SupportedDocument,
   };
 }

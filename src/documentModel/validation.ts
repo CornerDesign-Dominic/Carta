@@ -1,10 +1,9 @@
 import {
   BELEGE24_DOCUMENT_FORMAT,
   BELEGE24_SCHEMA_VERSION,
-  SUPPORTED_DOCUMENT_TYPES,
-  type SupportedDocumentType,
 } from './constants.js';
-import type { Belege24Document } from './types.js';
+import { restoreCreditNoteState } from './creditNoteRestore.js';
+import type { Belege24SupportedDocument } from './types.js';
 
 export interface ValidationResult {
   valid: boolean;
@@ -29,7 +28,7 @@ function validateAddress(value: unknown, path: string, errors: string[]) {
   });
 }
 
-export function validateBelege24Document(value: unknown): ValidationResult {
+export function validateInvoiceDocument(value: unknown): ValidationResult {
   const errors: string[] = [];
 
   if (!isRecord(value)) {
@@ -47,8 +46,8 @@ export function validateBelege24Document(value: unknown): ValidationResult {
   if (!isRecord(document)) {
     errors.push('document must be an object');
   } else {
-    if (!SUPPORTED_DOCUMENT_TYPES.includes(document.documentType as SupportedDocumentType)) {
-      errors.push('document.documentType is not supported');
+    if (document.documentType !== 'invoice') {
+      errors.push('document.documentType must be "invoice"');
     }
     if (typeof document.documentId !== 'string' || !uuidPattern.test(document.documentId)) {
       errors.push('document.documentId must be a UUID');
@@ -127,8 +126,35 @@ export function validateBelege24Document(value: unknown): ValidationResult {
   return { valid: errors.length === 0, errors };
 }
 
+export function validateCreditNoteDocument(value: unknown): ValidationResult {
+  const restored = restoreCreditNoteState(value);
+  if (restored.status === 'valid') return { valid: true, errors: [] };
+  if (restored.status === 'wrong-variant') {
+    return {
+      valid: false,
+      errors: ['documentData.creditNoteVariant must be "creditNote", "cancellationInvoice" or "invoiceCorrection"'],
+    };
+  }
+  return { valid: false, errors: ['credit note document is invalid'] };
+}
+
+export function validateBelege24Document(value: unknown): ValidationResult {
+  if (!isRecord(value) || !isRecord(value.document)) {
+    return { valid: false, errors: ['document.documentType is not supported'] };
+  }
+
+  switch (value.document.documentType) {
+    case 'invoice':
+      return validateInvoiceDocument(value);
+    case 'creditNote':
+      return validateCreditNoteDocument(value);
+    default:
+      return { valid: false, errors: ['document.documentType is not supported'] };
+  }
+}
+
 export function isBelege24Document(
   value: unknown,
-): value is Belege24Document<SupportedDocumentType, Record<string, unknown>> {
+): value is Belege24SupportedDocument {
   return validateBelege24Document(value).valid;
 }

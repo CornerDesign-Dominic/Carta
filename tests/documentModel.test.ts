@@ -14,6 +14,7 @@ import {
   readBelege24DocumentFromPdf,
   restoreStandardInvoiceState,
   validateBelege24Document,
+  type StandardInvoiceDocument,
   type StandardInvoiceGeneratorState,
 } from '../src/documentModel/index.js';
 
@@ -242,14 +243,17 @@ describe('Belege24 PDF attachment roundtrip', () => {
     const pdf = await PDFDocument.load(pdfBytes);
 
     expect(result.status).toBe('valid');
-    if (result.status !== 'valid') throw new Error(`Unexpected result: ${result.status}`);
+    if (result.status !== 'valid' || result.document.document.documentType !== 'invoice') {
+      throw new Error(`Unexpected result: ${result.status}`);
+    }
+    const invoiceDocument = result.document as StandardInvoiceDocument;
 
     expect(result.fileName).toBe(BELEGE24_ATTACHMENT_FILE_NAME);
     expect(result.mimeType).toBe(BELEGE24_ATTACHMENT_MIME_TYPE);
     expect(result.document.format).toBe(BELEGE24_DOCUMENT_FORMAT);
     expect(result.document.schemaVersion).toBe(BELEGE24_SCHEMA_VERSION);
     expect(result.document.sharedData.recipient.company).toBe('Beispielkunde GmbH');
-    expect(result.document.documentData.invoice.invoiceNumber).toBe('RE-2026-001');
+    expect(invoiceDocument.documentData.invoice.invoiceNumber).toBe('RE-2026-001');
     expect(result.document.documentData.textBlocks[1].value).toBe('Zahlbar sofort.');
     expect(result.document.documentData.positions[0]).toMatchObject({
       description: 'Beratung',
@@ -261,7 +265,7 @@ describe('Belege24 PDF attachment roundtrip', () => {
         grossAmount: '0.36',
       },
     });
-    expect(result.document.documentData.calculated.invoiceTotals.grossAmount).toBe('0.36');
+    expect(invoiceDocument.documentData.calculated.invoiceTotals.grossAmount).toBe('0.36');
     expect(pdf.getCreator()).toBe('Belege24 test-version');
     expect(pdf.getSubject()).toBe(BELEGE24_PDF_SUBJECT);
     expect(pdf.getKeywords()).toContain(BELEGE24_DOCUMENT_FORMAT);

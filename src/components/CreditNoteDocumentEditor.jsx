@@ -807,6 +807,19 @@ export default function CreditNoteDocumentEditor() {
   const activeVariantConfig = creditNoteVariantConfig[normalizedCreditNoteVariant];
   const referenceFields = activeVariantConfig.referenceFields;
   const textBlocks = textBlockSets[normalizedCreditNoteVariant] ?? textBlockSets.creditNote;
+  const initialGeneratorStatesRef = useRef({});
+  const currentGeneratorState = {
+    creditNoteVariant: normalizedCreditNoteVariant,
+    labels,
+    offerData,
+    positions,
+    textBlocks,
+    isSmallBusiness,
+    fieldConfig,
+  };
+  if (!initialGeneratorStatesRef.current[normalizedCreditNoteVariant]) {
+    initialGeneratorStatesRef.current[normalizedCreditNoteVariant] = structuredClone(currentGeneratorState);
+  }
   const { sender, recipient, details, correction, footerLines } = useMemo(
     () => createOfferViewData(offerData),
     [offerData],
@@ -1221,9 +1234,15 @@ export default function CreditNoteDocumentEditor() {
   }
 
   function handleNewDocument() {
-    setLabels(initialCreditNoteLabels);
+    setLabels({
+      ...initialCreditNoteLabels,
+      title: activeVariantConfig.title,
+      grandTotal: normalizedCreditNoteVariant === 'creditNote'
+        ? 'Gutschriftsbetrag'
+        : activeVariantConfig.title === 'Stornorechnung' ? 'Stornobetrag' : 'Korrekturbetrag',
+    });
     setOfferData(defaultOfferData);
-    setCreditNoteVariant('creditNote');
+    setCreditNoteVariant(normalizedCreditNoteVariant);
     setTextBlockSets(createInitialTextBlockSets());
     setPositions([createCreditNotePosition()]);
     setIsSmallBusiness(readSmallBusinessPreference());
@@ -1239,6 +1258,7 @@ export default function CreditNoteDocumentEditor() {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStatesRef.current = {};
   }
 
   function runWithCleanDocument(callback) {
@@ -1275,7 +1295,7 @@ export default function CreditNoteDocumentEditor() {
         filename: createPdfFileName(labels.title, details.creditNoteNumber),
         belege24Document: mapCreditNoteToDocument({
           labels,
-          creditNoteVariant: 'creditNote',
+          creditNoteVariant: normalizedCreditNoteVariant,
           offerData,
           positions,
           textBlocks,
@@ -1291,6 +1311,57 @@ export default function CreditNoteDocumentEditor() {
       setIsExportRenderActive(false);
       setIsExporting(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (
+      !(file instanceof File)
+      || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))
+    ) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+
+    let importResult;
+    try {
+      const { importCreditNotePdf } = await import('../documentModel/creditNotePdfImport.js');
+      importResult = await importCreditNotePdf(
+        await file.arrayBuffer(),
+        normalizedCreditNoteVariant,
+      );
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+    if (importResult.status !== 'valid') {
+      window.alert(importResult.message);
+      return;
+    }
+
+    const { confirmCreditNoteOverwrite } = await import('../documentModel/creditNotePdfImport.js');
+    const mayOverwrite = confirmCreditNoteOverwrite(
+      currentGeneratorState,
+      initialGeneratorStatesRef.current[normalizedCreditNoteVariant],
+      () => window.confirm(
+        'Die aktuelle Gutschrift enthält Änderungen. Möchtest du sie vollständig durch die Daten aus der PDF ersetzen?',
+      ),
+    );
+    if (!mayOverwrite) return;
+
+    const restored = importResult.state;
+    setLabels(restored.labels);
+    setOfferData(restored.offerData);
+    setCreditNoteVariant(restored.creditNoteVariant);
+    setTextBlockSets((current) => ({ ...current, [restored.creditNoteVariant]: restored.textBlocks }));
+    setPositions(restored.positions);
+    setIsSmallBusiness(restored.isSmallBusiness);
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    window.alert(importResult.message);
   }
 
   async function handlePrint() {
@@ -1409,6 +1480,7 @@ export default function CreditNoteDocumentEditor() {
           isEditable={highlightFields}
           isExporting={isExporting}
           onCreatePdf={handleCreatePdf}
+          onLoadPdf={handleLoadPdf}
           onNewDocument={handleNewDocument}
           onPrint={handlePrint}
           onToggleDataCheck={toggleDataCheckMode}

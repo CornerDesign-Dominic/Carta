@@ -210,12 +210,19 @@ export interface StandardInvoiceDocumentData {
 
 export type StandardInvoiceDocument = Belege24Document<'invoice', StandardInvoiceDocumentData>;
 
-export interface CreditNoteDocumentData {
-  creditNoteVariant: 'creditNote';
+export type CreditNoteVariant = 'creditNote' | 'cancellationInvoice' | 'invoiceCorrection';
+
+export interface CreditNoteCorrectionData {
+  originalInvoiceNumber: string;
+  cancellationReason: string;
+  correctionReason: string;
+}
+
+export interface CreditNoteCommonDocumentData {
   labels: Record<string, string>;
   details: { creditNoteNumber: string; creditNoteDate: string; serviceDate: string };
   references: { internalReference: string; externalReference: string; customerReference: string };
-  correction: { originalInvoiceNumber: string; cancellationReason: string; correctionReason: string };
+  correction: CreditNoteCorrectionData;
   senderContact: { email: string; phone: string; fax: string; website: string };
   positions: Array<{ id: Uuid; description: string; unitPrice: string; quantity: string; unit: string; taxRate: string }>;
   textBlocks: InvoiceTextBlock[];
@@ -224,4 +231,31 @@ export interface CreditNoteDocumentData {
   fieldConfiguration: { contact: FieldConfiguration; details: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
 }
 
+export interface StandardCreditNoteDocumentData extends CreditNoteCommonDocumentData {
+  creditNoteVariant: 'creditNote';
+}
+
+export interface CancellationInvoiceDocumentData extends CreditNoteCommonDocumentData {
+  creditNoteVariant: 'cancellationInvoice';
+  correction: CreditNoteCorrectionData & {
+    originalInvoiceNumber: string;
+    cancellationReason: string;
+  };
+}
+
+export interface InvoiceCorrectionDocumentData extends CreditNoteCommonDocumentData {
+  creditNoteVariant: 'invoiceCorrection';
+  correction: CreditNoteCorrectionData & {
+    originalInvoiceNumber: string;
+    correctionReason: string;
+  };
+}
+
+export type CreditNoteDocumentData =
+  | StandardCreditNoteDocumentData
+  | CancellationInvoiceDocumentData
+  | InvoiceCorrectionDocumentData;
+
 export type CreditNoteDocument = Belege24Document<'creditNote', CreditNoteDocumentData>;
+
+export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument;
