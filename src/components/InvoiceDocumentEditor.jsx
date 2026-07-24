@@ -18,7 +18,7 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
-import { mapGoodsInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
+import { mapFinalInvoiceToDocument, mapGoodsInvoiceToDocument, mapPartialInvoiceToDocument, mapProgressInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
@@ -1663,7 +1663,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
               isSmallBusinessInvoice,
               fieldConfig,
             })
-          : normalizedInvoiceVariant === 'text' ? mapTextInvoiceToDocument({ invoiceVariant: 'text', labels, invoiceData, positions, previousPayments, textBlocks, isSmallBusinessInvoice, fieldConfig }) : undefined;
+          : normalizedInvoiceVariant === 'text' ? mapTextInvoiceToDocument({ invoiceVariant: 'text', labels, invoiceData, positions, previousPayments, textBlocks, isSmallBusinessInvoice, fieldConfig }) : normalizedInvoiceVariant === 'progressInvoice' ? mapProgressInvoiceToDocument({ invoiceVariant: 'progressInvoice', labels, invoiceData, positions, previousPayments, textBlocks, isSmallBusinessInvoice, fieldConfig }) : normalizedInvoiceVariant === 'partialInvoice' ? mapPartialInvoiceToDocument({ invoiceVariant: 'partialInvoice', labels, invoiceData, positions, previousPayments, textBlocks, isSmallBusinessInvoice, fieldConfig }) : normalizedInvoiceVariant === 'finalInvoice' ? mapFinalInvoiceToDocument({ invoiceVariant: 'finalInvoice', labels, invoiceData, positions, previousPayments, textBlocks, isSmallBusinessInvoice, fieldConfig }) : undefined;
 
       await requestPdfDownload({
         sheet: sheetRef.current,
@@ -1693,10 +1693,10 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
     let importResult;
     try {
-      const { importGoodsInvoicePdf, importStandardInvoicePdf, importTextInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
+      const { importFinalInvoicePdf, importGoodsInvoicePdf, importPartialInvoicePdf, importProgressInvoicePdf, importStandardInvoicePdf, importTextInvoicePdf } = await import('../documentModel/invoicePdfImport.js');
       importResult = normalizedInvoiceVariant === 'goods'
         ? await importGoodsInvoicePdf(await file.arrayBuffer())
-        : normalizedInvoiceVariant === 'text' ? await importTextInvoicePdf(await file.arrayBuffer()) : await importStandardInvoicePdf(await file.arrayBuffer());
+        : normalizedInvoiceVariant === 'text' ? await importTextInvoicePdf(await file.arrayBuffer()) : normalizedInvoiceVariant === 'progressInvoice' ? await importProgressInvoicePdf(await file.arrayBuffer()) : normalizedInvoiceVariant === 'partialInvoice' ? await importPartialInvoicePdf(await file.arrayBuffer()) : normalizedInvoiceVariant === 'finalInvoice' ? await importFinalInvoicePdf(await file.arrayBuffer()) : await importStandardInvoicePdf(await file.arrayBuffer());
     } catch {
       window.alert('Die PDF konnte nicht gelesen werden.');
       return;
@@ -1845,7 +1845,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           isEditable={highlightFields}
           isExporting={isExporting}
           onCreatePdf={handleCreatePdf}
-          onLoadPdf={['standard', 'goods', 'text'].includes(normalizedInvoiceVariant) ? handleLoadPdf : undefined}
+          onLoadPdf={['standard', 'goods', 'text', 'progressInvoice', 'partialInvoice', 'finalInvoice'].includes(normalizedInvoiceVariant) ? handleLoadPdf : undefined}
           onNewDocument={handleNewDocument}
           onPrint={handlePrint}
           onToggleDataCheck={toggleDataCheckMode}

@@ -98,6 +98,9 @@ export type GoodsInvoiceGeneratorState = Omit<StandardInvoiceGeneratorState, 'in
   invoiceVariant: 'goods';
 };
 export type TextInvoiceGeneratorState = Omit<StandardInvoiceGeneratorState, 'invoiceVariant'> & { invoiceVariant: 'text' };
+export type ProgressInvoiceGeneratorState = Omit<StandardInvoiceGeneratorState, 'invoiceVariant'> & { invoiceVariant: 'progressInvoice' };
+export type PartialInvoiceGeneratorState = Omit<StandardInvoiceGeneratorState, 'invoiceVariant'> & { invoiceVariant: 'partialInvoice' };
+export type FinalInvoiceGeneratorState = Omit<StandardInvoiceGeneratorState, 'invoiceVariant'> & { invoiceVariant: 'finalInvoice' };
 
 export interface MappingOptions {
   documentId?: string;
@@ -364,4 +367,13 @@ export function mapGoodsInvoiceToDocument(
 
 export function mapTextInvoiceToDocument(state: TextInvoiceGeneratorState, options: MappingOptions = {}): StandardInvoiceDocument {
   return mapStandardInvoiceToDocument({ ...state, invoiceVariant: 'text' }, options);
+}
+export function mapProgressInvoiceToDocument(state: ProgressInvoiceGeneratorState, options: MappingOptions = {}): StandardInvoiceDocument {
+  return mapStandardInvoiceToDocument({ ...state, invoiceVariant: 'progressInvoice' }, options);
+}
+export function mapPartialInvoiceToDocument(state: PartialInvoiceGeneratorState, options: MappingOptions = {}): StandardInvoiceDocument {
+  return mapStandardInvoiceToDocument({ ...state, invoiceVariant: 'partialInvoice' }, options);
+}
+export function mapFinalInvoiceToDocument(state: FinalInvoiceGeneratorState, options: MappingOptions = {}): StandardInvoiceDocument {
+  return mapStandardInvoiceToDocument({ ...state, invoiceVariant: 'finalInvoice' }, options);
 }
