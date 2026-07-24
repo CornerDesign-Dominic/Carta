@@ -1,7 +1,7 @@
 const footerItems = [
   { label: 'Impressum', view: 'legal:impressum' },
   { label: 'Datenschutz', view: 'legal:datenschutz' },
-  { label: 'AGB', view: 'legal:agb' },
+  { label: 'Nutzungsbedingungen', view: 'legal:agb' },
 ];
 
 export default function Footer({ onNavigate, onOpenCookieSettings }) {

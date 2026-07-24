@@ -1,5 +1,6 @@
 const GA_SCRIPT_ID = 'belege24-ga-script';
 const GA_INIT_FLAG = '__belege24GaInitialized';
+const GA_CONSENT_FLAG = '__belege24GaConsentGranted';
 const DEFAULT_MEASUREMENT_ID = 'G-7Q9VSC21C9';
 
 function getMeasurementId() {
@@ -22,6 +23,7 @@ export function syncAnalyticsConsent(enabled) {
   }
 
   window[`ga-disable-${measurementId}`] = enabled !== true;
+  window[GA_CONSENT_FLAG] = enabled === true;
 
   if (!enabled || window[GA_INIT_FLAG]) {
     return;
@@ -52,7 +54,11 @@ export function syncAnalyticsConsent(enabled) {
 }
 
 export function trackAnalyticsEvent(eventName, params = {}) {
-  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+  if (
+    typeof window === 'undefined' ||
+    window[GA_CONSENT_FLAG] !== true ||
+    typeof window.gtag !== 'function'
+  ) {
     return;
   }
 

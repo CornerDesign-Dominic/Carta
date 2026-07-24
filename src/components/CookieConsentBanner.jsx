@@ -49,10 +49,10 @@ export default function CookieConsentBanner({
             <strong>Datenschutz-Einstellungen</strong>
             <p>
               Wir verwenden notwendige lokale Speicherfunktionen, damit Belege24
-              zuverlässig funktioniert. Mit Ihrer Zustimmung nutzen wir außerdem
-              Google Analytics, um zu verstehen, welche Bereiche genutzt werden und wie
-              Besucher auf unsere Website gelangen. Sie können selbst entscheiden, ob
-              Sie Statistik zulassen.
+              zuverlässig funktioniert und Ihre Darstellungs- sowie ausgewählten
+              Dokumenteinstellungen lokal berücksichtigt werden. Mit Ihrer Zustimmung
+              nutzen wir außerdem Google Analytics zur statistischen Auswertung der
+              Seitennutzung. Sie können selbst entscheiden, ob Sie Statistik zulassen.
             </p>
             <button
               type="button"
@@ -113,14 +113,14 @@ export default function CookieConsentBanner({
                 checked
                 disabled
                 label="Notwendig"
-                description="Erforderlich für grundlegende Funktionen wie die Speicherung Ihrer Auswahl."
+                description="Speichert Ihre Consent-Auswahl, Darstellungspräferenz und ausgewählte Dokumenteinstellungen lokal im Browser."
                 onChange={() => {}}
               />
               <ConsentToggle
                 checked={analyticsEnabled}
                 disabled={false}
                 label="Statistik"
-                description="Google Analytics hilft uns zu verstehen, wie Belege24 genutzt wird."
+                description="Google Analytics wertet die Seitennutzung statistisch aus und wird nur nach Ihrer Einwilligung aktiviert."
                 onChange={setAnalyticsEnabled}
               />
             </div>
