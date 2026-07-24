@@ -16,7 +16,9 @@ import HomeView from './views/HomeView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
+import PatchnotesView from './views/PatchnotesView.jsx';
 import ToolsView from './views/ToolsView.jsx';
+import { isPatchnotesEnabled } from './config/development.js';
 import { documentSections } from './data/documents.js';
 import { findToolItem, findToolItemByPath } from './data/tools.js';
 import { findKnowledgePage } from './data/knowledgePages.js';
@@ -410,12 +412,14 @@ export default function App() {
           <Route path="/impressum" element={<LegalRoute pageId="impressum" />} />
           <Route path="/datenschutz" element={<LegalRoute pageId="datenschutz" />} />
           <Route path="/agb" element={<LegalRoute pageId="agb" />} />
+          {isPatchnotesEnabled && <Route path="/patchnotes" element={<PatchnotesView />} />}
           <Route path="*" element={<NotFoundRoute />} />
         </Routes>
       </div>
       <Footer
         onNavigate={handleNavigate}
         onOpenCookieSettings={() => setIsConsentSettingsOpen(true)}
+        showPatchnotes={isPatchnotesEnabled}
       />
       <CookieConsentBanner
         initialConsent={consent}

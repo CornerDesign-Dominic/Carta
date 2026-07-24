@@ -2103,12 +2103,13 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
   const measureRootRef = useRef(null);
   const positionItems = items.filter((item) => item.type === 'position');
   const previousPaymentItems = items.filter((item) => item.type === 'previousPayment');
+  const projectInfoItem = items.find((item) => item.type === 'projectInfo');
 
   function measureNow() {
-    return measureInvoicePages(measureRootRef.current, items);
+    return measureInvoicePages(measureRootRef.current, items, { isFinalInvoice });
   }
 
-  useImperativeHandle(ref, () => ({ measureNow }), [items]);
+  useImperativeHandle(ref, () => ({ measureNow }), [isFinalInvoice, items]);
 
   return (
     <div className="offer-measure-root" ref={measureRootRef} aria-hidden="true">
@@ -2120,6 +2121,15 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
       </div>
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
+        <div data-measure-project-info>
+          {isFinalInvoice && projectInfoItem && (
+            <InvoicePrintProjectInfo
+              labels={labels}
+              projectInfo={projectInfoItem.projectInfo}
+              visibleProjectFields={projectInfoItem.visibleProjectFields}
+            />
+          )}
+        </div>
         <table className={`invoice-print-position-table${isSmallBusinessInvoice ? ' is-without-tax-column' : ''}${isTextInvoice ? ' is-text-invoice' : ''}${isGoodsInvoice ? ' is-goods-invoice' : ''}`}>
           <InvoicePrintColumnGroup
             isGoodsInvoice={isGoodsInvoice}
@@ -2173,26 +2183,16 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
         <div data-measure-summary>
           <InvoicePrintSummary isFinalInvoice={isFinalInvoice} isSmallBusinessInvoice={isSmallBusinessInvoice} labels={labels} totals={totals} />
         </div>
-        <table className="invoice-print-position-table invoice-print-previous-payments-table">
-          <tbody>
-            {previousPaymentItems.map(({ index, payment }) => {
-              const calculated = calculateInvoicePreviousPayment(payment);
-
-              return (
-                <tr data-measure-previous-payment-row={String(index)} key={payment.id}>
-                  <td>{payment.label}</td>
-                  <td>{payment.invoiceNumber}</td>
-                  <td>{formatGermanDate(payment.invoiceDate)}</td>
-                  <td>{formatCurrency(calculated.net)}</td>
-                  <td>{formatPercent(calculated.taxRate)}%</td>
-                  <td>{formatCurrency(calculated.tax)}</td>
-                  <td>{formatCurrency(calculated.gross)}</td>
-                  <td>{payment.status === 'paid' ? 'vereinnahmt' : 'gestellt'}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div data-measure-previous-payments>
+          {isFinalInvoice && (
+            <InvoicePrintPreviousPaymentsTable
+              calculatePreviousPayment={calculateInvoicePreviousPayment}
+              labels={labels}
+              measureRows
+              previousPaymentItems={previousPaymentItems}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -2230,13 +2230,17 @@ function InvoicePrintColumnGroup({ isGoodsInvoice, isSmallBusinessInvoice, isTex
   );
 }
 
-function measureInvoicePages(measureRoot, items) {
+export function measureInvoicePages(measureRoot, items, { isFinalInvoice = false } = {}) {
   if (!measureRoot) return null;
 
   const firstContent = measureRoot.querySelector('[data-measure-first-content]');
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
+  const projectInfoProbe = measureRoot.querySelector('[data-measure-project-info]');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+  const previousPaymentsProbe = measureRoot.querySelector(
+    '[data-measure-previous-payments] .invoice-print-previous-payments',
+  );
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
   const positionRows = new Map(
     [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
@@ -2252,12 +2256,31 @@ function measureInvoicePages(measureRoot, items) {
   );
 
   if (!firstContent || !followContent || !textProbe || !summaryProbe) return null;
+  if (isFinalInvoice && (!projectInfoProbe || !previousPaymentsProbe)) return null;
 
-  const firstPageCapacity = firstContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
-  const followPageCapacity = followContent.getBoundingClientRect().height - invoicePrintLayout.smallSafetyBuffer;
+  const firstPageSafetyBuffer = isFinalInvoice
+    ? parseFloat(
+      window.getComputedStyle(firstContent).getPropertyValue('--offer-print-small-safety-buffer'),
+    ) || invoicePrintLayout.smallSafetyBuffer
+    : invoicePrintLayout.smallSafetyBuffer;
+  const followPageSafetyBuffer = isFinalInvoice
+    ? parseFloat(
+      window.getComputedStyle(followContent).getPropertyValue('--offer-print-small-safety-buffer'),
+    ) || invoicePrintLayout.smallSafetyBuffer
+    : invoicePrintLayout.smallSafetyBuffer;
+  const firstPageCapacity = firstContent.getBoundingClientRect().height - firstPageSafetyBuffer;
+  const followPageCapacity = followContent.getBoundingClientRect().height - followPageSafetyBuffer;
   const blockGap =
     parseFloat(window.getComputedStyle(firstContent).getPropertyValue('gap')) || invoicePrintLayout.blockGap;
   const positionHeaderHeight = getOuterHeight(positionHeader);
+  const previousPaymentRowsHeight = [...previousPaymentRows.values()].reduce(
+    (total, height) => total + height,
+    0,
+  );
+  const previousPaymentBlockOverhead = isFinalInvoice ? Math.max(
+    0,
+    getOuterHeight(previousPaymentsProbe) - previousPaymentRowsHeight,
+  ) : 0;
 
   function measureTextHeight(text) {
     textProbe.textContent = String(text || '').trim();
@@ -2267,6 +2290,7 @@ function measureInvoicePages(measureRoot, items) {
   function getItemHeight(item) {
     if (item.type === 'text') return measureTextHeight(item.text);
     if (item.type === 'projectInfo') {
+      if (isFinalInvoice) return getOuterHeight(projectInfoProbe);
       return measureTextHeight(
         item.visibleProjectFields
           .map(({ field, labelField }) => `${initialInvoiceLabels[labelField]}: ${item.projectInfo[field]}`)
@@ -2289,7 +2313,7 @@ function measureInvoicePages(measureRoot, items) {
 
     return (startsNewBlock ? blockGap : 0)
       + (startsPositionTable ? positionHeaderHeight : 0)
-      + (startsPreviousPaymentTable ? positionHeaderHeight : 0);
+      + (startsPreviousPaymentTable ? previousPaymentBlockOverhead : 0);
   }
 
   return paginateMeasuredItems({
@@ -2636,7 +2660,12 @@ function InvoicePrintProjectInfo({ labels, projectInfo, visibleProjectFields }) 
   );
 }
 
-function InvoicePrintPreviousPaymentsTable({ calculatePreviousPayment: calculateInvoicePreviousPayment, labels, previousPaymentItems }) {
+function InvoicePrintPreviousPaymentsTable({
+  calculatePreviousPayment: calculateInvoicePreviousPayment,
+  labels,
+  measureRows = false,
+  previousPaymentItems,
+}) {
   return (
     <section className="invoice-print-previous-payments">
       <h3>{labels.previousPayments}</h3>
@@ -2654,11 +2683,11 @@ function InvoicePrintPreviousPaymentsTable({ calculatePreviousPayment: calculate
           </tr>
         </thead>
         <tbody>
-          {previousPaymentItems.map(({ payment }) => {
+          {previousPaymentItems.map(({ index, payment }) => {
             const calculated = calculateInvoicePreviousPayment(payment);
 
             return (
-              <tr key={payment.id}>
+              <tr data-measure-previous-payment-row={measureRows ? String(index) : undefined} key={payment.id}>
                 <td>{payment.label}</td>
                 <td>{payment.invoiceNumber}</td>
                 <td>{formatGermanDate(payment.invoiceDate)}</td>
