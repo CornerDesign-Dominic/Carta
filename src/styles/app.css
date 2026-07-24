@@ -6542,7 +6542,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .cookie-button {
-  border: 1px solid rgba(201, 196, 186, 0.76);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 10px 14px;
   font-size: 0.9rem;
@@ -6561,31 +6561,31 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .cookie-button.primary {
-  border-color: rgba(53, 107, 102, 0.36);
-  background: var(--accent);
-  color: #fffefd;
-  box-shadow: 0 12px 24px rgba(53, 107, 102, 0.16);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .cookie-button.primary:hover {
-  background: var(--accent-deep);
+  background: var(--color-primary-hover);
 }
 
 .cookie-button.ghost {
-  background: rgba(255, 253, 249, 0.92);
-  color: var(--accent-deep);
+  background: var(--color-card);
+  color: var(--color-text);
 }
 
 .cookie-button.ghost:hover,
 .cookie-button.subtle:hover {
-  border-color: rgba(53, 107, 102, 0.24);
-  background: rgba(223, 236, 232, 0.58);
-  color: var(--ink);
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
 }
 
 .cookie-button.subtle {
-  background: rgba(248, 244, 237, 0.94);
-  color: var(--ink-soft);
+  background: var(--color-surface);
+  color: var(--color-muted);
 }
 
 .cookie-consent-banner {
@@ -6598,10 +6598,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 22px;
   padding: 18px 20px;
-  border: 1px solid rgba(199, 186, 168, 0.8);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: rgba(255, 253, 249, 0.96);
-  box-shadow: 0 22px 50px rgba(31, 38, 37, 0.16);
+  background: var(--color-card);
+  box-shadow: var(--card-shadow);
   backdrop-filter: blur(14px);
 }
 
@@ -6625,11 +6625,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .cookie-consent-link {
   justify-self: start;
-  color: var(--accent-deep);
+  color: var(--color-primary);
   font-size: 0.88rem;
   font-weight: 680;
   text-decoration: underline;
-  text-decoration-color: rgba(53, 107, 102, 0.32);
+  text-decoration-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
   text-underline-offset: 4px;
 }
 
@@ -6648,16 +6648,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(24, 31, 30, 0.36);
+  background: rgba(22, 29, 38, 0.44);
 }
 
 .cookie-consent-modal {
   width: min(100%, 620px);
   padding: 24px;
-  border: 1px solid rgba(199, 186, 168, 0.82);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fffdf9;
-  box-shadow: 0 24px 60px rgba(31, 38, 37, 0.18);
+  background: var(--color-card);
+  box-shadow: var(--card-shadow);
 }
 
 .cookie-consent-modal-header {
@@ -6669,7 +6669,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .cookie-consent-modal-header h2 {
   margin: 10px 0 0;
-  color: var(--navy);
+  color: var(--color-text);
   font-size: 1.46rem;
   line-height: 1.18;
 }
@@ -6678,12 +6678,27 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   flex: 0 0 auto;
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(201, 196, 186, 0.76);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: rgba(248, 244, 237, 0.9);
-  color: var(--muted);
+  background: var(--color-surface);
+  color: var(--color-muted);
   font-size: 1.3rem;
   line-height: 1;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.cookie-consent-close:hover {
+  border-color: var(--color-primary-hover);
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
+}
+
+.cookie-consent-switch input:focus-visible + .cookie-consent-slider {
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 20%, transparent);
 }
 
 .cookie-consent-modal-intro {
@@ -6704,9 +6719,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   justify-content: space-between;
   gap: 18px;
   padding: 15px 16px;
-  border: 1px solid rgba(206, 200, 188, 0.62);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: rgba(255, 254, 251, 0.92);
+  background: var(--color-card);
 }
 
 .cookie-consent-toggle-copy {
@@ -6742,9 +6757,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .cookie-consent-slider {
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(201, 196, 186, 0.86);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: rgba(220, 214, 205, 0.9);
+  background: var(--color-surface);
   transition:
     background-color 160ms ease,
     border-color 160ms ease;
@@ -6758,14 +6773,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: 20px;
   height: 20px;
   border-radius: 999px;
-  background: #fffefd;
-  box-shadow: 0 3px 8px rgba(31, 38, 37, 0.16);
+  background: var(--color-card);
+  box-shadow: 0 3px 8px rgba(22, 29, 38, 0.16);
   transition: transform 160ms ease;
 }
 
 .cookie-consent-switch input:checked + .cookie-consent-slider {
-  border-color: rgba(53, 107, 102, 0.46);
-  background: rgba(53, 107, 102, 0.92);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
 }
 
 .cookie-consent-switch input:checked + .cookie-consent-slider::after {
@@ -6773,8 +6788,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .cookie-consent-switch input:disabled + .cookie-consent-slider {
-  background: rgba(83, 104, 120, 0.88);
-  border-color: rgba(83, 104, 120, 0.4);
+  background: color-mix(in srgb, var(--color-surface) 78%, var(--color-muted));
+  border-color: var(--color-border);
 }
 
 .cookie-consent-modal-actions {
@@ -10596,6 +10611,52 @@ h2,
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
 }
 
+:root[data-theme="dark"] .cookie-consent-modal-backdrop {
+  background: rgba(0, 0, 0, 0.56);
+}
+
+:root[data-theme="dark"] .cookie-consent-modal {
+  background: var(--color-card);
+  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .cookie-consent-toggle {
+  background: var(--color-surface-strong);
+  border-color: var(--color-border);
+}
+
+:root[data-theme="dark"] .cookie-consent-slider {
+  background: var(--color-surface-strong);
+  border-color: var(--color-border);
+}
+
+:root[data-theme="dark"] .cookie-consent-slider::after {
+  background: var(--color-card);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme="dark"] .cookie-consent-switch input:checked + .cookie-consent-slider {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+:root[data-theme="dark"] .cookie-consent-switch input:disabled + .cookie-consent-slider {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  opacity: 0.72;
+}
+
+:root[data-theme="dark"] .cookie-consent-switch input:disabled + .cookie-consent-slider::after {
+  background: var(--color-muted);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .cookie-consent-modal-actions {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 :root[data-theme="dark"] .cookie-consent-actions {
   gap: 10px;
 }
@@ -10639,6 +10700,13 @@ h2,
   background: var(--color-surface);
   border-color: var(--color-border);
   color: var(--color-muted);
+}
+
+:root[data-theme="dark"] .cookie-consent-close:hover,
+:root[data-theme="dark"] .cookie-consent-close:focus-visible {
+  background: var(--color-accent-surface);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
 }
 
 :root[data-theme="dark"] .document-usage-mini,

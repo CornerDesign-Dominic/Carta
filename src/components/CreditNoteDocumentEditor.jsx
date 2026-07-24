@@ -16,6 +16,7 @@ import {
   getDocumentModeHint,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import { mapCreditNoteToDocument } from '../documentModel/creditNoteMapping.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 
 const smallBusinessStorageKey = 'carta.creditNote.smallBusinessMode';
@@ -1272,6 +1273,15 @@ export default function CreditNoteDocumentEditor() {
         exportRoot: printPagesRef.current,
         documentType: 'creditNote',
         filename: createPdfFileName(labels.title, details.creditNoteNumber),
+        belege24Document: mapCreditNoteToDocument({
+          labels,
+          creditNoteVariant: 'creditNote',
+          offerData,
+          positions,
+          textBlocks,
+          isSmallBusiness,
+          fieldConfig,
+        }),
       });
     } catch (error) {
       window.alert(

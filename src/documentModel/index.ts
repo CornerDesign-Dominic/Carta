@@ -1,4 +1,6 @@
 export * from './constants.js';
+export * from './creditNoteMapping.js';
+export * from './creditNoteRestore.js';
 export * from './invoiceMapping.js';
 export * from './invoicePdfImport.js';
 export * from './invoiceRestore.js';

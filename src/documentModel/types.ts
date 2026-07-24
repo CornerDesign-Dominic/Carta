@@ -209,3 +209,19 @@ export interface StandardInvoiceDocumentData {
 }
 
 export type StandardInvoiceDocument = Belege24Document<'invoice', StandardInvoiceDocumentData>;
+
+export interface CreditNoteDocumentData {
+  creditNoteVariant: 'creditNote';
+  labels: Record<string, string>;
+  details: { creditNoteNumber: string; creditNoteDate: string; serviceDate: string };
+  references: { internalReference: string; externalReference: string; customerReference: string };
+  correction: { originalInvoiceNumber: string; cancellationReason: string; correctionReason: string };
+  senderContact: { email: string; phone: string; fax: string; website: string };
+  positions: Array<{ id: Uuid; description: string; unitPrice: string; quantity: string; unit: string; taxRate: string }>;
+  textBlocks: InvoiceTextBlock[];
+  smallBusinessRule: { enabled: boolean };
+  footerFieldLabels: { vatId: string; taxNumber: string; iban: string; bic: string };
+  fieldConfiguration: { contact: FieldConfiguration; details: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
+}
+
+export type CreditNoteDocument = Belege24Document<'creditNote', CreditNoteDocumentData>;
