@@ -10590,6 +10590,57 @@ h2,
   text-decoration-color: var(--color-primary-hover);
 }
 
+:root[data-theme="dark"] .cookie-consent-banner {
+  background: var(--color-card);
+  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+}
+
+:root[data-theme="dark"] .cookie-consent-actions {
+  gap: 10px;
+}
+
+:root[data-theme="dark"] .cookie-button {
+  min-height: 42px;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .cookie-button.ghost {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .cookie-button.ghost:hover {
+  background: var(--color-accent-surface);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
+}
+
+:root[data-theme="dark"] .cookie-button.subtle {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-muted);
+}
+
+:root[data-theme="dark"] .cookie-button.subtle:hover {
+  background: var(--color-surface-strong);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .cookie-consent-link {
+  color: var(--color-primary-hover);
+  text-decoration-color: color-mix(in srgb, var(--color-primary-hover) 56%, transparent);
+}
+
+:root[data-theme="dark"] .cookie-consent-close {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-muted);
+}
+
 :root[data-theme="dark"] .document-usage-mini,
 :root[data-theme="dark"] .tools-usage-mini {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
