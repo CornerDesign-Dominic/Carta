@@ -61,7 +61,7 @@ const tradeInvoiceTextDefaults = {
   },
   finalInvoice: {
     intro:
-      'nach Fertigstellung der vereinbarten Leistungen erstellen wir Ihnen die Schlussrechnung fuer das unten genannte Projekt:',
+      'vielen Dank fuer Ihren Auftrag. Fuer unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
     closing:
       'Bereits vereinnahmte Abschlagszahlungen wurden in der Schlussrechnung beruecksichtigt. Bitte begleichen Sie den verbleibenden Restbetrag.',
   },
@@ -92,14 +92,14 @@ const initialInvoiceLabels = {
   billingSection: 'Leistungsstand / Abrechnungsabschnitt',
   partialService: 'Abgeschlossene Teilleistung',
   completionDate: 'Fertigstellung / Leistungszeitraum',
-  previousPayments: 'Fruehere Abschlaege',
+  previousPayments: 'Bisherige Abschlagsrechnungen',
   previousPaymentLabel: 'Abschlag',
-  previousPaymentInvoiceNumber: 'Rechnungsnummer',
-  previousPaymentInvoiceDate: 'Rechnungsdatum',
-  previousPaymentNet: 'Nettobetrag',
+  previousPaymentInvoiceNumber: 'Rechnungsnr.',
+  previousPaymentInvoiceDate: 'Datum',
+  previousPaymentNet: 'Netto',
   previousPaymentTaxRate: 'USt.',
   previousPaymentTaxAmount: 'USt.-Betrag',
-  previousPaymentGross: 'Bruttobetrag',
+  previousPaymentGross: 'Brutto',
   previousPaymentStatus: 'Status',
   serviceTotal: 'Gesamtbetrag der Leistungen',
   serviceTax: 'enthaltene Umsatzsteuer',
@@ -120,6 +120,22 @@ const invoiceContactFields = [
   { field: 'fax', labelField: 'contactFax', label: 'Fax' },
   { field: 'website', labelField: 'contactWebsite', label: 'Website' },
 ];
+
+const finalInvoicePreviousPaymentColumns = [
+  { field: 'invoiceNumber', labelField: 'previousPaymentInvoiceNumber' },
+  { field: 'invoiceDate', labelField: 'previousPaymentInvoiceDate' },
+  { field: 'netAmount', labelField: 'previousPaymentNet' },
+  { field: 'taxRate', labelField: 'previousPaymentTaxRate' },
+  { field: 'taxAmount', labelField: 'previousPaymentTaxAmount' },
+  { field: 'grossAmount', labelField: 'previousPaymentGross' },
+];
+
+export function getFinalInvoicePreviousPaymentColumns(labels = initialInvoiceLabels) {
+  return finalInvoicePreviousPaymentColumns.map((column) => ({
+    ...column,
+    label: labels[column.labelField],
+  }));
+}
 
 const invoiceMetaFields = [
   { autoComplete: 'new-password', field: 'invoiceNumber', ariaLabel: 'Rechnungskennung', name: 'carta-invoice-code', type: 'text' },
@@ -514,7 +530,7 @@ function createTextInvoiceTextBlocks() {
   });
 }
 
-function createTradeInvoiceTextBlocks(invoiceVariant) {
+export function createTradeInvoiceTextBlocks(invoiceVariant) {
   const defaults = tradeInvoiceTextDefaults[invoiceVariant];
 
   return normalizeTextBlocks().map((block) => {
@@ -841,7 +857,7 @@ function createSlug(value) {
     .replace(/^-+|-+$/g, '');
 }
 
-function createInvoicePrintItems({
+export function createInvoicePrintItems({
   isFinalInvoice,
   isSmallBusinessInvoice,
   positions,
@@ -867,7 +883,7 @@ function createInvoicePrintItems({
   ];
 }
 
-function getProjectFieldDefinitions(invoiceVariant) {
+export function getProjectFieldDefinitions(invoiceVariant) {
   if (invoiceVariant === 'progressInvoice') {
     return [
       { field: 'progressPaymentNumber', labelField: 'progressPaymentNumber' },
@@ -888,9 +904,9 @@ function getProjectFieldDefinitions(invoiceVariant) {
 
   if (invoiceVariant === 'finalInvoice') {
     return [
-      { field: 'projectName', labelField: 'projectName' },
-      { field: 'orderNumber', labelField: 'orderNumber' },
-      { field: 'completionDate', labelField: 'completionDate' },
+      { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
+      { field: 'completionDate', label: 'Zeitraum', labelField: 'completionDate' },
     ];
   }
 
@@ -922,21 +938,25 @@ function InvoiceProjectBlock({ labels, project, visibleFields, onChange }) {
 
   return (
     <section className="invoice-project-block" aria-label="Projektangaben">
-      {visibleFields.map(({ field, labelField }) => (
-        <label className="invoice-project-field" key={field}>
-          <input
-            className="document-label-input"
-            aria-label={`Beschriftung ${labels[labelField]}`}
-            value={labels[labelField]}
-            readOnly
-          />
-          <input
-            aria-label={labels[labelField]}
-            value={project[field] ?? ''}
-            onChange={(event) => onChange(field, event.target.value)}
-          />
-        </label>
-      ))}
+      {visibleFields.map(({ field, label, labelField }) => {
+        const displayLabel = label ?? labels[labelField];
+
+        return (
+          <label className="invoice-project-field" key={field}>
+            <input
+              className="document-label-input"
+              aria-label={`Beschriftung ${displayLabel}`}
+              value={displayLabel}
+              readOnly
+            />
+            <input
+              aria-label={displayLabel}
+              value={project[field] ?? ''}
+              onChange={(event) => onChange(field, event.target.value)}
+            />
+          </label>
+        );
+      })}
     </section>
   );
 }
@@ -950,20 +970,15 @@ function PreviousPaymentsTable({
   onRemovePayment,
   payments,
 }) {
+  const columns = getFinalInvoicePreviousPaymentColumns(labels);
+
   return (
     <section className="invoice-previous-payments" aria-label={labels.previousPayments}>
       <h3>{labels.previousPayments}</h3>
       <table className="invoice-previous-payments-table">
         <thead>
           <tr>
-            <th>{labels.previousPaymentLabel}</th>
-            <th>{labels.previousPaymentInvoiceNumber}</th>
-            <th>{labels.previousPaymentInvoiceDate}</th>
-            <th>{labels.previousPaymentNet}</th>
-            <th>{labels.previousPaymentTaxRate}</th>
-            <th>{labels.previousPaymentTaxAmount}</th>
-            <th>{labels.previousPaymentGross}</th>
-            <th>{labels.previousPaymentStatus}</th>
+            {columns.map((column) => <th key={column.field}>{column.label}</th>)}
             <th />
           </tr>
         </thead>
@@ -973,13 +988,6 @@ function PreviousPaymentsTable({
 
             return (
               <tr key={payment.id}>
-                <td>
-                  <input
-                    aria-label={`${labels.previousPaymentLabel} ${index + 1}`}
-                    value={payment.label}
-                    onChange={(event) => onPaymentChange(payment.id, 'label', event.target.value)}
-                  />
-                </td>
                 <td>
                   <input
                     aria-label={`${labels.previousPaymentInvoiceNumber} ${index + 1}`}
@@ -1017,18 +1025,8 @@ function PreviousPaymentsTable({
                 <td>{formatPaymentCurrency(calculated.tax)}</td>
                 <td>{formatPaymentCurrency(calculated.gross)}</td>
                 <td>
-                  <select
-                    aria-label={`${labels.previousPaymentStatus} ${index + 1}`}
-                    value={payment.status}
-                    onChange={(event) => onPaymentChange(payment.id, 'status', event.target.value)}
-                  >
-                    <option value="paid">vereinnahmt</option>
-                    <option value="open">gestellt</option>
-                  </select>
-                </td>
-                <td>
                   <button
-                    aria-label={`${labels.previousPaymentLabel} ${index + 1} entfernen`}
+                    aria-label={`${labels.previousPaymentInvoiceNumber} ${index + 1} entfernen`}
                     className="invoice-position-action invoice-position-delete"
                     type="button"
                     disabled={payments.length === 1}
@@ -1043,10 +1041,10 @@ function PreviousPaymentsTable({
         </tbody>
       </table>
       <button className="offer-add-position" type="button" onClick={onAddPayment}>
-        + Abschlag hinzufuegen
+        + Abschlagsrechnung hinzufuegen
       </button>
       <p className="invoice-previous-payments-note">
-        Nur als vereinnahmt markierte Abschlaege werden vom Restbetrag abgezogen.
+        Nur als vereinnahmt markierte Abschlagsrechnungen werden vom Restbetrag abgezogen.
       </p>
     </section>
   );
@@ -1945,6 +1943,8 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           />
         </h2>
 
+        {isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
+
         <InvoiceProjectBlock
           labels={labels}
           project={project}
@@ -1952,7 +1952,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
           onChange={updateProjectField}
         />
 
-        {renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
+        {!isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <PositionTable
           autoResizeDescription
@@ -2650,9 +2650,9 @@ function InvoicePrintPageItems({
 function InvoicePrintProjectInfo({ labels, projectInfo, visibleProjectFields }) {
   return (
     <section className="invoice-print-project-info">
-      {visibleProjectFields.map(({ field, labelField }) => (
+      {visibleProjectFields.map(({ field, label, labelField }) => (
         <p key={field}>
-          <span>{labels[labelField]}</span>
+          <span>{label ?? labels[labelField]}</span>
           <strong>{projectInfo[field]}</strong>
         </p>
       ))}
@@ -2660,26 +2660,21 @@ function InvoicePrintProjectInfo({ labels, projectInfo, visibleProjectFields }) 
   );
 }
 
-function InvoicePrintPreviousPaymentsTable({
+export function InvoicePrintPreviousPaymentsTable({
   calculatePreviousPayment: calculateInvoicePreviousPayment,
   labels,
   measureRows = false,
   previousPaymentItems,
 }) {
+  const columns = getFinalInvoicePreviousPaymentColumns(labels);
+
   return (
     <section className="invoice-print-previous-payments">
       <h3>{labels.previousPayments}</h3>
       <table className="invoice-print-position-table invoice-print-previous-payments-table">
         <thead>
           <tr>
-            <th>{labels.previousPaymentLabel}</th>
-            <th>{labels.previousPaymentInvoiceNumber}</th>
-            <th>{labels.previousPaymentInvoiceDate}</th>
-            <th>{labels.previousPaymentNet}</th>
-            <th>{labels.previousPaymentTaxRate}</th>
-            <th>{labels.previousPaymentTaxAmount}</th>
-            <th>{labels.previousPaymentGross}</th>
-            <th>{labels.previousPaymentStatus}</th>
+            {columns.map((column) => <th key={column.field}>{column.label}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -2688,14 +2683,12 @@ function InvoicePrintPreviousPaymentsTable({
 
             return (
               <tr data-measure-previous-payment-row={measureRows ? String(index) : undefined} key={payment.id}>
-                <td>{payment.label}</td>
                 <td>{payment.invoiceNumber}</td>
                 <td>{formatGermanDate(payment.invoiceDate)}</td>
                 <td>{formatCurrency(calculated.net)}</td>
                 <td>{formatPercent(calculated.taxRate)}%</td>
                 <td>{formatCurrency(calculated.tax)}</td>
                 <td>{formatCurrency(calculated.gross)}</td>
-                <td>{payment.status === 'paid' ? 'vereinnahmt' : 'gestellt'}</td>
               </tr>
             );
           })}

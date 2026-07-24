@@ -1,6 +1,22 @@
 export const patchnotes = [
   {
     date: '2026-07-24',
+    title: 'Schlussrechnung: Abschlagsrechnungen übersichtlicher',
+    changes: [
+      'Die Tabelle zeigt Rechnungsnr., Datum, Netto, USt., USt.-Betrag und Brutto ohne Abschlagsbezeichnung.',
+      'Spaltenbreiten und Druckdarstellung verhindern überlappende Überschriften.',
+    ],
+  },
+  {
+    date: '2026-07-24',
+    title: 'Schlussrechnung: Projektbereich vereinheitlicht',
+    changes: [
+      'Projektangaben folgen im Editor und PDF jetzt direkt auf den Vorlauftext.',
+      'Projekt, Referenznr. und Zeitraum ersetzen die bisherigen Bezeichnungen.',
+    ],
+  },
+  {
+    date: '2026-07-24',
     title: 'Schlussrechnung: Seitenumbruch abgesichert',
     changes: [
       'Projektbereich und frühere Abschläge werden mit ihrer tatsächlichen Höhe gemessen.',
