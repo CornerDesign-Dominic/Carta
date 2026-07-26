@@ -1,6 +1,7 @@
 const navigationItems = [
   { label: 'Dokumente', view: 'documents' },
   { label: 'Werkzeuge', view: 'tools' },
+  { label: 'Stammdaten', view: 'master-data' },
   { label: 'Wissen', view: 'knowledge' },
 ];
 

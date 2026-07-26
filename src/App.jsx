@@ -18,8 +18,10 @@ import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
 import PatchnotesView from './views/PatchnotesView.jsx';
 import ToolsView from './views/ToolsView.jsx';
+import MasterDataView from './views/MasterDataView.jsx';
 import { isPatchnotesEnabled } from './config/development.js';
 import { documentSections } from './data/documents.js';
+import { findMasterDataItem, findMasterDataItemByPath } from './data/masterData.js';
 import { findToolItem, findToolItemByPath } from './data/tools.js';
 import { findKnowledgePage } from './data/knowledgePages.js';
 
@@ -57,6 +59,12 @@ function pathForNavigation(item) {
 
   if (item.view === 'tools') {
     return item.toolPath ?? (item.toolId ? `/tools/${item.toolId}` : '/tools');
+  }
+
+  if (item.view === 'master-data') {
+    return item.masterDataPath
+      ?? findMasterDataItem(item.masterDataId)?.path
+      ?? '/stammdaten';
   }
 
   if (item.view === 'documents') {
@@ -130,6 +138,10 @@ function viewFromPath(pathname) {
 
   if (pathname === '/tools' || findToolItemByPath(pathname)) {
     return 'tools';
+  }
+
+  if (pathname === '/stammdaten' || findMasterDataItemByPath(pathname)) {
+    return 'master-data';
   }
 
   if (pathname === '/wissen' || pathname.startsWith('/wissen/')) {
@@ -229,6 +241,27 @@ function LegacyToolRoute() {
   }
 
   return <ToolsView activeToolId={activeTool.id} onSelectTool={handleSelectTool} />;
+}
+
+function MasterDataRoute() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeItem = findMasterDataItemByPath(location.pathname);
+
+  if (location.pathname !== '/stammdaten' && !activeItem) {
+    return <NotFoundRoute />;
+  }
+
+  function handleSelectMasterDataItem(itemId) {
+    navigate(findMasterDataItem(itemId)?.path ?? '/stammdaten');
+  }
+
+  return (
+    <MasterDataView
+      activeItemId={activeItem?.id ?? null}
+      onSelectItem={handleSelectMasterDataItem}
+    />
+  );
 }
 
 function KnowledgeRoute() {
@@ -406,6 +439,7 @@ export default function App() {
           <Route path="/dokumente/*" element={<DocumentPathRoute />} />
           <Route path="/tools" element={<ToolsRoute />} />
           <Route path="/tools/:toolId" element={<LegacyToolRoute />} />
+          <Route path="/stammdaten/*" element={<MasterDataRoute />} />
           <Route path="/basiszinssatz-tabelle" element={<BaseInterestRateTableView />} />
           <Route path="/wissen" element={<KnowledgeRoute />} />
           <Route path="/wissen/:slug" element={<KnowledgeRoute />} />
