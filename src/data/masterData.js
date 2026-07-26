@@ -5,7 +5,7 @@ export const masterDataItems = [
     label: 'Eigene Daten',
     path: '/stammdaten/eigene-daten',
     description:
-      'Hier werden künftig die eigenen Unternehmens-, Kontakt-, Steuer-, Register- und Bankdaten in einer wiederverwendbaren Stammdatensammlung verwaltet.',
+      'Verwalte eigene Unternehmens-, Kontakt-, Steuer-, Register- und Bankdaten in einer wiederverwendbaren Stammdatensammlung.',
     selectionDescription:
       'Unternehmens-, Kontakt-, Steuer-, Register- und Bankdaten für die Verwendung als Absender und Herausgeber deiner Dokumente.',
     actionLabel: 'Eigene Daten öffnen',

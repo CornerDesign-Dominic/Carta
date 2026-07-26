@@ -6,11 +6,13 @@ export default function PartnerMasterDataDocumentToolbar({
   onLoadPdf,
   onNewCollection,
   onPrint,
+  labelPrefix = 'Partner-Stammdaten',
+  className = 'partner-document-toolbar',
 }) {
   const pdfInputRef = useRef(null);
 
   return (
-    <div className="visual-toolbar partner-document-toolbar" aria-label="Partner-Stammdaten Aktionen">
+    <div className={`visual-toolbar ${className}`} aria-label={`${labelPrefix} Aktionen`}>
       <div className="visual-toolbar-group">
         <input
           ref={pdfInputRef}
@@ -25,20 +27,20 @@ export default function PartnerMasterDataDocumentToolbar({
         />
         <button
           type="button"
-          aria-label="Belege24 Partner-Stammdaten PDF laden"
-          title="Belege24 Partner-Stammdaten PDF laden"
+          aria-label={`Belege24 ${labelPrefix} PDF laden`}
+          title={`Belege24 ${labelPrefix} PDF laden`}
           disabled={isExporting}
           onClick={() => pdfInputRef.current?.click()}
         >
           PDF laden
         </button>
-        <button type="button" aria-label="Partner-Stammdaten drucken" title="Partner-Stammdaten drucken" disabled={isExporting} onClick={onPrint}>
+        <button type="button" aria-label={`${labelPrefix} drucken`} title={`${labelPrefix} drucken`} disabled={isExporting} onClick={onPrint}>
           Drucken
         </button>
-        <button type="button" aria-label="Partner-Stammdaten PDF erstellen" title="Partner-Stammdaten PDF erstellen" disabled={isExporting} onClick={onCreatePdf}>
+        <button type="button" aria-label={`${labelPrefix} PDF erstellen`} title={`${labelPrefix} PDF erstellen`} disabled={isExporting} onClick={onCreatePdf}>
           {isExporting ? 'PDF wird erstellt …' : 'PDF erstellen'}
         </button>
-        <button type="button" aria-label="Neue Partner-Stammdatensammlung erstellen" title="Neue Partner-Stammdatensammlung erstellen" disabled={isExporting} onClick={onNewCollection}>
+        <button type="button" aria-label={`Neue ${labelPrefix}-Sammlung erstellen`} title={`Neue ${labelPrefix}-Sammlung erstellen`} disabled={isExporting} onClick={onNewCollection}>
           Neu
         </button>
       </div>

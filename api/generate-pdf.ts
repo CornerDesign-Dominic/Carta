@@ -93,6 +93,7 @@ export default async function handler(request: any, response: any) {
         'costComparison',
         'defaultInterest',
         'masterDataPartners',
+        'masterDataOwn',
       ].includes(documentType)
     ) {
       response.status(400).json({ error: 'Invalid documentType.' });
