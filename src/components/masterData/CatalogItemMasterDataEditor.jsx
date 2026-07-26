@@ -23,6 +23,7 @@ export default function CatalogItemMasterDataEditor() {
   const [collectionMetadata, setCollectionMetadata] = useState(createCatalogItemMasterDataCollectionMetadata);
   const [isExporting, setIsExporting] = useState(false);
   const [isDirty, setIsDirty] = useState(true);
+  const [hasStartedCollection, setHasStartedCollection] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const titleInputRef = useRef(null);
   const previewPagesRef = useRef(null);
@@ -46,13 +47,13 @@ export default function CatalogItemMasterDataEditor() {
   function handleConfirm(value) {
     if (dialog?.kind === 'choose-type') { applyChange({ type: 'create', itemType: value }); setSearchQuery(''); setTypeFilter('all'); setStatusMessage(`${getCatalogItemTypeLabel(value)} wurde angelegt.`); focusTitleField(); }
     if (dialog?.kind === 'delete') { applyChange({ type: 'delete', recordId: dialog.recordId }); setSearchQuery(''); setStatusMessage('Eintrag wurde gelöscht.'); }
-    if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
+    if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setHasStartedCollection(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
     if (dialog?.kind === 'change-type' && activeRecord) { applyChange({ type: 'change-type', recordId: activeRecord.id, itemType: dialog.itemType }); setStatusMessage(`Eintragstyp wurde zu ${getCatalogItemTypeLabel(dialog.itemType)} geändert.`); }
     if (dialog?.kind === 'import') {
       const imported = dialog.document;
       dispatch({ type: 'replace-collection', records: imported.records, activeRecordId: imported.records[0]?.id ?? null });
       setCollectionMetadata({ documentId: imported.documentId, createdAt: imported.createdAt, updatedAt: imported.updatedAt });
-      setSearchQuery(''); setTypeFilter('all'); setIsDirty(false); setStatusMessage('Leistungs- und Artikelstammdaten wurden aus der PDF geladen.'); focusTitleField();
+      setSearchQuery(''); setTypeFilter('all'); setIsDirty(false); setHasStartedCollection(true); setStatusMessage('Leistungs- und Artikelstammdaten wurden aus der PDF geladen.'); focusTitleField();
     }
     setDialog(null);
   }
@@ -79,14 +80,14 @@ export default function CatalogItemMasterDataEditor() {
   return <div className="partner-editor">
     <h1 id="master-data-title">Leistungen und Artikel</h1><p className="intro master-data-intro">Erstelle eine übersichtliche Sammlung wiederkehrender Leistungen, Artikel, Textleistungen und Lieferscheinpositionen. Die Einträge können später gezielt in Rechnungen, Angebote und Lieferscheine übernommen werden.</p>
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
-    {hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={activeRecord?.id} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={(recordId) => dispatch({ type: 'select', recordId })} onCreateRecord={handleCreate} onDuplicateRecord={handleDuplicate} onDeleteRecord={handleDelete} />
+    {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={activeRecord?.id} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={(recordId) => dispatch({ type: 'select', recordId })} onCreateRecord={handleCreate} onDuplicateRecord={handleDuplicate} onDeleteRecord={handleDelete} />
       <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p></>}
-    {activeRecord ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(activeRecord)}</p></div><CatalogItemForm item={activeRecord} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={(path, value) => applyChange({ type: 'update-field', recordId: activeRecord.id, path, value })} /></section> : <section className="partner-editor-section catalog-empty-editor" aria-labelledby="catalog-empty-title"><h2 id="catalog-empty-title">Noch keine Einträge</h2><p>Lege einen neuen Eintrag an oder lade ein vorhandenes Stammdatenblatt.</p><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></section>}
-    <CatalogItemMasterDataDocument
+    {hasStartedCollection && (activeRecord ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(activeRecord)}</p></div><CatalogItemForm item={activeRecord} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={(path, value) => applyChange({ type: 'update-field', recordId: activeRecord.id, path, value })} /></section> : <section className="partner-editor-section catalog-empty-editor" aria-labelledby="catalog-empty-title"><h2 id="catalog-empty-title">Noch keine Einträge</h2><p>Lege einen neuen Eintrag an oder lade ein vorhandenes Stammdatenblatt.</p><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></section>)}
+    {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}
       toolbar={<CatalogExportAction isExporting={isExporting} onCreatePdf={handleCreatePdf} />}
-    />
+    />}
     <Dialog action={dialog} onCancel={() => setDialog(null)} onConfirm={handleConfirm} />
   </div>;
 }
