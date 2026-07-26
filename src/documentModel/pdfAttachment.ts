@@ -20,6 +20,25 @@ export const BELEGE24_ATTACHMENT_FILE_NAME = 'belege24-document.json' as const;
 export const BELEGE24_ATTACHMENT_MIME_TYPE = 'application/json' as const;
 export const BELEGE24_PDF_SUBJECT = 'Belege24-Dokument' as const;
 
+export type JsonPdfAttachment = {
+  fileName: string;
+  document: unknown;
+  description?: string;
+  mimeType?: string;
+  creator?: string;
+  subject?: string;
+  keywords?: string[];
+  creationDate?: Date;
+  modificationDate?: Date;
+};
+
+export type ReadJsonPdfAttachmentResult =
+  | { status: 'valid'; fileName: string; mimeType: string | undefined; document: unknown }
+  | { status: 'not-found' }
+  | { status: 'too-large' }
+  | { status: 'invalid-json'; error: string }
+  | { status: 'unreadable-pdf'; error: string };
+
 export type ReadBelege24PdfResult =
   | {
       status: 'valid';
@@ -49,7 +68,7 @@ function attachmentNameArrays(embeddedFiles: PDFDict): PDFArray[] {
   return result;
 }
 
-function findBelege24Attachment(pdfDocument: PDFDocument) {
+function findJsonAttachment(pdfDocument: PDFDocument, acceptedFileNames: readonly string[]) {
   const names = pdfDocument.catalog.lookupMaybe(PDFName.of('Names'), PDFDict);
   const embeddedFiles = names?.lookupMaybe(PDFName.of('EmbeddedFiles'), PDFDict);
   if (!embeddedFiles) return undefined;
@@ -57,7 +76,7 @@ function findBelege24Attachment(pdfDocument: PDFDocument) {
   for (const nameArray of attachmentNameArrays(embeddedFiles)) {
     for (let index = 0; index + 1 < nameArray.size(); index += 2) {
       const name = nameArray.lookupMaybe(index, PDFString, PDFHexString)?.decodeText();
-      if (name !== BELEGE24_ATTACHMENT_FILE_NAME) continue;
+      if (!name || !acceptedFileNames.includes(name)) continue;
 
       const fileSpec = nameArray.lookupMaybe(index + 1, PDFDict);
       const embeddedFileDictionary = fileSpec?.lookupMaybe(PDFName.of('EF'), PDFDict);
@@ -69,6 +88,7 @@ function findBelege24Attachment(pdfDocument: PDFDocument) {
 
       const mimeType = stream.dict.lookupMaybe(PDFName.of('Subtype'), PDFName)?.decodeText();
       return {
+        fileName: name,
         bytes: decodePDFRawStream(stream).decode(),
         mimeType,
       };
@@ -76,6 +96,62 @@ function findBelege24Attachment(pdfDocument: PDFDocument) {
   }
 
   return undefined;
+}
+
+export async function embedJsonAttachmentInPdf(
+  pdfBytes: Uint8Array | ArrayBuffer,
+  attachment: JsonPdfAttachment,
+): Promise<Uint8Array> {
+  const pdfDocument = await PDFDocument.load(pdfBytes);
+  const attachmentBytes = new TextEncoder().encode(JSON.stringify(attachment.document, null, 2));
+
+  await pdfDocument.attach(attachmentBytes, attachment.fileName, {
+    mimeType: attachment.mimeType ?? BELEGE24_ATTACHMENT_MIME_TYPE,
+    description: attachment.description ?? attachment.fileName,
+    creationDate: attachment.creationDate,
+    modificationDate: attachment.modificationDate,
+  });
+
+  if (attachment.creator) pdfDocument.setCreator(attachment.creator);
+  if (attachment.subject) pdfDocument.setSubject(attachment.subject);
+  if (attachment.keywords?.length) pdfDocument.setKeywords(attachment.keywords);
+
+  return pdfDocument.save();
+}
+
+export async function readJsonAttachmentFromPdf(
+  pdfBytes: Uint8Array | ArrayBuffer,
+  acceptedFileNames: readonly string[],
+  maxAttachmentBytes = Number.POSITIVE_INFINITY,
+): Promise<ReadJsonPdfAttachmentResult> {
+  let pdfDocument: PDFDocument;
+
+  try {
+    pdfDocument = await PDFDocument.load(pdfBytes);
+  } catch (error) {
+    return { status: 'unreadable-pdf', error: error instanceof Error ? error.message : String(error) };
+  }
+
+  let attachment: ReturnType<typeof findJsonAttachment>;
+  try {
+    attachment = findJsonAttachment(pdfDocument, acceptedFileNames);
+  } catch (error) {
+    return { status: 'unreadable-pdf', error: error instanceof Error ? error.message : String(error) };
+  }
+
+  if (!attachment) return { status: 'not-found' };
+  if (attachment.bytes.byteLength > maxAttachmentBytes) return { status: 'too-large' };
+
+  try {
+    return {
+      status: 'valid',
+      fileName: attachment.fileName,
+      mimeType: attachment.mimeType,
+      document: JSON.parse(new TextDecoder().decode(attachment.bytes)),
+    };
+  } catch (error) {
+    return { status: 'invalid-json', error: error instanceof Error ? error.message : String(error) };
+  }
 }
 
 export async function embedBelege24DocumentInPdf(
@@ -124,9 +200,9 @@ export async function readBelege24DocumentFromPdf(
     };
   }
 
-  let attachment: ReturnType<typeof findBelege24Attachment>;
+  let attachment: ReturnType<typeof findJsonAttachment>;
   try {
-    attachment = findBelege24Attachment(pdfDocument);
+    attachment = findJsonAttachment(pdfDocument, [BELEGE24_ATTACHMENT_FILE_NAME]);
   } catch (error) {
     return {
       status: 'unreadable-pdf',

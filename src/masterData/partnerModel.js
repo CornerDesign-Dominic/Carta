@@ -212,6 +212,15 @@ export function createPartnerEditorState() {
 
 export function partnerEditorReducer(state, action) {
   switch (action.type) {
+    case 'replace-collection':
+      return {
+        partners: action.partners,
+        activePartnerId: action.activePartnerId ?? action.partners[0]?.id ?? null,
+      };
+    case 'reset-collection': {
+      const partner = createPartner();
+      return { partners: [partner], activePartnerId: partner.id };
+    }
     case 'select':
       return { ...state, activePartnerId: action.partnerId };
     case 'create': {

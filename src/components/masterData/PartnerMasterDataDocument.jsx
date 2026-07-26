@@ -107,7 +107,7 @@ function PartnerDocumentBlock({ partner, index }) {
   );
 }
 
-export default function PartnerMasterDataDocument({ partners }) {
+export default function PartnerMasterDataDocument({ partners, pagesRef }) {
   const dateLabel = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium' }).format(new Date());
 
   return (
@@ -116,7 +116,7 @@ export default function PartnerMasterDataDocument({ partners }) {
         <h2 id="partner-document-preview-title">Dokumentvorschau</h2>
         <p>Die Vorschau zeigt den späteren Aufbau der Stammdatensammlung.</p>
       </div>
-      <div className="partner-document-pages">
+      <div className="partner-document-pages" ref={pagesRef}>
         {partners.map((partner, index) => (
           <article className="partner-document-page" aria-label={`Stammdatenblatt ${index + 1}`} key={partner.id}>
             <header className="partner-document-page-header">

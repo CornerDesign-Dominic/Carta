@@ -1,4 +1,4 @@
-import { embedBelege24DocumentInPdf } from '../src/documentModel/pdfAttachment.js';
+import { embedBelege24DocumentInPdf, embedJsonAttachmentInPdf } from '../src/documentModel/pdfAttachment.js';
 
 export const config = {
   maxDuration: 60,
@@ -71,7 +71,7 @@ export default async function handler(request: any, response: any) {
   let browser: any;
 
   try {
-    const { documentType, html, filename, belege24Document } = await readRequestBody(request);
+    const { documentType, html, filename, belege24Document, jsonAttachment } = await readRequestBody(request);
 
     if (!html || typeof html !== 'string') {
       response.status(400).json({ error: 'Missing html payload.' });
@@ -92,6 +92,7 @@ export default async function handler(request: any, response: any) {
         'vatCalculation',
         'costComparison',
         'defaultInterest',
+        'masterDataPartners',
       ].includes(documentType)
     ) {
       response.status(400).json({ error: 'Invalid documentType.' });
@@ -127,9 +128,18 @@ export default async function handler(request: any, response: any) {
       },
       preferCSSPageSize: true,
     });
+    const normalizedJsonAttachment = jsonAttachment && typeof jsonAttachment === 'object'
+      ? {
+          ...jsonAttachment,
+          creationDate: jsonAttachment.creationDate ? new Date(jsonAttachment.creationDate) : undefined,
+          modificationDate: jsonAttachment.modificationDate ? new Date(jsonAttachment.modificationDate) : undefined,
+        }
+      : undefined;
     const pdfBuffer = belege24Document
       ? Buffer.from(await embedBelege24DocumentInPdf(pdf, belege24Document))
-      : Buffer.from(pdf);
+      : normalizedJsonAttachment
+        ? Buffer.from(await embedJsonAttachmentInPdf(pdf, normalizedJsonAttachment))
+        : Buffer.from(pdf);
 
     if (!isPdfBuffer(pdfBuffer)) {
       throw new Error('Puppeteer did not return a valid PDF buffer.');

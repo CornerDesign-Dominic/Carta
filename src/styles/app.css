@@ -12004,6 +12004,17 @@ h2,
   display: none;
 }
 
+.partner-save-status {
+  margin: 5px 0 0;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.partner-document-toolbar {
+  margin-top: 18px;
+}
+
 .partner-editor-section {
   margin-top: 24px;
   padding-top: 22px;

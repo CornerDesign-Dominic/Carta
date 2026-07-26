@@ -320,4 +320,51 @@
   .cookie-consent-modal-backdrop {
     display: none !important;
   }
+
+  body.master-data-print-mode,
+  body.master-data-print-mode * {
+    visibility: hidden;
+  }
+
+  body.master-data-print-mode {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    background: #ffffff;
+  }
+
+  body.master-data-print-mode .partner-document-pages,
+  body.master-data-print-mode .partner-document-pages * {
+    visibility: visible;
+  }
+
+  body.master-data-print-mode .partner-document-pages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 210mm;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.master-data-print-mode .partner-document-page {
+    box-sizing: border-box;
+    width: 210mm;
+    min-width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 19mm 17mm 16mm 19mm;
+    border: 0;
+    box-shadow: none;
+    background: #ffffff !important;
+    color: #232320 !important;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  body.master-data-print-mode .partner-document-page:last-child {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
 }

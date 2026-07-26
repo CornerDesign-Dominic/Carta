@@ -84,7 +84,8 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     .offer-sheet,
     .invoice-print-page,
     .tool-document-a4,
-    .tool-print-page {
+    .tool-print-page,
+    .partner-document-page {
       width: 210mm !important;
       min-width: 210mm !important;
       height: 297mm !important;
@@ -116,8 +117,24 @@ function buildExportHtml(sheet, exportRoot = sheet) {
     }
 
     .invoice-print-page:last-child,
-    .tool-print-page:last-child {
+    .tool-print-page:last-child,
+    .partner-document-page:last-child {
       break-after: auto;
+    }
+
+    .partner-document-page {
+      box-sizing: border-box;
+      width: 210mm !important;
+      min-width: 210mm !important;
+      min-height: 297mm !important;
+      margin: 0 !important;
+      padding: 19mm 17mm 16mm 19mm !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      background: #ffffff !important;
+      color: #232320 !important;
+      break-after: page;
+      page-break-after: always;
     }
 
     .visual-toolbar,
@@ -212,6 +229,7 @@ export async function requestPdfDownload({
   documentType,
   filename,
   belege24Document,
+  jsonAttachment,
 }) {
   if (!sheet) {
     throw new Error('Kein Dokument zum Exportieren gefunden.');
@@ -227,6 +245,7 @@ export async function requestPdfDownload({
       filename,
       html: buildExportHtml(sheet, exportRoot),
       belege24Document,
+      jsonAttachment,
     }),
   });
 
