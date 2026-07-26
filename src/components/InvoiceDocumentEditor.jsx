@@ -862,6 +862,7 @@ function createSlug(value) {
 export function createInvoicePrintItems({
   isFinalInvoice,
   isPartialInvoice,
+  isProgressInvoice,
   isSmallBusinessInvoice,
   positions,
   previousPayments,
@@ -878,9 +879,11 @@ export function createInvoicePrintItems({
     ? [{ type: 'projectInfo', projectInfo, visibleProjectFields }]
     : [];
 
+  const isProjectInfoBeforeIntro = isPartialInvoice || isProgressInvoice;
+
   return [
-    ...(isPartialInvoice ? projectInfoItem : introItem),
-    ...(isPartialInvoice ? introItem : projectInfoItem),
+    ...(isProjectInfoBeforeIntro ? projectInfoItem : introItem),
+    ...(isProjectInfoBeforeIntro ? introItem : projectInfoItem),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     ...(isFinalInvoice ? previousPayments.map((payment, index) => ({ type: 'previousPayment', index, payment })) : []),
     { type: 'summary' },
@@ -894,10 +897,10 @@ export function createInvoicePrintItems({
 export function getProjectFieldDefinitions(invoiceVariant) {
   if (invoiceVariant === 'progressInvoice') {
     return [
-      { field: 'progressPaymentNumber', labelField: 'progressPaymentNumber' },
-      { field: 'projectName', labelField: 'projectName' },
-      { field: 'orderNumber', labelField: 'orderNumber' },
-      { field: 'billingSection', labelField: 'billingSection' },
+      { field: 'progressPaymentNumber', label: 'Abschlag', labelField: 'progressPaymentNumber' },
+      { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
+      { field: 'billingSection', label: 'Leistungsstand', labelField: 'billingSection' },
     ];
   }
 
@@ -1150,6 +1153,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const isGoodsInvoice = normalizedInvoiceVariant === 'goods';
   const isFinalInvoice = normalizedInvoiceVariant === 'finalInvoice';
   const isPartialInvoice = normalizedInvoiceVariant === 'partialInvoice';
+  const isProgressInvoice = normalizedInvoiceVariant === 'progressInvoice';
   const projectFieldDefinitions = getProjectFieldDefinitions(normalizedInvoiceVariant);
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
@@ -1273,6 +1277,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       createInvoicePrintItems({
         isFinalInvoice,
         isPartialInvoice,
+        isProgressInvoice,
         isSmallBusinessInvoice,
         positions,
         previousPayments,
@@ -1992,7 +1997,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         {isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <InvoiceProjectBlock
-          isSingleColumn={isFinalInvoice || isPartialInvoice}
+          isSingleColumn={isFinalInvoice || isPartialInvoice || isProgressInvoice}
           labels={labels}
           project={project}
           visibleFields={projectFieldDefinitions}
@@ -2086,6 +2091,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             calculatePreviousPayment={calculateCurrentPreviousPayment}
             isFinalInvoice={isFinalInvoice}
             isPartialInvoice={isPartialInvoice}
+            isProgressInvoice={isProgressInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isStandardInvoice={isStandardInvoice}
@@ -2103,6 +2109,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             footerLines={footerLines}
             isFinalInvoice={isFinalInvoice}
             isPartialInvoice={isPartialInvoice}
+            isProgressInvoice={isProgressInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isStandardInvoice={isStandardInvoice}
@@ -2140,6 +2147,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
     calculatePreviousPayment: calculateInvoicePreviousPayment,
     isFinalInvoice,
     isPartialInvoice,
+    isProgressInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
     isStandardInvoice,
@@ -2154,7 +2162,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
   const positionItems = items.filter((item) => item.type === 'position');
   const previousPaymentItems = items.filter((item) => item.type === 'previousPayment');
   const projectInfoItem = items.find((item) => item.type === 'projectInfo');
-  const isProjectInfoMeasured = isFinalInvoice || isPartialInvoice;
+  const isProjectInfoMeasured = isFinalInvoice || isPartialInvoice || isProgressInvoice;
 
   function measureNow() {
     return measureInvoicePages(measureRootRef.current, items, { isFinalInvoice, isProjectInfoMeasured });
@@ -2443,6 +2451,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
     footerLines,
     isFinalInvoice,
     isPartialInvoice,
+    isProgressInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
     isStandardInvoice,
@@ -2494,6 +2503,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
               calculatePreviousPayment={calculateInvoicePreviousPayment}
               isFinalInvoice={isFinalInvoice}
               isPartialInvoice={isPartialInvoice}
+              isProgressInvoice={isProgressInvoice}
               isGoodsInvoice={isGoodsInvoice}
               isSmallBusinessInvoice={isSmallBusinessInvoice}
               isStandardInvoice={isStandardInvoice}
@@ -2617,6 +2627,7 @@ function InvoicePrintPageItems({
   calculatePreviousPayment: calculateInvoicePreviousPayment,
   isFinalInvoice,
   isPartialInvoice,
+  isProgressInvoice,
   isGoodsInvoice,
   isSmallBusinessInvoice,
   isStandardInvoice,
@@ -2697,7 +2708,7 @@ function InvoicePrintPageItems({
       renderedItems.push(
         <InvoicePrintProjectInfo
           isFinalInvoice={isFinalInvoice}
-          isSingleColumn={isFinalInvoice || isPartialInvoice}
+          isSingleColumn={isFinalInvoice || isPartialInvoice || isProgressInvoice}
           key={`project-${index}`}
           labels={labels}
           projectInfo={item.projectInfo}

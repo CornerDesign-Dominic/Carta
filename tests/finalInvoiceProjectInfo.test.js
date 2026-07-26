@@ -15,6 +15,31 @@ describe('final invoice project information', () => {
     ]);
   });
 
+  it('keeps the compact progress-invoice project block above the preamble in print output', () => {
+    const visibleProjectFields = getProjectFieldDefinitions('progressInvoice');
+
+    expect(visibleProjectFields).toEqual([
+      { field: 'progressPaymentNumber', label: 'Abschlag', labelField: 'progressPaymentNumber' },
+      { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
+      { field: 'billingSection', label: 'Leistungsstand', labelField: 'billingSection' },
+    ]);
+
+    const items = createInvoicePrintItems({
+      isFinalInvoice: false,
+      isPartialInvoice: false,
+      isProgressInvoice: true,
+      isSmallBusinessInvoice: false,
+      positions: [],
+      previousPayments: [],
+      projectInfo: {},
+      textBlocks: [{ id: 'intro', value: 'Vorlauftext', visible: true }],
+      visibleProjectFields,
+    });
+
+    expect(items.slice(0, 2).map((item) => item.type)).toEqual(['projectInfo', 'text']);
+  });
+
   it('keeps partial-invoice project information above the preamble in print output', () => {
     const items = createInvoicePrintItems({
       isFinalInvoice: false,
