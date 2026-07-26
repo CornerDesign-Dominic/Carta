@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { catalogItemTypes, getCatalogItemTypeLabel, normalizeCatalogAmountValue, normalizeCatalogTaxRate } from '../../masterData/catalogItemModel.js';
+import { catalogItemTypes, normalizeCatalogAmountValue, normalizeCatalogTaxRate } from '../../masterData/catalogItemModel.js';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
 
 function Field({ label, className = '', inputRef, ...props }) { return <label className={`partner-field ${className}`.trim()}><span>{label}</span><input {...props} ref={inputRef} /></label>; }
 function Textarea({ label, ...props }) {
   const ref = useRef(null);
   useEffect(() => { resizeTextarea(ref.current); }, [props.value]);
-  return <label className="partner-field partner-field-wide"><span>{label}</span><textarea {...props} ref={ref} rows="3" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} /></label>;
+  return <label className="partner-field partner-field-wide"><span>{label}</span><textarea {...props} ref={ref} rows="2" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} /></label>;
 }
 function Card({ id, title, detail, isOpen, onToggle, children }) { return <section className="partner-form-card" aria-labelledby={`${id}-title`}><button className="partner-form-card-toggle" type="button" aria-expanded={isOpen} aria-controls={`${id}-content`} onClick={onToggle}><span><span id={`${id}-title`} className="partner-form-card-title">{title}</span>{detail && <span className="partner-form-card-detail"> · {detail}</span>}</span><span className="partner-form-card-indicator" aria-hidden="true">{isOpen ? '−' : '+'}</span></button><div className="partner-form-card-content" id={`${id}-content`} hidden={!isOpen}>{children}</div></section>; }
 function hasValues(values) { return Object.values(values).some(Boolean); }
@@ -21,7 +21,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, on
   const isGoods = item.type === 'goods';
   const descriptionPath = isTextService ? ['descriptions', 'textInvoice'] : isDeliveryItem ? ['descriptions', 'deliveryNote'] : ['descriptions', 'standard'];
   const descriptionTitle = isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibungen' : 'Beschreibung';
-  return <form className="partner-form" onSubmit={(event) => event.preventDefault()}>
+  return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
     <Card id="catalog-basics" title="Grunddaten" detail={item.category} isOpen={openSections.basics} onToggle={() => toggle('basics')}>
       <div className="partner-form-grid partner-form-grid-contact">
         <label className="partner-field"><span>Eintragstyp</span><select value={item.type} onChange={(event) => onRequestTypeChange(event.target.value)}>{catalogItemTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></label>
