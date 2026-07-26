@@ -12431,6 +12431,10 @@ h2,
   margin: 0 0 12px;
 }
 
+.catalog-collection-toolbar {
+  margin-top: 18px;
+}
+
 @media (max-width: 760px) {
   .catalog-item-form {
     padding: 10px;
