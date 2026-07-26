@@ -3,7 +3,7 @@ import { formatCatalogCurrency, getCatalogItemDisplayName, getCatalogItemTypeLab
 export default function CatalogItemMasterDataToolbar({
   activeRecordId, records, searchQuery, typeFilter, searchResults, onChangeSearch, onChangeTypeFilter, onSelectRecord, onCreateRecord, onDuplicateRecord, onDeleteRecord,
 }) {
-  return <section className="partner-toolbar" aria-label="Leistungs- und Artikelverwaltung">
+  return <section className="partner-toolbar catalog-management-toolbar" aria-label="Leistungs- und Artikelverwaltung">
     <div className="partner-toolbar-actions">
       <button className="partner-button is-primary" type="button" onClick={onCreateRecord}>Neuen Eintrag anlegen</button>
       <button className="partner-button" type="button" disabled={!activeRecordId} onClick={onDuplicateRecord}>Eintrag duplizieren</button>

@@ -27,6 +27,7 @@ export default function CatalogItemMasterDataEditor() {
   const titleInputRef = useRef(null);
   const previewPagesRef = useRef(null);
   const activeRecord = state.records.find((record) => record.id === state.activeRecordId) ?? null;
+  const hasRecords = state.records.length > 0;
   const searchResults = useMemo(() => state.records.filter((record) => matchesCatalogItemSearch(record, searchQuery) && (typeFilter === 'all' || record.type === typeFilter)), [searchQuery, state.records, typeFilter]);
 
   useEffect(() => {
@@ -78,9 +79,9 @@ export default function CatalogItemMasterDataEditor() {
   return <div className="partner-editor">
     <h1 id="master-data-title">Leistungen und Artikel</h1><p className="intro master-data-intro">Erstelle eine übersichtliche Sammlung wiederkehrender Leistungen, Artikel, Textleistungen und Lieferscheinpositionen. Die Einträge können später gezielt in Rechnungen, Angebote und Lieferscheine übernommen werden.</p>
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
-    <CatalogItemMasterDataToolbar activeRecordId={activeRecord?.id} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={(recordId) => dispatch({ type: 'select', recordId })} onCreateRecord={handleCreate} onDuplicateRecord={handleDuplicate} onDeleteRecord={handleDelete} />
-    <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p>
-    {activeRecord ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(activeRecord)}</p></div><CatalogItemForm item={activeRecord} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={(path, value) => applyChange({ type: 'update-field', recordId: activeRecord.id, path, value })} /></section> : <section className="partner-editor-section catalog-empty-editor" aria-labelledby="catalog-empty-title"><h2 id="catalog-empty-title">Noch keine Einträge</h2><p>Wähle einen Typ aus, um den ersten Leistungs- oder Artikeleintrag anzulegen.</p><button className="partner-button is-primary" type="button" onClick={handleCreate}>Typ auswählen</button></section>}
+    {hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={activeRecord?.id} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={(recordId) => dispatch({ type: 'select', recordId })} onCreateRecord={handleCreate} onDuplicateRecord={handleDuplicate} onDeleteRecord={handleDelete} />
+      <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p></>}
+    {activeRecord ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(activeRecord)}</p></div><CatalogItemForm item={activeRecord} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={(path, value) => applyChange({ type: 'update-field', recordId: activeRecord.id, path, value })} /></section> : <section className="partner-editor-section catalog-empty-editor" aria-labelledby="catalog-empty-title"><h2 id="catalog-empty-title">Noch keine Einträge</h2><p>Lege einen neuen Eintrag an oder lade ein vorhandenes Stammdatenblatt.</p><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></section>}
     <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}
