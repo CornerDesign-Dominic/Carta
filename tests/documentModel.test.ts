@@ -135,6 +135,7 @@ function createState(): StandardInvoiceGeneratorState {
       contact: config(['email', 'phone', 'fax', 'website']),
       details: config(['invoiceNumber', 'invoiceDate', 'serviceDate', 'internalNumber', 'externalNumber', 'customerNumber']),
       deliveryAddress: config(['attention', 'name']),
+      project: config(['progressPaymentNumber', 'projectName', 'orderNumber', 'billingSection', 'partialService', 'completionDate']),
       recipient: config(['attention', 'name']),
       footerMiddle: config(['vatId', 'taxNumber', 'commercialRegister', 'managingDirector']),
     },

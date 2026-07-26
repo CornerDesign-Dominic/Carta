@@ -3,6 +3,7 @@ import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import FooterBlock from './documentBlocks/FooterBlock.jsx';
+import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
 import PositionTable from './documentBlocks/PositionTable.jsx';
 import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
 import SenderBlock from './documentBlocks/SenderBlock.jsx';
@@ -142,6 +143,15 @@ const invoiceMetaFields = [
   { autoComplete: 'new-password', field: 'internalNumber', ariaLabel: 'Interne Referenz', name: 'carta-invoice-internal-code', type: 'text' },
   { autoComplete: 'new-password', field: 'externalNumber', ariaLabel: 'Externe Referenz', name: 'carta-invoice-external-code', type: 'text' },
   { field: 'customerNumber', ariaLabel: 'Kundenreferenz', name: 'carta-invoice-customer-reference', type: 'text' },
+];
+
+const invoiceProjectConfigFields = [
+  { field: 'progressPaymentNumber' },
+  { field: 'projectName' },
+  { field: 'orderNumber' },
+  { field: 'billingSection' },
+  { field: 'partialService' },
+  { field: 'completionDate' },
 ];
 
 const invoiceRecipientOptionalFields = [
@@ -428,6 +438,7 @@ function normalizeFieldConfig(config) {
     contact: createFieldConfig(invoiceContactFields),
     details: createFieldConfig(invoiceMetaFields),
     deliveryAddress: createFieldConfig(invoiceDeliveryAddressOptionalFields),
+    project: createFieldConfig(invoiceProjectConfigFields),
     recipient: createFieldConfig(invoiceRecipientOptionalFields),
     footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
   };
@@ -440,6 +451,7 @@ function normalizeFieldConfig(config) {
     contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
     details: normalizeFieldConfigBlock(config.details, fallback.details),
     deliveryAddress: normalizeFieldConfigBlock(config.deliveryAddress, fallback.deliveryAddress),
+    project: normalizeFieldConfigBlock(config.project, fallback.project),
     recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
     footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
   };
@@ -942,33 +954,52 @@ function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
   );
 }
 
-function InvoiceProjectBlock({ isSingleColumn = false, labels, project, visibleFields, onChange }) {
-  if (visibleFields.length === 0) {
-    return null;
-  }
+function InvoiceProjectBlock({
+  hiddenFields = [],
+  isSingleColumn = false,
+  labels,
+  project,
+  visibleFields,
+  onChange,
+  onToggleField,
+}) {
+  const visibleProjectFields = visibleFields.filter(({ field }) => !hiddenFields.includes(field));
 
   return (
-    <section className={`invoice-project-block${isSingleColumn ? ' is-single-column' : ''}`} aria-label="Projektangaben">
-      {visibleFields.map(({ field, label, labelField }) => {
-        const displayLabel = label ?? labels[labelField];
+    <>
+      {visibleProjectFields.length > 0 && (
+        <section className={`invoice-project-block${isSingleColumn ? ' is-single-column' : ''}`} aria-label="Projektangaben">
+          {visibleProjectFields.map(({ field, label, labelField }) => {
+            const displayLabel = label ?? labels[labelField];
 
-        return (
-          <label className="invoice-project-field" key={field}>
-            <input
-              className="document-label-input"
-              aria-label={`Beschriftung ${displayLabel}`}
-              value={displayLabel}
-              readOnly
-            />
-            <input
-              aria-label={displayLabel}
-              value={project[field] ?? ''}
-              onChange={(event) => onChange(field, event.target.value)}
-            />
-          </label>
-        );
-      })}
-    </section>
+            return (
+              <div className="invoice-config-row" key={field}>
+                <label className="invoice-project-field">
+                  <input
+                    className="document-label-input"
+                    aria-label={`Beschriftung ${displayLabel}`}
+                    value={displayLabel}
+                    readOnly
+                  />
+                  <input
+                    aria-label={displayLabel}
+                    value={project[field] ?? ''}
+                    onChange={(event) => onChange(field, event.target.value)}
+                  />
+                </label>
+                <FieldActions label={displayLabel} onToggle={() => onToggleField(field)} />
+              </div>
+            );
+          })}
+        </section>
+      )}
+      <HiddenFieldActions
+        className="invoice-project-hidden-fields"
+        definitions={visibleFields}
+        hiddenFields={hiddenFields}
+        onToggle={onToggleField}
+      />
+    </>
   );
 }
 
@@ -1164,6 +1195,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     contact: createFieldConfig(invoiceContactFields),
     details: createFieldConfig(invoiceMetaFields),
     deliveryAddress: createFieldConfig(invoiceDeliveryAddressOptionalFields),
+    project: createFieldConfig(invoiceProjectConfigFields),
     recipient: createFieldConfig(invoiceRecipientOptionalFields),
     footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
   });
@@ -1185,6 +1217,10 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   );
   const activeTextBlockSetKey = getTextBlockSetKey(normalizedInvoiceVariant);
   const textBlocks = textBlockSets[activeTextBlockSetKey] ?? textBlockSets.default;
+  const hiddenProjectFields = getHiddenFields('project', projectFieldDefinitions);
+  const visibleProjectFields = projectFieldDefinitions.filter(
+    ({ field }) => !hiddenProjectFields.includes(field),
+  );
   const initialGeneratorStatesRef = useRef({});
   const currentGeneratorState = {
     invoiceVariant: normalizedInvoiceVariant,
@@ -1283,9 +1319,9 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         previousPayments,
         projectInfo: project,
         textBlocks,
-        visibleProjectFields: projectFieldDefinitions,
+        visibleProjectFields,
       }),
-    [isFinalInvoice, isSmallBusinessInvoice, positions, previousPayments, project, projectFieldDefinitions, textBlocks],
+    [isFinalInvoice, isPartialInvoice, isProgressInvoice, isSmallBusinessInvoice, positions, previousPayments, project, textBlocks, visibleProjectFields],
   );
   const dataCheckState = useMemo(
     () =>
@@ -1679,6 +1715,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       contact: createFieldConfig(invoiceContactFields),
       details: createFieldConfig(invoiceMetaFields),
       deliveryAddress: createFieldConfig(invoiceDeliveryAddressOptionalFields),
+      project: createFieldConfig(invoiceProjectConfigFields),
       recipient: createFieldConfig(invoiceRecipientOptionalFields),
       footerMiddle: createFieldConfig(invoiceFooterColumns[1]),
     });
@@ -1997,11 +2034,13 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         {isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <InvoiceProjectBlock
+          hiddenFields={hiddenProjectFields}
           isSingleColumn={isFinalInvoice || isPartialInvoice || isProgressInvoice}
           labels={labels}
           project={project}
           visibleFields={projectFieldDefinitions}
           onChange={updateProjectField}
+          onToggleField={(field) => toggleConfiguredField('project', field)}
         />
 
         {!isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}

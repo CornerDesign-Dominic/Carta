@@ -55,6 +55,7 @@ describe('visible standard-invoice PDF import', () => {
     expect(result.state.textBlocks[0].value).toContain('vielen Dank für Ihren Auftrag');
     expect(result.state.positions[0].unitPrice).toBe('125.50');
     expect(result.state.previousPayments[0].netAmount).toBe('0');
+    expect(result.state.fieldConfig.project.hidden).toEqual([]);
   });
 
   it('returns understandable errors for non-importable PDFs without changing current state', async () => {
@@ -185,9 +186,21 @@ describe('remaining invoice-variant PDF imports', () => {
   it('roundtrips text, progress, partial and final invoices through their selected import routes', async () => {
     const source = createGoodsInvoiceState();
     const text = { ...source, invoiceVariant: 'text' as const };
-    const progress = { ...source, invoiceVariant: 'progressInvoice' as const };
-    const partial = { ...source, invoiceVariant: 'partialInvoice' as const };
-    const final = { ...source, invoiceVariant: 'finalInvoice' as const };
+    const progress = {
+      ...source,
+      invoiceVariant: 'progressInvoice' as const,
+      fieldConfig: { ...source.fieldConfig, project: { ...source.fieldConfig.project, hidden: ['billingSection'] } },
+    };
+    const partial = {
+      ...source,
+      invoiceVariant: 'partialInvoice' as const,
+      fieldConfig: { ...source.fieldConfig, project: { ...source.fieldConfig.project, hidden: ['partialService'] } },
+    };
+    const final = {
+      ...source,
+      invoiceVariant: 'finalInvoice' as const,
+      fieldConfig: { ...source.fieldConfig, project: { ...source.fieldConfig.project, hidden: ['orderNumber'] } },
+    };
 
     await expect(importTextInvoicePdf(await embedBelege24DocumentInPdf(await createPlainPdf(), mapTextInvoiceToDocument(text)))).resolves.toMatchObject({ status: 'valid', state: text });
     await expect(importProgressInvoicePdf(await embedBelege24DocumentInPdf(await createPlainPdf(), mapProgressInvoiceToDocument(progress)))).resolves.toMatchObject({ status: 'valid', state: progress });

@@ -196,6 +196,7 @@ export interface StandardInvoiceDocumentData {
     contact: FieldConfiguration;
     details: FieldConfiguration;
     deliveryAddress: FieldConfiguration;
+    project?: FieldConfiguration;
     recipient: FieldConfiguration;
     footerMiddle: FieldConfiguration;
   };

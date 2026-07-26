@@ -36,6 +36,17 @@ const decimalPattern = /^-?\d+(?:\.\d+)?$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const defaultProjectFieldConfiguration: FieldConfiguration = {
+  hidden: [],
+  order: [
+    'progressPaymentNumber',
+    'projectName',
+    'orderNumber',
+    'billingSection',
+    'partialService',
+    'completionDate',
+  ],
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -330,6 +341,9 @@ function restoreInvoiceState(
       invalidErrors.push(`documentData.fieldConfiguration.${key} is invalid`);
     }
   });
+  if (fieldConfiguration && 'project' in fieldConfiguration && !isFieldConfiguration(fieldConfiguration.project)) {
+    invalidErrors.push('documentData.fieldConfiguration.project is invalid');
+  }
 
   if (incompleteErrors.length > 0) return { status: 'incomplete-data', errors: incompleteErrors };
   if (invalidErrors.length > 0) return { status: 'invalid-field-values', errors: invalidErrors };
@@ -416,6 +430,9 @@ function restoreInvoiceState(
         contact: structuredClone(data.fieldConfiguration.contact),
         details: structuredClone(data.fieldConfiguration.details),
         deliveryAddress: structuredClone(data.fieldConfiguration.deliveryAddress),
+        project: isFieldConfiguration(data.fieldConfiguration.project)
+          ? structuredClone(data.fieldConfiguration.project)
+          : structuredClone(defaultProjectFieldConfiguration),
         recipient: structuredClone(data.fieldConfiguration.recipient),
         footerMiddle: structuredClone(data.fieldConfiguration.footerMiddle),
       },

@@ -1,6 +1,14 @@
 export const patchnotes = [
   {
     date: '2026-07-26',
+    title: 'Projektangaben: einzeln ausblendbar',
+    changes: [
+      'Projekt-, Referenz- und Leistungsangaben lassen sich in Abschlags-, Teil- und Schlussrechnungen einzeln ein- und ausblenden.',
+      'Die Sichtbarkeit wird in Vorlagen und eingebetteten PDF-Daten gespeichert.',
+    ],
+  },
+  {
+    date: '2026-07-26',
     title: 'Abschlagsrechnung: Projektbereich verdichtet',
     changes: [
       'Abschlag, Projekt, Referenznr. und Leistungsstand stehen jetzt untereinander.',

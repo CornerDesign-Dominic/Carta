@@ -89,6 +89,7 @@ export interface StandardInvoiceGeneratorState {
     contact: FieldConfiguration;
     details: FieldConfiguration;
     deliveryAddress: FieldConfiguration;
+    project: FieldConfiguration;
     recipient: FieldConfiguration;
     footerMiddle: FieldConfiguration;
   };
@@ -201,6 +202,13 @@ export function mapStandardInvoiceToDocument(
 ): StandardInvoiceDocument {
   const isTextInvoice = state.invoiceVariant === 'text';
   const isFinalInvoice = state.invoiceVariant === 'finalInvoice';
+  const usesProjectFieldConfiguration = ['progressInvoice', 'partialInvoice', 'finalInvoice'].includes(state.invoiceVariant);
+  const fieldConfiguration = usesProjectFieldConfiguration
+    ? structuredClone(state.fieldConfig)
+    : (() => {
+      const { project: _project, ...configuration } = structuredClone(state.fieldConfig);
+      return configuration;
+    })();
   const service = emptySummary();
   const deducted = emptySummary();
 
@@ -350,7 +358,7 @@ export function mapStandardInvoiceToDocument(
         iban: footer.bank.ibanLabel,
         bic: footer.bank.bicLabel,
       },
-      fieldConfiguration: structuredClone(state.fieldConfig),
+      fieldConfiguration,
       calculated: {
         invoiceTotals: amountSummary(invoiceNet, invoiceTax, isFinalInvoice ? remainingGroups.values() : service.groups.values()),
         serviceTotals: amountSummary(service.net, service.tax, service.groups.values()),

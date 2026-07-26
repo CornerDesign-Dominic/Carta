@@ -2486,6 +2486,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   grid-template-columns: minmax(112px, 0.22fr) minmax(0, 1fr);
 }
 
+.invoice-project-hidden-fields .invoice-hidden-field-actions {
+  right: auto;
+  left: -30px;
+}
+
 .invoice-project-field input {
   min-width: 0;
   border: 1px solid transparent;
