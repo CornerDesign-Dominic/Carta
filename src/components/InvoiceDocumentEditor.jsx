@@ -907,8 +907,8 @@ export function getProjectFieldDefinitions(invoiceVariant) {
   if (invoiceVariant === 'finalInvoice') {
     return [
       { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
-      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
       { field: 'completionDate', label: 'Zeitraum', labelField: 'completionDate' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
     ];
   }
 
@@ -933,13 +933,13 @@ function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
   );
 }
 
-function InvoiceProjectBlock({ labels, project, visibleFields, onChange }) {
+function InvoiceProjectBlock({ isFinalInvoice = false, labels, project, visibleFields, onChange }) {
   if (visibleFields.length === 0) {
     return null;
   }
 
   return (
-    <section className="invoice-project-block" aria-label="Projektangaben">
+    <section className={`invoice-project-block${isFinalInvoice ? ' is-final-invoice' : ''}`} aria-label="Projektangaben">
       {visibleFields.map(({ field, label, labelField }) => {
         const displayLabel = label ?? labels[labelField];
 
@@ -1984,6 +1984,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         {isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <InvoiceProjectBlock
+          isFinalInvoice={isFinalInvoice}
           labels={labels}
           project={project}
           visibleFields={projectFieldDefinitions}
@@ -2162,6 +2163,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
         <div data-measure-project-info>
           {isFinalInvoice && projectInfoItem && (
             <InvoicePrintProjectInfo
+              isFinalInvoice
               labels={labels}
               projectInfo={projectInfoItem.projectInfo}
               visibleProjectFields={projectInfoItem.visibleProjectFields}
@@ -2671,6 +2673,7 @@ function InvoicePrintPageItems({
     if (item.type === 'projectInfo') {
       renderedItems.push(
         <InvoicePrintProjectInfo
+          isFinalInvoice={isFinalInvoice}
           key={`project-${index}`}
           labels={labels}
           projectInfo={item.projectInfo}
@@ -2685,9 +2688,9 @@ function InvoicePrintPageItems({
   return renderedItems;
 }
 
-function InvoicePrintProjectInfo({ labels, projectInfo, visibleProjectFields }) {
+function InvoicePrintProjectInfo({ isFinalInvoice = false, labels, projectInfo, visibleProjectFields }) {
   return (
-    <section className="invoice-print-project-info">
+    <section className={`invoice-print-project-info${isFinalInvoice ? ' is-final-invoice' : ''}`}>
       {visibleProjectFields.map(({ field, label, labelField }) => (
         <p key={field}>
           <span>{label ?? labels[labelField]}</span>

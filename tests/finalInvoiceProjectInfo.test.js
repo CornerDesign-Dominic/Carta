@@ -9,8 +9,8 @@ describe('final invoice project information', () => {
   it('uses the final-invoice-only labels in the requested order', () => {
     expect(getProjectFieldDefinitions('finalInvoice')).toEqual([
       { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
-      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
       { field: 'completionDate', label: 'Zeitraum', labelField: 'completionDate' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
     ]);
   });
 
