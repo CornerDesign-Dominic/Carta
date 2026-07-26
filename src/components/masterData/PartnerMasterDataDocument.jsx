@@ -35,7 +35,7 @@ function LabeledLine({ label, value }) {
   return value ? <p><strong>{label}:</strong> {value}</p> : null;
 }
 
-function PartnerDocumentBlock({ partner }) {
+function PartnerDocumentBlock({ partner, index }) {
   const hasMainAddress = Object.entries(partner.mainAddress)
     .some(([field, value]) => field !== 'country' && Boolean(value));
 
@@ -43,7 +43,7 @@ function PartnerDocumentBlock({ partner }) {
     <article className="partner-document-block">
       <header className="partner-document-block-header">
         <div>
-          <h2>{getPartnerDisplayName(partner)}</h2>
+          <h2><span className="partner-document-index">{String(index + 1).padStart(2, '0')}</span> {getPartnerDisplayName(partner)}</h2>
           <p>{getPartnerTypeLabel(partner.type)} · {partner.isActive ? 'Aktiv' : 'Inaktiv'}</p>
         </div>
         {partner.legalForm && <span>{partner.legalForm}</span>}
@@ -113,21 +113,22 @@ export default function PartnerMasterDataDocument({ partners }) {
   return (
     <section className="partner-document-preview" aria-labelledby="partner-document-preview-title">
       <div className="partner-document-preview-heading">
-        <h2 id="partner-document-preview-title">Live-Vorschau</h2>
-        <p>Die Vorschau zeigt alle Partner der aktuellen Sitzung.</p>
+        <h2 id="partner-document-preview-title">Dokumentvorschau</h2>
+        <p>Die Vorschau zeigt den späteren Aufbau der Stammdatensammlung.</p>
       </div>
       <div className="partner-document-pages">
         {partners.map((partner, index) => (
           <article className="partner-document-page" aria-label={`Stammdatenblatt ${index + 1}`} key={partner.id}>
             <header className="partner-document-page-header">
               <strong>Belege24</strong>
-              <span>Partner- und Empfängerstammdaten</span>
+              <span>Stammdatensammlung</span>
             </header>
             <div className="partner-document-page-meta">
-              <span>{partners.length === 1 ? '1 Partner' : `${partners.length} Partner`}</span>
+              <span>Anzahl Partner: {partners.length}</span>
               <span>Stand: {dateLabel}</span>
             </div>
-            <PartnerDocumentBlock partner={partner} />
+            <h1 className="partner-document-title">Partner- und Empfängerstammdaten</h1>
+            <PartnerDocumentBlock partner={partner} index={index} />
             <footer className="partner-document-page-footer">Seite {index + 1}</footer>
           </article>
         ))}

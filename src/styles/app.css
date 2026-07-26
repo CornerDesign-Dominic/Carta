@@ -11983,3 +11983,320 @@ h2,
     gap: 4px;
   }
 }
+
+/* Kompakte Partnereditor-Abschnitte und dokumentnahe Vorschau */
+.partner-toolbar {
+  align-items: start;
+  gap: 14px;
+  padding: 12px;
+}
+
+.partner-toolbar-actions {
+  gap: 7px;
+}
+
+.partner-live-status {
+  min-height: 0;
+  margin: 8px 0 0;
+}
+
+.partner-live-status:empty {
+  display: none;
+}
+
+.partner-editor-section {
+  margin-top: 24px;
+  padding-top: 22px;
+}
+
+.partner-editor-section-heading {
+  display: grid;
+  justify-content: start;
+  gap: 3px;
+  margin-bottom: 14px;
+}
+
+.partner-editor-section-heading p {
+  font-size: 0.88rem;
+}
+
+.partner-form {
+  gap: 10px;
+}
+
+.partner-form-card {
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.partner-form-card-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.partner-form-card-toggle:hover {
+  background: var(--color-accent-surface);
+  color: var(--color-primary-hover);
+}
+
+.partner-form-card-title {
+  font-size: 0.96rem;
+  font-weight: 720;
+  line-height: 1.35;
+}
+
+.partner-form-card-detail {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  font-weight: 550;
+}
+
+.partner-form-card-indicator {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.partner-form-card-content {
+  display: grid;
+  gap: 14px;
+  border-top: 1px solid var(--color-border);
+  padding: 14px;
+}
+
+.partner-form-grid {
+  align-items: end;
+}
+
+.partner-form-grid-partner {
+  grid-template-columns: minmax(130px, 0.9fr) minmax(180px, 1.4fr) minmax(130px, 0.8fr);
+}
+
+.partner-form-grid-partner .partner-field-company {
+  min-width: 0;
+}
+
+.partner-form-grid-contact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.partner-form-grid-two-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.partner-address-grid {
+  grid-template-columns: minmax(150px, 1.25fr) minmax(145px, 1.1fr) minmax(115px, 0.75fr);
+}
+
+.partner-address-grid .partner-field-street {
+  grid-column: span 2;
+}
+
+.partner-address-grid .partner-field-city {
+  min-width: 0;
+}
+
+.partner-address-grid .partner-field-country {
+  max-width: 180px;
+}
+
+.partner-checkbox-field {
+  justify-self: start;
+  min-height: 38px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: var(--color-card);
+}
+
+.partner-form-help {
+  margin: 0;
+}
+
+.delivery-address-list {
+  gap: 8px;
+}
+
+.delivery-address-editor {
+  border-color: var(--color-border);
+  background: var(--color-card);
+}
+
+.delivery-address-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px 10px;
+}
+
+.delivery-address-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  color: var(--color-text);
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.delivery-address-toggle:hover {
+  color: var(--color-primary-hover);
+}
+
+.delivery-address-toggle > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery-address-body {
+  gap: 12px;
+  border-top-color: var(--color-border);
+  padding: 12px 10px;
+}
+
+.delivery-address-actions {
+  justify-content: end;
+  gap: 5px;
+}
+
+.delivery-address-actions button {
+  min-height: 29px;
+  padding: 5px 7px;
+  font-size: 0.76rem;
+}
+
+.partner-delivery-meta-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.partner-document-preview {
+  margin-top: 42px;
+  padding: 26px 0 0;
+}
+
+.partner-document-preview-heading {
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.partner-document-pages {
+  gap: 28px;
+  padding: 0;
+}
+
+/* Die Dokumentseiten stellen den späteren PDF-Ausdruck dar und bleiben bewusst themenunabhängig. */
+.partner-document-page {
+  background: #ffffff !important;
+  border-color: #d6d1c8 !important;
+  color: #232320 !important;
+  box-shadow: 0 18px 50px rgba(35, 35, 32, 0.13);
+}
+
+.partner-document-page-header {
+  border-bottom-color: #d6d1c8;
+  color: #232320;
+}
+
+.partner-document-page-header strong,
+.partner-document-title,
+.partner-document-block-header h2,
+.partner-document-section h3,
+.partner-document-section strong {
+  color: #232320;
+}
+
+.partner-document-page-header span,
+.partner-document-page-meta,
+.partner-document-page-footer,
+.partner-document-block-header p,
+.partner-document-block-header span {
+  color: #5f5e59;
+}
+
+.partner-document-title {
+  margin: 0 0 22px;
+  font-size: clamp(1.2rem, 2.6vw, 1.65rem);
+  line-height: 1.25;
+}
+
+.partner-document-index {
+  color: #5f5e59;
+  font-size: 0.78em;
+  font-weight: 650;
+}
+
+.partner-document-block-header {
+  padding-bottom: 14px;
+}
+
+.partner-document-section {
+  border-top-color: #d6d1c8;
+}
+
+.partner-document-section p,
+.partner-document-deliveries {
+  color: #232320;
+}
+
+.partner-document-page-footer {
+  border-top-color: #d6d1c8;
+}
+
+@media (max-width: 760px) {
+  .partner-toolbar {
+    gap: 12px;
+  }
+
+  .partner-form-grid-partner,
+  .partner-form-grid-contact,
+  .partner-form-grid-two-columns,
+  .partner-address-grid,
+  .partner-delivery-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .partner-address-grid .partner-field-street {
+    grid-column: auto;
+  }
+
+  .partner-address-grid .partner-field-country {
+    max-width: none;
+  }
+
+  .partner-checkbox-field {
+    justify-self: stretch;
+  }
+
+  .delivery-address-header {
+    grid-template-columns: 1fr;
+  }
+
+  .delivery-address-actions {
+    justify-content: start;
+  }
+
+  .partner-form-card-toggle {
+    min-height: 46px;
+  }
+}

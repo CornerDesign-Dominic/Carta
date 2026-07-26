@@ -109,7 +109,6 @@ export default function PartnerMasterDataEditor() {
       <p className="partner-example-note">
         Zu Beginn ist ein Beispieldatensatz enthalten. Er kann direkt bearbeitet, dupliziert oder gelöscht werden.
       </p>
-      <p className="partner-live-status" aria-live="polite">{statusMessage}</p>
 
       <PartnerMasterDataToolbar
         activePartnerId={activePartner.id}
@@ -122,6 +121,7 @@ export default function PartnerMasterDataEditor() {
         onDuplicatePartner={handleDuplicatePartner}
         onDeletePartner={handleDeletePartner}
       />
+      <p className="partner-live-status" aria-live="polite">{statusMessage}</p>
 
       <section className="partner-editor-section" aria-labelledby="partner-form-title">
         <div className="partner-editor-section-heading">
