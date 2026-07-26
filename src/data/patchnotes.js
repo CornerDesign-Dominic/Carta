@@ -1,5 +1,13 @@
 export const patchnotes = [
   {
+    date: '2026-07-26',
+    title: 'Teilrechnung: Projektbereich verdichtet',
+    changes: [
+      'Projekt, Referenznr., Leistung und Zeitraum stehen jetzt untereinander.',
+      'Die einspaltige Darstellung erweitert die Eingabefelder im Editor und PDF.',
+    ],
+  },
+  {
     date: '2026-07-25',
     title: 'Schlussrechnung: Abschlags-USt. als Betrag',
     changes: [

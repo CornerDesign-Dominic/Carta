@@ -861,6 +861,7 @@ function createSlug(value) {
 
 export function createInvoicePrintItems({
   isFinalInvoice,
+  isPartialInvoice,
   isSmallBusinessInvoice,
   positions,
   previousPayments,
@@ -872,9 +873,14 @@ export function createInvoicePrintItems({
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
   const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
 
+  const introItem = introBlock?.visible ? [{ type: 'text', id: 'intro', text: introBlock.value }] : [];
+  const projectInfoItem = visibleProjectFields.length > 0
+    ? [{ type: 'projectInfo', projectInfo, visibleProjectFields }]
+    : [];
+
   return [
-    ...(introBlock?.visible ? [{ type: 'text', id: 'intro', text: introBlock.value }] : []),
-    ...(visibleProjectFields.length > 0 ? [{ type: 'projectInfo', projectInfo, visibleProjectFields }] : []),
+    ...(isPartialInvoice ? projectInfoItem : introItem),
+    ...(isPartialInvoice ? introItem : projectInfoItem),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     ...(isFinalInvoice ? previousPayments.map((payment, index) => ({ type: 'previousPayment', index, payment })) : []),
     { type: 'summary' },
@@ -897,10 +903,10 @@ export function getProjectFieldDefinitions(invoiceVariant) {
 
   if (invoiceVariant === 'partialInvoice') {
     return [
-      { field: 'projectName', labelField: 'projectName' },
-      { field: 'orderNumber', labelField: 'orderNumber' },
-      { field: 'partialService', labelField: 'partialService' },
-      { field: 'completionDate', labelField: 'completionDate' },
+      { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
+      { field: 'partialService', label: 'Leistung', labelField: 'partialService' },
+      { field: 'completionDate', label: 'Zeitraum', labelField: 'completionDate' },
     ];
   }
 
@@ -933,13 +939,13 @@ function InvoiceVariantChoiceBar({ activeVariant, onChange }) {
   );
 }
 
-function InvoiceProjectBlock({ isFinalInvoice = false, labels, project, visibleFields, onChange }) {
+function InvoiceProjectBlock({ isSingleColumn = false, labels, project, visibleFields, onChange }) {
   if (visibleFields.length === 0) {
     return null;
   }
 
   return (
-    <section className={`invoice-project-block${isFinalInvoice ? ' is-final-invoice' : ''}`} aria-label="Projektangaben">
+    <section className={`invoice-project-block${isSingleColumn ? ' is-single-column' : ''}`} aria-label="Projektangaben">
       {visibleFields.map(({ field, label, labelField }) => {
         const displayLabel = label ?? labels[labelField];
 
@@ -1143,6 +1149,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const isTextInvoice = normalizedInvoiceVariant === 'text';
   const isGoodsInvoice = normalizedInvoiceVariant === 'goods';
   const isFinalInvoice = normalizedInvoiceVariant === 'finalInvoice';
+  const isPartialInvoice = normalizedInvoiceVariant === 'partialInvoice';
   const projectFieldDefinitions = getProjectFieldDefinitions(normalizedInvoiceVariant);
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
@@ -1265,6 +1272,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     () =>
       createInvoicePrintItems({
         isFinalInvoice,
+        isPartialInvoice,
         isSmallBusinessInvoice,
         positions,
         previousPayments,
@@ -1984,7 +1992,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         {isFinalInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'intro'), 0, isSmallBusinessInvoice ? 2 : 1)}
 
         <InvoiceProjectBlock
-          isFinalInvoice={isFinalInvoice}
+          isSingleColumn={isFinalInvoice || isPartialInvoice}
           labels={labels}
           project={project}
           visibleFields={projectFieldDefinitions}
@@ -2077,6 +2085,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             calculatePosition={calculateCurrentPosition}
             calculatePreviousPayment={calculateCurrentPreviousPayment}
             isFinalInvoice={isFinalInvoice}
+            isPartialInvoice={isPartialInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isStandardInvoice={isStandardInvoice}
@@ -2093,6 +2102,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
             deliveryAddress={deliveryAddress}
             footerLines={footerLines}
             isFinalInvoice={isFinalInvoice}
+            isPartialInvoice={isPartialInvoice}
             isGoodsInvoice={isGoodsInvoice}
             isSmallBusinessInvoice={isSmallBusinessInvoice}
             isStandardInvoice={isStandardInvoice}
@@ -2129,6 +2139,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
     calculatePosition: calculateInvoicePosition,
     calculatePreviousPayment: calculateInvoicePreviousPayment,
     isFinalInvoice,
+    isPartialInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
     isStandardInvoice,
@@ -2143,12 +2154,13 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
   const positionItems = items.filter((item) => item.type === 'position');
   const previousPaymentItems = items.filter((item) => item.type === 'previousPayment');
   const projectInfoItem = items.find((item) => item.type === 'projectInfo');
+  const isProjectInfoMeasured = isFinalInvoice || isPartialInvoice;
 
   function measureNow() {
-    return measureInvoicePages(measureRootRef.current, items, { isFinalInvoice });
+    return measureInvoicePages(measureRootRef.current, items, { isFinalInvoice, isProjectInfoMeasured });
   }
 
-  useImperativeHandle(ref, () => ({ measureNow }), [isFinalInvoice, items]);
+  useImperativeHandle(ref, () => ({ measureNow }), [isFinalInvoice, isProjectInfoMeasured, items]);
 
   return (
     <div className="offer-measure-root" ref={measureRootRef} aria-hidden="true">
@@ -2161,9 +2173,10 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
         <div data-measure-project-info>
-          {isFinalInvoice && projectInfoItem && (
+          {isProjectInfoMeasured && projectInfoItem && (
             <InvoicePrintProjectInfo
-              isFinalInvoice
+              isFinalInvoice={isFinalInvoice}
+              isSingleColumn={isProjectInfoMeasured}
               labels={labels}
               projectInfo={projectInfoItem.projectInfo}
               visibleProjectFields={projectInfoItem.visibleProjectFields}
@@ -2270,7 +2283,11 @@ function InvoicePrintColumnGroup({ isGoodsInvoice, isSmallBusinessInvoice, isTex
   );
 }
 
-export function measureInvoicePages(measureRoot, items, { isFinalInvoice = false } = {}) {
+export function measureInvoicePages(
+  measureRoot,
+  items,
+  { isFinalInvoice = false, isProjectInfoMeasured = false } = {},
+) {
   if (!measureRoot) return null;
 
   const firstContent = measureRoot.querySelector('[data-measure-first-content]');
@@ -2296,7 +2313,10 @@ export function measureInvoicePages(measureRoot, items, { isFinalInvoice = false
   );
 
   if (!firstContent || !followContent || !textProbe || !summaryProbe) return null;
-  if (isFinalInvoice && (!projectInfoProbe || !previousPaymentsProbe)) return null;
+  const shouldMeasureProjectInfo = isFinalInvoice || isProjectInfoMeasured;
+
+  if (shouldMeasureProjectInfo && !projectInfoProbe) return null;
+  if (isFinalInvoice && !previousPaymentsProbe) return null;
 
   const firstPageSafetyBuffer = isFinalInvoice
     ? parseFloat(
@@ -2330,7 +2350,7 @@ export function measureInvoicePages(measureRoot, items, { isFinalInvoice = false
   function getItemHeight(item) {
     if (item.type === 'text') return measureTextHeight(item.text);
     if (item.type === 'projectInfo') {
-      if (isFinalInvoice) return getOuterHeight(projectInfoProbe);
+      if (shouldMeasureProjectInfo) return getOuterHeight(projectInfoProbe);
       return measureTextHeight(
         item.visibleProjectFields
           .map(({ field, labelField }) => `${initialInvoiceLabels[labelField]}: ${item.projectInfo[field]}`)
@@ -2422,6 +2442,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
     deliveryAddress,
     footerLines,
     isFinalInvoice,
+    isPartialInvoice,
     isGoodsInvoice,
     isSmallBusinessInvoice,
     isStandardInvoice,
@@ -2472,6 +2493,7 @@ const InvoicePrintPages = forwardRef(function InvoicePrintPages(
               calculatePosition={calculateInvoicePosition}
               calculatePreviousPayment={calculateInvoicePreviousPayment}
               isFinalInvoice={isFinalInvoice}
+              isPartialInvoice={isPartialInvoice}
               isGoodsInvoice={isGoodsInvoice}
               isSmallBusinessInvoice={isSmallBusinessInvoice}
               isStandardInvoice={isStandardInvoice}
@@ -2594,6 +2616,7 @@ function InvoicePrintPageItems({
   calculatePosition: calculateInvoicePosition,
   calculatePreviousPayment: calculateInvoicePreviousPayment,
   isFinalInvoice,
+  isPartialInvoice,
   isGoodsInvoice,
   isSmallBusinessInvoice,
   isStandardInvoice,
@@ -2674,6 +2697,7 @@ function InvoicePrintPageItems({
       renderedItems.push(
         <InvoicePrintProjectInfo
           isFinalInvoice={isFinalInvoice}
+          isSingleColumn={isFinalInvoice || isPartialInvoice}
           key={`project-${index}`}
           labels={labels}
           projectInfo={item.projectInfo}
@@ -2688,9 +2712,9 @@ function InvoicePrintPageItems({
   return renderedItems;
 }
 
-function InvoicePrintProjectInfo({ isFinalInvoice = false, labels, projectInfo, visibleProjectFields }) {
+function InvoicePrintProjectInfo({ isFinalInvoice = false, isSingleColumn = false, labels, projectInfo, visibleProjectFields }) {
   return (
-    <section className={`invoice-print-project-info${isFinalInvoice ? ' is-final-invoice' : ''}`}>
+    <section className={`invoice-print-project-info${isSingleColumn ? ' is-single-column' : ''}${isFinalInvoice ? ' is-final-invoice' : ''}`}>
       {visibleProjectFields.map(({ field, label, labelField }) => (
         <p key={field}>
           <span>{label ?? labels[labelField]}</span>

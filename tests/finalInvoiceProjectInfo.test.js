@@ -6,6 +6,30 @@ import {
 } from '../src/components/InvoiceDocumentEditor.jsx';
 
 describe('final invoice project information', () => {
+  it('uses compact labels for the one-column partial-invoice project block', () => {
+    expect(getProjectFieldDefinitions('partialInvoice')).toEqual([
+      { field: 'projectName', label: 'Projekt', labelField: 'projectName' },
+      { field: 'orderNumber', label: 'Referenznr.', labelField: 'orderNumber' },
+      { field: 'partialService', label: 'Leistung', labelField: 'partialService' },
+      { field: 'completionDate', label: 'Zeitraum', labelField: 'completionDate' },
+    ]);
+  });
+
+  it('keeps partial-invoice project information above the preamble in print output', () => {
+    const items = createInvoicePrintItems({
+      isFinalInvoice: false,
+      isPartialInvoice: true,
+      isSmallBusinessInvoice: false,
+      positions: [],
+      previousPayments: [],
+      projectInfo: {},
+      textBlocks: [{ id: 'intro', value: 'Vorlauftext', visible: true }],
+      visibleProjectFields: getProjectFieldDefinitions('partialInvoice'),
+    });
+
+    expect(items.slice(0, 2).map((item) => item.type)).toEqual(['projectInfo', 'text']);
+  });
+
   it('uses the final-invoice-only labels in the requested order', () => {
     expect(getProjectFieldDefinitions('finalInvoice')).toEqual([
       { field: 'projectName', label: 'Projekt', labelField: 'projectName' },

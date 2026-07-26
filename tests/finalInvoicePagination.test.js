@@ -45,6 +45,24 @@ const summary = { type: 'summary' };
 afterEach(() => vi.unstubAllGlobals());
 
 describe('final invoice measured pagination', () => {
+  it('uses the rendered height for the one-column partial-invoice project block', () => {
+    vi.stubGlobal('window', {
+      getComputedStyle: () => ({
+        marginTop: '0px',
+        marginBottom: '0px',
+        gap: '24px',
+        getPropertyValue: (property) => (property === '--offer-print-small-safety-buffer' ? '16px' : ''),
+      }),
+    });
+
+    const pages = measureInvoicePages(createMeasureRoot({ projectHeight: 300 }), [project, position, summary], {
+      isProjectInfoMeasured: true,
+    });
+
+    expect(pages).toHaveLength(2);
+    expect(pages[1].items).toEqual([summary]);
+  });
+
   it('keeps a short final invoice on its first page', () => {
     vi.stubGlobal('window', {
       getComputedStyle: () => ({

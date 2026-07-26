@@ -2470,7 +2470,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   border-bottom: 1px solid #ebe6dc;
 }
 
-.invoice-project-block.is-final-invoice {
+.invoice-project-block.is-single-column {
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -2482,7 +2482,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-width: 0;
 }
 
-.invoice-project-block.is-final-invoice .invoice-project-field {
+.invoice-project-block.is-single-column .invoice-project-field {
   grid-template-columns: minmax(112px, 0.22fr) minmax(0, 1fr);
 }
 
@@ -5158,8 +5158,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   page-break-inside: avoid;
 }
 
-.invoice-print-project-info.is-final-invoice {
+.invoice-print-project-info.is-single-column {
   grid-template-columns: minmax(0, 1fr);
+}
+
+.invoice-print-project-info.is-final-invoice strong {
+  font-weight: 400;
 }
 
 .invoice-print-project-info p {
