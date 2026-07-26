@@ -94,6 +94,7 @@ export default async function handler(request: any, response: any) {
         'defaultInterest',
         'masterDataPartners',
         'masterDataOwn',
+        'masterDataCatalog',
       ].includes(documentType)
     ) {
       response.status(400).json({ error: 'Invalid documentType.' });

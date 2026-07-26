@@ -27,7 +27,7 @@ export const masterDataItems = [
     label: 'Leistungen und Artikel',
     path: '/stammdaten/leistungen',
     description:
-      'Hier werden künftig wiederkehrende Leistungen und Artikel mit Bezeichnung, Einheit, Preis und Umsatzsteuersatz verwaltet.',
+      'Verwalte wiederkehrende Leistungen, Artikel, Textleistungen und Lieferscheinpositionen in einer gemeinsamen Stammdatensammlung.',
     selectionDescription:
       'Wiederkehrende Leistungen und Artikel mit Bezeichnung, Einheit, Preis und Umsatzsteuersatz vorbereiten.',
     actionLabel: 'Leistungen verwalten',
