@@ -11569,9 +11569,21 @@ h2,
   color: var(--color-muted);
 }
 
+.catalog-empty-type-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
 @media (max-width: 760px) {
   .catalog-filter-row,
   .catalog-type-choice {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-empty-type-choice {
+    display: grid;
     grid-template-columns: 1fr;
   }
 }
