@@ -6,10 +6,13 @@ function Field({ label, className = '', inputRef, ...props }) {
   return <label className={`partner-field ${className}`.trim()}><span>{label}</span><input {...props} ref={inputRef} /></label>;
 }
 
-function Textarea({ label, ...props }) {
+function Textarea({ label, hideLabel = false, ...props }) {
   const ref = useRef(null);
   useEffect(() => { resizeTextarea(ref.current); }, [props.value]);
-  return <label className="partner-field partner-field-wide"><span>{label}</span><textarea {...props} ref={ref} rows="2" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} /></label>;
+  const input = <textarea {...props} ref={ref} aria-label={hideLabel ? label : undefined} rows="2" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} />;
+  return hideLabel
+    ? <div className="partner-field partner-field-wide">{input}</div>
+    : <label className="partner-field partner-field-wide"><span>{label}</span>{input}</label>;
 }
 
 function FormSection({ id, title, children }) {
@@ -21,7 +24,7 @@ function FormSection({ id, title, children }) {
 
 export default function CatalogItemForm({ item, titleInputRef, onUpdateField, onRequestTypeChange }) {
   const field = (path, label, className = '', type = 'text', props = {}) => <Field id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} type={type} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...props} />;
-  const textarea = (path, label) => <Textarea id={`catalog-${item.id}-${path.join('-')}`} label={label} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} />;
+  const textarea = (path, label, options = {}) => <Textarea id={`catalog-${item.id}-${path.join('-')}`} label={label} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...options} />;
   const isTextService = item.type === 'textService';
   const isDeliveryItem = item.type === 'deliveryItem';
   const isGoods = item.type === 'goods';
@@ -40,7 +43,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, on
     </FormSection>
 
     <FormSection id="catalog-description" title={descriptionTitle}>
-      {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung')}
+      {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung', { hideLabel: !isGoods })}
       {isGoods && textarea(['descriptions', 'deliveryNote'], 'Beschreibung für Lieferschein')}
     </FormSection>
 
@@ -53,6 +56,6 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, on
     </div></FormSection>}
 
     {(isGoods || isDeliveryItem) && <FormSection id="catalog-delivery" title="Lieferscheindaten">{textarea(['delivery', 'defaultNote'], 'Standard-Lieferhinweis')}</FormSection>}
-    <FormSection id="catalog-internal" title="Interne Angaben">{textarea(['internalNote'], 'Interne Notiz')}<p className="partner-form-help">Interne Notizen werden später nicht automatisch in Dokumente übernommen.</p></FormSection>
+    <FormSection id="catalog-internal" title="Interne Notiz">{textarea(['internalNote'], 'Interne Notiz', { hideLabel: true })}<p className="partner-form-help">Interne Notizen werden später nicht automatisch in Dokumente übernommen.</p></FormSection>
   </form>;
 }
