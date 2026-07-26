@@ -28,9 +28,9 @@ function ItemBlock({ item, index }) {
   </article>;
 }
 
-export default function CatalogItemMasterDataDocument({ records, pagesRef }) {
+export default function CatalogItemMasterDataDocument({ records, pagesRef, toolbar }) {
   const dateLabel = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium' }).format(new Date());
-  return <section className="partner-document-preview" aria-labelledby="catalog-document-preview-title"><div className="partner-document-preview-heading"><h2 id="catalog-document-preview-title">Dokumentvorschau</h2><p>Die Vorschau zeigt den späteren Aufbau der Stammdatensammlung.</p></div><div className="partner-document-pages" ref={pagesRef}>
+  return <section className="partner-document-preview" aria-labelledby="catalog-document-preview-title"><div className="partner-document-preview-heading"><h2 id="catalog-document-preview-title">Dokumentvorschau</h2><p>Die Vorschau zeigt den späteren Aufbau der Stammdatensammlung.</p></div>{toolbar}<div className="partner-document-pages" ref={pagesRef}>
     {records.map((item, index) => <article className="partner-document-page" aria-label={`Leistungs- und Artikeldatenblatt ${index + 1}`} key={item.id}><header className="partner-document-page-header"><strong>Belege24</strong><span>Leistungs- und Artikelstammdaten</span></header><div className="partner-document-page-meta"><span>Anzahl Einträge: {records.length}</span><span>Stand: {dateLabel}</span></div><h1 className="partner-document-title">Leistungs- und Artikelstammdaten</h1><ItemBlock item={item} index={index} /><footer className="partner-document-page-footer">Seite {index + 1}</footer></article>)}
     {!records.length && <article className="partner-document-page" aria-label="Leere Leistungs- und Artikelstammdatensammlung"><header className="partner-document-page-header"><strong>Belege24</strong><span>Leistungs- und Artikelstammdaten</span></header><div className="partner-document-page-meta"><span>Anzahl Einträge: 0</span><span>Stand: {dateLabel}</span></div><h1 className="partner-document-title">Leistungs- und Artikelstammdaten</h1><p>Diese Stammdatensammlung enthält derzeit keine Einträge.</p><footer className="partner-document-page-footer">Seite 1</footer></article>}
   </div></section>;

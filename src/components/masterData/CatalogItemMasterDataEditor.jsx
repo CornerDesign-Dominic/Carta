@@ -77,11 +77,14 @@ export default function CatalogItemMasterDataEditor() {
   function handlePrint() { document.body.classList.add('master-data-print-mode'); window.print(); const cleanup = () => { document.body.classList.remove('master-data-print-mode'); window.removeEventListener('afterprint', cleanup); }; window.addEventListener('afterprint', cleanup); window.setTimeout(cleanup, 1200); }
   return <div className="partner-editor">
     <h1 id="master-data-title">Leistungen und Artikel</h1><p className="intro master-data-intro">Erstelle eine übersichtliche Sammlung wiederkehrender Leistungen, Artikel, Textleistungen und Lieferscheinpositionen. Die Einträge können später gezielt in Rechnungen, Angebote und Lieferscheine übernommen werden.</p>
-    <PartnerMasterDataDocumentToolbar labelPrefix="Leistungs- und Artikelstammdaten" className="partner-document-toolbar" isExporting={isExporting} onCreatePdf={handleCreatePdf} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} onPrint={handlePrint} />
     <CatalogItemMasterDataToolbar activeRecordId={activeRecord?.id} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={(recordId) => dispatch({ type: 'select', recordId })} onCreateRecord={handleCreate} onDuplicateRecord={handleDuplicate} onDeleteRecord={handleDelete} />
     <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p>
     {activeRecord ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(activeRecord)}</p></div><CatalogItemForm item={activeRecord} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={(path, value) => applyChange({ type: 'update-field', recordId: activeRecord.id, path, value })} /></section> : <section className="partner-editor-section catalog-empty-editor" aria-labelledby="catalog-empty-title"><h2 id="catalog-empty-title">Noch keine Einträge</h2><p>Wähle einen Typ aus, um den ersten Leistungs- oder Artikeleintrag anzulegen.</p><button className="partner-button is-primary" type="button" onClick={handleCreate}>Typ auswählen</button></section>}
-    <CatalogItemMasterDataDocument records={state.records} pagesRef={previewPagesRef} />
+    <CatalogItemMasterDataDocument
+      records={state.records}
+      pagesRef={previewPagesRef}
+      toolbar={<PartnerMasterDataDocumentToolbar labelPrefix="Leistungs- und Artikelstammdaten" className="catalog-document-toolbar" isExporting={isExporting} onCreatePdf={handleCreatePdf} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} onPrint={handlePrint} />}
+    />
     <Dialog action={dialog} onCancel={() => setDialog(null)} onConfirm={handleConfirm} />
   </div>;
 }
