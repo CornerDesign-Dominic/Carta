@@ -1,4 +1,5 @@
 import MasterDataSidebar from '../components/masterData/MasterDataSidebar.jsx';
+import PartnerMasterDataEditor from '../components/masterData/PartnerMasterDataEditor.jsx';
 import { findMasterDataItem, masterDataItems } from '../data/masterData.js';
 
 function isPlainLeftClick(event) {
@@ -151,7 +152,9 @@ export default function MasterDataView({ activeItemId, onSelectItem }) {
 
       <section className="master-data-paper" aria-labelledby="master-data-title">
         {activeItem ? (
-          <MasterDataPlaceholder item={activeItem} />
+          activeItem.id === 'partners'
+            ? <PartnerMasterDataEditor />
+            : <MasterDataPlaceholder item={activeItem} />
         ) : (
           <MasterDataOverview onSelectItem={onSelectItem} />
         )}
