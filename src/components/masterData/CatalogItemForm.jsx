@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { catalogItemTypes, normalizeCatalogAmountValue, normalizeCatalogTaxRate } from '../../masterData/catalogItemModel.js';
+import { normalizeCatalogAmountValue, normalizeCatalogTaxRate } from '../../masterData/catalogItemModel.js';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
 
 function Field({ label, className = '', inputRef, ...props }) {
@@ -22,7 +22,7 @@ function FormSection({ id, title, children }) {
   </section>;
 }
 
-export default function CatalogItemForm({ item, titleInputRef, onUpdateField, onRequestTypeChange, actions }) {
+export default function CatalogItemForm({ item, titleInputRef, onUpdateField, actions }) {
   const field = (path, label, className = '', type = 'text', props = {}) => <Field id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} type={type} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...props} />;
   const textarea = (path, label, options = {}) => <Textarea id={`catalog-${item.id}-${path.join('-')}`} label={label} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...options} />;
   const isTextService = item.type === 'textService';
@@ -33,8 +33,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, on
 
   return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
     <FormSection id="catalog-basics" title="Grunddaten">
-      <div className="partner-form-grid partner-form-grid-contact">
-        <label className="partner-field"><span>Eintragstyp</span><select value={item.type} onChange={(event) => onRequestTypeChange(event.target.value)}>{catalogItemTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></label>
+      <div className="partner-form-grid partner-form-grid-two-columns">
         {field(['number'], isGoods ? 'Artikelnummer' : isDeliveryItem ? 'Artikel-/Positionsnummer' : 'Leistungsnummer')}
         <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Bezeichnung" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
         {field(['category'], 'Kategorie')}

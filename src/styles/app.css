@@ -12444,6 +12444,12 @@ h2,
   padding-bottom: 0;
 }
 
+.catalog-entry-type {
+  color: var(--color-muted);
+  font-size: 0.78em;
+  font-weight: 550;
+}
+
 .catalog-document-toolbar {
   margin: 0 0 12px;
 }

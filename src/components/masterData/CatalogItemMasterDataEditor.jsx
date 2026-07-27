@@ -98,10 +98,6 @@ export default function CatalogItemMasterDataEditor() {
     setDialog({ kind: 'delete', recordId: draftSourceId, title: 'Eintrag löschen?', message: `Möchtest du „${getCatalogItemDisplayName(draft)}“ wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`, confirmLabel: 'Eintrag löschen' });
   }
   function handleNewCollection() { setDialog({ kind: 'new', title: 'Neue Stammdatensammlung erstellen', message: 'Alle aktuellen Leistungs- und Artikeleinträge werden aus dem Editor entfernt. Eine nicht gespeicherte Sammlung kann danach nicht wiederhergestellt werden.', confirmLabel: 'Neue Sammlung erstellen' }); }
-  function handleRequestTypeChange(itemType) {
-    if (!draft || itemType === draft.type) return;
-    setDialog({ kind: 'change-type', itemType, title: 'Eintragstyp ändern', message: 'Beim Wechsel des Eintragstyps werden nicht unterstützte Felder im Formular ausgeblendet. Vorhandene Werte bleiben zunächst erhalten, werden aber beim späteren Übernehmen in Dokumente möglicherweise nicht verwendet.', confirmLabel: 'Typ ändern' });
-  }
   function handleConfirm(value) {
     if (dialog?.kind === 'choose-type') createItemOfType(value);
     if (dialog?.kind === 'discard-and-create') {
@@ -114,7 +110,6 @@ export default function CatalogItemMasterDataEditor() {
     if (dialog?.kind === 'delete') { dispatch({ type: 'delete', recordId: dialog.recordId }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setSearchQuery(''); setIsDirty(true); setStatusMessage('Eintrag wurde gelöscht.'); }
     if (dialog?.kind === 'discard-draft') openSavedRecord(dialog.recordId);
     if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setHasStartedCollection(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
-    if (dialog?.kind === 'change-type' && draft) { updateDraft(['type'], dialog.itemType); setStatusMessage(`Eintragstyp wurde zu ${getCatalogItemTypeLabel(dialog.itemType)} geändert.`); }
     if (dialog?.kind === 'import') {
       const imported = dialog.document;
       dispatch({ type: 'replace-collection', records: imported.records, activeRecordId: imported.records[0]?.id ?? null });
@@ -152,7 +147,7 @@ export default function CatalogItemMasterDataEditor() {
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
     {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
       <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p></>}
-    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(draft)}</p></div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button>{draftSourceId && <button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></section>)}
+    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten <span className="catalog-entry-type">· {getCatalogItemTypeLabel(draft.type)}</span></h2><p>{getCatalogItemDisplayName(draft)}</p></div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button>{draftSourceId && <button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
     {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}
