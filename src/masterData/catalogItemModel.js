@@ -99,6 +99,15 @@ export function catalogItemEditorReducer(state, action) {
       const record = createCatalogItem(action.itemType);
       return { records: [...state.records, record], activeRecordId: record.id };
     }
+    case 'upsert': {
+      const alreadyExists = state.records.some((record) => record.id === action.record.id);
+      return {
+        records: alreadyExists
+          ? state.records.map((record) => (record.id === action.record.id ? action.record : record))
+          : [...state.records, action.record],
+        activeRecordId: action.record.id,
+      };
+    }
     case 'update-field': return { ...state, records: updateItemById(state.records, action.recordId, (item) => updateAtPath(item, action.path, action.value)) };
     case 'change-type': return { ...state, records: updateItemById(state.records, action.recordId, (item) => ({ ...item, type: action.itemType })) };
     case 'duplicate': {

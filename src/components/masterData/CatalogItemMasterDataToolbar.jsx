@@ -1,14 +1,9 @@
 import { formatCatalogCurrency, getCatalogItemDisplayName, getCatalogItemTypeLabel } from '../../masterData/catalogItemModel.js';
 
 export default function CatalogItemMasterDataToolbar({
-  activeRecordId, records, searchQuery, typeFilter, searchResults, onChangeSearch, onChangeTypeFilter, onSelectRecord, onCreateRecord, onDuplicateRecord, onDeleteRecord,
+  activeRecordId, records, searchQuery, typeFilter, searchResults, onChangeSearch, onChangeTypeFilter, onSelectRecord,
 }) {
-  return <section className="partner-toolbar catalog-management-toolbar" aria-label="Leistungs- und Artikelverwaltung">
-    <div className="partner-toolbar-actions">
-      <button className="partner-button is-primary" type="button" onClick={onCreateRecord}>Neuen Eintrag anlegen</button>
-      <button className="partner-button" type="button" disabled={!activeRecordId} onClick={onDuplicateRecord}>Eintrag duplizieren</button>
-      <button className="partner-button" type="button" disabled={!activeRecordId} onClick={onDeleteRecord}>Eintrag löschen</button>
-    </div>
+  return <section className="partner-toolbar catalog-management-toolbar catalog-management-toolbar-list-only" aria-label="Leistungs- und Artikelverwaltung">
     <div className="partner-selection">
       <div className="catalog-filter-row">
         <label className="partner-search-field" htmlFor="catalog-search"><span>Einträge suchen</span><input id="catalog-search" type="search" value={searchQuery} placeholder="Nummer, Bezeichnung, Kategorie oder Text" onChange={(event) => onChangeSearch(event.target.value)} /></label>

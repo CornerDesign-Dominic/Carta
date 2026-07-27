@@ -11569,12 +11569,6 @@ h2,
   color: var(--color-muted);
 }
 
-.catalog-empty-type-choice {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
 
 @media (max-width: 760px) {
   .catalog-filter-row,
@@ -11582,10 +11576,6 @@ h2,
     grid-template-columns: 1fr;
   }
 
-  .catalog-empty-type-choice {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
 }
 
 .partner-field textarea {
@@ -12439,6 +12429,21 @@ h2,
   line-height: 1.35;
 }
 
+.catalog-item-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.catalog-new-entry-action {
+  margin-bottom: 12px;
+}
+
+.catalog-new-entry-empty {
+  padding-bottom: 0;
+}
+
 .catalog-document-toolbar {
   margin: 0 0 12px;
 }
@@ -12485,6 +12490,10 @@ h2,
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
 }
 
+.catalog-management-toolbar-list-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .catalog-management-toolbar .partner-list {
   max-height: 172px;
 }
@@ -12524,5 +12533,9 @@ h2,
 
   .catalog-item-form .partner-checkbox-field {
     justify-self: start;
+  }
+
+  .catalog-item-form-actions .partner-button {
+    flex: 1 1 100%;
   }
 }

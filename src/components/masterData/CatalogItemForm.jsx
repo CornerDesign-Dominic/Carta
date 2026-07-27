@@ -22,7 +22,7 @@ function FormSection({ id, title, children }) {
   </section>;
 }
 
-export default function CatalogItemForm({ item, titleInputRef, onUpdateField, onRequestTypeChange }) {
+export default function CatalogItemForm({ item, titleInputRef, onUpdateField, onRequestTypeChange, actions }) {
   const field = (path, label, className = '', type = 'text', props = {}) => <Field id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} type={type} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...props} />;
   const textarea = (path, label, options = {}) => <Textarea id={`catalog-${item.id}-${path.join('-')}`} label={label} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...options} />;
   const isTextService = item.type === 'textService';
@@ -57,5 +57,6 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, on
 
     {(isGoods || isDeliveryItem) && <FormSection id="catalog-delivery" title="Lieferscheindaten">{textarea(['delivery', 'defaultNote'], 'Standard-Lieferhinweis')}</FormSection>}
     <FormSection id="catalog-internal" title="Interne Notiz">{textarea(['internalNote'], 'Interne Notiz', { hideLabel: true })}<p className="partner-form-help">Interne Notizen werden später nicht automatisch in Dokumente übernommen.</p></FormSection>
+    {actions && <div className="catalog-item-form-actions">{actions}</div>}
   </form>;
 }

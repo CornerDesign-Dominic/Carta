@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { catalogItemTypes, catalogItemEditorReducer, createCatalogEditorState, getCatalogItemDisplayName, getCatalogItemTypeLabel, matchesCatalogItemSearch } from '../../masterData/catalogItemModel.js';
+import { catalogItemTypes, catalogItemEditorReducer, createCatalogEditorState, createCatalogItem, getCatalogItemDisplayName, getCatalogItemTypeLabel, matchesCatalogItemSearch } from '../../masterData/catalogItemModel.js';
 import { CATALOG_ITEM_MASTER_DATA_ATTACHMENT_FILE_NAME, createCatalogItemMasterDataCollectionMetadata, createCatalogItemMasterDataDocument, getCatalogItemMasterDataPdfFilename, importCatalogItemMasterDataPdf } from '../../masterData/catalogItemContract.js';
 import { requestPdfDownload } from '../../utils/requestPdfDownload.js';
 import { CatalogCollectionActions, CatalogExportAction } from './CatalogItemMasterDataActions.jsx';
@@ -15,6 +15,16 @@ function Dialog({ action, onCancel, onConfirm }) {
   </section></div>;
 }
 
+function cloneRecord(record) {
+  return JSON.parse(JSON.stringify(record));
+}
+
+function updateAtPath(value, path, nextValue) {
+  const [key, ...remaining] = path;
+  if (!key) return nextValue;
+  return { ...value, [key]: remaining.length ? updateAtPath(value[key], remaining, nextValue) : nextValue };
+}
+
 export default function CatalogItemMasterDataEditor() {
   const [state, dispatch] = useReducer(catalogItemEditorReducer, undefined, createCatalogEditorState);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,34 +35,93 @@ export default function CatalogItemMasterDataEditor() {
   const [isDirty, setIsDirty] = useState(true);
   const [hasStartedCollection, setHasStartedCollection] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [draft, setDraft] = useState(null);
+  const [draftSourceId, setDraftSourceId] = useState(null);
+  const [draftBaseline, setDraftBaseline] = useState(null);
   const titleInputRef = useRef(null);
   const previewPagesRef = useRef(null);
   const activeRecord = state.records.find((record) => record.id === state.activeRecordId) ?? null;
   const hasRecords = state.records.length > 0;
+  const isDraftDirty = Boolean(draft && (!draftBaseline || JSON.stringify(draft) !== JSON.stringify(draftBaseline)));
   const searchResults = useMemo(() => state.records.filter((record) => matchesCatalogItemSearch(record, searchQuery) && (typeFilter === 'all' || record.type === typeFilter)), [searchQuery, state.records, typeFilter]);
 
   useEffect(() => {
     if (activeRecord && (searchQuery || typeFilter !== 'all') && !searchResults.some((record) => record.id === activeRecord.id)) setStatusMessage('Der aktuell bearbeitete Eintrag ist nicht Teil des Suchergebnisses oder Filters.');
   }, [activeRecord, searchQuery, searchResults, typeFilter]);
   function focusTitleField() { window.requestAnimationFrame(() => titleInputRef.current?.focus()); }
-  function applyChange(action) { dispatch(action); setIsDirty(true); }
-  function handleCreate() { setDialog({ kind: 'choose-type', title: 'Was möchtest du anlegen?', message: 'Wähle den Typ für den neuen Eintrag aus.' }); }
-  function createItemOfType(itemType) { applyChange({ type: 'create', itemType }); setSearchQuery(''); setTypeFilter('all'); setStatusMessage(`${getCatalogItemTypeLabel(itemType)} wurde angelegt.`); focusTitleField(); }
-  function handleDuplicate() { if (!activeRecord) return; applyChange({ type: 'duplicate', recordId: activeRecord.id }); setSearchQuery(''); setTypeFilter('all'); setStatusMessage(`${getCatalogItemDisplayName(activeRecord)} wurde dupliziert.`); focusTitleField(); }
-  function handleDelete() { if (!activeRecord) return; setDialog({ kind: 'delete', recordId: activeRecord.id, title: 'Eintrag löschen', message: `Möchtest du „${getCatalogItemDisplayName(activeRecord)}“ wirklich löschen?`, confirmLabel: 'Löschen' }); }
+  function openTypeChoice() { setDialog({ kind: 'choose-type', title: 'Was möchtest du anlegen?', message: 'Wähle den Typ für den neuen Eintrag aus.' }); }
+  function handleCreate() {
+    if (draft && isDraftDirty) {
+      setDialog({ kind: 'discard-and-create', title: 'Ungespeicherte Änderungen', message: 'Deine Änderungen wurden noch nicht gespeichert. Möchtest du sie verwerfen und einen neuen Eintrag anlegen?', cancelLabel: 'Weiter bearbeiten', confirmLabel: 'Änderungen verwerfen' });
+      return;
+    }
+    openTypeChoice();
+  }
+  function openSavedRecord(recordId) {
+    const record = state.records.find((candidate) => candidate.id === recordId);
+    if (!record) return;
+    dispatch({ type: 'select', recordId });
+    setDraft(cloneRecord(record));
+    setDraftSourceId(recordId);
+    setDraftBaseline(cloneRecord(record));
+    focusTitleField();
+  }
+  function requestSelectRecord(recordId) {
+    if (draft && isDraftDirty) {
+      setDialog({ kind: 'discard-draft', recordId, title: 'Ungespeicherte Änderungen', message: 'Deine Änderungen wurden noch nicht gespeichert. Möchtest du sie verwerfen und den anderen Eintrag öffnen?', cancelLabel: 'Weiter bearbeiten', confirmLabel: 'Änderungen verwerfen' });
+      return;
+    }
+    openSavedRecord(recordId);
+  }
+  function createItemOfType(itemType) {
+    const nextDraft = createCatalogItem(itemType);
+    setDraft(nextDraft);
+    setDraftSourceId(null);
+    setDraftBaseline(cloneRecord(nextDraft));
+    setSearchQuery('');
+    setTypeFilter('all');
+    focusTitleField();
+  }
+  function updateDraft(path, value) {
+    setDraft((current) => (current ? updateAtPath(current, path, value) : current));
+  }
+  function handleSaveDraft() {
+    if (!draft) return;
+    dispatch({ type: 'upsert', record: draft });
+    setDraftSourceId(draft.id);
+    setDraftBaseline(cloneRecord(draft));
+    setIsDirty(true);
+    setStatusMessage('Eintrag wurde gespeichert.');
+  }
+  function handleDeleteDraft() {
+    if (!draftSourceId || !draft) return;
+    setDialog({ kind: 'delete', recordId: draftSourceId, title: 'Eintrag löschen?', message: `Möchtest du „${getCatalogItemDisplayName(draft)}“ wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`, confirmLabel: 'Eintrag löschen' });
+  }
   function handleNewCollection() { setDialog({ kind: 'new', title: 'Neue Stammdatensammlung erstellen', message: 'Alle aktuellen Leistungs- und Artikeleinträge werden aus dem Editor entfernt. Eine nicht gespeicherte Sammlung kann danach nicht wiederhergestellt werden.', confirmLabel: 'Neue Sammlung erstellen' }); }
   function handleRequestTypeChange(itemType) {
-    if (!activeRecord || itemType === activeRecord.type) return;
+    if (!draft || itemType === draft.type) return;
     setDialog({ kind: 'change-type', itemType, title: 'Eintragstyp ändern', message: 'Beim Wechsel des Eintragstyps werden nicht unterstützte Felder im Formular ausgeblendet. Vorhandene Werte bleiben zunächst erhalten, werden aber beim späteren Übernehmen in Dokumente möglicherweise nicht verwendet.', confirmLabel: 'Typ ändern' });
   }
   function handleConfirm(value) {
     if (dialog?.kind === 'choose-type') createItemOfType(value);
-    if (dialog?.kind === 'delete') { applyChange({ type: 'delete', recordId: dialog.recordId }); setSearchQuery(''); setStatusMessage('Eintrag wurde gelöscht.'); }
-    if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setHasStartedCollection(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
-    if (dialog?.kind === 'change-type' && activeRecord) { applyChange({ type: 'change-type', recordId: activeRecord.id, itemType: dialog.itemType }); setStatusMessage(`Eintragstyp wurde zu ${getCatalogItemTypeLabel(dialog.itemType)} geändert.`); }
+    if (dialog?.kind === 'discard-and-create') {
+      setDraft(null);
+      setDraftSourceId(null);
+      setDraftBaseline(null);
+      openTypeChoice();
+      return;
+    }
+    if (dialog?.kind === 'delete') { dispatch({ type: 'delete', recordId: dialog.recordId }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setSearchQuery(''); setIsDirty(true); setStatusMessage('Eintrag wurde gelöscht.'); }
+    if (dialog?.kind === 'discard-draft') openSavedRecord(dialog.recordId);
+    if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setHasStartedCollection(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
+    if (dialog?.kind === 'change-type' && draft) { updateDraft(['type'], dialog.itemType); setStatusMessage(`Eintragstyp wurde zu ${getCatalogItemTypeLabel(dialog.itemType)} geändert.`); }
     if (dialog?.kind === 'import') {
       const imported = dialog.document;
       dispatch({ type: 'replace-collection', records: imported.records, activeRecordId: imported.records[0]?.id ?? null });
+      const firstRecord = imported.records[0] ?? null;
+      setDraft(firstRecord ? cloneRecord(firstRecord) : null);
+      setDraftSourceId(firstRecord?.id ?? null);
+      setDraftBaseline(firstRecord ? cloneRecord(firstRecord) : null);
       setCollectionMetadata({ documentId: imported.documentId, createdAt: imported.createdAt, updatedAt: imported.updatedAt });
       setSearchQuery(''); setTypeFilter('all'); setIsDirty(false); setHasStartedCollection(true); setStatusMessage('Leistungs- und Artikelstammdaten wurden aus der PDF geladen.'); focusTitleField();
     }
@@ -81,9 +150,9 @@ export default function CatalogItemMasterDataEditor() {
   return <div className="partner-editor">
     <h1 id="master-data-title">Leistungen und Artikel</h1><p className="intro master-data-intro">Erstelle eine übersichtliche Sammlung wiederkehrender Leistungen, Artikel, Textleistungen und Lieferscheinpositionen. Die Einträge können später gezielt in Rechnungen, Angebote und Lieferscheine übernommen werden.</p>
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
-    {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={activeRecord?.id} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={(recordId) => dispatch({ type: 'select', recordId })} onCreateRecord={handleCreate} onDuplicateRecord={handleDuplicate} onDeleteRecord={handleDelete} />
+    {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
       <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p></>}
-    {hasStartedCollection && (activeRecord ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(activeRecord)}</p></div><CatalogItemForm item={activeRecord} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={(path, value) => applyChange({ type: 'update-field', recordId: activeRecord.id, path, value })} /></section> : <section className="partner-editor-section catalog-empty-editor" aria-labelledby="catalog-empty-title"><h2 id="catalog-empty-title">Neuen Eintrag anlegen</h2><div className="catalog-empty-type-choice" aria-label="Eintragstyp auswählen">{catalogItemTypes.map((type) => <button className="partner-button" type="button" key={type.value} onClick={() => createItemOfType(type.value)}>{type.label}</button>)}</div></section>)}
+    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten</h2><p>{getCatalogItemDisplayName(draft)}</p></div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onRequestTypeChange={handleRequestTypeChange} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button>{draftSourceId && <button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Neuen Eintrag anlegen</button></section>)}
     {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}
