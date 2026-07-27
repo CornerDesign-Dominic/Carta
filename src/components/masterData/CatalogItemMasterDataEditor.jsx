@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { catalogItemTypes, catalogItemEditorReducer, createCatalogEditorState, createCatalogItem, getCatalogItemDisplayName, getCatalogItemTypeLabel, matchesCatalogItemSearch } from '../../masterData/catalogItemModel.js';
+import { catalogItemTypes, catalogItemEditorReducer, createCatalogEditorState, createCatalogItem, getCatalogItemDisplayName, matchesCatalogItemSearch } from '../../masterData/catalogItemModel.js';
 import { CATALOG_ITEM_MASTER_DATA_ATTACHMENT_FILE_NAME, createCatalogItemMasterDataCollectionMetadata, createCatalogItemMasterDataDocument, getCatalogItemMasterDataPdfFilename, importCatalogItemMasterDataPdf } from '../../masterData/catalogItemContract.js';
 import { requestPdfDownload } from '../../utils/requestPdfDownload.js';
 import { CatalogCollectionActions, CatalogExportAction } from './CatalogItemMasterDataActions.jsx';
@@ -23,6 +23,16 @@ function updateAtPath(value, path, nextValue) {
   const [key, ...remaining] = path;
   if (!key) return nextValue;
   return { ...value, [key]: remaining.length ? updateAtPath(value[key], remaining, nextValue) : nextValue };
+}
+
+function getCatalogDraftHeading(type, isSaved) {
+  const headings = {
+    service: isSaved ? 'Leistung bearbeiten' : 'Neue Leistung anlegen',
+    goods: isSaved ? 'Artikel bearbeiten' : 'Neuen Artikel anlegen',
+    textService: isSaved ? 'Textleistung bearbeiten' : 'Neue Textleistung anlegen',
+    deliveryItem: isSaved ? 'Lieferscheinposition bearbeiten' : 'Neue Lieferscheinposition anlegen',
+  };
+  return headings[type] ?? (isSaved ? 'Eintrag bearbeiten' : 'Neuen Eintrag anlegen');
 }
 
 export default function CatalogItemMasterDataEditor() {
@@ -147,7 +157,7 @@ export default function CatalogItemMasterDataEditor() {
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
     {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
       <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p></>}
-    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">Eintrag bearbeiten <span className="catalog-entry-type">· {getCatalogItemTypeLabel(draft.type)}</span></h2><p>{getCatalogItemDisplayName(draft)}</p></div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button>{draftSourceId && <button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
+    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Weiteren Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">{getCatalogDraftHeading(draft.type, Boolean(draftSourceId))}</h2>{draftSourceId ? draft.title.trim() && <p>{draft.title.trim()}</p> : <p>Noch nicht gespeichert</p>}</div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button>{draftSourceId && <button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
     {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}

@@ -78,7 +78,7 @@ export function duplicateCatalogItem(item) {
 export function matchesCatalogItemSearch(item, query) {
   const normalized = query.trim().toLocaleLowerCase('de-DE');
   if (!normalized) return true;
-  return [item.number, item.title, item.category, ...Object.values(item.descriptions), item.quantity.unit, item.quantity.textLabel, item.internalNote]
+  return [item.type === 'goods' ? item.number : '', item.title, ...Object.values(item.descriptions), item.internalNote]
     .some((value) => String(value ?? '').toLocaleLowerCase('de-DE').includes(normalized));
 }
 

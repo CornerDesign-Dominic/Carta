@@ -55,9 +55,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
     </FormArea>
     <FormArea id="catalog-internal-fields" title="Nur für deine Stammdaten" hint="Diese Angaben dienen nur der Verwaltung und werden nicht automatisch in Dokumente übernommen." className="is-internal">
       <div className="partner-form-grid partner-form-grid-two-columns">
-        {!isGoods && field(['number'], isDeliveryItem ? 'Positionsnummer' : 'Leistungsnummer')}
-        <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Bezeichnung" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
-        {field(['category'], 'Kategorie')}
+        <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Suchwort" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
         <label className="partner-checkbox-field"><input type="checkbox" checked={item.isActive} onChange={(event) => onUpdateField(['isActive'], event.target.checked)} /> Aktiv</label>
       </div>
       <FormSection id="catalog-internal" title="Interne Notiz">{textarea(['internalNote'], 'Interne Notiz', { hideLabel: true })}</FormSection>

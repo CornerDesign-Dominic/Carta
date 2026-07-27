@@ -1,4 +1,4 @@
-import { formatCatalogCurrency, getCatalogItemDisplayName, getCatalogItemTypeLabel } from '../../masterData/catalogItemModel.js';
+import { formatCatalogCurrency, getCatalogItemTypeLabel } from '../../masterData/catalogItemModel.js';
 
 function LabeledLine({ label, value }) { return value ? <p><strong>{label}:</strong> {value}</p> : null; }
 function Section({ title, isVisible, children }) { return isVisible ? <section className="partner-document-section"><h3>{title}</h3><div>{children}</div></section> : null; }
@@ -12,8 +12,8 @@ function ItemBlock({ item, index }) {
   const hasQuantity = isText ? Boolean(item.quantity.textLabel) : Boolean(item.quantity.defaultValue || item.quantity.unit);
   const hasPricing = !isDelivery && Boolean((isText ? item.pricing.netTotalAmount : item.pricing.netUnitPrice) || item.pricing.taxRate);
   return <article className="partner-document-block">
-    <header className="partner-document-block-header"><div><h2><span className="partner-document-index">{String(index + 1).padStart(2, '0')}</span> {getCatalogItemDisplayName(item)}</h2><p>{getCatalogItemTypeLabel(item.type)} · {item.isActive ? 'Aktiv' : 'Inaktiv'}</p></div></header>
-    <Section title="Grunddaten" isVisible={Boolean(item.number || item.category)}><LabeledLine label={isGoods ? 'Artikelnummer' : isDelivery ? 'Positionsnummer' : 'Leistungsnummer'} value={item.number} /><LabeledLine label="Kategorie" value={item.category} /></Section>
+    <header className="partner-document-block-header"><div><h2><span className="partner-document-index">{String(index + 1).padStart(2, '0')}</span> Eintrag</h2><p>{getCatalogItemTypeLabel(item.type)} · {item.isActive ? 'Aktiv' : 'Inaktiv'}</p></div></header>
+    <Section title="Grunddaten" isVisible={Boolean(isGoods && item.number)}><LabeledLine label="Artikelnummer" value={item.number} /></Section>
     <Section title={isText ? 'Leistungsbeschreibung' : isDelivery ? 'Lieferbeschreibung' : isGoods ? 'Beschreibungen' : 'Beschreibung'} isVisible={hasDescription}>
       {description && <p className="partner-document-notes">{description}</p>}
       {isGoods && item.descriptions.deliveryNote && <LabeledLine label="Beschreibung Lieferschein" value={item.descriptions.deliveryNote} />}
