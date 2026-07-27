@@ -95,13 +95,24 @@ export default function CatalogItemMasterDataEditor() {
   function updateDraft(path, value) {
     setDraft((current) => (current ? updateAtPath(current, path, value) : current));
   }
-  function handleSaveDraft() {
-    if (!draft) return;
-    dispatch({ type: 'upsert', record: draft });
-    setDraftSourceId(draft.id);
-    setDraftBaseline(cloneRecord(draft));
-    setIsDirty(true);
-    setStatusMessage('Eintrag wurde gespeichert.');
+  function persistDraft(status) {
+    if (!draft) return false;
+    try {
+      dispatch({ type: 'upsert', record: draft });
+      setDraftSourceId(draft.id);
+      setDraftBaseline(cloneRecord(draft));
+      setIsDirty(true);
+      setStatusMessage(status);
+      return true;
+    } catch {
+      setStatusMessage('Der Eintrag konnte nicht gespeichert werden.');
+      return false;
+    }
+  }
+  function handleSaveDraft() { persistDraft('Eintrag wurde gespeichert.'); }
+  function handleSaveAndCreate() {
+    if (!persistDraft('Eintrag wurde gespeichert. Wähle den Typ des nächsten Eintrags.')) return;
+    openTypeChoice();
   }
   function handleDeleteDraft() {
     if (!draftSourceId || !draft) return;
@@ -157,7 +168,7 @@ export default function CatalogItemMasterDataEditor() {
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
     {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
       <p className="partner-live-status" aria-live="polite">{statusMessage}</p><p className="partner-save-status" aria-live="polite">{isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert'}</p></>}
-    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Weiteren Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">{getCatalogDraftHeading(draft.type, Boolean(draftSourceId))}</h2>{draftSourceId ? draft.title.trim() && <p>{draft.title.trim()}</p> : <p>Noch nicht gespeichert</p>}</div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button>{draftSourceId && <button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
+    {hasStartedCollection && (draft ? <section className="partner-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Weiteren Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">{getCatalogDraftHeading(draft.type, Boolean(draftSourceId))}</h2>{draftSourceId ? draft.title.trim() && <p>{draft.title.trim()}</p> : <p>Noch nicht gespeichert</p>}</div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Eintrag speichern</button><button className="partner-button" type="button" onClick={handleSaveAndCreate}>Speichern + neuer Eintrag</button>{draftSourceId && <span className="catalog-item-form-delete-action"><button className="partner-button" type="button" onClick={handleDeleteDraft}>Eintrag löschen</button></span>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
     {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}

@@ -45,12 +45,12 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
         {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung', { hideLabel: !isGoods })}
         {isGoods && textarea(['descriptions', 'deliveryNote'], 'Beschreibung für Lieferschein')}
       </FormSection>
-      {!isTextService && <FormSection id="catalog-quantity" title="Menge und Einheit"><div className="partner-form-grid partner-form-grid-two-columns">{field(['quantity', 'defaultValue'], 'Standardmenge', '', 'text', { inputMode: 'decimal' })}{field(['quantity', 'unit'], 'Einheit')}</div></FormSection>}
+      {!isTextService && <div className="catalog-item-form-inline-fields partner-form-grid partner-form-grid-two-columns">{field(['quantity', 'defaultValue'], 'Anzahl', 'catalog-item-form-emphasized-label', 'text', { inputMode: 'decimal' })}{field(['quantity', 'unit'], 'Einheit', 'catalog-item-form-emphasized-label')}</div>}
       {isTextService && <FormSection id="catalog-text-quantity" title="Mengen- oder Zeitangabe"><div className="partner-form-grid">{field(['quantity', 'textLabel'], 'Mengen- oder Zeitangabe')}</div></FormSection>}
-      {!isDeliveryItem && <FormSection id="catalog-pricing" title={isTextService ? 'Betrag und Steuer' : 'Preis und Steuer'}><div className="partner-form-grid partner-form-grid-two-columns">
-        {field(isTextService ? ['pricing', 'netTotalAmount'] : ['pricing', 'netUnitPrice'], isTextService ? 'Netto-Positionsbetrag' : 'Netto-Einzelpreis', '', 'text', { inputMode: 'decimal', onBlur: (event) => { const normalized = normalizeCatalogAmountValue(event.target.value); if (normalized !== null) onUpdateField(isTextService ? ['pricing', 'netTotalAmount'] : ['pricing', 'netUnitPrice'], normalized); } })}
-        {field(['pricing', 'taxRate'], 'Umsatzsteuersatz', '', 'text', { inputMode: 'decimal', onBlur: (event) => { const normalized = normalizeCatalogTaxRate(event.target.value); if (normalized !== null) onUpdateField(['pricing', 'taxRate'], normalized); } })}
-      </div></FormSection>}
+      {!isDeliveryItem && <div className="catalog-item-form-inline-fields partner-form-grid partner-form-grid-two-columns">
+        {field(isTextService ? ['pricing', 'netTotalAmount'] : ['pricing', 'netUnitPrice'], isTextService ? 'Netto-Positionsbetrag' : 'Einzelpreis netto', 'catalog-item-form-emphasized-label', 'text', { inputMode: 'decimal', onBlur: (event) => { const normalized = normalizeCatalogAmountValue(event.target.value); if (normalized !== null) onUpdateField(isTextService ? ['pricing', 'netTotalAmount'] : ['pricing', 'netUnitPrice'], normalized); } })}
+        {field(['pricing', 'taxRate'], 'Umsatzsteuer', 'catalog-item-form-emphasized-label', 'text', { inputMode: 'decimal', onBlur: (event) => { const normalized = normalizeCatalogTaxRate(event.target.value); if (normalized !== null) onUpdateField(['pricing', 'taxRate'], normalized); } })}
+      </div>}
       {(isGoods || isDeliveryItem) && <FormSection id="catalog-delivery" title="Lieferscheindaten">{textarea(['delivery', 'defaultNote'], 'Standard-Lieferhinweis')}</FormSection>}
     </FormArea>
     <FormArea id="catalog-internal-fields" title="Nur für deine Stammdaten" hint="Diese Angaben dienen nur der Verwaltung und werden nicht automatisch in Dokumente übernommen." className="is-internal">

@@ -12433,6 +12433,15 @@ h2,
   font-weight: 620;
 }
 
+.catalog-item-form .partner-field.catalog-item-form-emphasized-label > span {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.catalog-item-form-inline-fields {
+  padding-top: 4px;
+}
+
 .catalog-item-form .partner-field input,
 .catalog-item-form .partner-field select,
 .catalog-item-form .partner-field textarea {
@@ -12469,6 +12478,13 @@ h2,
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 2px;
+}
+
+.catalog-item-form-delete-action {
+  display: flex;
+  margin-left: 8px;
+  padding-left: 16px;
+  border-left: 1px solid var(--color-border);
 }
 
 .catalog-new-entry-action {
@@ -12578,5 +12594,16 @@ h2,
 
   .catalog-item-form-actions .partner-button {
     flex: 1 1 100%;
+  }
+
+  .catalog-item-form-delete-action {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .catalog-item-form-delete-action .partner-button {
+    width: 100%;
   }
 }
