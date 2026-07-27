@@ -40,12 +40,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
 
   return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
     <FormArea id="catalog-document-fields" title="Wird in Dokumente übernommen" hint="Diese Angaben können später in Rechnungen, Angebote oder Lieferscheine übernommen werden.">
-      <FormSection id="catalog-basics" title="Grunddaten">
-        <div className="partner-form-grid partner-form-grid-two-columns">
-          {field(['number'], isGoods ? 'Artikelnummer' : isDeliveryItem ? 'Artikel-/Positionsnummer' : 'Leistungsnummer')}
-          <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Bezeichnung" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
-        </div>
-      </FormSection>
+      {isGoods && <FormSection id="catalog-basics" title="Grunddaten"><div className="partner-form-grid partner-form-grid-two-columns">{field(['number'], 'Artikelnummer')}</div></FormSection>}
       <FormSection id="catalog-description" title={descriptionTitle}>
         {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung', { hideLabel: !isGoods })}
         {isGoods && textarea(['descriptions', 'deliveryNote'], 'Beschreibung für Lieferschein')}
@@ -60,6 +55,8 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
     </FormArea>
     <FormArea id="catalog-internal-fields" title="Nur für deine Stammdaten" hint="Diese Angaben dienen nur der Verwaltung und werden nicht automatisch in Dokumente übernommen." className="is-internal">
       <div className="partner-form-grid partner-form-grid-two-columns">
+        {!isGoods && field(['number'], isDeliveryItem ? 'Positionsnummer' : 'Leistungsnummer')}
+        <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Bezeichnung" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
         {field(['category'], 'Kategorie')}
         <label className="partner-checkbox-field"><input type="checkbox" checked={item.isActive} onChange={(event) => onUpdateField(['isActive'], event.target.checked)} /> Aktiv</label>
       </div>
