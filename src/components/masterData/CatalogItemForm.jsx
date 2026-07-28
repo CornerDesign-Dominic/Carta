@@ -101,7 +101,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
   const descriptionTitle = isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibungen' : 'Beschreibung';
 
   return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
-    <FormArea id="catalog-document-fields" title="Wird in Dokumente übernommen" hint="Diese Angaben werden in das Dokument übernommen.">
+    <FormArea id="catalog-document-fields" title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
       {isGoods && <FormSection id="catalog-basics" title="Grunddaten"><div className="partner-form-grid partner-form-grid-two-columns">{field(['number'], 'Artikelnummer')}</div></FormSection>}
       <FormSection id="catalog-description" title={descriptionTitle}>
         {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung', { hideLabel: !isGoods })}
@@ -115,7 +115,7 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
       </div>}
       {(isGoods || isDeliveryItem) && <FormSection id="catalog-delivery" title="Lieferscheindaten">{textarea(['delivery', 'defaultNote'], 'Standard-Lieferhinweis')}</FormSection>}
     </FormArea>
-    <FormArea id="catalog-internal-fields" title="Nur für deine Stammdaten" hint="Diese Angaben dienen nur der Verwaltung und werden nicht in Dokumente übernommen." className="is-internal">
+    <FormArea id="catalog-internal-fields" title="Angaben für die Stammdatenverwaltung" hint="Diese Angaben dienen ausschließlich der Verwaltung und werden in kein Dokument übernommen." className="is-internal">
       <div className="partner-form-grid partner-form-grid-two-columns">
         <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Suchwort" className="catalog-item-form-emphasized-label" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
         <label className="partner-checkbox-field"><input type="checkbox" checked={item.isActive} onChange={(event) => onUpdateField(['isActive'], event.target.checked)} /> Aktiv</label>
