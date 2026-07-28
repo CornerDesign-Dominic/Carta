@@ -25,16 +25,6 @@ function updateAtPath(value, path, nextValue) {
   return { ...value, [key]: remaining.length ? updateAtPath(value[key], remaining, nextValue) : nextValue };
 }
 
-function getCatalogDraftHeading(type, isSaved) {
-  const headings = {
-    service: isSaved ? 'Leistung bearbeiten' : 'Neue Leistung anlegen',
-    goods: isSaved ? 'Artikel bearbeiten' : 'Neuen Artikel anlegen',
-    textService: isSaved ? 'Textleistung bearbeiten' : 'Neue Textleistung anlegen',
-    deliveryItem: isSaved ? 'Lieferscheinposition bearbeiten' : 'Neue Lieferscheinposition anlegen',
-  };
-  return headings[type] ?? (isSaved ? 'Eintrag bearbeiten' : 'Neuen Eintrag anlegen');
-}
-
 export default function CatalogItemMasterDataEditor() {
   const [state, dispatch] = useReducer(catalogItemEditorReducer, undefined, createCatalogEditorState);
   const [searchQuery, setSearchQuery] = useState('');
@@ -177,7 +167,7 @@ export default function CatalogItemMasterDataEditor() {
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
     {hasStartedCollection && hasRecords && <><div className="catalog-collection-divider" aria-hidden="true" /><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
       <span className="catalog-status-for-screenreaders" aria-live="polite">{statusMessage || (isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert')}</span></>}
-    {hasStartedCollection && (draft ? <section className="partner-editor-section catalog-item-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Weiteren Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">{getCatalogDraftHeading(draft.type, Boolean(draftSourceId))}</h2></div><CatalogItemForm item={draft} entryStatus={!draftSourceId ? 'new' : isDraftDirty ? 'edited' : 'saved'} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><div className="catalog-item-form-save-actions"><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Speichern</button><button className="partner-button" type="button" onClick={handleSaveAndCreate}>Speichern & neuer Eintrag</button></div>{draftSourceId && <span className="catalog-item-form-delete-action"><button className="partner-button" type="button" onClick={handleDeleteDraft}>Löschen</button></span>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
+    {hasStartedCollection && (draft ? <section className="partner-editor-section catalog-item-editor-section" aria-label="Eintrag bearbeiten"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Eintrag anlegen</button></div><CatalogItemForm item={draft} entryStatus={!draftSourceId ? 'new' : isDraftDirty ? 'edited' : 'saved'} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><div className="catalog-item-form-save-actions"><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Speichern</button><button className="partner-button" type="button" onClick={handleSaveAndCreate}>Speichern & neuer Eintrag</button></div>{draftSourceId && <span className="catalog-item-form-delete-action"><button className="partner-button" type="button" onClick={handleDeleteDraft}>Löschen</button></span>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Eintrag anlegen</button></section>)}
     {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}

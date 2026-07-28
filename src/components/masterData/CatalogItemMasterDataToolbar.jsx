@@ -1,5 +1,16 @@
 import { formatCatalogCurrency, getCatalogItemDisplayName, getCatalogItemTypeLabel } from '../../masterData/catalogItemModel.js';
 
+function getListTypeLabel(type) {
+  return type === 'goods' ? 'Artikel' : getCatalogItemTypeLabel(type);
+}
+
+function getListValues(item) {
+  const taxRate = item.pricing.taxRate ? `${item.pricing.taxRate} %` : '';
+  if (item.type === 'deliveryItem') return [item.quantity.defaultValue, item.quantity.unit, item.delivery.defaultNote].filter(Boolean).join(' · ');
+  if (item.type === 'textService') return [item.quantity.textLabel, formatCatalogCurrency(item.pricing.netTotalAmount), taxRate].filter(Boolean).join(' · ');
+  return [item.quantity.defaultValue, item.quantity.unit, formatCatalogCurrency(item.pricing.netUnitPrice), taxRate].filter(Boolean).join(' · ');
+}
+
 export default function CatalogItemMasterDataToolbar({
   activeRecordId, records, searchQuery, typeFilter, searchResults, onChangeSearch, onChangeTypeFilter, onSelectRecord,
 }) {
@@ -11,10 +22,11 @@ export default function CatalogItemMasterDataToolbar({
       </div>
       <div className="partner-list" aria-label="Leistungs- und Artikelliste">
         {searchResults.map((item) => {
-          const amount = item.type === 'textService' ? item.pricing.netTotalAmount : item.type === 'deliveryItem' ? '' : item.pricing.netUnitPrice;
+          const entryTitle = `${getListTypeLabel(item.type)} – ${getCatalogItemDisplayName(item)}`;
+          const entryValues = getListValues(item);
           return <button className={item.id === activeRecordId ? 'partner-list-item is-active' : 'partner-list-item'} type="button" key={item.id} onClick={() => onSelectRecord(item.id)}>
-            <span className="partner-list-item-name">{getCatalogItemDisplayName(item)}</span>
-            <span className="partner-list-item-meta">{getCatalogItemTypeLabel(item.type)}{item.type === 'goods' && item.number ? ` · ${item.number}` : ''}{amount ? ` · ${formatCatalogCurrency(amount)}` : ''}</span>
+            <span className="partner-list-item-name" title={entryTitle}>{entryTitle}</span>
+            {entryValues && <span className="partner-list-item-meta" title={entryValues}>{entryValues}</span>}
             <span className="partner-list-item-status">{item.isActive ? 'Aktiv' : 'Inaktiv'}</span>
           </button>;
         })}

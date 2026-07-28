@@ -103,7 +103,7 @@ export default function CatalogItemForm({ item, entryStatus, titleInputRef, onUp
   const entryStatusLabel = { new: 'Neu', saved: 'Gespeichert', edited: 'Bearbeitet' }[entryStatus] ?? 'Neu';
 
   return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
-    <div className="catalog-item-form-status-card">
+    <div className={`catalog-item-form-status-card is-${entryStatus}`}>
       <span className="catalog-item-form-status-name" title={entryName}>{entryName}</span>
       <span className={`catalog-item-form-status-label is-${entryStatus}`}>{entryStatusLabel}</span>
     </div>

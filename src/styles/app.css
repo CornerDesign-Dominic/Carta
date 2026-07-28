@@ -11645,6 +11645,13 @@ h2,
   line-height: 1.4;
 }
 
+.catalog-management-toolbar .partner-list-item-meta {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .partner-list-item-status {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -12376,7 +12383,17 @@ h2,
   padding: 6px 8px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--color-accent-surface) 48%, var(--color-surface));
+  background: color-mix(in srgb, var(--color-muted) 7%, var(--color-surface));
+}
+
+.catalog-item-form-status-card.is-saved {
+  border-color: color-mix(in srgb, var(--color-status-success) 34%, var(--color-border));
+  background: color-mix(in srgb, var(--color-status-success) 12%, var(--color-surface));
+}
+
+.catalog-item-form-status-card.is-edited {
+  border-color: color-mix(in srgb, var(--color-status-warning) 38%, var(--color-border));
+  background: color-mix(in srgb, var(--color-status-warning) 14%, var(--color-surface));
 }
 
 .catalog-item-form-status-name {
@@ -12391,23 +12408,26 @@ h2,
 
 .catalog-item-form-status-label {
   flex: 0 0 auto;
-  padding: 2px 7px;
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-muted) 30%, var(--color-border));
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-muted) 14%, transparent);
+  background: color-mix(in srgb, var(--color-card) 72%, transparent);
   color: var(--color-muted);
   font-size: 0.72rem;
-  font-weight: 680;
+  font-weight: 760;
   line-height: 1.2;
   white-space: nowrap;
 }
 
 .catalog-item-form-status-label.is-saved {
-  background: color-mix(in srgb, var(--color-status-success) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-status-success) 38%, var(--color-border));
+  background: color-mix(in srgb, var(--color-status-success) 20%, var(--color-card));
   color: var(--color-status-success);
 }
 
 .catalog-item-form-status-label.is-edited {
-  background: color-mix(in srgb, var(--color-status-warning) 16%, transparent);
+  border-color: color-mix(in srgb, var(--color-status-warning) 42%, var(--color-border));
+  background: color-mix(in srgb, var(--color-status-warning) 22%, var(--color-card));
   color: var(--color-status-warning);
 }
 
@@ -12581,7 +12601,7 @@ h2,
 
 .catalog-collection-divider {
   height: 1px;
-  margin: 16px 0;
+  margin: 32px 0;
   background: var(--color-border);
 }
 
