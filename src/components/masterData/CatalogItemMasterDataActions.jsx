@@ -25,7 +25,7 @@ export function CatalogCollectionActions({ isExporting, onLoadPdf, onNewCollecti
 export function CatalogExportAction({ isExporting, onCreatePdf }) {
   return <div className="visual-toolbar catalog-document-toolbar" aria-label="Leistungs- und Artikelstammdaten exportieren">
     <div className="visual-toolbar-group">
-      <button type="button" aria-label="Stammdatenblatt erstellen" title="Stammdatenblatt erstellen" disabled={isExporting} onClick={onCreatePdf}>{isExporting ? 'Stammdatenblatt wird erstellt …' : 'Stammdatenblatt erstellen'}</button>
+      <button type="button" aria-label="Stammdatenblatt erstellen und herunterladen" title="Stammdatenblatt erstellen und herunterladen" disabled={isExporting} onClick={onCreatePdf}>{isExporting ? 'Stammdatenblatt wird erstellt …' : 'Stammdatenblatt erstellen und herunterladen'}</button>
     </div>
   </div>;
 }

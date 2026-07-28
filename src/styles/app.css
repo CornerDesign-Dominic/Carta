@@ -12514,49 +12514,58 @@ h2,
 }
 
 .catalog-document-toolbar {
+  display: flex;
+  justify-content: center;
   margin: 0 0 12px;
 }
 
 .catalog-collection-toolbar {
   display: block;
   margin-top: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 9px;
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: 18px;
-}
-
-.catalog-collection-toolbar .visual-toolbar-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  width: 100%;
   padding: 0;
 }
 
-.catalog-collection-toolbar .visual-toolbar-group button {
+.catalog-collection-toolbar .visual-toolbar-group {
   position: relative;
-  flex: 0 1 210px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 9px 0;
+}
+
+.catalog-collection-toolbar .visual-toolbar-group::before {
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border);
+  content: '';
+}
+
+.catalog-collection-toolbar .visual-toolbar-group button {
+  justify-self: center;
+  width: min(210px, calc(100% - 20px));
   min-height: 38px;
   border: 1px solid var(--color-border);
   border-radius: 5px;
 }
 
 .catalog-collection-toolbar .visual-toolbar-group button + button {
-  margin-left: 1px;
+  margin-left: 0;
 }
 
 .catalog-collection-toolbar .visual-toolbar-group button + button::before {
-  position: absolute;
-  top: 7px;
-  bottom: 7px;
-  left: -10px;
-  width: 1px;
-  background: var(--color-border);
-  content: '';
+  display: none;
 }
 
 .catalog-management-toolbar {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  margin-top: 9px;
 }
 
 .catalog-management-toolbar-list-only {
@@ -12567,15 +12576,24 @@ h2,
   max-height: 172px;
 }
 
+.catalog-item-editor-section {
+  margin-top: 18px;
+  padding-top: 0;
+  border-top: 0;
+}
+
 @media (max-width: 760px) {
   .catalog-collection-toolbar .visual-toolbar-group {
+    display: flex;
     align-items: stretch;
     flex-direction: column;
-    gap: 8px;
+    gap: 18px;
+    padding: 9px;
   }
 
   .catalog-collection-toolbar .visual-toolbar-group button {
-    flex-basis: auto;
+    position: relative;
+    justify-self: stretch;
     width: 100%;
   }
 
@@ -12584,12 +12602,19 @@ h2,
   }
 
   .catalog-collection-toolbar .visual-toolbar-group button + button::before {
-    top: -5px;
+    display: block;
+    top: -10px;
     right: 0;
     bottom: auto;
     left: 0;
     width: auto;
     height: 1px;
+    background: var(--color-border);
+    content: '';
+  }
+
+  .catalog-collection-toolbar .visual-toolbar-group::before {
+    display: none;
   }
 
   .catalog-management-toolbar {

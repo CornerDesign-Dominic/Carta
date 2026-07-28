@@ -44,7 +44,7 @@ export default function MasterDataSidebar({ activeItemId, onSelectItem, onShowOv
             key={item.id}
             onClick={(event) => handleInternalLinkClick(event, () => onSelectItem(item.id))}
           >
-            {item.label}
+            {item.id === 'services' ? 'Leistungen & Artikel' : item.id === 'partners' ? 'Partner & Empfänger' : item.label}
           </a>
         ))}
       </nav>
