@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 
-export function CatalogCollectionActions({ isExporting, onLoadPdf, onNewCollection }) {
+export function CatalogCollectionActions({ isExporting, onLoadPdf, onNewCollection, ariaLabel = 'Leistungs- und Artikelstammdaten verwalten' }) {
   const pdfInputRef = useRef(null);
 
-  return <div className="visual-toolbar catalog-collection-toolbar" aria-label="Leistungs- und Artikelstammdaten verwalten">
+  return <div className="visual-toolbar catalog-collection-toolbar" aria-label={ariaLabel}>
     <div className="visual-toolbar-group">
       <input
         ref={pdfInputRef}
@@ -22,8 +22,8 @@ export function CatalogCollectionActions({ isExporting, onLoadPdf, onNewCollecti
   </div>;
 }
 
-export function CatalogExportAction({ isExporting, onCreatePdf }) {
-  return <div className="visual-toolbar catalog-document-toolbar" aria-label="Leistungs- und Artikelstammdaten exportieren">
+export function CatalogExportAction({ isExporting, onCreatePdf, ariaLabel = 'Leistungs- und Artikelstammdaten exportieren' }) {
+  return <div className="visual-toolbar catalog-document-toolbar" aria-label={ariaLabel}>
     <div className="visual-toolbar-group">
       <button className="partner-button is-primary" type="button" aria-label="Stammdatenblatt erstellen und herunterladen" title="Stammdatenblatt erstellen und herunterladen" disabled={isExporting} onClick={onCreatePdf}>{isExporting ? 'Stammdatenblatt wird erstellt …' : 'Stammdatenblatt erstellen und herunterladen'}</button>
     </div>

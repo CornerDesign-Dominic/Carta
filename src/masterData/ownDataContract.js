@@ -72,7 +72,7 @@ export function validateAndNormalizeOwnDataMasterData(document) {
   if (typeof document.documentId !== 'string' || !document.documentId.trim() || !isIsoDate(document.createdAt) || !isIsoDate(document.updatedAt) || !Array.isArray(document.records)) {
     return { valid: false, reason: 'invalid-document' };
   }
-  if (!document.records.length || document.records.length > OWN_DATA_MASTER_DATA_MAX_RECORDS) return { valid: false, reason: 'invalid-records' };
+  if (document.records.length > OWN_DATA_MASTER_DATA_MAX_RECORDS) return { valid: false, reason: 'invalid-records' };
   const records = document.records.map(normalizeOwnDataRecord);
   if (records.some((record) => !record) || new Set(records.map((record) => record.id)).size !== records.length) {
     return { valid: false, reason: 'invalid-records' };

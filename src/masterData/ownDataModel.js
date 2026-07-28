@@ -74,17 +74,21 @@ function updateRecordById(records, recordId, updater) {
 }
 
 export function createOwnDataEditorState() {
-  const record = createOwnDataRecord();
-  return { records: [record], activeRecordId: record.id };
+  return { records: [], activeRecordId: null };
 }
 
 export function ownDataEditorReducer(state, action) {
   switch (action.type) {
     case 'replace-collection':
-      return { records: action.records, activeRecordId: action.activeRecordId ?? action.records[0]?.id ?? null };
-    case 'reset-collection': {
-      const record = createOwnDataRecord();
-      return { records: [record], activeRecordId: record.id };
+      return { records: action.records, activeRecordId: action.activeRecordId === undefined ? action.records[0]?.id ?? null : action.activeRecordId };
+    case 'reset-collection':
+      return { records: [], activeRecordId: null };
+    case 'upsert': {
+      const exists = state.records.some((record) => record.id === action.record.id);
+      return {
+        records: exists ? state.records.map((record) => record.id === action.record.id ? action.record : record) : [...state.records, action.record],
+        activeRecordId: action.record.id,
+      };
     }
     case 'select':
       return { ...state, activeRecordId: action.recordId };
@@ -114,11 +118,7 @@ export function ownDataEditorReducer(state, action) {
     }
     case 'delete': {
       const remainingRecords = state.records.filter((record) => record.id !== action.recordId);
-      if (!remainingRecords.length) {
-        const record = createOwnDataRecord();
-        return { records: [record], activeRecordId: record.id };
-      }
-      return { records: remainingRecords, activeRecordId: remainingRecords[0].id };
+      return { records: remainingRecords, activeRecordId: null };
     }
     default:
       return state;

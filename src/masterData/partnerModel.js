@@ -206,8 +206,7 @@ function updatePartnerById(partners, partnerId, updater) {
 }
 
 export function createPartnerEditorState() {
-  const examplePartner = createExamplePartner();
-  return { partners: [examplePartner], activePartnerId: examplePartner.id };
+  return { partners: [], activePartnerId: null };
 }
 
 export function partnerEditorReducer(state, action) {
@@ -215,11 +214,18 @@ export function partnerEditorReducer(state, action) {
     case 'replace-collection':
       return {
         partners: action.partners,
-        activePartnerId: action.activePartnerId ?? action.partners[0]?.id ?? null,
+        activePartnerId: action.activePartnerId === undefined ? action.partners[0]?.id ?? null : action.activePartnerId,
       };
-    case 'reset-collection': {
-      const partner = createPartner();
-      return { partners: [partner], activePartnerId: partner.id };
+    case 'reset-collection':
+      return { partners: [], activePartnerId: null };
+    case 'upsert': {
+      const exists = state.partners.some((partner) => partner.id === action.partner.id);
+      return {
+        partners: exists
+          ? state.partners.map((partner) => (partner.id === action.partner.id ? action.partner : partner))
+          : [...state.partners, action.partner],
+        activePartnerId: action.partner.id,
+      };
     }
     case 'select':
       return { ...state, activePartnerId: action.partnerId };
@@ -255,11 +261,7 @@ export function partnerEditorReducer(state, action) {
     }
     case 'delete': {
       const remainingPartners = state.partners.filter((partner) => partner.id !== action.partnerId);
-      if (!remainingPartners.length) {
-        const partner = createPartner();
-        return { partners: [partner], activePartnerId: partner.id };
-      }
-      return { partners: remainingPartners, activePartnerId: remainingPartners[0].id };
+      return { partners: remainingPartners, activePartnerId: null };
     }
     case 'add-delivery':
       return {

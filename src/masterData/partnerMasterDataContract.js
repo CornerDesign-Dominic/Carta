@@ -108,7 +108,7 @@ export function validateAndNormalizePartnerMasterData(document) {
   if (!isIsoDate(document.createdAt) || !isIsoDate(document.updatedAt) || !Array.isArray(document.records)) {
     return { valid: false, reason: 'invalid-document' };
   }
-  if (!document.records.length || document.records.length > PARTNER_MASTER_DATA_MAX_PARTNERS) {
+  if (document.records.length > PARTNER_MASTER_DATA_MAX_PARTNERS) {
     return { valid: false, reason: 'invalid-records' };
   }
 
