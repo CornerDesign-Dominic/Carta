@@ -119,6 +119,20 @@ export default function CatalogItemMasterDataEditor() {
     setDialog({ kind: 'delete', recordId: draftSourceId, title: 'Eintrag löschen?', message: `Möchtest du „${getCatalogItemDisplayName(draft)}“ wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`, confirmLabel: 'Eintrag löschen' });
   }
   function handleNewCollection() { setDialog({ kind: 'new', title: 'Neue Stammdatensammlung erstellen', message: 'Alle aktuellen Leistungs- und Artikeleinträge werden aus dem Editor entfernt. Eine nicht gespeicherte Sammlung kann danach nicht wiederhergestellt werden.', confirmLabel: 'Neue Sammlung erstellen' }); }
+  function applyImportedCollection(imported) {
+    dispatch({ type: 'replace-collection', records: imported.records, activeRecordId: imported.records[0]?.id ?? null });
+    const firstRecord = imported.records[0] ?? null;
+    setDraft(firstRecord ? cloneRecord(firstRecord) : null);
+    setDraftSourceId(firstRecord?.id ?? null);
+    setDraftBaseline(firstRecord ? cloneRecord(firstRecord) : null);
+    setCollectionMetadata({ documentId: imported.documentId, createdAt: imported.createdAt, updatedAt: imported.updatedAt });
+    setSearchQuery('');
+    setTypeFilter('all');
+    setIsDirty(false);
+    setHasStartedCollection(true);
+    setStatusMessage('Leistungs- und Artikelstammdaten wurden aus der PDF geladen.');
+    focusTitleField();
+  }
   function handleConfirm(value) {
     if (dialog?.kind === 'choose-type') createItemOfType(value);
     if (dialog?.kind === 'discard-and-create') {
@@ -131,16 +145,7 @@ export default function CatalogItemMasterDataEditor() {
     if (dialog?.kind === 'delete') { dispatch({ type: 'delete', recordId: dialog.recordId }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setSearchQuery(''); setIsDirty(true); setStatusMessage('Eintrag wurde gelöscht.'); }
     if (dialog?.kind === 'discard-draft') openSavedRecord(dialog.recordId);
     if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setHasStartedCollection(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
-    if (dialog?.kind === 'import') {
-      const imported = dialog.document;
-      dispatch({ type: 'replace-collection', records: imported.records, activeRecordId: imported.records[0]?.id ?? null });
-      const firstRecord = imported.records[0] ?? null;
-      setDraft(firstRecord ? cloneRecord(firstRecord) : null);
-      setDraftSourceId(firstRecord?.id ?? null);
-      setDraftBaseline(firstRecord ? cloneRecord(firstRecord) : null);
-      setCollectionMetadata({ documentId: imported.documentId, createdAt: imported.createdAt, updatedAt: imported.updatedAt });
-      setSearchQuery(''); setTypeFilter('all'); setIsDirty(false); setHasStartedCollection(true); setStatusMessage('Leistungs- und Artikelstammdaten wurden aus der PDF geladen.'); focusTitleField();
-    }
+    if (dialog?.kind === 'import') applyImportedCollection(dialog.document);
     setDialog(null);
   }
   async function handleCreatePdf() {
@@ -160,15 +165,19 @@ export default function CatalogItemMasterDataEditor() {
     let result;
     try { result = await importCatalogItemMasterDataPdf(await file.arrayBuffer()); } catch { setStatusMessage('Die Leistungs- und Artikelstammdaten konnten nicht geladen werden.'); return; }
     if (result.status !== 'valid') { setStatusMessage(result.message); return; }
+    if (!hasStartedCollection && !hasRecords && !draft && !isDraftDirty) {
+      applyImportedCollection(result.document);
+      return;
+    }
     setDialog({ kind: 'import', document: result.document, title: 'Vorhandene Sammlung ersetzen', message: 'Im Editor befinden sich bereits Leistungs- und Artikeleinträge. Beim Laden der PDF wird die aktuelle Sammlung vollständig ersetzt.', cancelLabel: 'Import abbrechen', confirmLabel: 'Vorhandene Sammlung ersetzen' });
   }
   function handlePrint() { document.body.classList.add('master-data-print-mode'); window.print(); const cleanup = () => { document.body.classList.remove('master-data-print-mode'); window.removeEventListener('afterprint', cleanup); }; window.addEventListener('afterprint', cleanup); window.setTimeout(cleanup, 1200); }
   return <div className="partner-editor">
     <h1 id="master-data-title">Leistungen und Artikel</h1><p className="intro master-data-intro">Erstelle eine übersichtliche Sammlung wiederkehrender Leistungen, Artikel, Textleistungen und Lieferscheinpositionen. Die Einträge können später gezielt in Rechnungen, Angebote und Lieferscheine übernommen werden.</p>
     <CatalogCollectionActions isExporting={isExporting} onLoadPdf={handleLoadPdf} onNewCollection={handleNewCollection} />
-    {hasStartedCollection && hasRecords && <><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
+    {hasStartedCollection && hasRecords && <><div className="catalog-collection-divider" aria-hidden="true" /><CatalogItemMasterDataToolbar activeRecordId={draftSourceId} records={state.records} searchQuery={searchQuery} typeFilter={typeFilter} searchResults={searchResults} onChangeSearch={setSearchQuery} onChangeTypeFilter={setTypeFilter} onSelectRecord={requestSelectRecord} />
       <span className="catalog-status-for-screenreaders" aria-live="polite">{statusMessage || (isDirty ? 'Nicht gespeicherte Änderungen' : 'Als PDF gespeichert')}</span></>}
-    {hasStartedCollection && (draft ? <section className="partner-editor-section catalog-item-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Weiteren Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">{getCatalogDraftHeading(draft.type, Boolean(draftSourceId))}</h2>{draftSourceId ? draft.title.trim() && <p>{draft.title.trim()}</p> : <p>Noch nicht gespeichert</p>}</div><CatalogItemForm item={draft} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><div className="catalog-item-form-save-actions"><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Speichern</button><button className="partner-button" type="button" onClick={handleSaveAndCreate}>Speichern & neuer Eintrag</button></div>{draftSourceId && <span className="catalog-item-form-delete-action"><button className="partner-button" type="button" onClick={handleDeleteDraft}>Löschen</button></span>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
+    {hasStartedCollection && (draft ? <section className="partner-editor-section catalog-item-editor-section" aria-labelledby="catalog-form-title"><div className="catalog-new-entry-action"><button className="partner-button is-primary" type="button" onClick={handleCreate}>Weiteren Eintrag anlegen</button></div><div className="partner-editor-section-heading"><h2 id="catalog-form-title">{getCatalogDraftHeading(draft.type, Boolean(draftSourceId))}</h2></div><CatalogItemForm item={draft} entryStatus={!draftSourceId ? 'new' : isDraftDirty ? 'edited' : 'saved'} titleInputRef={titleInputRef} onUpdateField={updateDraft} actions={<><div className="catalog-item-form-save-actions"><button className="partner-button is-primary" type="button" onClick={handleSaveDraft}>Speichern</button><button className="partner-button" type="button" onClick={handleSaveAndCreate}>Speichern & neuer Eintrag</button></div>{draftSourceId && <span className="catalog-item-form-delete-action"><button className="partner-button" type="button" onClick={handleDeleteDraft}>Löschen</button></span>}</>} /></section> : <section className="partner-editor-section catalog-new-entry-empty"><button className="partner-button is-primary" type="button" onClick={handleCreate}>{hasRecords ? 'Weiteren Eintrag anlegen' : 'Ersten Eintrag anlegen'}</button></section>)}
     {hasStartedCollection && <CatalogItemMasterDataDocument
       records={state.records}
       pagesRef={previewPagesRef}

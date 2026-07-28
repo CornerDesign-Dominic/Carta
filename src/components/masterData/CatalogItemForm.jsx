@@ -90,7 +90,7 @@ function FormArea({ id, title, hint, className = '', children }) {
   </section>;
 }
 
-export default function CatalogItemForm({ item, titleInputRef, onUpdateField, actions }) {
+export default function CatalogItemForm({ item, entryStatus, titleInputRef, onUpdateField, actions }) {
   const field = (path, label, className = '', type = 'text', props = {}) => <Field id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} type={type} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...props} />;
   const formattedNumberField = (path, label, className, normalize, suffix, fallbackValue, maximum) => <FormattedNumberField id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} value={path.reduce((current, key) => current[key], item)} onChange={(value) => onUpdateField(path, value)} normalize={normalize} suffix={suffix} fallbackValue={fallbackValue} maximum={maximum} />;
   const textarea = (path, label, options = {}) => <Textarea id={`catalog-${item.id}-${path.join('-')}`} label={label} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...options} />;
@@ -99,8 +99,14 @@ export default function CatalogItemForm({ item, titleInputRef, onUpdateField, ac
   const isGoods = item.type === 'goods';
   const descriptionPath = isTextService ? ['descriptions', 'textInvoice'] : isDeliveryItem ? ['descriptions', 'deliveryNote'] : ['descriptions', 'standard'];
   const descriptionTitle = isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibungen' : 'Beschreibung';
+  const entryName = item.title.trim() || ({ service: 'Unbenannte Leistung', goods: 'Unbenannter Artikel', textService: 'Unbenannte Textleistung', deliveryItem: 'Unbenannte Lieferscheinposition' }[item.type] ?? 'Unbenannter Eintrag');
+  const entryStatusLabel = { new: 'Neu', saved: 'Gespeichert', edited: 'Bearbeitet' }[entryStatus] ?? 'Neu';
 
   return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
+    <div className="catalog-item-form-status-card">
+      <span className="catalog-item-form-status-name" title={entryName}>{entryName}</span>
+      <span className={`catalog-item-form-status-label is-${entryStatus}`}>{entryStatusLabel}</span>
+    </div>
     <FormArea id="catalog-document-fields" title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
       {isGoods && <FormSection id="catalog-basics" title="Grunddaten"><div className="partner-form-grid partner-form-grid-two-columns">{field(['number'], 'Artikelnummer')}</div></FormSection>}
       <FormSection id="catalog-description" title={descriptionTitle}>
