@@ -42,28 +42,6 @@ export function createOwnDataRecord(overrides = {}) {
   };
 }
 
-export function duplicateOwnDataRecord(record) {
-  return createOwnDataRecord({
-    ...record,
-    companyName: record.companyName ? `${record.companyName} Kopie` : '',
-    address: { ...record.address },
-    contact: { ...record.contact },
-    taxAndRegister: { ...record.taxAndRegister },
-    bank: { ...record.bank },
-    settings: { ...record.settings },
-  });
-}
-
-export function matchesOwnDataSearch(record, query) {
-  const normalizedQuery = query.trim().toLocaleLowerCase('de-DE');
-  if (!normalizedQuery) return true;
-  return [
-    record.address.companyName, record.companyName, record.legalForm, record.ownerOrManagingDirector, record.documentHeaderName, record.contactPerson,
-    record.department, record.address.city, record.contact.email, record.taxAndRegister.vatId,
-    record.taxAndRegister.taxNumber, record.bank.iban,
-  ].some((value) => String(value ?? '').toLocaleLowerCase('de-DE').includes(normalizedQuery));
-}
-
 function updateAtPath(value, path, nextValue) {
   const [key, ...remainingPath] = path;
   if (!key) return nextValue;
@@ -81,22 +59,14 @@ export function createOwnDataEditorState() {
 export function ownDataEditorReducer(state, action) {
   switch (action.type) {
     case 'replace-collection':
-      return { records: action.records, activeRecordId: action.activeRecordId === undefined ? action.records[0]?.id ?? null : action.activeRecordId };
+      return { records: action.records.slice(0, 1), activeRecordId: action.activeRecordId === undefined ? action.records[0]?.id ?? null : action.activeRecordId };
     case 'reset-collection':
       return { records: [], activeRecordId: null };
     case 'upsert': {
-      const exists = state.records.some((record) => record.id === action.record.id);
-      return {
-        records: exists ? state.records.map((record) => record.id === action.record.id ? action.record : record) : [...state.records, action.record],
-        activeRecordId: action.record.id,
-      };
+      return { records: [action.record], activeRecordId: action.record.id };
     }
     case 'select':
       return { ...state, activeRecordId: action.recordId };
-    case 'create': {
-      const record = createOwnDataRecord();
-      return { records: [...state.records, record], activeRecordId: record.id };
-    }
     case 'update-field':
       return { ...state, records: updateRecordById(state.records, action.recordId, (record) => updateAtPath(record, action.path, action.value)) };
     case 'update-company-name':
@@ -111,16 +81,6 @@ export function ownDataEditorReducer(state, action) {
           };
         }),
       };
-    case 'duplicate': {
-      const source = state.records.find((record) => record.id === action.recordId);
-      if (!source) return state;
-      const copy = duplicateOwnDataRecord(source);
-      return { records: [...state.records, copy], activeRecordId: copy.id };
-    }
-    case 'delete': {
-      const remainingRecords = state.records.filter((record) => record.id !== action.recordId);
-      return { records: remainingRecords, activeRecordId: null };
-    }
     default:
       return state;
   }
