@@ -12651,7 +12651,7 @@ h2,
 }
 
 .catalog-management-toolbar .partner-list {
-  max-height: 172px;
+  max-height: 320px;
 }
 
 .catalog-item-editor-section {
@@ -12697,6 +12697,10 @@ h2,
 
   .catalog-management-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .catalog-management-toolbar .partner-list {
+    max-height: 240px;
   }
 
   .catalog-item-form {

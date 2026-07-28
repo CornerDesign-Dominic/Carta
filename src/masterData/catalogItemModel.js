@@ -92,7 +92,7 @@ function updateItemById(records, itemId, updater) { return records.map((item) =>
 export function createCatalogEditorState() { return { records: [], activeRecordId: null }; }
 export function catalogItemEditorReducer(state, action) {
   switch (action.type) {
-    case 'replace-collection': return { records: action.records, activeRecordId: action.activeRecordId ?? action.records[0]?.id ?? null };
+    case 'replace-collection': return { records: action.records, activeRecordId: action.activeRecordId === undefined ? action.records[0]?.id ?? null : action.activeRecordId };
     case 'reset-collection': return createCatalogEditorState();
     case 'select': return { ...state, activeRecordId: action.recordId };
     case 'create': {
