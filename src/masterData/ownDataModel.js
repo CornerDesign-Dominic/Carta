@@ -4,7 +4,7 @@ function createStableId(prefix) {
 }
 
 export function getOwnDataDisplayName(record) {
-  return record?.companyName?.trim() || 'Unbenanntes Unternehmen';
+  return record?.address?.companyName?.trim() || record?.companyName?.trim() || 'Unbenanntes Unternehmen';
 }
 
 export function createOwnDataRecord(overrides = {}) {
@@ -24,6 +24,7 @@ export function createOwnDataRecord(overrides = {}) {
     companyName: '',
     legalForm: '',
     ownerOrManagingDirector: '',
+    documentHeaderName: '',
     contactPerson: '',
     department: '',
     address: {
@@ -57,7 +58,7 @@ export function matchesOwnDataSearch(record, query) {
   const normalizedQuery = query.trim().toLocaleLowerCase('de-DE');
   if (!normalizedQuery) return true;
   return [
-    record.companyName, record.legalForm, record.ownerOrManagingDirector, record.contactPerson,
+    record.address.companyName, record.companyName, record.legalForm, record.ownerOrManagingDirector, record.documentHeaderName, record.contactPerson,
     record.department, record.address.city, record.contact.email, record.taxAndRegister.vatId,
     record.taxAndRegister.taxNumber, record.bank.iban,
   ].some((value) => String(value ?? '').toLocaleLowerCase('de-DE').includes(normalizedQuery));

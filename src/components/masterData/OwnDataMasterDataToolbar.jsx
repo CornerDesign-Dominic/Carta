@@ -19,7 +19,6 @@ export default function OwnDataMasterDataToolbar({ activeRecordId, records, sear
           return <button className={record.id === activeRecordId ? 'partner-list-item is-active' : 'partner-list-item'} type="button" key={record.id} onClick={() => onSelectRecord(record.id)}>
             <span className="partner-list-item-name" title={entryTitle}>{entryTitle}</span>
             {entryValues && <span className="partner-list-item-meta" title={entryValues}>{entryValues}</span>}
-            <span className="partner-list-item-status">{record.isActive ? 'Aktiv' : 'Inaktiv'}</span>
           </button>;
         })}
         {!searchResults.length && <p className="partner-list-empty">Für diese Suche wurden keine Unternehmen gefunden.</p>}

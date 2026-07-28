@@ -42,7 +42,7 @@ export function normalizeOwnDataRecord(source) {
   if (!isPlainObject(source) || typeof source.id !== 'string' || !source.id.trim()) return null;
   if (source.isActive !== undefined && typeof source.isActive !== 'boolean') return null;
   if (source.settings !== undefined && !isPlainObject(source.settings)) return null;
-  const topLevel = normalizeStrings(source, ['companyName', 'legalForm', 'ownerOrManagingDirector', 'contactPerson', 'department']);
+  const topLevel = normalizeStrings(source, ['companyName', 'legalForm', 'ownerOrManagingDirector', 'documentHeaderName', 'contactPerson', 'department']);
   const address = normalizeStrings(source.address ?? {}, ['companyName', 'extra', 'street', 'houseNumber', 'postalCode', 'city', 'country']);
   const contact = normalizeStrings(source.contact ?? {}, ['email', 'phone', 'mobile', 'fax', 'website']);
   const taxAndRegister = normalizeStrings(source.taxAndRegister ?? {}, ['taxNumber', 'vatId', 'commercialRegister', 'registerNumber', 'registerCourt']);
@@ -51,10 +51,12 @@ export function normalizeOwnDataRecord(source) {
   const isSmallBusiness = (source.settings ?? {}).isSmallBusiness;
   if (!topLevel || !address || !contact || !taxAndRegister || !bank || defaultPaymentTermDays === null) return null;
   if (isSmallBusiness !== undefined && typeof isSmallBusiness !== 'boolean') return null;
+  const legacyName = [address.companyName, address.extra].filter(Boolean).join(' – ')
+    || [topLevel.companyName, topLevel.legalForm].filter(Boolean).join(' – ');
   return {
     id: source.id,
     ...topLevel,
-    address: { ...address, country: address.country || 'Deutschland' },
+    address: { ...address, companyName: legacyName, extra: '', country: address.country || 'Deutschland' },
     contact,
     taxAndRegister,
     bank,

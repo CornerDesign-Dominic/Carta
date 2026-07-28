@@ -7,18 +7,17 @@ function AddressLines({ address }) { return [address.companyName, address.extra,
 
 function OwnDataDocumentBlock({ record, index }) {
   const hasAddress = Object.entries(record.address).some(([field, value]) => field !== 'country' && Boolean(value));
-  const hasCompanyData = [record.ownerOrManagingDirector, record.contactPerson, record.department].some(Boolean);
   const hasContact = Object.values(record.contact).some(Boolean);
   const hasTaxAndRegister = Object.values(record.taxAndRegister).some(Boolean);
   const hasBank = Object.values(record.bank).some(Boolean);
+  const hasFurtherDetails = Boolean(record.ownerOrManagingDirector || record.documentHeaderName || record.settings.isSmallBusiness || record.settings.defaultPaymentTermDays);
   return <article className="partner-document-block">
-    <header className="partner-document-block-header"><div><h2><span className="partner-document-index">{String(index + 1).padStart(2, '0')}</span> {getOwnDataDisplayName(record)}</h2><p>{record.legalForm ? `${record.legalForm} · ` : ''}{record.isActive ? 'Aktiv' : 'Inaktiv'}</p></div></header>
-    <DetailSection title="Unternehmensdaten" isVisible={hasCompanyData}><LabeledLine label="Inhaber / Geschäftsführer" value={record.ownerOrManagingDirector} /><LabeledLine label="Ansprechpartner" value={record.contactPerson} /><LabeledLine label="Abteilung" value={record.department} /></DetailSection>
+    <header className="partner-document-block-header"><div><h2><span className="partner-document-index">{String(index + 1).padStart(2, '0')}</span> {getOwnDataDisplayName(record)}</h2></div></header>
     {hasAddress && <DetailSection title="Anschrift"><div className="partner-document-address"><AddressLines address={record.address} /></div></DetailSection>}
-    <DetailSection title="Kontakt" isVisible={hasContact}><LabeledLine label="E-Mail" value={record.contact.email} /><LabeledLine label="Telefon" value={record.contact.phone} /><LabeledLine label="Mobil" value={record.contact.mobile} /><LabeledLine label="Fax" value={record.contact.fax} /><LabeledLine label="Website" value={record.contact.website} /></DetailSection>
-    <DetailSection title="Steuer- und Registerdaten" isVisible={hasTaxAndRegister}><LabeledLine label="Steuernummer" value={record.taxAndRegister.taxNumber} /><LabeledLine label="USt-IdNr." value={record.taxAndRegister.vatId} /><LabeledLine label="Handelsregister" value={record.taxAndRegister.commercialRegister} /><LabeledLine label="Registernummer" value={record.taxAndRegister.registerNumber} /><LabeledLine label="Registergericht" value={record.taxAndRegister.registerCourt} /></DetailSection>
+    <DetailSection title="Kontaktdaten" isVisible={hasContact}><LabeledLine label="E-Mail" value={record.contact.email} /><LabeledLine label="Telefon" value={record.contact.phone} /><LabeledLine label="Fax" value={record.contact.fax} /><LabeledLine label="Website" value={record.contact.website} /></DetailSection>
     <DetailSection title="Bankverbindung" isVisible={hasBank}><LabeledLine label="Kontoinhaber" value={record.bank.accountHolder} /><LabeledLine label="Bankname" value={record.bank.bankName} /><LabeledLine label="IBAN" value={record.bank.iban} /><LabeledLine label="BIC" value={record.bank.bic} /></DetailSection>
-    <DetailSection title="Grundeinstellungen"><p><strong>Kleinunternehmerregelung:</strong> {record.settings.isSmallBusiness ? 'Ja' : 'Nein'}</p>{record.settings.defaultPaymentTermDays && <p><strong>Standard-Zahlungsziel:</strong> {record.settings.defaultPaymentTermDays} Tage</p>}</DetailSection>
+    <DetailSection title="Steuer- und Registerdaten" isVisible={hasTaxAndRegister}><LabeledLine label="Steuernummer" value={record.taxAndRegister.taxNumber} /><LabeledLine label="USt-IdNr." value={record.taxAndRegister.vatId} /><LabeledLine label="Handelsregister / Registereintrag" value={record.taxAndRegister.commercialRegister} /><LabeledLine label="Registernummer" value={record.taxAndRegister.registerNumber} /><LabeledLine label="Registergericht" value={record.taxAndRegister.registerCourt} /></DetailSection>
+    <DetailSection title="Weiteres" isVisible={hasFurtherDetails}><LabeledLine label="Inhaber / Geschäftsführer" value={record.ownerOrManagingDirector} /><LabeledLine label="Titel / Name / Markenname" value={record.documentHeaderName} /><p><strong>Kleinunternehmerregelung:</strong> {record.settings.isSmallBusiness ? 'Ja' : 'Nein'}</p>{record.settings.defaultPaymentTermDays && <p><strong>Standard-Zahlungsziel:</strong> {record.settings.defaultPaymentTermDays} Tage</p>}</DetailSection>
   </article>;
 }
 
