@@ -12476,8 +12476,16 @@ h2,
 .catalog-item-form-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   padding-top: 2px;
+}
+
+.catalog-item-form-save-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .catalog-status-for-screenreaders {
@@ -12494,9 +12502,9 @@ h2,
 
 .catalog-item-form-delete-action {
   display: flex;
-  margin-left: 8px;
-  padding-left: 16px;
-  border-left: 1px solid var(--color-border);
+  margin-left: auto;
+  padding: 0;
+  border: 0;
 }
 
 .catalog-new-entry-action {
@@ -12631,6 +12639,10 @@ h2,
 
   .catalog-item-form-actions .partner-button {
     flex: 1 1 100%;
+  }
+
+  .catalog-item-form-save-actions {
+    width: 100%;
   }
 
   .catalog-item-form-delete-action {
