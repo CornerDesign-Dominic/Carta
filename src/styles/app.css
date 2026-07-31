@@ -2665,21 +2665,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   margin: 4px 0 18px;
 }
 
-.own-data-document-preview .catalog-document-toolbar .partner-button {
-  min-height: 42px;
-  padding-inline: 16px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 22%, transparent);
-}
-
-.own-data-document-preview .catalog-document-toolbar .partner-button:hover:not(:disabled) {
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-primary) 30%, transparent);
-}
-
 .own-data-document-preview .partner-document-page-header span {
-  color: var(--color-primary);
+  color: var(--color-text);
   font-size: inherit;
   font-weight: 800;
   letter-spacing: inherit;
+}
+
+.own-data-document-preview .partner-document-section h3 {
+  font-size: 0.94rem;
 }
 
 .partner-master-data-form {

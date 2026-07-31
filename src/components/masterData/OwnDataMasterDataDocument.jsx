@@ -30,11 +30,10 @@ export default function OwnDataMasterDataDocument({ records, pagesRef, toolbar }
       {records.map((record, index) => <article className="partner-document-page" aria-label={`Unternehmensstammdatenblatt ${index + 1}`} key={record.id}>
         <header className="partner-document-page-header"><strong>Belege24</strong><span>Eigene Unternehmensstammdaten</span></header>
         <div className="partner-document-page-meta"><span>Erstellungsdatum: {dateLabel}</span></div>
-        <h1 className="partner-document-title">Eigene Unternehmensstammdaten</h1>
         <OwnDataDocumentBlock record={record} />
         {records.length > 1 && <footer className="partner-document-page-footer">Seite {index + 1} von {records.length}</footer>}
       </article>)}
-      {!records.length && <article className="partner-document-page" aria-label="Leeres Unternehmensstammdatenblatt"><header className="partner-document-page-header"><strong>Belege24</strong><span>Eigene Unternehmensstammdaten</span></header><div className="partner-document-page-meta"><span>Erstellungsdatum: {dateLabel}</span></div><h1 className="partner-document-title">Eigene Unternehmensstammdaten</h1><p className="partner-document-empty">Noch keine Unternehmen gespeichert.</p></article>}
+      {!records.length && <article className="partner-document-page" aria-label="Leeres Unternehmensstammdatenblatt"><header className="partner-document-page-header"><strong>Belege24</strong><span>Eigene Unternehmensstammdaten</span></header><div className="partner-document-page-meta"><span>Erstellungsdatum: {dateLabel}</span></div><p className="partner-document-empty">Noch keine Unternehmen gespeichert.</p></article>}
     </div>
   </section>;
 }
