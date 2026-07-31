@@ -288,9 +288,7 @@ const allDocumentSections = [
   },
 ];
 
-export const documentSections = allDocumentSections.filter(
-  (section) => section.id !== 'self-receipts',
-);
+export const documentSections = allDocumentSections;
 
 export function findDocumentItem(activeId) {
   if (activeId === 'overview') {

@@ -314,6 +314,10 @@ export interface ReceiptDocumentData {
   state: ReceiptPersistedGeneratorState;
 }
 
+export interface SelfReceiptDocumentData {
+  state: SelfReceiptGeneratorState;
+}
+
 export interface DocumentAddress {
   street: string;
   houseNumber: string;
@@ -370,8 +374,24 @@ export interface ReceiptPersistedGeneratorState extends Omit<ReceiptGeneratorSta
   };
 }
 
+export interface SelfReceiptGeneratorState {
+  labels: Record<string, string>;
+  selfReceiptData: {
+    sender: { companyName: string; returnAddress: string; address: DocumentAddress; contact: { email: string; phone: string; fax: string; website: string } };
+    recipient: { companyName: string; attention: string; name: string; address: DocumentAddress };
+    details: { selfReceiptId: string; receiptDate: string; expenseDate: string };
+    references: { internalReference: string; externalReference: string; costCenter: string };
+    expenseInfo: { occasion: string; reason: string; settlementType: string; location: string };
+    footer: DocumentFooter;
+  };
+  positions: Array<{ id: Uuid; expenseDate: string; category: string; description: string; netAmount: string; taxRate: string }>;
+  textBlocks: InvoiceTextBlock[];
+  fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
+}
+
 export type OfferDocument = Belege24Document<'offer', OfferDocumentData>;
 export type DeliveryNoteDocument = Belege24Document<'deliveryNote', DeliveryNoteDocumentData>;
 export type ReceiptDocument = Belege24Document<'receipt', ReceiptDocumentData>;
+export type SelfReceiptDocument = Belege24Document<'selfReceipt', SelfReceiptDocumentData>;
 
-export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument | ReminderDocument | OfferDocument | DeliveryNoteDocument | ReceiptDocument;
+export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument | ReminderDocument | OfferDocument | DeliveryNoteDocument | ReceiptDocument | SelfReceiptDocument;

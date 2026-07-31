@@ -2835,6 +2835,40 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   padding-top: 4px;
 }
 
+.partner-master-form-area-content > .partner-master-form-section + .partner-master-form-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+}
+
+.partner-document-measurements {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 794px;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.partner-document-measurements .partner-document-page {
+  box-sizing: border-box;
+  width: 794px;
+  height: 1123px;
+  aspect-ratio: auto;
+}
+
+.partner-master-document-preview .partner-document-page {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.partner-master-document-preview .partner-document-block + .partner-document-block {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #d6d1c8;
+}
+
 .partner-master-form-section h4 {
   color: var(--color-primary);
   font-size: 0.82rem;

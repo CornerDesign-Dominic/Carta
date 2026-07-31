@@ -13,6 +13,8 @@ import SelfReceiptExpenseTable from './documentBlocks/SelfReceiptExpenseTable.js
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { createDocumentDataCheckState, getDocumentModeHint } from '../utils/documentDataCheck.js';
+import { mapSelfReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
 
 
 const initialSelfReceiptLabels = {
@@ -212,11 +214,7 @@ const selfReceiptPrintLayout = {
 function createSelfReceiptPosition() {
   return {
     id: crypto.randomUUID(),
-    expenseDate: '2026-05-07',
-    category: 'Bewirtung',
-    description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
-    netAmount: '42,00',
-    taxRate: '19',
+    ...defaultSelfReceiptPositionForCheck,
   };
 }
 
@@ -368,6 +366,15 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
     },
   };
 }
+
+const defaultSelfReceiptViewData = createSelfReceiptViewData(defaultSelfReceiptData);
+const defaultSelfReceiptPositionForCheck = {
+  expenseDate: '2026-05-07',
+  category: 'Bewirtung',
+  description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
+  netAmount: '42,00',
+  taxRate: '19',
+};
 
 function normalizeSelfReceiptData(data = {}) {
   return {
@@ -532,6 +539,7 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, textBlocks }) {
 
 export default function SelfReceiptDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialSelfReceiptLabels);
@@ -551,6 +559,9 @@ export default function SelfReceiptDocumentEditor() {
   const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
   const [textBlocks, setTextBlocks] = useState(defaultSelfReceiptTextBlocks);
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
+  const initialGeneratorStateRef = useRef(null);
+  const currentGeneratorState = { labels, selfReceiptData, positions, textBlocks, fieldConfig };
+  if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
   const { sender, recipient, details, expenseInfo, footerLines } = useMemo(
     () => createSelfReceiptViewData(selfReceiptData),
     [selfReceiptData],
@@ -603,6 +614,31 @@ export default function SelfReceiptDocumentEditor() {
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
+  const dataCheckState = useMemo(
+    () => createDocumentDataCheckState({
+      defaultPosition: defaultSelfReceiptPositionForCheck,
+      defaultViewData: defaultSelfReceiptViewData,
+      details,
+      footerLines,
+      isActive: isDataCheckMode,
+      positionFields: ['expenseDate', 'category', 'description', 'netAmount', 'taxRate'],
+      positions,
+      recipient,
+      recipientHiddenFields: fieldConfig.recipient.hidden,
+      sender,
+      visibleContactFields: getOrderedDefinitions('contact', selfReceiptContactFields).filter(
+        ({ field }) => !fieldConfig.contact.hidden.includes(field),
+      ),
+      visibleDetailFields: getOrderedDefinitions('details', selfReceiptMetaFields).filter(
+        ({ field }) => !fieldConfig.details.hidden.includes(field),
+      ),
+      visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', selfReceiptFooterColumns[1]).filter(
+        ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+      ),
+    }),
+    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+  );
+  const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
@@ -791,10 +827,17 @@ export default function SelfReceiptDocumentEditor() {
     setTextBlocks(defaultSelfReceiptTextBlocks);
     setPositions([createSelfReceiptPosition()]);
     setHighlightFields(false);
+    setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = null;
+  }
+
+  function toggleDataCheckMode() {
+    setIsDataCheckMode((current) => !current);
+    setHighlightFields(true);
   }
 
   async function handleCreatePdf() {
@@ -807,6 +850,7 @@ export default function SelfReceiptDocumentEditor() {
         exportRoot: printPagesRef.current,
         documentType: 'selfReceipt',
         filename: createPdfFileName(labels.title, details.selfReceiptId),
+        belege24Document: mapSelfReceiptToDocument(currentGeneratorState),
       });
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Die PDF-Datei konnte nicht erstellt werden.');
@@ -814,6 +858,44 @@ export default function SelfReceiptDocumentEditor() {
       setIsExporting(false);
       setIsExportRenderActive(false);
     }
+  }
+
+  async function handleLoadPdf(file) {
+    if (!(file instanceof File) || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) {
+      window.alert('Bitte wähle eine PDF-Datei aus.');
+      return;
+    }
+
+    let result;
+    try {
+      const { importSelfReceiptPdf } = await import('../documentModel/additionalDocumentModel.js');
+      result = await importSelfReceiptPdf(await file.arrayBuffer());
+    } catch {
+      window.alert('Die PDF konnte nicht gelesen werden.');
+      return;
+    }
+
+    if (result.status !== 'valid') {
+      window.alert(result.message);
+      return;
+    }
+
+    const { confirmSelfReceiptOverwrite } = await import('../documentModel/additionalDocumentModel.js');
+    if (!confirmSelfReceiptOverwrite(currentGeneratorState, initialGeneratorStateRef.current, () => window.confirm('Der aktuelle Eigenbeleg enthält Änderungen. Möchtest du ihn vollständig durch die Daten aus der PDF ersetzen?'))) return;
+
+    const restored = result.state;
+    setLabels(restored.labels);
+    setSelfReceiptData(restored.selfReceiptData);
+    setPositions(restored.positions);
+    setTextBlocks(restored.textBlocks);
+    setFieldConfig(restored.fieldConfig);
+    setHighlightFields(false);
+    setIsDataCheckMode(false);
+    setIsFormPanelOpen(false);
+    setIsExportRenderActive(false);
+    setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    initialGeneratorStateRef.current = structuredClone(restored);
+    window.alert(result.message);
   }
 
   async function handlePrint() {
@@ -950,6 +1032,7 @@ export default function SelfReceiptDocumentEditor() {
               ref={(element) => {
                 detailTextareaRefs.current[definition.field] = element;
               }}
+              className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
               aria-label={definition.ariaLabel}
               value={value}
               onChange={(event) => {
@@ -972,6 +1055,7 @@ export default function SelfReceiptDocumentEditor() {
             onChange={(event) => updateLabel(definition.labelField, event.target.value)}
           />
           <input
+            className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
             aria-label={definition.ariaLabel}
             value={value}
             onChange={(event) => updateExpenseInfo(definition.field, event.target.value)}
@@ -1012,22 +1096,28 @@ export default function SelfReceiptDocumentEditor() {
 
       <DocumentToolbar
         ariaLabel="Eigenbeleg Werkzeuge"
+        isDataCheckActive={isDataCheckMode}
         isEditable={highlightFields}
         isExporting={isExporting}
         onCreatePdf={handleCreatePdf}
+        onLoadPdf={handleLoadPdf}
         onNewDocument={handleNewDocument}
         onPrint={handlePrint}
+        onToggleDataCheck={toggleDataCheckMode}
         onToggleEditable={() => setHighlightFields((current) => !current)}
       />
+
+      <p className="document-mode-hint">{viewModeHint}</p>
 
       <A4Page
         ref={sheetRef}
         ariaLabel="Editierbarer Eigenbeleg"
-        className="offer-sheet invoice-sheet self-receipt-sheet"
+        className={`offer-sheet invoice-sheet self-receipt-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
         <SenderBlock
           contactFields={getOrderedDefinitions('contact', selfReceiptContactFields)}
+          dataCheckFields={dataCheckState.sender}
           hiddenFields={getHiddenFields('contact')}
           labels={labels}
           sender={sender}
@@ -1041,6 +1131,7 @@ export default function SelfReceiptDocumentEditor() {
           <div className="self-receipt-recipient-section">
             <p className="self-receipt-recipient-heading">{labels.recipientTitle}</p>
             <RecipientBlock
+              dataCheckFields={dataCheckState.recipient}
               hiddenFields={getHiddenFields('recipient')}
               recipient={recipient}
               senderLine={sender.senderLine}
@@ -1051,6 +1142,7 @@ export default function SelfReceiptDocumentEditor() {
           </div>
 
           <DocumentMetaBlock
+            dataCheckFields={dataCheckState.details}
             dateInputRefs={dateInputRefs}
             details={details}
             emphasizedField="selfReceiptId"
@@ -1082,6 +1174,7 @@ export default function SelfReceiptDocumentEditor() {
 
         <SelfReceiptExpenseTable
           calculatePosition={calculatePosition}
+          dataCheckPositions={dataCheckState.positions}
           formatCurrency={formatCurrency}
           labels={labels}
           positions={positions}
@@ -1115,6 +1208,7 @@ export default function SelfReceiptDocumentEditor() {
             selfReceiptFooterColumns[2],
           ]}
           footerLines={footerLines}
+          dataCheckFields={dataCheckState.footerLines}
           formatFooterLine={(field, value) => formatFooterLine(field, value, footerLines)}
           hiddenFields={getHiddenFields('footerMiddle')}
           onFooterLineChange={updateFooterLine}

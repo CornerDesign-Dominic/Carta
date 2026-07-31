@@ -28,10 +28,10 @@ function FormSection({ title, helpText, children }) {
   return <section className="partner-master-form-section"><h4>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</h4>{children}</section>;
 }
 
-function AddressFields({ address, idPrefix, onChange, includeContactPerson = false }) {
+function AddressFields({ address, idPrefix, onChange, includeContactPerson = false, mainAddress = false }) {
   const field = (name, label, className = '', type = 'text') => <Field className={className} id={`${idPrefix}-${name}`} label={label} name={`${idPrefix}-${name}`} type={type} value={address[name]} onChange={(event) => onChange(name, event.target.value)} />;
   return <div className="partner-master-grid partner-master-address-grid">
-    {field('companyName', 'Firmenname')}
+    {field('companyName', mainAddress ? 'Abweichender Firmenname' : 'Firmenname')}
     {field('attention', 'Zusatz / zu Händen')}
     {field('department', 'Abteilung')}
     {includeContactPerson && field('contactPerson', 'Ansprechpartner')}
@@ -74,6 +74,7 @@ export default function PartnerForm({
   const previousDeliveryIdsRef = useRef(new Set(partner.deliveryAddresses.map((address) => address.id)));
   const hasPendingDeliveryRef = useRef(false);
   const update = (path, value) => onUpdateField(path, value);
+  const combinedCompanyName = [partner.companyName, partner.legalForm].filter(Boolean).join(' ');
   const statusLabel = entryStatus === 'new' ? 'Neu' : entryStatus === 'edited' ? 'Bearbeitet' : 'Gespeichert';
   const statusClass = entryStatus === 'new' ? 'is-new' : entryStatus === 'edited' ? 'is-edited' : 'is-saved';
 
@@ -99,15 +100,14 @@ export default function PartnerForm({
       <FormSection title="Partnerdaten">
         <div className="partner-master-grid partner-master-partner-grid">
           <SelectField id="partner-type" label="Partnerart" helpText="Dient der Einordnung und späteren Filterung. Die Partnerart selbst wird nicht in das Dokument übernommen." value={partner.type} onChange={(event) => update(['type'], event.target.value)}>{partnerTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}</SelectField>
-          <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname" inputRef={companyInputRef} value={partner.companyName} onChange={(event) => onCompanyNameChange(event.target.value)} />
-          <Field id="partner-legal-form" label="Rechtsform" value={partner.legalForm} onChange={(event) => update(['legalForm'], event.target.value)} />
+          <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname inkl. Rechtsform" inputRef={companyInputRef} value={combinedCompanyName} onChange={(event) => { onCompanyNameChange(event.target.value); update(['legalForm'], ''); }} />
           <Field id="partner-contact-person" label="Ansprechpartner" value={partner.contactPerson} onChange={(event) => update(['contactPerson'], event.target.value)} />
           <Field id="partner-department" label="Abteilung" value={partner.department} onChange={(event) => update(['department'], event.target.value)} />
           <Field id="partner-customer-number" label="Kundennummer" helpText="Kann später in das Kundennummernfeld von Rechnungen, Angeboten oder anderen Dokumenten übernommen werden." value={partner.customerNumber} onChange={(event) => update(['customerNumber'], event.target.value)} />
           <Field id="partner-supplier-number" label="Lieferantennummer" helpText="Dient der Stammdatenverwaltung und wird nur in passenden späteren Vorgängen verwendet." value={partner.supplierNumber} onChange={(event) => update(['supplierNumber'], event.target.value)} />
         </div>
       </FormSection>
-      <FormSection title="Hauptanschrift" helpText="Wird als reguläre Rechnungs-, Angebots- oder Briefanschrift des Partners verwendet."><AddressFields address={partner.mainAddress} idPrefix="partner-main-address" onChange={(field, value) => update(['mainAddress', field], value)} /></FormSection>
+      <FormSection title="Hauptanschrift" helpText="Wird als reguläre Rechnungs-, Angebots- oder Briefanschrift des Partners verwendet."><AddressFields address={partner.mainAddress} idPrefix="partner-main-address" mainAddress onChange={(field, value) => update(['mainAddress', field], value)} /></FormSection>
       <FormSection title="Kontaktdaten"><div className="partner-master-grid">{['email', 'phone', 'mobile', 'fax', 'website'].map((field) => <Field key={field} id={`partner-${field}`} label={{ email: 'E-Mail', phone: 'Telefon', mobile: 'Mobil', fax: 'Fax', website: 'Website' }[field]} type={field === 'email' ? 'email' : field === 'website' ? 'url' : 'tel'} value={partner.contact[field]} onChange={(event) => update(['contact', field], event.target.value)} />)}</div></FormSection>
       <FormSection title="Steuerdaten"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-vat-id" label="USt-IdNr." value={partner.tax.vatId} onChange={(event) => update(['tax', 'vatId'], event.target.value)} /><Field id="partner-tax-number" label="Steuernummer" value={partner.tax.taxNumber} onChange={(event) => update(['tax', 'taxNumber'], event.target.value)} /></div></FormSection>
       <FormSection title="Bankdaten"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-account-holder" label="Kontoinhaber" value={partner.bank.accountHolder} onChange={(event) => update(['bank', 'accountHolder'], event.target.value)} /><Field id="partner-bank-name" label="Bankname" value={partner.bank.bankName} onChange={(event) => update(['bank', 'bankName'], event.target.value)} /><Field id="partner-iban" label="IBAN" value={partner.bank.iban} onChange={(event) => update(['bank', 'iban'], event.target.value)} /><Field id="partner-bic" label="BIC" value={partner.bank.bic} onChange={(event) => update(['bank', 'bic'], event.target.value)} /></div></FormSection>

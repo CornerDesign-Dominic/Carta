@@ -53,7 +53,9 @@ Alle Gutschriften verwenden `documentType: "creditNote"` und werden als eingebet
 
 Mahnungen verwenden `documentType: "reminder"` und werden als eingebettete `belege24-document.json` gespeichert sowie wieder geladen. Gespeichert werden die vollständigen Quelldaten des Editors: Beschriftungen, strukturierte Adress- und Fußzeilendaten, Mahnungsdetails, offene Posten, Gebühren, Textblöcke und Feldkonfiguration. Die berechneten Summen `invoiceSum` und `grandTotal` sind nicht Teil der Anlage; sie werden aus offenen Posten und Gebühren nach dem Import erneut berechnet.
 
-## Angebote, Lieferscheine und Quittungen
+## Angebote, Lieferscheine, Quittungen und Eigenbelege
+
+Eigenbelege (`selfReceipt`) speichern die vollständigen Eingabedaten einschließlich Ausgabenpositionen, Textblöcken und Feldkonfiguration. Die sichtbaren Netto-, Steuer- und Bruttosummen werden nach dem Import aus den Positionsdaten erneut abgeleitet.
 
 Angebote (`offer`), Lieferscheine (`deliveryNote`) und Quittungen (`receipt`) werden ebenfalls als eingebettete `belege24-document.json` gespeichert und wieder geladen. Der Vertrag enthält die vollständigen ursprünglichen Generatorwerte, einschließlich Beschriftungen, strukturierten Adress-, Referenz- und Fußzeilendaten, Positions- beziehungsweise Textdaten und Feldkonfigurationen. Bei Quittungen wird nur der gewählte Netto- oder Brutto-Ausgangsbetrag mitsamt Steuersatz gespeichert; Steuerbetrag und Gegenwert werden nach dem Import neu berechnet.
 

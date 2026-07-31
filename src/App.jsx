@@ -435,7 +435,7 @@ export default function App() {
             path="/dokumente/rechnung/schlussrechnung"
             element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
           />
-          <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute />} />
+          <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" />} />
           <Route path="/dokumente/*" element={<DocumentPathRoute />} />
           <Route path="/tools" element={<ToolsRoute />} />
           <Route path="/tools/:toolId" element={<LegacyToolRoute />} />

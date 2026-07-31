@@ -29,7 +29,7 @@ Alle fünf Eigenschaften sind Pflichtfelder. Zusätzliche Eigenschaften dürfen 
 | `createdAt` | ISO-8601-String | UTC-Zeitpunkt mit `Z`; kein `updatedAt` |
 | `generatorVersion` | String | Version des erzeugenden Belege24-Generators |
 
-Vorgesehene Dokumenttypen sind `invoice`, `offer`, `deliveryNote`, `creditNote`, `reminder`, `receipt` und `selfReceipt`. In Version 1.0.0 ist nur `invoice` fachlich vollständig modelliert.
+Unterstützte Dokumenttypen sind `invoice`, `offer`, `deliveryNote`, `creditNote`, `reminder`, `receipt` und `selfReceipt`. Die fachliche Ausgestaltung liegt jeweils beim zugehörigen Generator; alle verwenden dieselbe zentrale Dokumenthülle und PDF-Anlage.
 
 ## `sharedData`
 

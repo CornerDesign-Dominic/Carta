@@ -2,6 +2,7 @@ import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
 
 export default function SelfReceiptExpenseTable({
   calculatePosition,
+  dataCheckPositions = {},
   formatCurrency,
   labels,
   onLabelChange,
@@ -80,6 +81,7 @@ export default function SelfReceiptExpenseTable({
               <td>
                 <input
                   aria-label={`Datum Position ${index + 1}`}
+                  className={dataCheckPositions[position.id]?.expenseDate ? 'document-data-check-marker' : undefined}
                   type="date"
                   value={position.expenseDate}
                   onChange={(event) => onPositionChange(position.id, 'expenseDate', event.target.value)}
@@ -88,6 +90,7 @@ export default function SelfReceiptExpenseTable({
               <td>
                 <input
                   aria-label={`Kategorie Position ${index + 1}`}
+                  className={dataCheckPositions[position.id]?.category ? 'document-data-check-marker' : undefined}
                   value={position.category}
                   onChange={(event) => onPositionChange(position.id, 'category', event.target.value)}
                 />
@@ -98,6 +101,7 @@ export default function SelfReceiptExpenseTable({
                     textareaRefs.current[position.id] = element;
                   }}
                   aria-label={`Beschreibung Position ${index + 1}`}
+                  className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
                   value={position.description}
                   onChange={(event) => {
                     onPositionChange(position.id, 'description', event.target.value);
@@ -108,6 +112,7 @@ export default function SelfReceiptExpenseTable({
               <td>
                 <input
                   aria-label={`Nettobetrag Position ${index + 1}`}
+                  className={dataCheckPositions[position.id]?.netAmount ? 'document-data-check-marker' : undefined}
                   inputMode="decimal"
                   type="text"
                   value={position.netAmount}
@@ -118,6 +123,7 @@ export default function SelfReceiptExpenseTable({
                 <span className="invoice-tax-rate-cell">
                   <input
                     aria-label={`Umsatzsteuer Position ${index + 1}`}
+                    className={dataCheckPositions[position.id]?.taxRate ? 'document-data-check-marker' : undefined}
                     inputMode="decimal"
                     type="text"
                     value={position.taxRate}

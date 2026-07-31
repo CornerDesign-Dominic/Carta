@@ -84,12 +84,15 @@ export function normalizePartnerRecord(source) {
   if (deliveryAddresses.some((address) => !address)) return null;
   const deliveryIds = new Set(deliveryAddresses.map((address) => address.id));
   if (deliveryIds.size !== deliveryAddresses.length) return null;
+  const companyName = [strings.companyName, strings.legalForm].filter(Boolean).join(' ');
 
   return {
     id: source.id,
     type: source.type ?? 'customer',
     ...strings,
-    mainAddress,
+    companyName,
+    legalForm: '',
+    mainAddress: { ...mainAddress, companyName: mainAddress.companyName === strings.companyName ? '' : mainAddress.companyName },
     contact,
     tax,
     bank,

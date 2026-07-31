@@ -2,16 +2,17 @@ import { describe, expect, it, vi } from 'vitest';
 import { PDFDocument } from 'pdf-lib';
 import {
   BELEGE24_ATTACHMENT_FILE_NAME, BELEGE24_ATTACHMENT_MIME_TYPE,
-  confirmDeliveryNoteOverwrite, confirmOfferOverwrite, confirmReceiptOverwrite,
-  embedBelege24DocumentInPdf, importDeliveryNotePdf, importOfferPdf, importReceiptPdf,
-  mapDeliveryNoteToDocument, mapOfferToDocument, mapReceiptToDocument,
-  restoreDeliveryNoteState, restoreOfferState, restoreReceiptState, validateBelege24Document,
-  type DeliveryNoteEditorState, type OfferEditorState, type ReceiptGeneratorState,
+  confirmDeliveryNoteOverwrite, confirmOfferOverwrite, confirmReceiptOverwrite, confirmSelfReceiptOverwrite,
+  embedBelege24DocumentInPdf, importDeliveryNotePdf, importOfferPdf, importReceiptPdf, importSelfReceiptPdf,
+  mapDeliveryNoteToDocument, mapOfferToDocument, mapReceiptToDocument, mapSelfReceiptToDocument,
+  restoreDeliveryNoteState, restoreOfferState, restoreReceiptState, restoreSelfReceiptState, validateBelege24Document,
+  type DeliveryNoteEditorState, type OfferEditorState, type ReceiptGeneratorState, type SelfReceiptEditorState,
 } from '../src/documentModel/index.js';
 
 const offerLabelKeys = ['title', 'offerNumber', 'offerDate', 'validUntil', 'internalNumber', 'externalNumber', 'customerNumber', 'position', 'description', 'unitPrice', 'quantity', 'unit', 'tax', 'total', 'net', 'taxAmount', 'grandTotal', 'contactEmail', 'contactPhone', 'contactFax', 'contactWebsite'];
 const deliveryLabelKeys = ['title', 'deliveryNoteNumber', 'deliveryDate', 'orderDate', 'internalReference', 'externalReference', 'customerReference', 'position', 'quantity', 'unit', 'description', 'contactEmail', 'contactPhone', 'contactFax', 'contactWebsite'];
 const receiptLabelKeys = ['title', 'receiptId', 'receiptDate', 'paymentDate', 'internalReference', 'externalReference', 'netAmount', 'taxRate', 'taxAmount', 'grossAmount', 'amountInWords', 'from', 'purpose', 'placeDate', 'bookingNote', 'receiverSignature'];
+const selfReceiptLabelKeys = ['title', 'recipientTitle', 'selfReceiptId', 'receiptDate', 'expenseDate', 'internalReference', 'externalReference', 'costCenter', 'position', 'expensePositionDate', 'category', 'description', 'netAmount', 'tax', 'grossAmount', 'net', 'taxAmount', 'grandTotal', 'occasion', 'reason', 'settlementType', 'location', 'contactEmail', 'contactPhone', 'contactFax', 'contactWebsite'];
 const labels = (keys: string[]) => Object.fromEntries(keys.map((key) => [key, `${key} Ä `]));
 const footer = { company: { companyName: 'Müller GmbH', street: 'Äußere Straße', houseNumber: '1', postalCode: '10115', city: 'Berlin', extra: '  Extra  ' }, tax: { vatIdLabel: 'USt.', vatId: 'DE1', taxNumberLabel: 'StNr.', taxNumber: '1', commercialRegister: 'HRB', representation: 'GF' }, bank: { bankName: 'Bank', ibanLabel: 'IBAN', iban: 'DE1', bicLabel: 'BIC', bic: 'BIC', bankExtra: '' } };
 const data = (details: Record<string, string>, references: Record<string, string>) => ({ sender: { companyName: 'Müller GmbH', returnAddress: '  Freie Senderzeile  ', address: { street: 'Äußere Straße', houseNumber: '1', postalCode: '10115', city: 'Berlin' }, contact: { email: 'a@test', phone: ' 1 ', fax: '', website: '' } }, recipient: { companyName: 'Kunde', attention: '', name: '  Einkauf ', address: { street: 'Weg', houseNumber: '2', postalCode: '20095', city: 'Hamburg' } }, details, references, footer });
@@ -21,6 +22,8 @@ function offerState(): OfferEditorState { return { labels: labels(offerLabelKeys
 function deliveryState(): DeliveryNoteEditorState { return { labels: labels(deliveryLabelKeys), deliveryNoteData: data({ deliveryNoteNumber: 'LFS 1', deliveryDate: '2026-07-24', orderDate: '' }, { internalReference: 'I', externalReference: 'E', customerReference: 'K' }), positions: [{ id: '123e4567-e89b-42d3-a456-426614174001', quantity: ' 2 ', unit: 'Stück', description: 'Ware Ä', deliveryDate: '', note: '  Hinweis  ' }], textBlocks: [{ id: 'intro', label: 'Intro', value: 'Text', visible: true }, { id: 'closing', label: 'Ende', value: '', visible: false }], fieldConfig: businessConfig(['deliveryNoteNumber', 'deliveryDate', 'orderDate', 'internalReference', 'externalReference', 'customerReference']) }; }
 function receiptState(): ReceiptGeneratorState { return { labels: labels(receiptLabelKeys), receiptData: { sender: { companyName: 'Müller GmbH', returnAddress: '  Zeile ', address: { street: 'Äußere Straße', houseNumber: '1', postalCode: '10115', city: 'Berlin' }, contact: { email: 'a@test', phone: '1', website: '' } }, recipient: { companyName: 'Kunde', attention: '', name: '', address: { street: '', houseNumber: '', postalCode: '', city: '' } }, details: { receiptId: 'Q-1', receiptDate: '2026-07-24', paymentDate: '', place: 'Berlin', from: 'Kunde', purpose: 'Leistung', bookingNote: '', receiverSignature: '' }, references: { internalReference: 'I', externalReference: 'E' }, amount: { netAmount: '100,00', taxRate: '19', taxAmount: '19,00', grossAmount: '119,00', amountInWords: 'einhundertneunzehn Euro', settlementMethod: 'Bar' }, footer: { company: footer.company, tax: { vatIdLabel: 'USt.', vatId: 'DE1', taxIdLabel: 'StNr.', taxId: '1', representation: 'GF' }, bank: { bankName: 'Bank', ibanLabel: 'IBAN', iban: 'DE1', bicLabel: 'BIC', bic: 'BIC' } } }, amountCalculationSource: 'netAmount', textBlocks: [{ id: 'receiptText', label: 'Text', value: '  Bestätigung ', visible: true }, { id: 'purpose', label: 'Zweck', value: '  Leistung ', visible: true }], fieldConfig: { contact: { hidden: [], order: ['email', 'phone', 'website'] }, details: { hidden: [], order: ['receiptId', 'receiptDate', 'paymentDate', 'internalReference', 'externalReference'] }, header: { hidden: [], order: ['company', 'streetLine', 'cityLine'] }, recipient: { hidden: [], order: ['attention', 'name'] }, footerMiddle: { hidden: [], order: ['vatId', 'taxId', 'representation'] } } }; }
 async function plainPdf() { const pdf = await PDFDocument.create(); pdf.addPage([595, 842]); return pdf.save(); }
+
+function selfReceiptState(): SelfReceiptEditorState { const business = data({ selfReceiptId: 'EB-1', receiptDate: '2026-07-24', expenseDate: '2026-07-23' }, { internalReference: 'I', externalReference: 'E', costCenter: 'K-1' }); return { labels: labels(selfReceiptLabelKeys), selfReceiptData: { sender: business.sender, recipient: business.recipient, details: { selfReceiptId: 'EB-1', receiptDate: '2026-07-24', expenseDate: '2026-07-23' }, references: { internalReference: 'I', externalReference: 'E', costCenter: 'K-1' }, footer: business.footer, expenseInfo: { occasion: 'Termin', reason: 'Kein Fremdbeleg', settlementType: 'Bar', location: 'Berlin' } }, positions: [{ id: '123e4567-e89b-42d3-a456-426614174002', expenseDate: '2026-07-23', category: 'Bewirtung', description: 'Leistung', netAmount: '42,00', taxRate: '19' }], textBlocks: [{ id: 'intro', label: 'Intro', value: 'Text', visible: true }, { id: 'declaration', label: 'Erklaerung', value: 'Richtig', visible: true }], fieldConfig: businessConfig(['selfReceiptId', 'receiptDate', 'expenseDate', 'internalReference', 'externalReference', 'costCenter']) }; }
 
 describe('offer, delivery note and receipt PDF imports', () => {
   it('roundtrips complete validated offer source data', async () => {
@@ -45,6 +48,14 @@ describe('offer, delivery note and receipt PDF imports', () => {
     await expect(importReceiptPdf(await embedBelege24DocumentInPdf(await plainPdf(), document))).resolves.toEqual({ status: 'valid', state, message: 'PDF erfolgreich geladen.' });
   });
 
+  it('roundtrips complete validated self receipt source data', async () => {
+    const state = selfReceiptState(); const document = mapSelfReceiptToDocument(state);
+    expect(validateBelege24Document(document)).toEqual({ valid: true, errors: [] });
+    expect(document.document.documentType).toBe('selfReceipt');
+    expect(restoreSelfReceiptState(document)).toEqual({ status: 'valid', state });
+    await expect(importSelfReceiptPdf(await embedBelege24DocumentInPdf(await plainPdf(), document))).resolves.toEqual({ status: 'valid', state, message: 'PDF erfolgreich geladen.' });
+  });
+
   it('rejects wrong document types, invalid structures and attachments without state mutation', async () => {
     const current = offerState();
     const snapshot = structuredClone(current);
@@ -66,5 +77,8 @@ describe('offer, delivery note and receipt PDF imports', () => {
     expect(confirmOfferOverwrite(changedOffer, changedOffer, confirm)).toBe(true);
     expect(confirmDeliveryNoteOverwrite(delivery, delivery, confirm)).toBe(true);
     expect(confirmReceiptOverwrite(receipt, receipt, confirm)).toBe(true);
+    const selfReceipt = selfReceiptState(); const changedSelfReceipt = structuredClone(selfReceipt); changedSelfReceipt.positions[0].netAmount = '43,00';
+    expect(confirmSelfReceiptOverwrite(selfReceipt, selfReceipt, confirm)).toBe(true);
+    expect(confirmSelfReceiptOverwrite(changedSelfReceipt, selfReceipt, confirm)).toBe(false);
   });
 });
