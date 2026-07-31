@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { normalizeCatalogAmountValue, normalizeCatalogTaxRate } from '../../masterData/catalogItemModel.js';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
+import FieldHelpTooltip from './FieldHelpTooltip.jsx';
 
-function Field({ label, className = '', inputRef, ...props }) {
-  return <label className={`partner-field ${className}`.trim()}><span>{label}</span><input {...props} ref={inputRef} /></label>;
+function Field({ label, helpText, className = '', inputRef, ...props }) {
+  return <label className={`partner-field ${className}`.trim()}><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span><input {...props} ref={inputRef} /></label>;
 }
 
 function sanitizeNumericInput(value) {
@@ -26,7 +27,7 @@ function isWithinMaximum(value, maximum) {
   return !Number.isFinite(parsed) || parsed <= maximum;
 }
 
-function FormattedNumberField({ id, label, className = '', value, onChange, normalize, suffix = '', fallbackValue = '', maximum }) {
+function FormattedNumberField({ id, label, helpText, className = '', value, onChange, normalize, suffix = '', fallbackValue = '', maximum }) {
   const [isFocused, setIsFocused] = useState(false);
   const lastValidValue = useRef(normalize(value) ?? fallbackValue);
   const normalizedValue = normalize(value);
@@ -39,6 +40,7 @@ function FormattedNumberField({ id, label, className = '', value, onChange, norm
   return <Field
     id={id}
     label={label}
+    helpText={helpText}
     className={className}
     type="text"
     inputMode="decimal"
@@ -67,18 +69,18 @@ function FormattedNumberField({ id, label, className = '', value, onChange, norm
   />;
 }
 
-function Textarea({ label, hideLabel = false, ...props }) {
+function Textarea({ label, helpText, hideLabel = false, ...props }) {
   const ref = useRef(null);
   useEffect(() => { resizeTextarea(ref.current); }, [props.value]);
   const input = <textarea {...props} ref={ref} aria-label={hideLabel ? label : undefined} rows="2" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} />;
   return hideLabel
     ? <div className="partner-field partner-field-wide">{input}</div>
-    : <label className="partner-field partner-field-wide"><span>{label}</span>{input}</label>;
+    : <label className="partner-field partner-field-wide"><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span>{input}</label>;
 }
 
-function FormSection({ id, title, children }) {
+function FormSection({ id, title, helpText, children }) {
   return <section className="catalog-item-form-section" aria-labelledby={`${id}-title`}>
-    <h4 id={`${id}-title`}>{title}</h4>
+    <h4 id={`${id}-title`}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</h4>
     <div className="catalog-item-form-section-content">{children}</div>
   </section>;
 }
@@ -92,7 +94,7 @@ function FormArea({ id, title, hint, className = '', children }) {
 
 export default function CatalogItemForm({ item, entryStatus, titleInputRef, onUpdateField, actions }) {
   const field = (path, label, className = '', type = 'text', props = {}) => <Field id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} type={type} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...props} />;
-  const formattedNumberField = (path, label, className, normalize, suffix, fallbackValue, maximum) => <FormattedNumberField id={`catalog-${item.id}-${path.join('-')}`} label={label} className={className} value={path.reduce((current, key) => current[key], item)} onChange={(value) => onUpdateField(path, value)} normalize={normalize} suffix={suffix} fallbackValue={fallbackValue} maximum={maximum} />;
+  const formattedNumberField = (path, label, className, normalize, suffix, fallbackValue, maximum, helpText) => <FormattedNumberField id={`catalog-${item.id}-${path.join('-')}`} label={label} helpText={helpText} className={className} value={path.reduce((current, key) => current[key], item)} onChange={(value) => onUpdateField(path, value)} normalize={normalize} suffix={suffix} fallbackValue={fallbackValue} maximum={maximum} />;
   const textarea = (path, label, options = {}) => <Textarea id={`catalog-${item.id}-${path.join('-')}`} label={label} value={path.reduce((current, key) => current[key], item)} onChange={(event) => onUpdateField(path, event.target.value)} {...options} />;
   const isTextService = item.type === 'textService';
   const isDeliveryItem = item.type === 'deliveryItem';
@@ -108,25 +110,25 @@ export default function CatalogItemForm({ item, entryStatus, titleInputRef, onUp
       <span className={`catalog-item-form-status-label is-${entryStatus}`}>{entryStatusLabel}</span>
     </div>
     <FormArea id="catalog-document-fields" title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
-      {isGoods && <FormSection id="catalog-basics" title="Grunddaten"><div className="partner-form-grid partner-form-grid-two-columns">{field(['number'], 'Artikelnummer')}</div></FormSection>}
-      <FormSection id="catalog-description" title={descriptionTitle}>
-        {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung', { hideLabel: !isGoods })}
+      {isGoods && <FormSection id="catalog-basics" title="Grunddaten"><div className="partner-form-grid partner-form-grid-two-columns">{field(['number'], 'Artikelnummer', '', 'text', { helpText: 'Wird bei Artikel- und Warenpositionen in das Artikelnummernfeld geeigneter Dokumente übernommen.' })}</div></FormSection>}
+      <FormSection id="catalog-description" title={descriptionTitle} helpText="Wird als Positionsbeschreibung in das Dokument übernommen.">
+        {textarea(descriptionPath, isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibung für Rechnung' : 'Beschreibung', { hideLabel: !isGoods, helpText: 'Wird als Positionsbeschreibung in das Dokument übernommen.' })}
         {isGoods && textarea(['descriptions', 'deliveryNote'], 'Beschreibung für Lieferschein')}
       </FormSection>
       {!isTextService && <div className="catalog-item-form-inline-fields partner-form-grid partner-form-grid-two-columns">{formattedNumberField(['quantity', 'defaultValue'], 'Anzahl', 'catalog-item-form-emphasized-label', normalizeCatalogQuantityValue)}{field(['quantity', 'unit'], 'Einheit', 'catalog-item-form-emphasized-label')}</div>}
-      {isTextService && <FormSection id="catalog-text-quantity" title="Mengen- oder Zeitangabe"><div className="partner-form-grid">{field(['quantity', 'textLabel'], 'Mengen- oder Zeitangabe')}</div></FormSection>}
+      {isTextService && <FormSection id="catalog-text-quantity" title="Mengen- oder Zeitangabe" helpText="Wird bei Textleistungen als Mengen- oder Zeittext in die Position übernommen."><div className="partner-form-grid">{field(['quantity', 'textLabel'], 'Mengen- oder Zeitangabe', '', 'text', { helpText: 'Wird bei Textleistungen als Mengen- oder Zeittext in die Position übernommen.' })}</div></FormSection>}
       {!isDeliveryItem && <div className="catalog-item-form-inline-fields partner-form-grid partner-form-grid-two-columns">
         {formattedNumberField(isTextService ? ['pricing', 'netTotalAmount'] : ['pricing', 'netUnitPrice'], isTextService ? 'Netto-Positionsbetrag' : 'Einzelpreis netto', 'catalog-item-form-emphasized-label', normalizeCatalogAmountValue, '€')}
         {formattedNumberField(['pricing', 'taxRate'], 'Umsatzsteuer-Satz', 'catalog-item-form-emphasized-label', normalizeCatalogTaxRate, '%', '19', 100)}
       </div>}
-      {(isGoods || isDeliveryItem) && <FormSection id="catalog-delivery" title="Lieferscheindaten">{textarea(['delivery', 'defaultNote'], 'Standard-Lieferhinweis')}</FormSection>}
+      {(isGoods || isDeliveryItem) && <FormSection id="catalog-delivery" title="Lieferscheindaten">{textarea(['delivery', 'defaultNote'], 'Standard-Lieferhinweis', { helpText: 'Wird bei der späteren Übernahme in einen Lieferschein als Hinweis der Position verwendet.' })}</FormSection>}
     </FormArea>
     <FormArea id="catalog-internal-fields" title="Angaben für die Stammdatenverwaltung" hint="Diese Angaben dienen ausschließlich der Verwaltung und werden in kein Dokument übernommen." className="is-internal">
       <div className="partner-form-grid partner-form-grid-two-columns">
-        <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Suchwort" className="catalog-item-form-emphasized-label" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
+        <Field inputRef={titleInputRef} id={`catalog-${item.id}-title`} label="Suchwort" helpText="Dient der Suche und Auswahl innerhalb der Stammdaten. Es wird nicht in Dokumente übernommen." className="catalog-item-form-emphasized-label" value={item.title} onChange={(event) => onUpdateField(['title'], event.target.value)} />
         <label className="partner-checkbox-field"><input type="checkbox" checked={item.isActive} onChange={(event) => onUpdateField(['isActive'], event.target.checked)} /> Aktiv</label>
       </div>
-      <FormSection id="catalog-internal" title="Interne Notiz">{textarea(['internalNote'], 'Interne Notiz', { hideLabel: true })}</FormSection>
+      <FormSection id="catalog-internal" title="Interne Notiz" helpText="Bleibt ausschließlich in der Stammdatenverwaltung und wird nicht in Dokumente übernommen.">{textarea(['internalNote'], 'Interne Notiz', { hideLabel: true })}</FormSection>
     </FormArea>
     {actions && <div className="catalog-item-form-actions">{actions}</div>}
   </form>;

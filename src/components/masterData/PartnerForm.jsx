@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { partnerTypes } from '../../masterData/partnerModel.js';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
+import FieldHelpTooltip from './FieldHelpTooltip.jsx';
 
-function Field({ inputRef, label, className = '', ...props }) {
-  return <label className={`partner-field ${className}`.trim()}><span>{label}</span><input {...props} ref={inputRef} /></label>;
+function Field({ inputRef, label, helpText, className = '', ...props }) {
+  return <label className={`partner-field ${className}`.trim()}><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span><input {...props} ref={inputRef} /></label>;
 }
 
-function SelectField({ label, className = '', children, ...props }) {
-  return <label className={`partner-field ${className}`.trim()}><span>{label}</span><select {...props}>{children}</select></label>;
+function SelectField({ label, helpText, className = '', children, ...props }) {
+  return <label className={`partner-field ${className}`.trim()}><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span><select {...props}>{children}</select></label>;
 }
 
-function TextareaField({ label, ...props }) {
+function TextareaField({ label, helpText, ...props }) {
   const textareaRef = useRef(null);
   useEffect(() => { resizeTextarea(textareaRef.current); }, [props.value]);
-  return <label className="partner-field partner-field-wide"><span>{label}</span><textarea {...props} ref={textareaRef} rows="2" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} /></label>;
+  return <label className="partner-field partner-field-wide"><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span><textarea {...props} ref={textareaRef} rows="2" onInput={(event) => { resizeTextarea(event.currentTarget); props.onInput?.(event); }} /></label>;
 }
 
 function FormArea({ title, hint, internal = false, children }) {
@@ -23,8 +24,8 @@ function FormArea({ title, hint, internal = false, children }) {
   </section>;
 }
 
-function FormSection({ title, children }) {
-  return <section className="partner-master-form-section"><h4>{title}</h4>{children}</section>;
+function FormSection({ title, helpText, children }) {
+  return <section className="partner-master-form-section"><h4>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</h4>{children}</section>;
 }
 
 function AddressFields({ address, idPrefix, onChange, includeContactPerson = false }) {
@@ -56,7 +57,7 @@ function DeliveryAddressEditor({ address, index, isLast, isOpen, onToggle, onCha
     </div>
     <div className="delivery-address-body" id={`delivery-${address.id}-content`} hidden={!isOpen}>
       <div className="partner-master-grid partner-master-two-grid">
-        <Field id={`delivery-${address.id}-label`} label="Bezeichnung (Pflichtfeld)" required value={address.label} onChange={(event) => onChange('label', event.target.value)} />
+        <Field id={`delivery-${address.id}-label`} label="Bezeichnung (Pflichtfeld)" helpText="Dient nur der späteren Auswahl, z. B. Hauptlager, Filiale oder Baustelle." required value={address.label} onChange={(event) => onChange('label', event.target.value)} />
         <Field id={`delivery-${address.id}-phone`} label="Telefon" type="tel" value={address.phone} onChange={(event) => onChange('phone', event.target.value)} />
       </div>
       <AddressFields address={address} idPrefix={`delivery-${address.id}`} includeContactPerson onChange={onChange} />
@@ -97,20 +98,20 @@ export default function PartnerForm({
     <FormArea title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
       <FormSection title="Partnerdaten">
         <div className="partner-master-grid partner-master-partner-grid">
-          <SelectField id="partner-type" label="Partnerart" value={partner.type} onChange={(event) => update(['type'], event.target.value)}>{partnerTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}</SelectField>
+          <SelectField id="partner-type" label="Partnerart" helpText="Dient der Einordnung und späteren Filterung. Die Partnerart selbst wird nicht in das Dokument übernommen." value={partner.type} onChange={(event) => update(['type'], event.target.value)}>{partnerTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}</SelectField>
           <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname" inputRef={companyInputRef} value={partner.companyName} onChange={(event) => onCompanyNameChange(event.target.value)} />
           <Field id="partner-legal-form" label="Rechtsform" value={partner.legalForm} onChange={(event) => update(['legalForm'], event.target.value)} />
           <Field id="partner-contact-person" label="Ansprechpartner" value={partner.contactPerson} onChange={(event) => update(['contactPerson'], event.target.value)} />
           <Field id="partner-department" label="Abteilung" value={partner.department} onChange={(event) => update(['department'], event.target.value)} />
-          <Field id="partner-customer-number" label="Kundennummer" value={partner.customerNumber} onChange={(event) => update(['customerNumber'], event.target.value)} />
-          <Field id="partner-supplier-number" label="Lieferantennummer" value={partner.supplierNumber} onChange={(event) => update(['supplierNumber'], event.target.value)} />
+          <Field id="partner-customer-number" label="Kundennummer" helpText="Kann später in das Kundennummernfeld von Rechnungen, Angeboten oder anderen Dokumenten übernommen werden." value={partner.customerNumber} onChange={(event) => update(['customerNumber'], event.target.value)} />
+          <Field id="partner-supplier-number" label="Lieferantennummer" helpText="Dient der Stammdatenverwaltung und wird nur in passenden späteren Vorgängen verwendet." value={partner.supplierNumber} onChange={(event) => update(['supplierNumber'], event.target.value)} />
         </div>
       </FormSection>
-      <FormSection title="Hauptanschrift"><AddressFields address={partner.mainAddress} idPrefix="partner-main-address" onChange={(field, value) => update(['mainAddress', field], value)} /></FormSection>
+      <FormSection title="Hauptanschrift" helpText="Wird als reguläre Rechnungs-, Angebots- oder Briefanschrift des Partners verwendet."><AddressFields address={partner.mainAddress} idPrefix="partner-main-address" onChange={(field, value) => update(['mainAddress', field], value)} /></FormSection>
       <FormSection title="Kontaktdaten"><div className="partner-master-grid">{['email', 'phone', 'mobile', 'fax', 'website'].map((field) => <Field key={field} id={`partner-${field}`} label={{ email: 'E-Mail', phone: 'Telefon', mobile: 'Mobil', fax: 'Fax', website: 'Website' }[field]} type={field === 'email' ? 'email' : field === 'website' ? 'url' : 'tel'} value={partner.contact[field]} onChange={(event) => update(['contact', field], event.target.value)} />)}</div></FormSection>
       <FormSection title="Steuerdaten"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-vat-id" label="USt-IdNr." value={partner.tax.vatId} onChange={(event) => update(['tax', 'vatId'], event.target.value)} /><Field id="partner-tax-number" label="Steuernummer" value={partner.tax.taxNumber} onChange={(event) => update(['tax', 'taxNumber'], event.target.value)} /></div></FormSection>
       <FormSection title="Bankdaten"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-account-holder" label="Kontoinhaber" value={partner.bank.accountHolder} onChange={(event) => update(['bank', 'accountHolder'], event.target.value)} /><Field id="partner-bank-name" label="Bankname" value={partner.bank.bankName} onChange={(event) => update(['bank', 'bankName'], event.target.value)} /><Field id="partner-iban" label="IBAN" value={partner.bank.iban} onChange={(event) => update(['bank', 'iban'], event.target.value)} /><Field id="partner-bic" label="BIC" value={partner.bank.bic} onChange={(event) => update(['bank', 'bic'], event.target.value)} /></div></FormSection>
-      <FormSection title="Lieferanschriften">
+      <FormSection title="Lieferanschriften" helpText="Können bei Warenrechnungen und Lieferscheinen unabhängig von der Hauptanschrift ausgewählt werden.">
         <p className="partner-form-help">Lieferanschriften können später getrennt von der Hauptanschrift ausgewählt werden.</p>
         <div className="delivery-address-list">{partner.deliveryAddresses.map((address, index) => <DeliveryAddressEditor key={address.id} address={address} index={index} isLast={index === partner.deliveryAddresses.length - 1} isOpen={openDeliveryIds.includes(address.id)} onToggle={() => toggleDeliveryAddress(address.id)} onChange={(field, value) => onUpdateDeliveryAddress(address.id, field, value)} onDuplicate={() => onDuplicateDeliveryAddress(address.id)} onDelete={() => onDeleteDeliveryAddress(address)} onMove={(direction) => onMoveDeliveryAddress(address.id, direction)} />)}</div>
         <button className="partner-button" type="button" onClick={handleAddDeliveryAddress}>Lieferanschrift hinzufügen</button>
@@ -118,7 +119,7 @@ export default function PartnerForm({
     </FormArea>
     <FormArea internal title="Angaben für die Stammdatenverwaltung" hint="Diese Angaben dienen ausschließlich der Verwaltung und werden in kein Dokument übernommen.">
       <FormSection title="Status"><label className="partner-checkbox-field" htmlFor="partner-active"><input id="partner-active" type="checkbox" checked={partner.isActive} onChange={(event) => update(['isActive'], event.target.checked)} /><span>Aktiv</span></label></FormSection>
-      <FormSection title="Interne Notiz"><TextareaField id="partner-notes-text" label="Notiz" value={partner.notes} onChange={(event) => update(['notes'], event.target.value)} /></FormSection>
+      <FormSection title="Interne Notiz" helpText="Bleibt ausschließlich in der Stammdatenverwaltung und wird nicht in Dokumente übernommen."><TextareaField id="partner-notes-text" label="Notiz" value={partner.notes} onChange={(event) => update(['notes'], event.target.value)} /></FormSection>
     </FormArea>
     {actions && <div className="partner-master-form-actions">{actions}</div>}
   </form>;

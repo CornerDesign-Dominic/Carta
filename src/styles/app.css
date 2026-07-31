@@ -2676,6 +2676,53 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   font-size: 0.94rem;
 }
 
+.field-help-tooltip-trigger {
+  display: inline-grid;
+  width: 15px;
+  height: 15px;
+  margin-left: 4px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1;
+  vertical-align: text-bottom;
+}
+
+.field-help-tooltip-trigger:hover,
+.field-help-tooltip-trigger:focus-visible,
+.field-help-tooltip-trigger[aria-expanded='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
+}
+
+.field-help-tooltip {
+  position: fixed;
+  z-index: 100;
+  width: min(280px, calc(100vw - 24px));
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card);
+  box-shadow: 0 8px 20px color-mix(in srgb, #000 22%, transparent);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@media print {
+  .field-help-tooltip-trigger,
+  .field-help-tooltip {
+    display: none !important;
+  }
+}
+
 .partner-master-data-form {
   gap: 10px;
   border: 1px solid var(--color-border);
