@@ -55,6 +55,25 @@ describe('partner master data contract', () => {
     ]);
   });
 
+  it('retains legacy delivery contact fields during import for backward compatibility', () => {
+    const partner = createExamplePartner();
+    const legacyDelivery = {
+      ...partner.deliveryAddresses[0],
+      contactPerson: 'Mara Beispiel',
+      phone: '+49 40 555 01 40',
+      notes: 'Bitte an der Warenannahme melden.',
+    };
+    const result = validateAndNormalizePartnerMasterData(createDocument([{ ...partner, deliveryAddresses: [legacyDelivery] }]));
+
+    expect(result.valid).toBe(true);
+    if (!result.valid) throw new Error('Expected a valid master-data document.');
+    expect(result.document.records[0].deliveryAddresses[0]).toMatchObject({
+      contactPerson: 'Mara Beispiel',
+      phone: '+49 40 555 01 40',
+      notes: 'Bitte an der Warenannahme melden.',
+    });
+  });
+
   it('rejects invalid document headers and invalid IDs', () => {
     const valid = createDocument();
     expect(validateAndNormalizePartnerMasterData({ ...valid, schema: 'other' })).toMatchObject({ valid: false, reason: 'wrong-schema' });

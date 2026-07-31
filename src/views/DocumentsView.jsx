@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import BusinessLetterDocumentEditor from '../components/BusinessLetterDocumentEditor.jsx';
 import CreditNoteDocumentEditor from '../components/CreditNoteDocumentEditor.jsx';
 import DeliveryNoteDocumentEditor from '../components/DeliveryNoteDocumentEditor.jsx';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
@@ -173,6 +174,7 @@ export default function DocumentsView({
     'write-offer',
     'write-credit-note',
     'write-delivery-note',
+    'write-business-letter',
     'write-reminder',
     'write-receipt',
     'write-self-receipt',
@@ -243,6 +245,7 @@ export default function DocumentsView({
             )}
 
             {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor />}
+            {activeDocument.formType === 'businessLetter' && <BusinessLetterDocumentEditor />}
             {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
             {activeDocument.formType === 'invoice' && (
               <InvoiceDocumentEditor

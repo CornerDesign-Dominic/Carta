@@ -2,7 +2,7 @@
 
 ## Zweck
 
-Belege24-Rechnungs-, Gutschrift-, Mahnungs-, Angebots-, Lieferschein- und Quittungs-PDFs können eine lokale, maschinenlesbare Anlage `belege24-document.json` enthalten. Sie speichert den Generatorzustand zusätzlich zur sichtbaren PDF, damit „PDF laden“ Eingaben wiederherstellen kann. Die Anlage wird mit `application/json` eingebettet.
+Belege24-Rechnungs-, Gutschrift-, Mahnungs-, Angebots-, Lieferschein-, Quittungs-, Eigenbeleg- und Geschäftsbrief-PDFs können eine lokale, maschinenlesbare Anlage `belege24-document.json` enthalten. Sie speichert den Generatorzustand zusätzlich zur sichtbaren PDF, damit „PDF laden“ Eingaben wiederherstellen kann. Die Anlage wird mit `application/json` eingebettet.
 
 ## Ablauf
 
@@ -24,6 +24,7 @@ Belege24-Rechnungs-, Gutschrift-, Mahnungs-, Angebots-, Lieferschein- und Quittu
 - Dokumenttyp für Angebote: `offer`
 - Dokumenttyp für Lieferscheine: `deliveryNote`
 - Dokumenttyp für Quittungen: `receipt`
+- Dokumenttyp für Geschäftsbriefe: `businessLetter`
 - PDF-Metadaten: Creator, Subject `Belege24-Dokument`, Format-, Schema-, Dokumenttyp- und Dokument-ID-Schlagwörter.
 
 Das JSON besteht aus `format`, `schemaVersion`, `document`, `sharedData` und `documentData`. `document` enthält `documentType`, UUID `documentId`, ISO-8601-UTC `createdAt` und `generatorVersion`.
@@ -60,11 +61,11 @@ Alle Mahnungsarten verwenden `documentType: "reminder"` und werden als eingebett
 | 2. Mahnung | `secondReminder` |
 | Letzte Mahnung | `finalReminder` |
 
-## Angebote, Lieferscheine, Quittungen und Eigenbelege
+## Angebote, Lieferscheine, Quittungen, Eigenbelege und Geschäftsbriefe
 
 Eigenbelege (`selfReceipt`) speichern die vollständigen Eingabedaten einschließlich Ausgabenpositionen und Feldkonfiguration. Die sichtbaren Netto-, Steuer- und Bruttosummen werden nach dem Import aus den Positionsdaten erneut abgeleitet.
 
-Angebote (`offer`), Lieferscheine (`deliveryNote`) und Quittungen (`receipt`) werden ebenfalls als eingebettete `belege24-document.json` gespeichert und wieder geladen. Der Vertrag enthält die vollständigen ursprünglichen Generatorwerte, einschließlich Beschriftungen, strukturierten Adress-, Referenz- und Fußzeilendaten, Positions- beziehungsweise Textdaten und Feldkonfigurationen. Bei Quittungen wird nur der gewählte Netto- oder Brutto-Ausgangsbetrag mitsamt Steuersatz gespeichert; Steuerbetrag und Gegenwert werden nach dem Import neu berechnet.
+Angebote (`offer`), Lieferscheine (`deliveryNote`), Quittungen (`receipt`) und Geschäftsbriefe (`businessLetter`) werden ebenfalls als eingebettete `belege24-document.json` gespeichert und wieder geladen. Der Vertrag enthält die vollständigen ursprünglichen Generatorwerte, einschließlich Beschriftungen, strukturierten Adress-, Referenz- und Fußzeilendaten, Positions- beziehungsweise Textdaten und Feldkonfigurationen. Beim Geschäftsbrief umfasst dies Betreff, Anrede, mehrzeiligen Brieftext, Grußformel, Unterzeichnung sowie die sichtbaren Zustände von Zeichen, Ansprechpartner, Ort, Funktion, Anlagen und Verteiler. Bei Quittungen wird nur der gewählte Netto- oder Brutto-Ausgangsbetrag mitsamt Steuersatz gespeichert; Steuerbetrag und Gegenwert werden nach dem Import neu berechnet.
 
 ## Zentrale Dateien
 
@@ -80,7 +81,8 @@ Angebote (`offer`), Lieferscheine (`deliveryNote`) und Quittungen (`receipt`) we
 - `src/documentModel/reminderMapping.ts` und `src/documentModel/reminderRestore.ts`: Mapping und validierendes Rückmapping der Mahnung.
 - `src/documentModel/reminderPdfImport.ts`: Mahnungsimport und Überschreibvergleich.
 - `src/documentModel/reminderVariants.ts`: zentrale Variantenkennung, Titel und Standardtexte der Mahnung.
-- `src/documentModel/additionalDocumentModel.ts`: Verträge, Mapping, striktes Rückmapping, Validierung und Import für Angebot, Lieferschein und Quittung.
+- `src/documentModel/additionalDocumentModel.ts`: Verträge, Mapping, striktes Rückmapping, Validierung und Import für Angebot, Lieferschein, Quittung und Geschäftsbrief.
+- `src/components/BusinessLetterDocumentEditor.jsx`: Geschäftsbrief mit mehrseitiger Druck- und PDF-Ausgabe.
 - `src/components/InvoiceDocumentEditor.jsx`: PDF-Erzeugung, Datei-Auswahl und atomare React-State-Übernahme.
 - `src/components/CreditNoteDocumentEditor.jsx`: PDF-Erzeugung und -Import für die aktive Gutschriftvariante.
 - `src/components/ReminderDocumentEditor.jsx`: PDF-Erzeugung und -Import der Mahnung.

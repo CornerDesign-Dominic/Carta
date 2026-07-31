@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { partnerTypes } from '../../masterData/partnerModel.js';
 import { resizeTextarea } from '../../utils/resizeTextarea.js';
 import FieldHelpTooltip from './FieldHelpTooltip.jsx';
 
 function Field({ inputRef, label, helpText, className = '', ...props }) {
   return <label className={`partner-field ${className}`.trim()}><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span><input {...props} ref={inputRef} /></label>;
-}
-
-function SelectField({ label, helpText, className = '', children, ...props }) {
-  return <label className={`partner-field ${className}`.trim()}><span>{label}{helpText && <FieldHelpTooltip label={label}>{helpText}</FieldHelpTooltip>}</span><select {...props}>{children}</select></label>;
 }
 
 function TextareaField({ label, helpText, ...props }) {
@@ -28,26 +23,31 @@ function FormSection({ title, helpText, collapsible = false, isOpen = true, onTo
   return <section className="partner-master-form-section"><h4>{collapsible ? <button className="partner-master-section-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}<span>{isOpen ? 'Ausblenden' : 'Anzeigen'}</span></button> : <>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</>}</h4>{(!collapsible || isOpen) && children}</section>;
 }
 
-function AddressFields({ address, idPrefix, onChange, includeContactPerson = false, mainAddress = false }) {
+function DeliveryAddressFields({ address, idPrefix, onChange }) {
   const field = (name, label, className = '', type = 'text') => <Field className={className} id={`${idPrefix}-${name}`} label={label} name={`${idPrefix}-${name}`} type={type} value={address[name]} onChange={(event) => onChange(name, event.target.value)} />;
-  return <div className="partner-master-grid partner-master-address-grid">
-    {field('companyName', mainAddress ? 'Abweichender Firmenname' : 'Firmenname')}
-    {field('attention', 'Zusatz / zu Händen')}
-    {field('department', 'Abteilung')}
-    {includeContactPerson && field('contactPerson', 'Ansprechpartner')}
-    {field('street', 'Straße', 'partner-master-span-two')}
-    {field('houseNumber', 'Hausnummer')}
-    {field('postalCode', 'PLZ')}
-    {field('city', 'Ort')}
-    {field('country', 'Land')}
+  return <div className="delivery-address-fields">
+    <div className="partner-master-grid delivery-address-name-grid">
+      {field('companyName', 'Firmenname')}
+      {field('attention', 'Zusatz / zu Händen')}
+      {field('department', 'Abteilung')}
+    </div>
+    <div className="partner-master-grid delivery-address-street-grid">
+      {field('street', 'Straße')}
+      {field('houseNumber', 'Hausnummer')}
+    </div>
+    <div className="partner-master-grid delivery-address-location-grid">
+      {field('postalCode', 'PLZ')}
+      {field('city', 'Ort')}
+      {field('country', 'Land')}
+    </div>
   </div>;
 }
 
 function DeliveryAddressEditor({ address, index, isLast, isOpen, onToggle, onChange, onDuplicate, onDelete, onMove }) {
-  const summary = [address.label || 'Unbenannte Lieferanschrift', address.city].filter(Boolean).join(' · ');
+  const summary = [address.companyName, address.city].filter(Boolean).join(' - ') || 'Unbenannte Lieferanschrift';
   return <section className="delivery-address-editor" aria-labelledby={`delivery-${address.id}-title`}>
     <div className="delivery-address-header">
-      <button className="delivery-address-toggle" type="button" id={`delivery-${address.id}-title`} aria-expanded={isOpen} aria-controls={`delivery-${address.id}-content`} onClick={onToggle}><span>{summary}</span><span aria-hidden="true">{isOpen ? '−' : '+'}</span></button>
+      <button className={`delivery-address-toggle${isOpen ? ' is-open' : ''}`} type="button" id={`delivery-${address.id}-title`} aria-expanded={isOpen} aria-controls={`delivery-${address.id}-content`} title={summary} onClick={onToggle}><span>{summary}</span><span className="delivery-address-chevron" aria-hidden="true">›</span></button>
       <div className="delivery-address-actions" aria-label={`${address.label || 'Lieferanschrift'} verwalten`}>
         <button type="button" onClick={() => onMove(-1)} disabled={index === 0}>Nach oben</button>
         <button type="button" onClick={() => onMove(1)} disabled={isLast}>Nach unten</button>
@@ -56,12 +56,8 @@ function DeliveryAddressEditor({ address, index, isLast, isOpen, onToggle, onCha
       </div>
     </div>
     <div className="delivery-address-body" id={`delivery-${address.id}-content`} hidden={!isOpen}>
-      <div className="partner-master-grid partner-master-two-grid">
-        <Field id={`delivery-${address.id}-label`} label="Bezeichnung (Pflichtfeld)" helpText="Dient nur der späteren Auswahl, z. B. Hauptlager, Filiale oder Baustelle." required value={address.label} onChange={(event) => onChange('label', event.target.value)} />
-        <Field id={`delivery-${address.id}-phone`} label="Telefon" type="tel" value={address.phone} onChange={(event) => onChange('phone', event.target.value)} />
-      </div>
-      <AddressFields address={address} idPrefix={`delivery-${address.id}`} includeContactPerson onChange={onChange} />
-      <TextareaField id={`delivery-${address.id}-notes`} label="Hinweis" value={address.notes} onChange={(event) => onChange('notes', event.target.value)} />
+      <Field className="delivery-address-label-field" id={`delivery-${address.id}-label`} label="Bezeichnung für die Auswahl" helpText="Dient nur der späteren Auswahl, z. B. Hauptlager, Warenannahme oder Filiale." required value={address.label} onChange={(event) => onChange('label', event.target.value)} />
+      <DeliveryAddressFields address={address} idPrefix={`delivery-${address.id}`} onChange={onChange} />
     </div>
   </section>;
 }
@@ -98,9 +94,8 @@ export default function PartnerForm({
       <span className="partner-master-status-label">{statusLabel}</span>
     </div>
     <FormArea title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
-      <FormSection title="Partner & Hauptanschrift">
+      <FormSection title="Anschrift">
         <div className="partner-master-grid partner-master-partner-grid">
-          <SelectField id="partner-type" label="Partnerart" helpText="Dient der Einordnung und späteren Filterung. Die Partnerart selbst wird nicht in das Dokument übernommen." value={partner.type} onChange={(event) => update(['type'], event.target.value)}>{partnerTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}</SelectField>
           <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname inkl. Rechtsform" inputRef={companyInputRef} value={combinedCompanyName} onChange={(event) => { onCompanyNameChange(event.target.value); update(['legalForm'], ''); }} />
           <Field id="partner-department" label="Abteilung" value={partner.department} onChange={(event) => update(['department'], event.target.value)} />
           <Field id="partner-main-address-attention" label="Zusatz / zu Händen" value={partner.mainAddress.attention} onChange={(event) => update(['mainAddress', 'attention'], event.target.value)} />

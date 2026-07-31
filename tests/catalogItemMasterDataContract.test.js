@@ -3,7 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import { embedJsonAttachmentInPdf } from '../src/documentModel/pdfAttachment.js';
 import {
   catalogItemEditorReducer, createCatalogEditorState, createCatalogItem, duplicateCatalogItem,
-  matchesCatalogItemSearch, normalizeCatalogAmountValue, normalizeCatalogTaxRate,
+  matchesCatalogItemSearch, normalizeCatalogAmountValue, normalizeCatalogTaxRate, shouldStartNewCatalogCollectionWithoutConfirmation,
 } from '../src/masterData/catalogItemModel.js';
 import {
   CATALOG_ITEM_MASTER_DATA_ATTACHMENT_FILE_NAME, createCatalogItemMasterDataDocument,
@@ -45,6 +45,13 @@ describe('catalog item master data', () => {
     expect(normalizeCatalogAmountValue('100')).toBe('100,00');
     expect(normalizeCatalogTaxRate('19 %')).toBe('19');
     expect(normalizeCatalogTaxRate('101')).toBeNull();
+  });
+
+  it('starts an empty initial catalog collection without confirmation, but confirms before replacing an active collection', () => {
+    expect(shouldStartNewCatalogCollectionWithoutConfirmation({ hasStartedCollection: false, hasRecords: false, draft: null, isDraftDirty: false })).toBe(true);
+    expect(shouldStartNewCatalogCollectionWithoutConfirmation({ hasStartedCollection: true, hasRecords: false, draft: null, isDraftDirty: false })).toBe(false);
+    expect(shouldStartNewCatalogCollectionWithoutConfirmation({ hasStartedCollection: false, hasRecords: true, draft: null, isDraftDirty: false })).toBe(false);
+    expect(shouldStartNewCatalogCollectionWithoutConfirmation({ hasStartedCollection: false, hasRecords: false, draft: createCatalogItem('service'), isDraftDirty: true })).toBe(false);
   });
 
   it('validates the catalog contract, retains types and IDs, and rejects wrong master-data types', () => {

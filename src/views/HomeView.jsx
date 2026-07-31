@@ -3,6 +3,7 @@ const documentItems = [
   { title: 'Angebote', text: 'Professionelle Angebote für Kunden und Projekte erstellen.', documentId: 'write-offer' },
   { title: 'Mahnungen', text: 'Mahnungen und Zahlungserinnerungen strukturiert vorbereiten.', documentId: 'write-reminder' },
   { title: 'Gutschriften', text: 'Korrekturen und Rückerstattungen nachvollziehbar dokumentieren.', documentId: 'write-credit-note' },
+  { title: 'Geschäftsbriefe', text: 'Professionelle Schreiben direkt im Browser vorbereiten.', documentId: 'write-business-letter' },
   { title: 'Quittungen', text: 'Zahlungen schnell bestätigen und als Beleg speichern.', documentId: 'write-receipt' },
 ];
 

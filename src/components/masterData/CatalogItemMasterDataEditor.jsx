@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { catalogItemTypes, catalogItemEditorReducer, createCatalogEditorState, createCatalogItem, getCatalogItemDisplayName, matchesCatalogItemSearch } from '../../masterData/catalogItemModel.js';
+import { catalogItemTypes, catalogItemEditorReducer, createCatalogEditorState, createCatalogItem, getCatalogItemDisplayName, matchesCatalogItemSearch, shouldStartNewCatalogCollectionWithoutConfirmation } from '../../masterData/catalogItemModel.js';
 import { CATALOG_ITEM_MASTER_DATA_ATTACHMENT_FILE_NAME, createCatalogItemMasterDataCollectionMetadata, createCatalogItemMasterDataDocument, getCatalogItemMasterDataPdfFilename, importCatalogItemMasterDataPdf } from '../../masterData/catalogItemContract.js';
 import { requestPdfDownload } from '../../utils/requestPdfDownload.js';
 import { CatalogCollectionActions, CatalogExportAction } from './CatalogItemMasterDataActions.jsx';
@@ -117,7 +117,25 @@ export default function CatalogItemMasterDataEditor() {
     }
     if (isDraftDirty) setDialog({ kind: 'discard-entry-changes', title: 'Änderungen verwerfen?', message: 'Alle seit dem letzten Speichern vorgenommenen Änderungen gehen verloren.', confirmLabel: 'Änderungen verwerfen' });
   }
-  function handleNewCollection() { setDialog({ kind: 'new', title: 'Neue Stammdatensammlung erstellen', message: 'Alle aktuellen Leistungs- und Artikeleinträge werden aus dem Editor entfernt. Eine nicht gespeicherte Sammlung kann danach nicht wiederhergestellt werden.', confirmLabel: 'Neue Sammlung erstellen' }); }
+  function applyNewCollection() {
+    dispatch({ type: 'reset-collection' });
+    setDraft(null);
+    setDraftSourceId(null);
+    setDraftBaseline(null);
+    setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata());
+    setSearchQuery('');
+    setTypeFilter('all');
+    setIsDirty(true);
+    setHasStartedCollection(true);
+    setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.');
+  }
+  function handleNewCollection() {
+    if (shouldStartNewCatalogCollectionWithoutConfirmation({ hasStartedCollection, hasRecords, draft, isDraftDirty })) {
+      applyNewCollection();
+      return;
+    }
+    setDialog({ kind: 'new', title: 'Neue Stammdatensammlung erstellen', message: 'Alle aktuellen Leistungs- und Artikeleinträge werden aus dem Editor entfernt. Eine nicht gespeicherte Sammlung kann danach nicht wiederhergestellt werden.', confirmLabel: 'Neue Sammlung erstellen' });
+  }
   function applyImportedCollection(imported) {
     dispatch({ type: 'replace-collection', records: imported.records, activeRecordId: null });
     setDraft(null);
@@ -143,7 +161,7 @@ export default function CatalogItemMasterDataEditor() {
     if (dialog?.kind === 'discard-new-entry') { setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setStatusMessage('Entwurf wurde verworfen.'); }
     if (dialog?.kind === 'discard-entry-changes' && draftBaseline) { setDraft(cloneRecord(draftBaseline)); setStatusMessage('Änderungen wurden verworfen.'); }
     if (dialog?.kind === 'discard-draft') openSavedRecord(dialog.recordId);
-    if (dialog?.kind === 'new') { dispatch({ type: 'reset-collection' }); setDraft(null); setDraftSourceId(null); setDraftBaseline(null); setCollectionMetadata(createCatalogItemMasterDataCollectionMetadata()); setSearchQuery(''); setTypeFilter('all'); setIsDirty(true); setHasStartedCollection(true); setStatusMessage('Neue leere Stammdatensammlung wurde erstellt.'); }
+    if (dialog?.kind === 'new') applyNewCollection();
     if (dialog?.kind === 'import') applyImportedCollection(dialog.document);
     setDialog(null);
   }

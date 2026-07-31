@@ -23,6 +23,10 @@
     title: 'Quittungen',
     text: 'Kompakte Quittungen im DIN-A5-Querformat mit Betrag, Leistung, Referenzen und Unterschriftbereich.',
   },
+  {
+    title: 'Geschäftsbriefe',
+    text: 'Professionelle Geschäftsbriefe mit DIN-5008-orientiertem Aufbau, PDF und Druck.',
+  },
 ];
 
 const allDocumentSections = [
@@ -149,6 +153,38 @@ const allDocumentSections = [
         formType: 'deliveryNote',
         description:
           'Erstelle Lieferscheine mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
+      },
+    ],
+  },
+  {
+    id: 'business-letters',
+    label: 'Geschäftsbriefe',
+    title: 'Geschäftsbriefe',
+    description:
+      'Erstelle professionelle Geschäftsbriefe mit direkter Dokumentbearbeitung, PDF und Druck.',
+    contentSections: [
+      {
+        heading: 'Was gehört in einen Geschäftsbrief?',
+        paragraphs: [
+          'Ein Geschäftsbrief verbindet eine klare Empfängeranschrift mit einem verständlichen Betreff, einer persönlichen Anrede und einem nachvollziehbaren Text. Ein einheitlicher Footer ergänzt die geschäftlichen Angaben.',
+        ],
+      },
+      {
+        heading: 'Übersichtlich und flexibel',
+        paragraphs: [
+          'Zeichen, Ansprechpartner, Anlagen und Verteiler können bei Bedarf eingeblendet werden. So bleibt der Brief aufgeräumt, ohne auf wichtige Angaben verzichten zu müssen.',
+        ],
+      },
+    ],
+    children: [
+      {
+        id: 'write-business-letter',
+        label: 'Geschäftsbrief schreiben',
+        title: 'Geschäftsbrief schreiben',
+        path: '/dokumente/geschaeftsbrief',
+        formType: 'businessLetter',
+        description:
+          'Erstelle Geschäftsbriefe mit DIN-5008-orientiertem Aufbau, editierbaren Texten, PDF und Druck.',
       },
     ],
   },

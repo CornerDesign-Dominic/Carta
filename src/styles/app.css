@@ -3182,6 +3182,166 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.business-letter-address-row {
+  margin-bottom: 18px;
+}
+
+.business-letter-content {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 28px;
+  color: #34312c;
+  font-size: 0.86rem;
+  line-height: 1.58;
+}
+
+.business-letter-content textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 1.58em;
+  padding: 0;
+  overflow: hidden;
+  resize: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+}
+
+.business-letter-content textarea:focus {
+  border-color: var(--color-focus);
+  outline: 0;
+}
+
+.business-letter-subject,
+.business-letter-signer,
+.business-letter-optional-field label {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.business-letter-subject {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.business-letter-subject .document-label-input,
+.business-letter-signer .document-label-input,
+.business-letter-optional-field .document-label-input {
+  width: auto;
+  min-width: 0;
+  color: #77736b;
+  font-size: 0.68rem;
+  font-weight: 760;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.business-letter-salutation {
+  margin-top: 8px;
+}
+
+.business-letter-body {
+  min-height: 7.9em !important;
+}
+
+.business-letter-closing {
+  margin-top: 4px;
+}
+
+.business-letter-signer {
+  margin-top: 4px;
+}
+
+.business-letter-optional-fields {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.business-letter-optional-field {
+  align-items: start;
+}
+
+.business-letter-optional-field textarea {
+  min-height: 1.58em;
+}
+
+.business-letter-print-page {
+  --business-letter-print-page-number-height: 6mm;
+  display: grid;
+  grid-template-rows: auto minmax(0, var(--business-letter-print-content-max-height)) minmax(10px, 1fr) var(--business-letter-print-page-number-height) auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.business-letter-print-page.is-first-page {
+  --business-letter-print-content-max-height: 512px;
+}
+
+.business-letter-print-page.is-follow-page {
+  --business-letter-print-content-max-height: 788px;
+}
+
+.business-letter-print-page .invoice-print-page-content {
+  align-self: stretch;
+  height: var(--business-letter-print-content-max-height);
+  max-height: var(--business-letter-print-content-max-height);
+  overflow: hidden;
+}
+
+.business-letter-print-page .invoice-print-page-number {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: end;
+  width: 100%;
+  height: var(--business-letter-print-page-number-height);
+  margin: 0;
+  padding-top: 1mm;
+  transform: translateY(-30px);
+}
+
+.business-letter-print-page .invoice-print-page-number.is-empty {
+  visibility: hidden;
+}
+
+.business-letter-print-page .invoice-print-footer {
+  align-self: end;
+  margin-top: 0;
+}
+
+.business-letter-print-subject {
+  font-size: 1.12rem;
+}
+
+.business-letter-measure-content {
+  width: 174mm;
+}
+
+@media (max-width: 720px) {
+  .business-letter-content {
+    font-size: 0.82rem;
+  }
+}
+
+@media print {
+  body.document-print-mode .business-letter-visual-editor > :not(.business-letter-print-pages) {
+    display: none !important;
+  }
+
+  body.document-print-mode .business-letter-visual-editor > .business-letter-print-pages {
+    display: block !important;
+  }
+}
+
 .credit-note-reference-block {
   display: grid;
   gap: 8px;
@@ -12757,10 +12917,43 @@ h2,
   white-space: nowrap;
 }
 
+.delivery-address-chevron {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.delivery-address-toggle.is-open .delivery-address-chevron {
+  transform: rotate(90deg);
+}
+
 .delivery-address-body {
   gap: 12px;
   border-top-color: var(--color-border);
   padding: 12px 10px;
+}
+
+.delivery-address-fields {
+  display: grid;
+  gap: 7px;
+}
+
+.delivery-address-label-field {
+  max-width: none;
+}
+
+.delivery-address-name-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.delivery-address-street-grid {
+  grid-template-columns: minmax(0, 2fr) minmax(130px, 0.9fr);
+}
+
+.delivery-address-location-grid {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr) minmax(120px, 0.8fr);
 }
 
 .delivery-address-actions {
@@ -12860,7 +13053,10 @@ h2,
   .partner-form-grid-contact,
   .partner-form-grid-two-columns,
   .partner-address-grid,
-  .partner-delivery-meta-grid {
+  .partner-delivery-meta-grid,
+  .delivery-address-name-grid,
+  .delivery-address-street-grid,
+  .delivery-address-location-grid {
     grid-template-columns: 1fr;
   }
 

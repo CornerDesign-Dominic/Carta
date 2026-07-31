@@ -10,6 +10,7 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
     '/dokumente/lieferschein': 'write-delivery-note',
     '/dokumente/gutschrift': 'write-credit-note',
     '/dokumente/mahnung': 'write-reminder',
+    '/dokumente/geschaeftsbrief': 'write-business-letter',
     '/dokumente/quittung': 'write-receipt',
     '/dokumente/eigenbeleg': 'write-self-receipt',
   };

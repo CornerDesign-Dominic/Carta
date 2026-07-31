@@ -7,6 +7,7 @@ const toolbarGeneratorMeta = {
   Lieferschein: { generatorId: 'write-delivery-note', generatorLabel: 'Lieferschein' },
   Gutschrift: { generatorId: 'write-credit-note', generatorLabel: 'Gutschrift' },
   Mahnung: { generatorId: 'write-reminder', generatorLabel: 'Mahnung' },
+  Geschäftsbrief: { generatorId: 'write-business-letter', generatorLabel: 'Geschäftsbrief' },
   Quittung: { generatorId: 'write-receipt', generatorLabel: 'Quittung' },
   Eigenbeleg: { generatorId: 'write-self-receipt', generatorLabel: 'Eigenbeleg' },
 };

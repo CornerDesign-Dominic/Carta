@@ -4,7 +4,7 @@ import {
 } from './constants.js';
 import { restoreCreditNoteState } from './creditNoteRestore.js';
 import { restoreReminderState } from './reminderRestore.js';
-import { validateDeliveryNoteDocument, validateOfferDocument, validateReceiptDocument, validateSelfReceiptDocument } from './additionalDocumentModel.js';
+import { validateBusinessLetterDocument, validateDeliveryNoteDocument, validateOfferDocument, validateReceiptDocument, validateSelfReceiptDocument } from './additionalDocumentModel.js';
 import type { Belege24SupportedDocument } from './types.js';
 
 export interface ValidationResult {
@@ -175,6 +175,8 @@ export function validateBelege24Document(value: unknown): ValidationResult {
       return validateReceiptDocument(value);
     case 'selfReceipt':
       return validateSelfReceiptDocument(value);
+    case 'businessLetter':
+      return validateBusinessLetterDocument(value);
     default:
       return { valid: false, errors: ['document.documentType is not supported'] };
   }
