@@ -16,14 +16,14 @@ function OwnDataDocumentBlock({ record, index }) {
     {hasAddress && <DetailSection title="Anschrift"><div className="partner-document-address"><AddressLines address={record.address} /></div></DetailSection>}
     <DetailSection title="Kontaktdaten" isVisible={hasContact}><LabeledLine label="E-Mail" value={record.contact.email} /><LabeledLine label="Telefon" value={record.contact.phone} /><LabeledLine label="Fax" value={record.contact.fax} /><LabeledLine label="Website" value={record.contact.website} /></DetailSection>
     <DetailSection title="Bankverbindung" isVisible={hasBank}><LabeledLine label="Kontoinhaber" value={record.bank.accountHolder} /><LabeledLine label="Bankname" value={record.bank.bankName} /><LabeledLine label="IBAN" value={record.bank.iban} /><LabeledLine label="BIC" value={record.bank.bic} /></DetailSection>
-    <DetailSection title="Steuer- und Registerdaten" isVisible={hasTaxAndRegister}><LabeledLine label="Steuernummer" value={record.taxAndRegister.taxNumber} /><LabeledLine label="USt-IdNr." value={record.taxAndRegister.vatId} /><LabeledLine label="Handelsregister / Registereintrag" value={record.taxAndRegister.commercialRegister} /><LabeledLine label="Registernummer" value={record.taxAndRegister.registerNumber} /><LabeledLine label="Registergericht" value={record.taxAndRegister.registerCourt} /></DetailSection>
+    <DetailSection title="Steuer- und Registerdaten" isVisible={hasTaxAndRegister}><LabeledLine label="Steuernummer" value={record.taxAndRegister.taxNumber} /><LabeledLine label="USt-IdNr." value={record.taxAndRegister.vatId} /><LabeledLine label="Handelsregistereintrag" value={[record.taxAndRegister.commercialRegister, record.taxAndRegister.registerNumber].filter(Boolean).join(' · ')} /><LabeledLine label="Registergericht" value={record.taxAndRegister.registerCourt} /></DetailSection>
     <DetailSection title="Weiteres" isVisible={hasFurtherDetails}><LabeledLine label="Inhaber / Geschäftsführer" value={record.ownerOrManagingDirector} /><LabeledLine label="Titel / Name / Markenname" value={record.documentHeaderName} /><p><strong>Kleinunternehmerregelung:</strong> {record.settings.isSmallBusiness ? 'Ja' : 'Nein'}</p>{record.settings.defaultPaymentTermDays && <p><strong>Standard-Zahlungsziel:</strong> {record.settings.defaultPaymentTermDays} Tage</p>}</DetailSection>
   </article>;
 }
 
 export default function OwnDataMasterDataDocument({ records, pagesRef, toolbar }) {
   const dateLabel = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium' }).format(new Date());
-  return <section className="partner-document-preview" aria-labelledby="own-data-document-preview-title">
+  return <section className="partner-document-preview own-data-document-preview" aria-labelledby="own-data-document-preview-title">
     <div className="partner-document-preview-heading"><h2 id="own-data-document-preview-title">Dokumentvorschau</h2></div>
     {toolbar}
     <div className="partner-document-pages" ref={pagesRef}>

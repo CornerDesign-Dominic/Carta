@@ -2629,6 +2629,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .own-data-form-section { gap: 8px; padding-top: 4px; }
 .own-data-form-section h4 { color: var(--color-primary); font-size: 0.82rem; font-weight: 700; }
 
+.own-data-form-area-content > .own-data-form-section + .own-data-form-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+}
+
 .own-data-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2654,6 +2659,20 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   justify-content: space-between;
   gap: 8px;
   padding-top: 2px;
+}
+
+.own-data-document-preview .catalog-document-toolbar {
+  margin: 4px 0 18px;
+}
+
+.own-data-document-preview .catalog-document-toolbar .partner-button {
+  min-height: 42px;
+  padding-inline: 16px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.own-data-document-preview .catalog-document-toolbar .partner-button:hover:not(:disabled) {
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .partner-master-data-form {
