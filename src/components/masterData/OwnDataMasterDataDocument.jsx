@@ -5,14 +5,14 @@ function LabeledLine({ label, value }) { return value ? <p><strong>{label}:</str
 function DetailSection({ title, isVisible = true, children }) { return isVisible ? <section className="partner-document-section"><h3>{title}</h3><div>{children}</div></section> : null; }
 function AddressLines({ address }) { return [address.companyName, address.extra, joinLine(address.street, address.houseNumber), joinLine(address.postalCode, address.city), address.country].filter(Boolean).map((line, index) => <p key={`${line}-${index}`}>{line}</p>); }
 
-function OwnDataDocumentBlock({ record, index }) {
+function OwnDataDocumentBlock({ record }) {
   const hasAddress = Object.entries(record.address).some(([field, value]) => field !== 'country' && Boolean(value));
   const hasContact = Object.values(record.contact).some(Boolean);
   const hasTaxAndRegister = Object.values(record.taxAndRegister).some(Boolean);
   const hasBank = Object.values(record.bank).some(Boolean);
   const hasFurtherDetails = Boolean(record.ownerOrManagingDirector || record.documentHeaderName || record.settings.isSmallBusiness || record.settings.defaultPaymentTermDays);
   return <article className="partner-document-block">
-    <header className="partner-document-block-header"><div><h2><span className="partner-document-index">{String(index + 1).padStart(2, '0')}</span> {getOwnDataDisplayName(record)}</h2></div></header>
+    <header className="partner-document-block-header"><div><h2>{getOwnDataDisplayName(record)}</h2></div></header>
     {hasAddress && <DetailSection title="Anschrift"><div className="partner-document-address"><AddressLines address={record.address} /></div></DetailSection>}
     <DetailSection title="Kontaktdaten" isVisible={hasContact}><LabeledLine label="E-Mail" value={record.contact.email} /><LabeledLine label="Telefon" value={record.contact.phone} /><LabeledLine label="Fax" value={record.contact.fax} /><LabeledLine label="Website" value={record.contact.website} /></DetailSection>
     <DetailSection title="Bankverbindung" isVisible={hasBank}><LabeledLine label="Kontoinhaber" value={record.bank.accountHolder} /><LabeledLine label="Bankname" value={record.bank.bankName} /><LabeledLine label="IBAN" value={record.bank.iban} /><LabeledLine label="BIC" value={record.bank.bic} /></DetailSection>
@@ -29,12 +29,12 @@ export default function OwnDataMasterDataDocument({ records, pagesRef, toolbar }
     <div className="partner-document-pages" ref={pagesRef}>
       {records.map((record, index) => <article className="partner-document-page" aria-label={`Unternehmensstammdatenblatt ${index + 1}`} key={record.id}>
         <header className="partner-document-page-header"><strong>Belege24</strong><span>Eigene Unternehmensstammdaten</span></header>
-        <div className="partner-document-page-meta"><span>Anzahl Unternehmen: {records.length}</span><span>Stand: {dateLabel}</span></div>
+        <div className="partner-document-page-meta"><span>Erstellungsdatum: {dateLabel}</span></div>
         <h1 className="partner-document-title">Eigene Unternehmensstammdaten</h1>
-        <OwnDataDocumentBlock record={record} index={index} />
-        <footer className="partner-document-page-footer">Seite {index + 1}</footer>
+        <OwnDataDocumentBlock record={record} />
+        {records.length > 1 && <footer className="partner-document-page-footer">Seite {index + 1} von {records.length}</footer>}
       </article>)}
-      {!records.length && <article className="partner-document-page" aria-label="Leeres Unternehmensstammdatenblatt"><header className="partner-document-page-header"><strong>Belege24</strong><span>Eigene Unternehmensstammdaten</span></header><div className="partner-document-page-meta"><span>Anzahl Unternehmen: 0</span><span>Stand: {dateLabel}</span></div><h1 className="partner-document-title">Eigene Unternehmensstammdaten</h1><p className="partner-document-empty">Noch keine Unternehmen gespeichert.</p><footer className="partner-document-page-footer">Seite 1</footer></article>}
+      {!records.length && <article className="partner-document-page" aria-label="Leeres Unternehmensstammdatenblatt"><header className="partner-document-page-header"><strong>Belege24</strong><span>Eigene Unternehmensstammdaten</span></header><div className="partner-document-page-meta"><span>Erstellungsdatum: {dateLabel}</span></div><h1 className="partner-document-title">Eigene Unternehmensstammdaten</h1><p className="partner-document-empty">Noch keine Unternehmen gespeichert.</p></article>}
     </div>
   </section>;
 }
