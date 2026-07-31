@@ -10,6 +10,7 @@ export const SUPPORTED_DOCUMENT_TYPES = [
   'reminder',
   'receipt',
   'selfReceipt',
+  'businessLetter',
 ] as const;
 
 export type SupportedDocumentType = (typeof SUPPORTED_DOCUMENT_TYPES)[number];

@@ -395,4 +395,54 @@ export type DeliveryNoteDocument = Belege24Document<'deliveryNote', DeliveryNote
 export type ReceiptDocument = Belege24Document<'receipt', ReceiptDocumentData>;
 export type SelfReceiptDocument = Belege24Document<'selfReceipt', SelfReceiptDocumentData>;
 
-export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument | ReminderDocument | OfferDocument | DeliveryNoteDocument | ReceiptDocument | SelfReceiptDocument;
+export interface BusinessLetterGeneratorState {
+  labels: Record<string, string>;
+  letterData: {
+    sender: {
+      companyName: string;
+      returnAddress: string;
+      address: DocumentAddress;
+      contact: { email: string; phone: string; fax: string; website: string };
+    };
+    recipient: {
+      companyName: string;
+      attention: string;
+      name: string;
+      address: DocumentAddress;
+    };
+    details: {
+      yourReference: string;
+      ourReference: string;
+      contactPerson: string;
+      place: string;
+      letterDate: string;
+    };
+    references: Record<string, string>;
+    footer: DocumentFooter;
+  };
+  content: {
+    subject: string;
+    salutation: string;
+    body: string;
+    closing: string;
+    signerName: string;
+    signerRole: string;
+    attachments: string;
+    distribution: string;
+  };
+  fieldConfig: {
+    contact: FieldConfiguration;
+    details: FieldConfiguration;
+    recipient: FieldConfiguration;
+    footerMiddle: FieldConfiguration;
+    letterContent: FieldConfiguration;
+  };
+}
+
+export interface BusinessLetterDocumentData {
+  state: BusinessLetterGeneratorState;
+}
+
+export type BusinessLetterDocument = Belege24Document<'businessLetter', BusinessLetterDocumentData>;
+
+export type Belege24SupportedDocument = StandardInvoiceDocument | CreditNoteDocument | ReminderDocument | OfferDocument | DeliveryNoteDocument | ReceiptDocument | SelfReceiptDocument | BusinessLetterDocument;
