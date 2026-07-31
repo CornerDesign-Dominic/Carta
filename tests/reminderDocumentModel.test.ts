@@ -12,6 +12,7 @@ import {
 
 function createReminderState(): ReminderGeneratorState {
   return {
+    reminderVariant: 'secondReminder',
     labels: {
       title: 'Mahnung Ä', reminderNumber: 'Mahnungsnummer', reminderDate: 'Belegdatum', customerNumber: 'Kundennummer',
       invoiceNumber: 'Rechnung Nr.', externalNumber: 'Externe Nummer', dueDate: 'Fälligkeit', overdueDays: 'Verzug',
@@ -45,6 +46,7 @@ describe('reminder document mapping and validation', () => {
     const document = mapReminderToDocument(state);
 
     expect(document.document.documentType).toBe('reminder');
+    expect(document.documentData.reminderVariant).toBe('secondReminder');
     expect(document.documentData.openItems).toEqual(state.openItems);
     expect(document.documentData.textBlocks).toEqual(state.textBlocks);
     expect(document.documentData.fieldConfiguration).toEqual(state.fieldConfig);
@@ -73,6 +75,25 @@ describe('reminder document mapping and validation', () => {
 
     expect(validateReminderDocument(incomplete).valid).toBe(false);
     expect(validateReminderDocument(wrongAmountType).valid).toBe(false);
+  });
+
+  it('rejects an unknown reminder variant while accepting older PDFs without one', () => {
+    const document = mapReminderToDocument(createReminderState());
+    const unknownVariant = {
+      ...document,
+      documentData: { ...document.documentData, reminderVariant: 'thirdReminder' },
+    };
+    const { reminderVariant: _legacyVariant, ...legacyData } = document.documentData;
+    const legacyDocument = { ...document, documentData: legacyData };
+
+    expect(validateReminderDocument(unknownVariant)).toEqual({
+      valid: false,
+      errors: ['documentData.reminderVariant must be "paymentReminder", "firstReminder", "secondReminder" or "finalReminder"'],
+    });
+    expect(restoreReminderState(legacyDocument)).toMatchObject({
+      status: 'valid',
+      state: { reminderVariant: 'paymentReminder' },
+    });
   });
 
   it('rejects a wrong or unknown document type', () => {

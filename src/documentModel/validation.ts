@@ -143,6 +143,12 @@ export function validateCreditNoteDocument(value: unknown): ValidationResult {
 export function validateReminderDocument(value: unknown): ValidationResult {
   const restored = restoreReminderState(value);
   if (restored.status === 'valid') return { valid: true, errors: [] };
+  if (restored.status === 'wrong-variant') {
+    return {
+      valid: false,
+      errors: ['documentData.reminderVariant must be "paymentReminder", "firstReminder", "secondReminder" or "finalReminder"'],
+    };
+  }
   if (restored.status === 'wrong-document-type') {
     return { valid: false, errors: ['document.documentType must be "reminder"'] };
   }

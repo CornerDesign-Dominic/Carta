@@ -5,8 +5,6 @@ import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import FooterBlock from './documentBlocks/FooterBlock.jsx';
 import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
 import SenderBlock from './documentBlocks/SenderBlock.jsx';
-import TextBlock from './documentBlocks/TextBlock.jsx';
-import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import SelfReceiptDocumentForm from './SelfReceiptDocumentForm.jsx';
 import SelfReceiptExpenseTable from './documentBlocks/SelfReceiptExpenseTable.jsx';
@@ -28,14 +26,13 @@ const initialSelfReceiptLabels = {
   costCenter: 'Kostenstelle',
   position: 'Pos.',
   expensePositionDate: 'Datum',
-  category: 'Kategorie',
   description: 'Beschreibung',
-  netAmount: 'Betrag netto',
+  netAmount: 'Netto',
   tax: 'USt.',
-  grossAmount: 'Betrag brutto',
-  net: 'Nettobetrag',
-  taxAmount: 'Umsatzsteuer',
-  grandTotal: 'Gesamtbetrag',
+  grossAmount: 'Brutto',
+  net: 'Netto',
+  taxAmount: 'USt.',
+  grandTotal: 'Brutto',
   occasion: 'Anlass der Ausgabe',
   reason: 'Grund für Eigenbeleg / fehlenden Fremdbeleg',
   settlementType: 'Zahlungsart',
@@ -182,22 +179,6 @@ const defaultSelfReceiptData = {
     },
   },
 };
-
-const defaultSelfReceiptTextBlocks = [
-  {
-    id: 'intro',
-    label: 'Einleitung',
-    value: 'Hiermit wird folgender Aufwand ohne vorhandenen Fremdbeleg dokumentiert.',
-    visible: true,
-  },
-  {
-    id: 'declaration',
-    label: 'Erklärung zur Richtigkeit',
-    value:
-      'Ich versichere, dass die oben aufgeführten Angaben vollständig und nach bestem Wissen richtig sind. Die Ausgaben wurden betrieblich veranlasst und ein Fremdbeleg konnte nicht vorgelegt werden.',
-    visible: true,
-  },
-];
 
 const selfReceiptDetailFields = [
   { field: 'occasion', labelField: 'occasion', type: 'textarea', ariaLabel: 'Anlass der Ausgabe' },
@@ -370,7 +351,6 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
 const defaultSelfReceiptViewData = createSelfReceiptViewData(defaultSelfReceiptData);
 const defaultSelfReceiptPositionForCheck = {
   expenseDate: '2026-05-07',
-  category: 'Bewirtung',
   description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
   netAmount: '42,00',
   taxRate: '19',
@@ -518,13 +498,8 @@ function normalizeExpenseInfo(expenseInfo = {}) {
   };
 }
 
-function createSelfReceiptPrintItems({ expenseInfo, positions, textBlocks }) {
-  const orderedBlocks = [...textBlocks];
-  const leadingBlock = orderedBlocks[0];
-  const trailingBlock = orderedBlocks[1];
-
+function createSelfReceiptPrintItems({ expenseInfo, positions }) {
   return [
-    ...(leadingBlock?.visible ? [{ type: 'text', id: leadingBlock.id, text: leadingBlock.value }] : []),
     ...selfReceiptDetailFields.map((definition) => ({
       type: definition.type === 'textarea' ? 'detailText' : 'detailValue',
       field: definition.field,
@@ -533,7 +508,6 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, textBlocks }) {
     })),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     { type: 'summary' },
-    ...(trailingBlock?.visible ? [{ type: 'text', id: trailingBlock.id, text: trailingBlock.value }] : []),
   ];
 }
 
@@ -552,15 +526,13 @@ export default function SelfReceiptDocumentEditor() {
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
-  const textBlockRefs = useRef({});
   const detailTextareaRefs = useRef({});
   const positionTextareaRefs = useRef({});
   const dateInputRefs = useRef({});
   const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
-  const [textBlocks, setTextBlocks] = useState(defaultSelfReceiptTextBlocks);
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
   const initialGeneratorStateRef = useRef(null);
-  const currentGeneratorState = { labels, selfReceiptData, positions, textBlocks, fieldConfig };
+  const currentGeneratorState = { labels, selfReceiptData, positions, fieldConfig };
   if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
   const { sender, recipient, details, expenseInfo, footerLines } = useMemo(
     () => createSelfReceiptViewData(selfReceiptData),
@@ -568,12 +540,6 @@ export default function SelfReceiptDocumentEditor() {
   );
 
   useEffect(() => {
-    textBlocks.forEach((block) => {
-      if (block.visible) {
-        resizeTextarea(textBlockRefs.current[block.id]);
-      }
-    });
-
     Object.values(detailTextareaRefs.current).forEach((element) => {
       resizeTextarea(element);
     });
@@ -581,7 +547,7 @@ export default function SelfReceiptDocumentEditor() {
     Object.values(positionTextareaRefs.current).forEach((element) => {
       resizeTextarea(element);
     });
-  }, [expenseInfo, positions, textBlocks]);
+  }, [expenseInfo, positions]);
 
   const totals = useMemo(() => {
     const summary = positions.reduce(
@@ -609,8 +575,8 @@ export default function SelfReceiptDocumentEditor() {
   }, [positions]);
 
   const printItems = useMemo(
-    () => createSelfReceiptPrintItems({ expenseInfo, positions, textBlocks }),
-    [expenseInfo, positions, textBlocks],
+    () => createSelfReceiptPrintItems({ expenseInfo, positions }),
+    [expenseInfo, positions],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -621,7 +587,7 @@ export default function SelfReceiptDocumentEditor() {
       details,
       footerLines,
       isActive: isDataCheckMode,
-      positionFields: ['expenseDate', 'category', 'description', 'netAmount', 'taxRate'],
+      positionFields: ['expenseDate', 'description', 'netAmount', 'taxRate'],
       positions,
       recipient,
       recipientHiddenFields: fieldConfig.recipient.hidden,
@@ -752,34 +718,6 @@ export default function SelfReceiptDocumentEditor() {
     });
   }
 
-  function updateTextBlock(id, patch) {
-    setTextBlocks((current) =>
-      current.map((block) => (block.id === id ? { ...block, ...patch } : block)),
-    );
-  }
-
-  function toggleTextBlockVisibility(id) {
-    setTextBlocks((current) =>
-      current.map((block) => (block.id === id ? { ...block, visible: !block.visible } : block)),
-    );
-  }
-
-  function moveTextBlock(id, direction) {
-    setTextBlocks((current) => {
-      const index = current.findIndex((block) => block.id === id);
-      const nextIndex = index + direction;
-
-      if (index === -1 || nextIndex < 0 || nextIndex >= current.length) {
-        return current;
-      }
-
-      const next = [...current];
-      const [block] = next.splice(index, 1);
-      next.splice(nextIndex, 0, block);
-      return next;
-    });
-  }
-
   function addPosition() {
     setPositions((current) => [...current, createSelfReceiptPosition()]);
   }
@@ -824,7 +762,6 @@ export default function SelfReceiptDocumentEditor() {
       footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
     });
     setSelfReceiptData(defaultSelfReceiptData);
-    setTextBlocks(defaultSelfReceiptTextBlocks);
     setPositions([createSelfReceiptPosition()]);
     setHighlightFields(false);
     setIsDataCheckMode(false);
@@ -887,7 +824,6 @@ export default function SelfReceiptDocumentEditor() {
     setLabels(restored.labels);
     setSelfReceiptData(restored.selfReceiptData);
     setPositions(restored.positions);
-    setTextBlocks(restored.textBlocks);
     setFieldConfig(restored.fieldConfig);
     setHighlightFields(false);
     setIsDataCheckMode(false);
@@ -957,63 +893,6 @@ export default function SelfReceiptDocumentEditor() {
     return fieldConfig[block].hidden;
   }
 
-  function renderTextBlock(block, index) {
-    if (!block) {
-      return null;
-    }
-
-    const actionButtons = (
-      <span className="invoice-field-actions self-receipt-text-actions" aria-label={`${block.label} konfigurieren`}>
-        <TextBlockControls
-          label={block.label}
-          visible={block.visible}
-          onToggle={() => toggleTextBlockVisibility(block.id)}
-        />
-        <button
-          type="button"
-          aria-label={`${block.label} nach oben`}
-          disabled={index === 0}
-          onClick={() => moveTextBlock(block.id, -1)}
-        >
-          <span aria-hidden="true">↑</span>
-        </button>
-        <button
-          type="button"
-          aria-label={`${block.label} nach unten`}
-          disabled={index === textBlocks.length - 1}
-          onClick={() => moveTextBlock(block.id, 1)}
-        >
-          <span aria-hidden="true">↓</span>
-        </button>
-      </span>
-    );
-
-    if (!block.visible) {
-      return (
-        <div className="invoice-flow-config-row invoice-flow-hidden-row" key={block.id}>
-          {actionButtons}
-        </div>
-      );
-    }
-
-    return (
-      <div className="invoice-flow-config-row" key={block.id}>
-        <TextBlock
-          ref={(element) => {
-            textBlockRefs.current[block.id] = element;
-          }}
-          ariaLabel={block.label}
-          value={block.value}
-          onChange={(value, event) => {
-            updateTextBlock(block.id, { value });
-            resizeTextarea(event.target);
-          }}
-        />
-        {actionButtons}
-      </div>
-    );
-  }
-
   function renderExpenseField(definition) {
     const label = labels[definition.labelField];
     const value = expenseInfo[definition.field];
@@ -1075,22 +954,18 @@ export default function SelfReceiptDocumentEditor() {
           footerLines={footerLines}
           isOpen={isFormPanelOpen}
           movePosition={movePosition}
-          moveTextBlock={moveTextBlock}
           onToggle={() => setIsFormPanelOpen((current) => !current)}
           positions={positions}
           recipient={selfReceiptData.recipient}
           references={selfReceiptData.references}
           removePosition={removePosition}
           sender={selfReceiptData.sender}
-          textBlocks={textBlocks}
-          toggleTextBlockVisibility={toggleTextBlockVisibility}
           updateDetail={updateDetail}
           updateExpenseInfo={updateExpenseInfo}
           updateFooterLine={updateFooterLine}
           updatePosition={updatePosition}
           updateRecipient={updateRecipient}
           updateSender={updateSender}
-          updateTextBlock={updateTextBlock}
         />
       )}
 
@@ -1166,8 +1041,6 @@ export default function SelfReceiptDocumentEditor() {
           />
         </h2>
 
-        {textBlocks[0] ? renderTextBlock(textBlocks[0], 0) : null}
-
         <section className="self-receipt-document-fields" aria-label="Eigenbeleg-Details">
           {selfReceiptDetailFields.map(renderExpenseField)}
         </section>
@@ -1198,8 +1071,6 @@ export default function SelfReceiptDocumentEditor() {
           totals={totals}
           onLabelChange={updateLabel}
         />
-
-        {textBlocks[1] ? renderTextBlock(textBlocks[1], 1) : null}
 
         <FooterBlock
           columns={[
@@ -1292,7 +1163,6 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
             <tr data-measure-position-header>
               <th>{labels.position}</th>
               <th>{labels.expensePositionDate}</th>
-              <th>{labels.category}</th>
               <th>{labels.description}</th>
               <th>{labels.netAmount}</th>
               <th>{labels.tax}</th>
@@ -1307,7 +1177,6 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
                 <tr data-measure-position-row={String(index)} key={position.id}>
                   <td>{index + 1}</td>
                   <td>{formatGermanDate(position.expenseDate)}</td>
-                  <td>{position.category}</td>
                   <td>{position.description}</td>
                   <td>{formatCurrency(calculated.net)}</td>
                   <td>{formatPercent(calculated.taxRate)}%</td>
@@ -1476,7 +1345,6 @@ function arePrintItemsEqual(first, second) {
       first.index === second.index &&
       first.position.id === second.position.id &&
       first.position.expenseDate === second.position.expenseDate &&
-      first.position.category === second.position.category &&
       first.position.description === second.position.description &&
       first.position.netAmount === second.position.netAmount &&
       first.position.taxRate === second.position.taxRate
@@ -1673,14 +1541,6 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
       renderedItems.push(<SelfReceiptPrintSummary key="summary" labels={labels} totals={totals} />);
     }
 
-    if (item.type === 'text') {
-      renderedItems.push(
-        <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>
-          {item.text}
-        </p>,
-      );
-    }
-
     if (item.type === 'detailText') {
       renderedItems.push(
         <SelfReceiptPrintDetailText key={`${item.field}-${index}`} label={labels[item.labelField]} text={item.value} />,
@@ -1726,7 +1586,6 @@ function SelfReceiptPrintPositionTable({ labels, positionItems }) {
         <tr>
           <th>{labels.position}</th>
           <th>{labels.expensePositionDate}</th>
-          <th>{labels.category}</th>
           <th>{labels.description}</th>
           <th>{labels.netAmount}</th>
           <th>{labels.tax}</th>
@@ -1741,7 +1600,6 @@ function SelfReceiptPrintPositionTable({ labels, positionItems }) {
             <tr key={position.id}>
               <td>{index + 1}</td>
               <td>{formatGermanDate(position.expenseDate)}</td>
-              <td>{position.category}</td>
               <td>{position.description}</td>
               <td>{formatCurrency(calculated.net)}</td>
               <td>{formatPercent(calculated.taxRate)}%</td>

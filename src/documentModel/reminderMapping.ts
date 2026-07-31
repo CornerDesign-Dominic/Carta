@@ -9,6 +9,7 @@ import type {
   ReminderDocument,
   ReminderOpenItem,
 } from './types.js';
+import type { ReminderVariant } from './reminderVariants.js';
 
 type Address = { street: string; houseNumber: string; postalCode: string; city: string };
 
@@ -19,6 +20,7 @@ type ReminderFooter = {
 };
 
 export interface ReminderGeneratorState {
+  reminderVariant: ReminderVariant;
   labels: Record<string, string>;
   reminderData: {
     sender: {
@@ -88,6 +90,7 @@ export function mapReminderToDocument(state: ReminderGeneratorState): ReminderDo
       },
     },
     documentData: {
+      reminderVariant: state.reminderVariant,
       labels: { ...state.labels },
       details: { ...state.reminderData.details },
       senderContact: { ...state.reminderData.sender.contact },

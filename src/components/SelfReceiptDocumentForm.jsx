@@ -68,7 +68,6 @@ const defaultExpenseInfo = {
 
 const defaultPosition = {
   expenseDate: '2026-05-07',
-  category: 'Bewirtung',
   description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
   netAmount: '42,00',
   taxRate: '19',
@@ -118,11 +117,6 @@ const selfReceiptFormDefaults = {
       bankExtra: '',
     },
   },
-  textBlocks: {
-    intro: 'Hiermit wird folgender Aufwand ohne vorhandenen Fremdbeleg dokumentiert.',
-    declaration:
-      'Ich versichere, dass die oben aufgeführten Angaben vollständig und nach bestem Wissen richtig sind. Die Ausgaben wurden betrieblich veranlasst und ein Fremdbeleg konnte nicht vorgelegt werden.',
-  },
   position: defaultPosition,
 };
 
@@ -167,7 +161,6 @@ function getFooterAutoComplete(field) {
 
 function getSelfReceiptInputPlaceholder(name) {
   if (name.startsWith('position-') && name.endsWith('-expense-date')) return selfReceiptFormDefaults.position.expenseDate;
-  if (name.startsWith('position-') && name.endsWith('-category')) return selfReceiptFormDefaults.position.category;
   if (name.startsWith('position-') && name.endsWith('-description')) return selfReceiptFormDefaults.position.description;
   if (name.startsWith('position-') && name.endsWith('-net-amount')) return selfReceiptFormDefaults.position.netAmount;
   if (name.startsWith('position-') && name.endsWith('-tax-rate')) return selfReceiptFormDefaults.position.taxRate;
@@ -253,48 +246,6 @@ function getSelfReceiptAutoComplete(name) {
   return autoCompleteValues[name] ?? 'off';
 }
 
-function TextBlockFormSection({ block, onMove, onToggleVisible, onUpdate }) {
-  return (
-    <div className="invoice-panel-section">
-      <div className="invoice-panel-heading-row">
-        <h3>{block.label}</h3>
-        <div className="invoice-panel-position-actions">
-          <button className="invoice-panel-inline-toggle" type="button" onClick={onToggleVisible}>
-            {block.visible ? 'Ausblenden' : 'Einblenden'}
-          </button>
-          <button
-            className="invoice-panel-move"
-            type="button"
-            aria-label={`${block.label} nach oben verschieben`}
-            disabled={!onMove?.canMoveUp}
-            onClick={() => onMove?.move(-1)}
-          >
-            <MoveUpIcon />
-          </button>
-          <button
-            className="invoice-panel-move"
-            type="button"
-            aria-label={`${block.label} nach unten verschieben`}
-            disabled={!onMove?.canMoveDown}
-            onClick={() => onMove?.move(1)}
-          >
-            <MoveDownIcon />
-          </button>
-        </div>
-      </div>
-      <div className="invoice-panel-grid invoice-panel-grid-stacked">
-        <SelfReceiptPanelTextarea
-          label="Text"
-          name={`self-receipt-text-${block.id}`}
-          placeholder={selfReceiptFormDefaults.textBlocks[block.id] ?? ''}
-          value={block.value}
-          onChange={(value) => onUpdate(block.id, { value })}
-        />
-      </div>
-    </div>
-  );
-}
-
 function LabeledFooterValueInput({ field, label, footerLines, updateFooterLine }) {
   const labelField = selfReceiptFooterLabelFields[field];
   const valuePlaceholder = getSelfReceiptInputPlaceholder(`footer-${field}`);
@@ -330,22 +281,18 @@ export default function SelfReceiptDocumentForm({
   footerLines,
   isOpen,
   movePosition,
-  moveTextBlock,
   onToggle,
   positions,
   recipient,
   references,
   removePosition,
   sender,
-  textBlocks,
-  toggleTextBlockVisibility,
   updateDetail,
   updateExpenseInfo,
   updateFooterLine,
   updatePosition,
   updateRecipient,
   updateSender,
-  updateTextBlock,
 }) {
   const senderAddress = sender.address;
   const recipientAddress = recipient.address;
@@ -610,22 +557,6 @@ export default function SelfReceiptDocumentForm({
             </div>
           </div>
 
-          <div className="invoice-panel-row">
-            {textBlocks.map((block, index) => (
-              <TextBlockFormSection
-                key={block.id}
-                block={block}
-                onMove={{
-                  canMoveUp: index > 0,
-                  canMoveDown: index < textBlocks.length - 1,
-                  move: (direction) => moveTextBlock(block.id, direction),
-                }}
-                onToggleVisible={() => toggleTextBlockVisibility(block.id)}
-                onUpdate={updateTextBlock}
-              />
-            ))}
-          </div>
-
           <div className="invoice-panel-section invoice-panel-section-wide">
             <h3>Ausgabenpositionen</h3>
             <div className="invoice-panel-positions">
@@ -639,12 +570,6 @@ export default function SelfReceiptDocumentForm({
                     value={position.expenseDate}
                     onChange={(value) => updatePosition(position.id, 'expenseDate', value)}
                   />
-                  <SelfReceiptPanelInput
-                    label="Kategorie"
-                    name={`position-${index + 1}-category`}
-                    value={position.category}
-                    onChange={(value) => updatePosition(position.id, 'category', value)}
-                  />
                   <SelfReceiptPanelTextarea
                     label="Beschreibung"
                     name={`position-${index + 1}-description`}
@@ -654,7 +579,7 @@ export default function SelfReceiptDocumentForm({
                   />
                   <SelfReceiptPanelInput
                     inputMode="decimal"
-                    label="Betrag netto"
+                    label="Netto"
                     name={`position-${index + 1}-net-amount`}
                     value={position.netAmount}
                     onChange={(value) => updatePosition(position.id, 'netAmount', value)}

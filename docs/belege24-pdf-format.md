@@ -51,11 +51,18 @@ Alle Gutschriften verwenden `documentType: "creditNote"` und werden als eingebet
 
 ## Mahnungen
 
-Mahnungen verwenden `documentType: "reminder"` und werden als eingebettete `belege24-document.json` gespeichert sowie wieder geladen. Gespeichert werden die vollständigen Quelldaten des Editors: Beschriftungen, strukturierte Adress- und Fußzeilendaten, Mahnungsdetails, offene Posten, Gebühren, Textblöcke und Feldkonfiguration. Die berechneten Summen `invoiceSum` und `grandTotal` sind nicht Teil der Anlage; sie werden aus offenen Posten und Gebühren nach dem Import erneut berechnet.
+Alle Mahnungsarten verwenden `documentType: "reminder"` und werden als eingebettete `belege24-document.json` gespeichert sowie wieder geladen. Die ausgewählte Art steht zentral in `documentData.reminderVariant`; Textblöcke und frei bearbeitete Beschriftungen werden unverändert mitgespeichert. Gespeichert werden die vollständigen Quelldaten des Editors: Beschriftungen, strukturierte Adress- und Fußzeilendaten, Mahnungsdetails, offene Posten, Gebühren, Textblöcke und Feldkonfiguration. Die berechneten Summen `invoiceSum` und `grandTotal` sind nicht Teil der Anlage; sie werden aus offenen Posten und Gebühren nach dem Import erneut berechnet. Ältere Mahnungs-PDFs ohne Variantenkennung werden als Zahlungserinnerung wiederhergestellt.
+
+| Variante | Schlüssel |
+| --- | --- |
+| Zahlungserinnerung | `paymentReminder` |
+| 1. Mahnung | `firstReminder` |
+| 2. Mahnung | `secondReminder` |
+| Letzte Mahnung | `finalReminder` |
 
 ## Angebote, Lieferscheine, Quittungen und Eigenbelege
 
-Eigenbelege (`selfReceipt`) speichern die vollständigen Eingabedaten einschließlich Ausgabenpositionen, Textblöcken und Feldkonfiguration. Die sichtbaren Netto-, Steuer- und Bruttosummen werden nach dem Import aus den Positionsdaten erneut abgeleitet.
+Eigenbelege (`selfReceipt`) speichern die vollständigen Eingabedaten einschließlich Ausgabenpositionen und Feldkonfiguration. Die sichtbaren Netto-, Steuer- und Bruttosummen werden nach dem Import aus den Positionsdaten erneut abgeleitet.
 
 Angebote (`offer`), Lieferscheine (`deliveryNote`) und Quittungen (`receipt`) werden ebenfalls als eingebettete `belege24-document.json` gespeichert und wieder geladen. Der Vertrag enthält die vollständigen ursprünglichen Generatorwerte, einschließlich Beschriftungen, strukturierten Adress-, Referenz- und Fußzeilendaten, Positions- beziehungsweise Textdaten und Feldkonfigurationen. Bei Quittungen wird nur der gewählte Netto- oder Brutto-Ausgangsbetrag mitsamt Steuersatz gespeichert; Steuerbetrag und Gegenwert werden nach dem Import neu berechnet.
 
@@ -72,6 +79,7 @@ Angebote (`offer`), Lieferscheine (`deliveryNote`) und Quittungen (`receipt`) we
 - `src/documentModel/creditNotePdfImport.ts`: Gutschriftimport und Überschreibvergleich.
 - `src/documentModel/reminderMapping.ts` und `src/documentModel/reminderRestore.ts`: Mapping und validierendes Rückmapping der Mahnung.
 - `src/documentModel/reminderPdfImport.ts`: Mahnungsimport und Überschreibvergleich.
+- `src/documentModel/reminderVariants.ts`: zentrale Variantenkennung, Titel und Standardtexte der Mahnung.
 - `src/documentModel/additionalDocumentModel.ts`: Verträge, Mapping, striktes Rückmapping, Validierung und Import für Angebot, Lieferschein und Quittung.
 - `src/components/InvoiceDocumentEditor.jsx`: PDF-Erzeugung, Datei-Auswahl und atomare React-State-Übernahme.
 - `src/components/CreditNoteDocumentEditor.jsx`: PDF-Erzeugung und -Import für die aktive Gutschriftvariante.

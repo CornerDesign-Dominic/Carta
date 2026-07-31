@@ -3,6 +3,7 @@ import type {
   BELEGE24_SCHEMA_VERSION,
   SupportedDocumentType,
 } from './constants.js';
+import type { ReminderVariant } from './reminderVariants.js';
 
 export type IsoDate = string;
 export type IsoDateTime = string;
@@ -268,6 +269,7 @@ export interface ReminderOpenItem {
 }
 
 export interface ReminderDocumentData {
+  reminderVariant: ReminderVariant;
   labels: Record<string, string>;
   details: {
     reminderNumber: string;
@@ -384,8 +386,7 @@ export interface SelfReceiptGeneratorState {
     expenseInfo: { occasion: string; reason: string; settlementType: string; location: string };
     footer: DocumentFooter;
   };
-  positions: Array<{ id: Uuid; expenseDate: string; category: string; description: string; netAmount: string; taxRate: string }>;
-  textBlocks: InvoiceTextBlock[];
+  positions: Array<{ id: Uuid; expenseDate: string; description: string; netAmount: string; taxRate: string }>;
   fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
 }
 

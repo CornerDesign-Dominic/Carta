@@ -9,10 +9,15 @@ import type {
   SharedData,
 } from './types.js';
 import type { ReminderGeneratorState } from './reminderMapping.js';
+import {
+  DEFAULT_REMINDER_VARIANT,
+  isReminderVariant,
+} from './reminderVariants.js';
 
 export type RestoreReminderResult =
   | { status: 'valid'; state: ReminderGeneratorState }
   | { status: 'invalid' }
+  | { status: 'wrong-variant' }
   | { status: 'wrong-document-type' };
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -112,6 +117,7 @@ function isReminderTextBlocks(value: unknown): value is InvoiceTextBlock[] {
 
 function isReminderDocumentData(value: unknown): value is ReminderDocumentData {
   return isRecord(value)
+    && (value.reminderVariant === undefined || isReminderVariant(value.reminderVariant))
     && isStringRecord(value.labels)
     && hasStrings(value.labels, requiredLabelKeys)
     && hasStrings(value.details, ['reminderNumber', 'reminderDate', 'customerNumber'])
@@ -145,6 +151,10 @@ export function restoreReminderState(document: unknown): RestoreReminderResult {
   if (!isRecord(document.document) || document.document.documentType !== 'reminder') {
     return { status: 'wrong-document-type' };
   }
+  if (!isRecord(document.documentData)
+    || (document.documentData.reminderVariant !== undefined && !isReminderVariant(document.documentData.reminderVariant))) {
+    return { status: 'wrong-variant' };
+  }
   if (!hasValidMetadata(document) || !isSharedData(document.sharedData) || !isReminderDocumentData(document.documentData)
     || document.sharedData.recipient.customerNumber !== document.documentData.details.customerNumber) {
     return { status: 'invalid' };
@@ -157,6 +167,7 @@ export function restoreReminderState(document: unknown): RestoreReminderResult {
   return {
     status: 'valid',
     state: {
+      reminderVariant: data.reminderVariant ?? DEFAULT_REMINDER_VARIANT,
       labels: { ...data.labels },
       reminderData: {
         sender: { companyName: shared.sender.brandName, returnAddress: shared.sender.senderLine, address: { ...shared.sender.address }, contact: { ...data.senderContact } },

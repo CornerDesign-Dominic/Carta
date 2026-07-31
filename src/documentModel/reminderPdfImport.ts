@@ -5,7 +5,7 @@ import { restoreReminderState } from './reminderRestore.js';
 export type ReminderPdfImportResult =
   | { status: 'valid'; state: ReminderGeneratorState; message: string }
   | {
-      status: 'not-found' | 'invalid-data' | 'unsupported' | 'wrong-document-type' | 'unreadable-pdf';
+      status: 'not-found' | 'invalid-data' | 'unsupported' | 'wrong-document-type' | 'wrong-reminder-variant' | 'unreadable-pdf';
       message: string;
     };
 
@@ -60,6 +60,12 @@ export async function importReminderPdf(
     return {
       status: 'wrong-document-type',
       message: 'Die PDF enthält keinen Belege24-Datensatz für eine Mahnung.',
+    };
+  }
+  if (restored.status === 'wrong-variant') {
+    return {
+      status: 'wrong-reminder-variant',
+      message: 'Diese Belege24-PDF enthält keine unterstützte Mahnungsvariante.',
     };
   }
   if (restored.status !== 'valid') {

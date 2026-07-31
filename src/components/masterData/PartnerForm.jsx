@@ -24,8 +24,8 @@ function FormArea({ title, hint, internal = false, children }) {
   </section>;
 }
 
-function FormSection({ title, helpText, children }) {
-  return <section className="partner-master-form-section"><h4>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</h4>{children}</section>;
+function FormSection({ title, helpText, collapsible = false, isOpen = true, onToggle, children }) {
+  return <section className="partner-master-form-section"><h4>{collapsible ? <button className="partner-master-section-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}<span>{isOpen ? 'Ausblenden' : 'Anzeigen'}</span></button> : <>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</>}</h4>{(!collapsible || isOpen) && children}</section>;
 }
 
 function AddressFields({ address, idPrefix, onChange, includeContactPerson = false, mainAddress = false }) {
@@ -71,6 +71,7 @@ export default function PartnerForm({
   onUpdateDeliveryAddress, onDuplicateDeliveryAddress, onDeleteDeliveryAddress, onMoveDeliveryAddress, actions,
 }) {
   const [openDeliveryIds, setOpenDeliveryIds] = useState([]);
+  const [isContactSectionOpen, setIsContactSectionOpen] = useState(false);
   const previousDeliveryIdsRef = useRef(new Set(partner.deliveryAddresses.map((address) => address.id)));
   const hasPendingDeliveryRef = useRef(false);
   const update = (path, value) => onUpdateField(path, value);
@@ -97,20 +98,23 @@ export default function PartnerForm({
       <span className="partner-master-status-label">{statusLabel}</span>
     </div>
     <FormArea title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
-      <FormSection title="Partnerdaten">
+      <FormSection title="Partner & Hauptanschrift">
         <div className="partner-master-grid partner-master-partner-grid">
           <SelectField id="partner-type" label="Partnerart" helpText="Dient der Einordnung und späteren Filterung. Die Partnerart selbst wird nicht in das Dokument übernommen." value={partner.type} onChange={(event) => update(['type'], event.target.value)}>{partnerTypes.map((type) => <option value={type.value} key={type.value}>{type.label}</option>)}</SelectField>
           <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname inkl. Rechtsform" inputRef={companyInputRef} value={combinedCompanyName} onChange={(event) => { onCompanyNameChange(event.target.value); update(['legalForm'], ''); }} />
-          <Field id="partner-contact-person" label="Ansprechpartner" value={partner.contactPerson} onChange={(event) => update(['contactPerson'], event.target.value)} />
           <Field id="partner-department" label="Abteilung" value={partner.department} onChange={(event) => update(['department'], event.target.value)} />
-          <Field id="partner-customer-number" label="Kundennummer" helpText="Kann später in das Kundennummernfeld von Rechnungen, Angeboten oder anderen Dokumenten übernommen werden." value={partner.customerNumber} onChange={(event) => update(['customerNumber'], event.target.value)} />
-          <Field id="partner-supplier-number" label="Lieferantennummer" helpText="Dient der Stammdatenverwaltung und wird nur in passenden späteren Vorgängen verwendet." value={partner.supplierNumber} onChange={(event) => update(['supplierNumber'], event.target.value)} />
+          <Field id="partner-main-address-attention" label="Zusatz / zu Händen" value={partner.mainAddress.attention} onChange={(event) => update(['mainAddress', 'attention'], event.target.value)} />
+          <Field className="partner-master-span-two" id="partner-main-address-street" label="Straße" value={partner.mainAddress.street} onChange={(event) => update(['mainAddress', 'street'], event.target.value)} />
+          <Field id="partner-main-address-house-number" label="Hausnummer" value={partner.mainAddress.houseNumber} onChange={(event) => update(['mainAddress', 'houseNumber'], event.target.value)} />
+          <Field id="partner-main-address-postal-code" label="PLZ" value={partner.mainAddress.postalCode} onChange={(event) => update(['mainAddress', 'postalCode'], event.target.value)} />
+          <Field id="partner-main-address-city" label="Ort" value={partner.mainAddress.city} onChange={(event) => update(['mainAddress', 'city'], event.target.value)} />
+          <Field id="partner-main-address-country" label="Land" value={partner.mainAddress.country} onChange={(event) => update(['mainAddress', 'country'], event.target.value)} />
         </div>
       </FormSection>
-      <FormSection title="Hauptanschrift" helpText="Wird als reguläre Rechnungs-, Angebots- oder Briefanschrift des Partners verwendet."><AddressFields address={partner.mainAddress} idPrefix="partner-main-address" mainAddress onChange={(field, value) => update(['mainAddress', field], value)} /></FormSection>
-      <FormSection title="Kontaktdaten"><div className="partner-master-grid">{['email', 'phone', 'mobile', 'fax', 'website'].map((field) => <Field key={field} id={`partner-${field}`} label={{ email: 'E-Mail', phone: 'Telefon', mobile: 'Mobil', fax: 'Fax', website: 'Website' }[field]} type={field === 'email' ? 'email' : field === 'website' ? 'url' : 'tel'} value={partner.contact[field]} onChange={(event) => update(['contact', field], event.target.value)} />)}</div></FormSection>
+      <FormSection title="Kontaktdaten (optional)" collapsible isOpen={isContactSectionOpen} onToggle={() => setIsContactSectionOpen((current) => !current)}><div className="partner-master-grid partner-master-two-grid"><Field id="partner-email" label="E-Mail" type="email" value={partner.contact.email} onChange={(event) => update(['contact', 'email'], event.target.value)} /><Field id="partner-phone" label="Telefon" type="tel" value={partner.contact.phone} onChange={(event) => update(['contact', 'phone'], event.target.value)} /></div></FormSection>
       <FormSection title="Steuerdaten"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-vat-id" label="USt-IdNr." value={partner.tax.vatId} onChange={(event) => update(['tax', 'vatId'], event.target.value)} /><Field id="partner-tax-number" label="Steuernummer" value={partner.tax.taxNumber} onChange={(event) => update(['tax', 'taxNumber'], event.target.value)} /></div></FormSection>
       <FormSection title="Bankdaten"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-account-holder" label="Kontoinhaber" value={partner.bank.accountHolder} onChange={(event) => update(['bank', 'accountHolder'], event.target.value)} /><Field id="partner-bank-name" label="Bankname" value={partner.bank.bankName} onChange={(event) => update(['bank', 'bankName'], event.target.value)} /><Field id="partner-iban" label="IBAN" value={partner.bank.iban} onChange={(event) => update(['bank', 'iban'], event.target.value)} /><Field id="partner-bic" label="BIC" value={partner.bank.bic} onChange={(event) => update(['bank', 'bic'], event.target.value)} /></div></FormSection>
+      <FormSection title="Weiteres"><div className="partner-master-grid partner-master-two-grid"><Field id="partner-customer-number" label="Kundennummer" helpText="Kann später in das Kundennummernfeld von Rechnungen, Angeboten oder anderen Dokumenten übernommen werden." value={partner.customerNumber} onChange={(event) => update(['customerNumber'], event.target.value)} /><Field id="partner-supplier-number" label="Lieferantennummer" helpText="Dient der Stammdatenverwaltung und wird nur in passenden späteren Vorgängen verwendet." value={partner.supplierNumber} onChange={(event) => update(['supplierNumber'], event.target.value)} /></div></FormSection>
       <FormSection title="Lieferanschriften" helpText="Können bei Warenrechnungen und Lieferscheinen unabhängig von der Hauptanschrift ausgewählt werden.">
         <p className="partner-form-help">Lieferanschriften können später getrennt von der Hauptanschrift ausgewählt werden.</p>
         <div className="delivery-address-list">{partner.deliveryAddresses.map((address, index) => <DeliveryAddressEditor key={address.id} address={address} index={index} isLast={index === partner.deliveryAddresses.length - 1} isOpen={openDeliveryIds.includes(address.id)} onToggle={() => toggleDeliveryAddress(address.id)} onChange={(field, value) => onUpdateDeliveryAddress(address.id, field, value)} onDuplicate={() => onDuplicateDeliveryAddress(address.id)} onDelete={() => onDeleteDeliveryAddress(address)} onMove={(direction) => onMoveDeliveryAddress(address.id, direction)} />)}</div>

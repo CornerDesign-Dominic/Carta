@@ -15,6 +15,7 @@ import {
 
 function createReminderState(): ReminderGeneratorState {
   return {
+    reminderVariant: 'finalReminder',
     labels: {
       title: 'Mahnung', reminderNumber: 'Mahnungsnummer', reminderDate: 'Datum', customerNumber: 'Kundennummer',
       invoiceNumber: 'Rechnung', externalNumber: 'Extern', dueDate: 'Fälligkeit', overdueDays: 'Tage',
@@ -57,6 +58,7 @@ describe('reminder PDF import', () => {
     expect(validateReminderDocument(document)).toEqual({ valid: true, errors: [] });
     expect(document.documentData).not.toHaveProperty('invoiceSum');
     expect(document.documentData).not.toHaveProperty('grandTotal');
+    expect(document.documentData.reminderVariant).toBe('finalReminder');
     await expect(importReminderPdf(pdf)).resolves.toEqual({
       status: 'valid', state, message: 'PDF erfolgreich geladen.',
     });
@@ -83,6 +85,23 @@ describe('reminder PDF import', () => {
     await expect(importReminderPdf(await invalidPdf.save())).resolves.toMatchObject({ status: 'invalid-data' });
     await expect(importReminderPdf(await createPlainPdf())).resolves.toMatchObject({ status: 'not-found' });
     expect(currentState).toEqual(snapshot);
+  });
+
+  it('rejects an unsupported reminder variant', async () => {
+    const pdfDocument = await PDFDocument.load(await createPlainPdf());
+    const document = mapReminderToDocument(createReminderState());
+    await pdfDocument.attach(
+      new TextEncoder().encode(JSON.stringify({
+        ...document,
+        documentData: { ...document.documentData, reminderVariant: 'thirdReminder' },
+      })),
+      BELEGE24_ATTACHMENT_FILE_NAME,
+      { mimeType: BELEGE24_ATTACHMENT_MIME_TYPE },
+    );
+
+    await expect(importReminderPdf(await pdfDocument.save())).resolves.toMatchObject({
+      status: 'wrong-reminder-variant',
+    });
   });
 
   it('protects changed input and treats new or imported data as its baseline', () => {

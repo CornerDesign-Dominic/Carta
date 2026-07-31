@@ -10,5 +10,6 @@ export * from './pdfAttachment.js';
 export * from './reminderMapping.js';
 export * from './reminderPdfImport.js';
 export * from './reminderRestore.js';
+export * from './reminderVariants.js';
 export * from './types.js';
 export * from './validation.js';

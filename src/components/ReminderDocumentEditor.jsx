@@ -18,10 +18,16 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapReminderToDocument } from '../documentModel/reminderMapping.js';
+import {
+  DEFAULT_REMINDER_VARIANT,
+  REMINDER_VARIANT_IDS,
+  REMINDER_VARIANTS,
+} from '../documentModel/reminderVariants.js';
 
+const reminderVariants = REMINDER_VARIANT_IDS.map((id) => REMINDER_VARIANTS[id]);
 
 const initialReminderLabels = {
-  title: 'Mahnung',
+  title: REMINDER_VARIANTS[DEFAULT_REMINDER_VARIANT].title,
   reminderNumber: 'Mahnungsnummer',
   reminderDate: 'Belegdatum',
   customerNumber: 'Kundennummer',
@@ -153,22 +159,16 @@ const defaultReminderData = {
   },
 };
 
-const defaultReminderTextBlocks = [
-  {
-    id: 'intro',
-    label: 'Vorlauftext',
-    value:
-      'bei der Durchsicht unserer Unterlagen haben wir festgestellt, dass die unten aufgeführte Rechnung noch nicht ausgeglichen wurde. Bitte überweisen Sie den offenen Betrag innerhalb von 7 Tagen nach Erhalt dieser Mahnung.',
-    visible: true,
-  },
-  {
-    id: 'closing',
-    label: 'Nachlauftext',
-    value:
-      'Sollten Sie die Zahlung bereits veranlasst haben, betrachten Sie dieses Schreiben bitte als gegenstandslos. Vielen Dank für Ihre zeitnahe Rückmeldung.',
-    visible: true,
-  },
-];
+function createReminderTextBlocks(variant = DEFAULT_REMINDER_VARIANT) {
+  const config = REMINDER_VARIANTS[variant] ?? REMINDER_VARIANTS[DEFAULT_REMINDER_VARIANT];
+
+  return [
+    { id: 'intro', label: 'Vorlauftext', value: config.intro, visible: true },
+    { id: 'closing', label: 'Nachlauftext', value: config.closing, visible: true },
+  ];
+}
+
+const defaultReminderTextBlocks = createReminderTextBlocks();
 
 const reminderPrintLayout = {
   blockGap: 16,
@@ -464,6 +464,24 @@ function createReminderPrintItems({ openItems, textBlocks }) {
   ];
 }
 
+function ReminderVariantControls({ activeVariant, onSelect }) {
+  return (
+    <div className="document-choice-bar reminder-variant-choice-bar" aria-label="Mahnungsart auswählen">
+      {reminderVariants.map((variant) => (
+        <button
+          className={activeVariant === variant.id ? 'is-active' : undefined}
+          type="button"
+          aria-pressed={activeVariant === variant.id}
+          key={variant.id}
+          onClick={() => onSelect(variant.id)}
+        >
+          {variant.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function ReminderDocumentEditor() {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
@@ -482,11 +500,17 @@ export default function ReminderDocumentEditor() {
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [reminderData, setReminderData] = useState(defaultReminderData);
+  const [reminderVariant, setReminderVariant] = useState(DEFAULT_REMINDER_VARIANT);
   const [textBlocks, setTextBlocks] = useState(defaultReminderTextBlocks);
   const [openItems, setOpenItems] = useState([createOpenItem()]);
   const [charges, setCharges] = useState({ interest: '0', reminderFee: '5.00' });
   const initialGeneratorStateRef = useRef(null);
+  const normalizedReminderVariant = REMINDER_VARIANT_IDS.includes(reminderVariant)
+    ? reminderVariant
+    : DEFAULT_REMINDER_VARIANT;
+  const activeReminderVariantConfig = REMINDER_VARIANTS[normalizedReminderVariant];
   const currentGeneratorState = {
+    reminderVariant: normalizedReminderVariant,
     labels,
     reminderData,
     openItems,
@@ -599,6 +623,34 @@ export default function ReminderDocumentEditor() {
   function toggleDataCheckMode() {
     setHighlightFields(false);
     setIsDataCheckMode((current) => !current);
+  }
+
+  function handleReminderVariantSelect(nextVariant) {
+    if (!REMINDER_VARIANT_IDS.includes(nextVariant) || nextVariant === normalizedReminderVariant) {
+      return;
+    }
+
+    const currentConfig = REMINDER_VARIANTS[normalizedReminderVariant];
+    const nextConfig = REMINDER_VARIANTS[nextVariant];
+
+    setReminderVariant(nextVariant);
+    setLabels((current) => ({
+      ...current,
+      title: current.title === currentConfig.title || current.title === 'Mahnung'
+        ? nextConfig.title
+        : current.title,
+    }));
+    setTextBlocks((current) => current.map((block) => {
+      if (block.id === 'intro' && block.value === currentConfig.intro) {
+        return { ...block, value: nextConfig.intro };
+      }
+
+      if (block.id === 'closing' && block.value === currentConfig.closing) {
+        return { ...block, value: nextConfig.closing };
+      }
+
+      return block;
+    }));
   }
 
   function updateSender(field, value) {
@@ -803,11 +855,12 @@ export default function ReminderDocumentEditor() {
   }
 
   function handleNewDocument() {
-    setLabels(initialReminderLabels);
+    setLabels({ ...initialReminderLabels, title: activeReminderVariantConfig.title });
     setReminderData(defaultReminderData);
+    setReminderVariant(normalizedReminderVariant);
     setOpenItems([createOpenItem()]);
     setCharges(defaultReminderCharges);
-    setTextBlocks(defaultReminderTextBlocks);
+    setTextBlocks(createReminderTextBlocks(normalizedReminderVariant));
     setFieldConfig({
       contact: createFieldConfig(reminderContactFields),
       details: createFieldConfig(reminderMetaFields),
@@ -878,6 +931,7 @@ export default function ReminderDocumentEditor() {
     if (!mayOverwrite) return;
 
     const restored = importResult.state;
+    setReminderVariant(restored.reminderVariant);
     setLabels(restored.labels);
     setReminderData(restored.reminderData);
     setOpenItems(restored.openItems);
@@ -980,24 +1034,33 @@ export default function ReminderDocumentEditor() {
         />
       )}
 
-      <DocumentToolbar
-        ariaLabel="Mahnung Werkzeuge"
-        isDataCheckActive={isDataCheckMode}
-        isEditable={highlightFields}
-        isExporting={isExporting}
-        onCreatePdf={handleCreatePdf}
-        onLoadPdf={handleLoadPdf}
-        onNewDocument={handleNewDocument}
-        onPrint={handlePrint}
-        onToggleDataCheck={toggleDataCheckMode}
-        onToggleEditable={toggleEditableMode}
-      />
+      <div className="invoice-variant-controls reminder-variant-controls">
+        <ReminderVariantControls
+          activeVariant={normalizedReminderVariant}
+          onSelect={handleReminderVariantSelect}
+        />
+
+        <div className="invoice-variant-controls-divider" aria-hidden="true" />
+
+        <DocumentToolbar
+          ariaLabel="Mahnung Werkzeuge"
+          isDataCheckActive={isDataCheckMode}
+          isEditable={highlightFields}
+          isExporting={isExporting}
+          onCreatePdf={handleCreatePdf}
+          onLoadPdf={handleLoadPdf}
+          onNewDocument={handleNewDocument}
+          onPrint={handlePrint}
+          onToggleDataCheck={toggleDataCheckMode}
+          onToggleEditable={toggleEditableMode}
+        />
+      </div>
 
       <p className="document-mode-hint">{viewModeHint}</p>
 
       <A4Page
         ref={sheetRef}
-        ariaLabel="Editierbare Mahnung"
+        ariaLabel={`Editierbare ${activeReminderVariantConfig.title}`}
         className={`offer-sheet invoice-sheet reminder-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
