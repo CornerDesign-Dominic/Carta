@@ -13080,13 +13080,13 @@ h2,
 .catalog-document-toolbar .visual-toolbar-group .partner-button.is-primary {
   border-color: var(--color-primary);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-text);
 }
 
 .catalog-document-toolbar .visual-toolbar-group .partner-button.is-primary:hover:not(:disabled) {
   border-color: var(--color-primary-hover);
   background: var(--color-primary-hover);
-  color: #fff;
+  color: var(--color-text);
 }
 
 .catalog-document-toolbar .visual-toolbar-group .partner-button.is-primary:focus-visible {
