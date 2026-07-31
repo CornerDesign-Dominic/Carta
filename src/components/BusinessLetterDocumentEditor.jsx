@@ -457,7 +457,7 @@ function OptionalLetterFields({ content, fields, hiddenFields, labels, onContent
 const MeasuredBusinessLetterPaginator = forwardRef(function MeasuredBusinessLetterPaginator({ items }, ref) {
   const rootRef = useRef(null);
   useImperativeHandle(ref, () => ({ measureNow: () => measureBusinessLetterPages(rootRef.current, items) }), [items]);
-  return <div className="offer-measure-root" ref={rootRef} aria-hidden="true"><div className="invoice-print-page business-letter-print-page is-first-page"><div className="invoice-print-page-content" data-first /></div></div><div className="invoice-print-page business-letter-print-page is-follow-page"><div className="invoice-print-page-content" data-follow /></div></div><div className="business-letter-measure-content"><p className="invoice-print-flow-text" data-probe /><h2 className="invoice-print-title business-letter-print-subject" data-subject-probe /></div></div>;
+  return <div className="offer-measure-root" ref={rootRef} aria-hidden="true"><div className="invoice-print-page business-letter-print-page is-first-page"><div className="invoice-print-page-content" data-first /></div><div className="invoice-print-page business-letter-print-page is-follow-page"><div className="invoice-print-page-content" data-follow /></div><div className="business-letter-measure-content"><p className="invoice-print-flow-text" data-probe /><h2 className="invoice-print-title business-letter-print-subject" data-subject-probe /></div></div>;
 });
 
 function measureBusinessLetterPages(root, items) {
