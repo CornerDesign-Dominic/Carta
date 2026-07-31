@@ -26,7 +26,7 @@ function FormSection({ title, helpText, collapsible = false, isOpen = true, onTo
 function DeliveryAddressFields({ address, idPrefix, onChange }) {
   const field = (name, label, className = '', type = 'text') => <Field className={className} id={`${idPrefix}-${name}`} label={label} name={`${idPrefix}-${name}`} type={type} value={address[name]} onChange={(event) => onChange(name, event.target.value)} />;
   return <div className="partner-master-grid partner-master-two-grid delivery-address-fields">
-    {field('companyName', 'Firmenname')}
+    {field('companyName', 'Firmenname', 'partner-master-span-two')}
     {field('attention', 'Zusatz / zu Händen')}
     {field('department', 'Abteilung')}
     {field('street', 'Straße')}
