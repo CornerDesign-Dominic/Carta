@@ -13030,6 +13030,22 @@ h2,
   margin: 0 0 12px;
 }
 
+.catalog-document-toolbar .visual-toolbar-group .partner-button.is-primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.catalog-document-toolbar .visual-toolbar-group .partner-button.is-primary:hover:not(:disabled) {
+  border-color: var(--color-primary-hover);
+  background: var(--color-primary-hover);
+  color: #fff;
+}
+
+.catalog-document-toolbar .visual-toolbar-group .partner-button.is-primary:focus-visible {
+  outline-color: var(--color-primary);
+}
+
 .catalog-collection-toolbar {
   display: block;
   margin-top: 18px;
