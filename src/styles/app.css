@@ -2919,6 +2919,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.partner-master-partner-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .partner-master-span-two {
   grid-column: span 2;
 }
@@ -12936,24 +12940,7 @@ h2,
 }
 
 .delivery-address-fields {
-  display: grid;
-  gap: 7px;
-}
-
-.delivery-address-label-field {
-  max-width: none;
-}
-
-.delivery-address-name-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.delivery-address-street-grid {
-  grid-template-columns: minmax(0, 2fr) minmax(130px, 0.9fr);
-}
-
-.delivery-address-location-grid {
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr) minmax(120px, 0.8fr);
+  gap: 7px 9px;
 }
 
 .delivery-address-actions {
@@ -13054,9 +13041,7 @@ h2,
   .partner-form-grid-two-columns,
   .partner-address-grid,
   .partner-delivery-meta-grid,
-  .delivery-address-name-grid,
-  .delivery-address-street-grid,
-  .delivery-address-location-grid {
+  .delivery-address-fields {
     grid-template-columns: 1fr;
   }
 

@@ -25,21 +25,15 @@ function FormSection({ title, helpText, collapsible = false, isOpen = true, onTo
 
 function DeliveryAddressFields({ address, idPrefix, onChange }) {
   const field = (name, label, className = '', type = 'text') => <Field className={className} id={`${idPrefix}-${name}`} label={label} name={`${idPrefix}-${name}`} type={type} value={address[name]} onChange={(event) => onChange(name, event.target.value)} />;
-  return <div className="delivery-address-fields">
-    <div className="partner-master-grid delivery-address-name-grid">
-      {field('companyName', 'Firmenname')}
-      {field('attention', 'Zusatz / zu Händen')}
-      {field('department', 'Abteilung')}
-    </div>
-    <div className="partner-master-grid delivery-address-street-grid">
-      {field('street', 'Straße')}
-      {field('houseNumber', 'Hausnummer')}
-    </div>
-    <div className="partner-master-grid delivery-address-location-grid">
-      {field('postalCode', 'PLZ')}
-      {field('city', 'Ort')}
-      {field('country', 'Land')}
-    </div>
+  return <div className="partner-master-grid partner-master-two-grid delivery-address-fields">
+    {field('companyName', 'Firmenname')}
+    {field('attention', 'Zusatz / zu Händen')}
+    {field('department', 'Abteilung')}
+    {field('street', 'Straße')}
+    {field('houseNumber', 'Hausnummer')}
+    {field('postalCode', 'PLZ')}
+    {field('city', 'Ort')}
+    {field('country', 'Land')}
   </div>;
 }
 
@@ -56,7 +50,6 @@ function DeliveryAddressEditor({ address, index, isLast, isOpen, onToggle, onCha
       </div>
     </div>
     <div className="delivery-address-body" id={`delivery-${address.id}-content`} hidden={!isOpen}>
-      <Field className="delivery-address-label-field" id={`delivery-${address.id}-label`} label="Bezeichnung für die Auswahl" helpText="Dient nur der späteren Auswahl, z. B. Hauptlager, Warenannahme oder Filiale." required value={address.label} onChange={(event) => onChange('label', event.target.value)} />
       <DeliveryAddressFields address={address} idPrefix={`delivery-${address.id}`} onChange={onChange} />
     </div>
   </section>;
@@ -96,10 +89,10 @@ export default function PartnerForm({
     <FormArea title="Angaben für die Schnellauswahl in Belege24-Dokumenten" hint="Diese Angaben können später schnell in z. B. Rechnungen, Angebote oder Lieferscheine übernommen werden.">
       <FormSection title="Anschrift">
         <div className="partner-master-grid partner-master-partner-grid">
-          <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname inkl. Rechtsform" inputRef={companyInputRef} value={combinedCompanyName} onChange={(event) => { onCompanyNameChange(event.target.value); update(['legalForm'], ''); }} />
+          <Field className="partner-master-span-two" id="partner-company-name" label="Firmenname" inputRef={companyInputRef} value={combinedCompanyName} onChange={(event) => { onCompanyNameChange(event.target.value); update(['legalForm'], ''); }} />
           <Field id="partner-department" label="Abteilung" value={partner.department} onChange={(event) => update(['department'], event.target.value)} />
           <Field id="partner-main-address-attention" label="Zusatz / zu Händen" value={partner.mainAddress.attention} onChange={(event) => update(['mainAddress', 'attention'], event.target.value)} />
-          <Field className="partner-master-span-two" id="partner-main-address-street" label="Straße" value={partner.mainAddress.street} onChange={(event) => update(['mainAddress', 'street'], event.target.value)} />
+          <Field id="partner-main-address-street" label="Straße" value={partner.mainAddress.street} onChange={(event) => update(['mainAddress', 'street'], event.target.value)} />
           <Field id="partner-main-address-house-number" label="Hausnummer" value={partner.mainAddress.houseNumber} onChange={(event) => update(['mainAddress', 'houseNumber'], event.target.value)} />
           <Field id="partner-main-address-postal-code" label="PLZ" value={partner.mainAddress.postalCode} onChange={(event) => update(['mainAddress', 'postalCode'], event.target.value)} />
           <Field id="partner-main-address-city" label="Ort" value={partner.mainAddress.city} onChange={(event) => update(['mainAddress', 'city'], event.target.value)} />
