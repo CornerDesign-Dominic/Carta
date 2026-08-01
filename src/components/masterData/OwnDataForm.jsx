@@ -13,7 +13,7 @@ function FormSection({ title, children }) { return <section className="own-data-
 export default function OwnDataForm({ record, entryStatus, companyInputRef, onUpdateField, actions }) {
   const field = (path, label, className = '', type = 'text', extra = {}) => <Field id={`own-data-${record.id}-${path.join('-')}`} label={label} className={className} type={type} value={path.reduce((value, key) => value[key], record)} onChange={(event) => onUpdateField(path, event.target.value)} {...extra} />;
   const registerEntryValue = [record.taxAndRegister.commercialRegister, record.taxAndRegister.registerNumber].filter(Boolean).join(' · ');
-  const statusLabel = entryStatus === 'new' ? 'Neu' : entryStatus === 'edited' ? 'Bearbeitet' : 'Gespeichert';
+  const statusLabel = entryStatus === 'new' ? 'Neu' : entryStatus === 'edited' ? 'Bearbeitet' : 'Im Datenblatt';
   const statusClass = entryStatus === 'new' ? 'is-new' : entryStatus === 'edited' ? 'is-edited' : 'is-saved';
   return <form className="partner-form own-data-form" onSubmit={(event) => event.preventDefault()}>
     <div className={`own-data-status-card ${statusClass}`}><span className="own-data-status-name" title={record.address.companyName || 'Unbenanntes Unternehmen'}>{record.address.companyName || 'Unbenanntes Unternehmen'}</span><span className="own-data-status-label">{statusLabel}</span></div>

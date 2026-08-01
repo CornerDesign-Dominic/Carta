@@ -102,7 +102,7 @@ export default function CatalogItemForm({ item, entryStatus, titleInputRef, onUp
   const descriptionPath = isTextService ? ['descriptions', 'textInvoice'] : isDeliveryItem ? ['descriptions', 'deliveryNote'] : ['descriptions', 'standard'];
   const descriptionTitle = isTextService ? 'Ausführliche Leistungsbeschreibung' : isDeliveryItem ? 'Lieferbeschreibung' : isGoods ? 'Beschreibungen' : 'Beschreibung';
   const entryName = item.title.trim() || ({ service: 'Unbenannte Leistung', goods: 'Unbenannter Artikel', textService: 'Unbenannte Textleistung', deliveryItem: 'Unbenannte Lieferscheinposition' }[item.type] ?? 'Unbenannter Eintrag');
-  const entryStatusLabel = { new: 'Neu', saved: 'Gespeichert', edited: 'Bearbeitet' }[entryStatus] ?? 'Neu';
+  const entryStatusLabel = { new: 'Neu', saved: 'Im Datenblatt', edited: 'Bearbeitet' }[entryStatus] ?? 'Neu';
 
   return <form className="partner-form catalog-item-form" onSubmit={(event) => event.preventDefault()}>
     <div className={`catalog-item-form-status-card is-${entryStatus}`}>

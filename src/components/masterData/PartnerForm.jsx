@@ -65,7 +65,7 @@ export default function PartnerForm({
   const hasPendingDeliveryRef = useRef(false);
   const update = (path, value) => onUpdateField(path, value);
   const combinedCompanyName = [partner.companyName, partner.legalForm].filter(Boolean).join(' ');
-  const statusLabel = entryStatus === 'new' ? 'Neu' : entryStatus === 'edited' ? 'Bearbeitet' : 'Gespeichert';
+  const statusLabel = entryStatus === 'new' ? 'Neu' : entryStatus === 'edited' ? 'Bearbeitet' : 'Im Datenblatt';
   const statusClass = entryStatus === 'new' ? 'is-new' : entryStatus === 'edited' ? 'is-edited' : 'is-saved';
 
   useEffect(() => {
