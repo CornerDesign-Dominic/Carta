@@ -41,7 +41,19 @@ export async function importReminderPdf(
   if (readResult.status === 'unreadable-pdf') {
     return { status: 'unreadable-pdf', message: 'Die PDF konnte nicht gelesen werden.' };
   }
-  if (readResult.status === 'invalid-json' || readResult.status === 'invalid-document') {
+  if (readResult.status === 'invalid-json') {
+    return {
+      status: 'invalid-data',
+      message: 'Die eingebetteten Belege24-Daten sind ungültig oder beschädigt.',
+    };
+  }
+  if (readResult.status === 'invalid-document') {
+    if (readResult.errors.some((error) => error.startsWith('documentData.reminderVariant must be'))) {
+      return {
+        status: 'wrong-reminder-variant',
+        message: 'Diese Belege24-PDF enthält keine unterstützte Mahnungsvariante.',
+      };
+    }
     return {
       status: 'invalid-data',
       message: 'Die eingebetteten Belege24-Daten sind ungültig oder beschädigt.',

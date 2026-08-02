@@ -154,6 +154,7 @@ describe('belege24-document constants and validation', () => {
       'reminder',
       'receipt',
       'selfReceipt',
+      'businessLetter',
     ]);
   });
 

@@ -14,7 +14,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@sparticuz/chromium": "latest",
+    "@sparticuz/chromium": "143.0.0",
     "pdf-lib": "^1.17.1",
     "puppeteer-core": "latest",
     "react": "latest",

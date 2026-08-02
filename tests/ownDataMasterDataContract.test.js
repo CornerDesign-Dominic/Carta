@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { PDFDocument } from 'pdf-lib';
 import { embedJsonAttachmentInPdf } from '../src/documentModel/pdfAttachment.js';
-import { createOwnDataRecord, duplicateOwnDataRecord } from '../src/masterData/ownDataModel.js';
+import { createOwnDataEditorState, createOwnDataRecord, ownDataEditorReducer } from '../src/masterData/ownDataModel.js';
 import {
   createOwnDataMasterDataDocument,
   importOwnDataMasterDataPdf,
@@ -25,12 +25,14 @@ function createDocument(records = [createRecord()]) {
 }
 
 describe('own data master data model and contract', () => {
-  it('creates a standard record and duplicates it with a distinct stable ID', () => {
+  it('creates a standard record and keeps only the current company in the editor', () => {
     const record = createOwnDataRecord();
-    const copy = duplicateOwnDataRecord(record);
+    const replacement = createOwnDataRecord({ companyName: 'Nachfolger GmbH' });
+    const state = ownDataEditorReducer(createOwnDataEditorState(), { type: 'upsert', record });
+    const replacedState = ownDataEditorReducer(state, { type: 'upsert', record: replacement });
+
     expect(record).toMatchObject({ id: expect.stringMatching(/^own-data-/), address: { country: 'Deutschland' }, settings: { isSmallBusiness: false, defaultPaymentTermDays: '' }, isActive: true });
-    expect(copy.id).not.toBe(record.id);
-    expect(copy.address).toEqual(record.address);
+    expect(replacedState).toMatchObject({ records: [replacement], activeRecordId: replacement.id });
   });
 
   it('normalizes optional fields while retaining records and their IDs in order', () => {
