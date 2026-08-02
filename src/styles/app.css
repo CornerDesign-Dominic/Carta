@@ -3026,6 +3026,307 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   }
 }
 
+/* Gemeinsames Stammdatenpanel in Dokumentgeneratoren (Phase 1). */
+.documents-workspace {
+  min-width: 0;
+}
+
+.master-data-panel {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 340px);
+  margin: 24px auto 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+  color: var(--color-text);
+}
+
+.master-data-panel.is-collapsed {
+  display: block;
+  width: auto;
+  margin-top: 0;
+  padding: 6px;
+}
+
+.master-data-panel > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.master-data-panel h2,
+.master-data-panel h3,
+.master-data-panel p {
+  margin: 0;
+}
+
+.master-data-panel h2 {
+  font-size: 0.96rem;
+}
+
+.master-data-panel > header p,
+.master-data-panel small,
+.master-data-panel em,
+.master-data-panel-status {
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.master-data-panel > header > button,
+.master-data-panel.is-collapsed > button,
+.master-data-loaded-files button {
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 5px 7px;
+  background: var(--color-card);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.master-data-panel-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.master-data-panel-tabs button {
+  min-width: 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 7px 4px;
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.master-data-panel-tabs button.is-active {
+  border-bottom-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.master-data-panel-tabs button:focus-visible,
+.master-data-panel > header > button:focus-visible,
+.master-data-panel.is-collapsed > button:focus-visible,
+.master-data-loaded-files button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.master-data-file-dropzone {
+  display: grid;
+  justify-items: start;
+  gap: 7px;
+  padding: 10px;
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-card) 70%, transparent);
+}
+
+.master-data-file-dropzone.is-dragging {
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+}
+
+.master-data-file-dropzone p {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.master-data-file-dropzone small {
+  font-size: 0.72rem;
+}
+
+.master-data-loaded-files {
+  display: grid;
+  gap: 6px;
+}
+
+.master-data-loaded-files h3 {
+  font-size: 0.78rem;
+}
+
+.master-data-loaded-files ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.master-data-loaded-files li {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-card);
+}
+
+.master-data-loaded-files li > div,
+.master-data-loaded-files li span {
+  display: grid;
+  min-width: 0;
+}
+
+.master-data-loaded-files strong {
+  overflow: hidden;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.master-data-loaded-files span {
+  color: var(--color-muted);
+  font-size: 0.7rem;
+}
+
+.master-data-panel-content {
+  display: grid;
+  gap: 9px;
+}
+
+.master-data-panel-search {
+  display: grid;
+  gap: 3px;
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+.master-data-panel-search input,
+.master-data-panel-search select {
+  min-width: 0;
+  min-height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 6px 8px;
+  background: var(--color-card);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.master-data-panel-filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(92px, 0.48fr);
+  gap: 7px;
+}
+
+.master-data-record-list {
+  display: grid;
+  gap: 5px;
+  max-height: 270px;
+  overflow: auto;
+}
+
+.master-data-record-list > button,
+.master-data-catalog-record {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 8px;
+  background: var(--color-card);
+  color: var(--color-text);
+  text-align: left;
+}
+
+.master-data-record-list > button.is-selected,
+.master-data-catalog-record:has(input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
+}
+
+.master-data-record-list strong,
+.master-data-catalog-record strong {
+  overflow: hidden;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.master-data-record-list span,
+.master-data-catalog-record small,
+.master-data-catalog-record em {
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.master-data-catalog-record {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  cursor: pointer;
+}
+
+.master-data-catalog-record input {
+  width: 15px;
+  height: 15px;
+  margin: 1px 0 0;
+  accent-color: var(--color-primary);
+}
+
+.master-data-catalog-record span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.master-data-panel-empty {
+  padding: 10px 0;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.master-data-panel-status {
+  min-height: 1.35em;
+}
+
+@media (min-width: 1280px) {
+  .documents-layout.has-master-data-panel {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 18px;
+    max-width: 1400px;
+  }
+
+  .documents-layout.has-master-data-panel .document-sidebar {
+    position: sticky;
+    top: 28px;
+    left: auto;
+    width: 190px;
+    padding: 12px;
+  }
+
+  .documents-layout.has-master-data-panel .documents-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 18px;
+  }
+
+  .documents-layout.has-master-data-panel .master-data-panel {
+    margin: 0;
+  }
+}
+
 .invoice-project-block.is-single-column {
   grid-template-columns: minmax(0, 1fr);
 }

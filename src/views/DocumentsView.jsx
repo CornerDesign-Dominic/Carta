@@ -4,6 +4,7 @@ import CreditNoteDocumentEditor from '../components/CreditNoteDocumentEditor.jsx
 import DeliveryNoteDocumentEditor from '../components/DeliveryNoteDocumentEditor.jsx';
 import DocumentSidebar from '../components/DocumentSidebar.jsx';
 import InvoiceDocumentEditor from '../components/InvoiceDocumentEditor.jsx';
+import MasterDataPanel from '../components/masterDataPanel/MasterDataPanel.jsx';
 import OfferDocumentEditor from '../components/OfferDocumentEditor.jsx';
 import ReceiptDocumentEditor from '../components/ReceiptDocumentEditor.jsx';
 import ReminderDocumentEditor from '../components/ReminderDocumentEditor.jsx';
@@ -169,6 +170,7 @@ export default function DocumentsView({
   const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
+  const showMasterDataPanel = activeDocument?.formType === 'invoice';
   const showDocumentDescription = ![
     'write-invoice',
     'write-offer',
@@ -227,13 +229,14 @@ export default function DocumentsView({
   }
 
   return (
-    <main className="documents-layout">
+    <main className={`documents-layout${showMasterDataPanel ? ' has-master-data-panel' : ''}`}>
       <DocumentSidebar
         activeId={activeDocumentId}
         activeParentId={parentId}
         onSelect={handleSelectDocument}
       />
 
+      <div className="documents-workspace">
       <section className="paper-page document-paper" aria-labelledby="document-title">
         {isOverview && <DocumentOverview />}
 
@@ -262,6 +265,8 @@ export default function DocumentsView({
           </>
         )}
       </section>
+      {showMasterDataPanel && <MasterDataPanel />}
+      </div>
     </main>
   );
 }
