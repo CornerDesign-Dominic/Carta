@@ -237,36 +237,36 @@ export default function DocumentsView({
       />
 
       <div className="documents-workspace">
-      <section className="paper-page document-paper" aria-labelledby="document-title">
-        {isOverview && <DocumentOverview />}
+        <section className="paper-page document-paper" aria-labelledby="document-title">
+          {isOverview && <DocumentOverview />}
 
-        {!isOverview && (
-          <>
-            <h1 id="document-title">{activeDocument.title}</h1>
-            {showDocumentDescription && (
-              <p className="intro document-intro">{activeDocument.description}</p>
-            )}
+          {!isOverview && (
+            <>
+              <h1 id="document-title">{activeDocument.title}</h1>
+              {showDocumentDescription && (
+                <p className="intro document-intro">{activeDocument.description}</p>
+              )}
 
-            {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor />}
-            {activeDocument.formType === 'businessLetter' && <BusinessLetterDocumentEditor />}
-            {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
-            {activeDocument.formType === 'invoice' && (
-              <InvoiceDocumentEditor
-                initialSmallBusiness={activeInvoiceSmallBusiness}
-                invoiceVariant={activeInvoiceVariant}
-                onInvoiceVariantChange={handleInvoiceVariantChange}
-                onSmallBusinessChange={handleInvoiceSmallBusinessChange}
-              />
-            )}
-            {activeDocument.formType === 'offer' && <OfferDocumentEditor />}
-            {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor />}
-            {activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}
-            {activeDocument.formType === 'selfReceipt' && <SelfReceiptDocumentEditor />}
-          </>
-        )}
-      </section>
-      {showMasterDataPanel && <MasterDataPanel />}
+              {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor />}
+              {activeDocument.formType === 'businessLetter' && <BusinessLetterDocumentEditor />}
+              {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
+              {activeDocument.formType === 'invoice' && (
+                <InvoiceDocumentEditor
+                  initialSmallBusiness={activeInvoiceSmallBusiness}
+                  invoiceVariant={activeInvoiceVariant}
+                  onInvoiceVariantChange={handleInvoiceVariantChange}
+                  onSmallBusinessChange={handleInvoiceSmallBusinessChange}
+                />
+              )}
+              {activeDocument.formType === 'offer' && <OfferDocumentEditor />}
+              {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor />}
+              {activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}
+              {activeDocument.formType === 'selfReceipt' && <SelfReceiptDocumentEditor />}
+            </>
+          )}
+        </section>
       </div>
+      {showMasterDataPanel && <MasterDataPanel />}
     </main>
   );
 }

@@ -3299,12 +3299,34 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-height: 1.35em;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
   .documents-layout.has-master-data-panel {
+    --document-sidebar-width: 216px;
+    --document-workspace-width: 1000px;
+    --master-data-panel-width: 366px;
+    --master-data-panel-collapsed-width: 140px;
     display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
+    grid-template-columns:
+      var(--document-sidebar-width)
+      minmax(var(--document-workspace-width), var(--document-workspace-width))
+      var(--master-data-panel-width);
+    align-items: start;
     gap: 18px;
-    max-width: 1400px;
+    width: max-content;
+    min-width: calc(
+      var(--document-sidebar-width) + var(--document-workspace-width) + var(--master-data-panel-width) + 36px
+    );
+    max-width: none;
+  }
+
+  .documents-layout.has-master-data-panel:has(.master-data-panel.is-collapsed) {
+    grid-template-columns:
+      var(--document-sidebar-width)
+      minmax(var(--document-workspace-width), var(--document-workspace-width))
+      var(--master-data-panel-collapsed-width);
+    min-width: calc(
+      var(--document-sidebar-width) + var(--document-workspace-width) + var(--master-data-panel-collapsed-width) + 36px
+    );
   }
 
   .documents-layout.has-master-data-panel .document-sidebar {
@@ -3316,13 +3338,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   }
 
   .documents-layout.has-master-data-panel .documents-workspace {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 18px;
+    grid-column: 2;
+    width: var(--document-workspace-width);
+    min-width: var(--document-workspace-width);
   }
 
   .documents-layout.has-master-data-panel .master-data-panel {
+    grid-column: 3;
     margin: 0;
   }
 }
