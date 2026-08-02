@@ -2,21 +2,25 @@ function clean(value) {
   return String(value ?? '').trim();
 }
 
-export function mapPartnerToInvoice(record) {
+export function mapPartnerRecipient(record) {
   const address = record?.mainAddress ?? {};
 
   return {
-    recipient: {
-      companyName: clean(record?.companyName),
-      attention: clean(address.attention),
-      name: clean(address.department),
-      address: {
-        street: clean(address.street),
-        houseNumber: clean(address.houseNumber),
-        postalCode: clean(address.postalCode),
-        city: clean(address.city),
-      },
+    companyName: clean(record?.companyName),
+    attention: clean(address.attention),
+    name: clean(address.department),
+    address: {
+      street: clean(address.street),
+      houseNumber: clean(address.houseNumber),
+      postalCode: clean(address.postalCode),
+      city: clean(address.city),
     },
+  };
+}
+
+export function mapPartnerToInvoice(record) {
+  return {
+    recipient: mapPartnerRecipient(record),
     references: {
       customerNumber: clean(record?.customerNumber),
     },

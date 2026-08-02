@@ -14,6 +14,9 @@ import { paginateMeasuredItems, takeMeasuredText } from './documentExport/Measur
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapOfferToDocument } from '../documentModel/additionalDocumentModel.js';
+import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import { applyPartnerToInvoice, hasInvoiceRecipientData, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
+import { isCatalogItemSupportedForOffer, mapCatalogItemsToOfferPositions } from './masterDataPanel/mappings/catalogItemsToOffer.js';
 
 const initialOfferLabels = {
   title: 'Angebot',
@@ -542,7 +545,7 @@ function createOfferPrintItems({ positions, textBlocks }) {
   ];
 }
 
-export default function OfferDocumentEditor() {
+export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -562,6 +565,37 @@ export default function OfferDocumentEditor() {
   const [offerData, setOfferData] = useState(defaultOfferData);
   const [textBlocks, setTextBlocks] = useState(defaultOfferTextBlocks);
   const [positions, setPositions] = useState([createOfferPosition()]);
+  const offerDataRef = useRef(offerData);
+  offerDataRef.current = offerData;
+  const offerMasterDataAdapter = useMemo(() => ({
+    applyOwnData(record) {
+      setOfferData((current) => applyOwnDataToInvoice(current, record));
+    },
+    hasOwnDocumentData() {
+      return hasInvoiceOwnData(offerDataRef.current);
+    },
+    removeOwnData() {
+      setOfferData((current) => removeOwnDataFromInvoice(current));
+    },
+    applyPartner(record) {
+      setOfferData((current) => applyPartnerToInvoice(current, record));
+    },
+    hasRecipientData() {
+      return hasInvoiceRecipientData(offerDataRef.current);
+    },
+    removePartner() {
+      setOfferData((current) => removePartnerFromInvoice(current));
+    },
+    canAddCatalogItem(record) {
+      return isCatalogItemSupportedForOffer(record);
+    },
+    addCatalogItems(records) {
+      const newPositions = mapCatalogItemsToOfferPositions(records);
+      if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
+      setPositions((current) => [...current, ...newPositions]);
+      return { ok: true, count: newPositions.length };
+    },
+  }), []);
   const initialGeneratorStateRef = useRef(null);
   const currentGeneratorState = { labels, offerData, positions, textBlocks, fieldConfig };
   if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
@@ -569,6 +603,12 @@ export default function OfferDocumentEditor() {
     () => createOfferViewData(offerData),
     [offerData],
   );
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(offerMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [offerMasterDataAdapter, onMasterDataAdapterChange]);
 
   useEffect(() => {
     textBlocks.forEach((block) => {

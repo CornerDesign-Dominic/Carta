@@ -17,6 +17,15 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapDeliveryNoteToDocument } from '../documentModel/additionalDocumentModel.js';
+import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import {
+  applyDeliveryAddressToDeliveryNote,
+  applyPartnerToDeliveryNote,
+  hasDeliveryNoteRecipientData,
+  removeDeliveryAddressFromDeliveryNote,
+  removePartnerFromDeliveryNote,
+} from './masterDataPanel/mappings/partnerToDeliveryNote.js';
+import { isCatalogItemSupportedForDeliveryNote, mapCatalogItemsToDeliveryNotePositions } from './masterDataPanel/mappings/catalogItemsToDeliveryNote.js';
 
 
 const initialDeliveryNoteLabels = {
@@ -497,7 +506,7 @@ function createPdfFileName(title, number) {
   return `${cleanTitle || 'lieferschein'}-${cleanNumber || 'dokument'}.pdf`;
 }
 
-export default function DeliveryNoteDocumentEditor() {
+export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -517,6 +526,44 @@ export default function DeliveryNoteDocumentEditor() {
   const [deliveryNoteData, setDeliveryNoteData] = useState(defaultDeliveryNoteData);
   const [textBlocks, setTextBlocks] = useState(defaultDeliveryNoteTextBlocks);
   const [positions, setPositions] = useState([createDeliveryNotePosition()]);
+  const deliveryNoteDataRef = useRef(deliveryNoteData);
+  deliveryNoteDataRef.current = deliveryNoteData;
+  const deliveryNoteMasterDataAdapter = useMemo(() => ({
+    applyOwnData(record) {
+      setDeliveryNoteData((current) => applyOwnDataToInvoice(current, record));
+    },
+    hasOwnDocumentData() {
+      return hasInvoiceOwnData(deliveryNoteDataRef.current);
+    },
+    removeOwnData() {
+      setDeliveryNoteData((current) => removeOwnDataFromInvoice(current));
+    },
+    applyPartner(record) {
+      setDeliveryNoteData((current) => applyPartnerToDeliveryNote(current, record));
+    },
+    hasRecipientData() {
+      return hasDeliveryNoteRecipientData(deliveryNoteDataRef.current);
+    },
+    removePartner() {
+      setDeliveryNoteData((current) => removePartnerFromDeliveryNote(current));
+    },
+    canManageDeliveryAddresses: true,
+    applyDeliveryAddress(address) {
+      setDeliveryNoteData((current) => applyDeliveryAddressToDeliveryNote(current, address));
+    },
+    removeDeliveryAddress(partner) {
+      setDeliveryNoteData((current) => removeDeliveryAddressFromDeliveryNote(current, partner));
+    },
+    canAddCatalogItem(record) {
+      return isCatalogItemSupportedForDeliveryNote(record);
+    },
+    addCatalogItems(records) {
+      const newPositions = mapCatalogItemsToDeliveryNotePositions(records);
+      if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
+      setPositions((current) => [...current, ...newPositions]);
+      return { ok: true, count: newPositions.length };
+    },
+  }), []);
   const initialGeneratorStateRef = useRef(null);
   const currentGeneratorState = { labels, deliveryNoteData, positions, textBlocks, fieldConfig };
   if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
@@ -526,6 +573,12 @@ export default function DeliveryNoteDocumentEditor() {
     () => createDeliveryNoteViewData(deliveryNoteData),
     [deliveryNoteData],
   );
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(deliveryNoteMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [deliveryNoteMasterDataAdapter, onMasterDataAdapterChange]);
 
   useEffect(() => {
     textBlocks.forEach((block) => {

@@ -168,10 +168,10 @@ export default function DocumentsView({
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
   const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
-  const [invoiceMasterDataAdapter, setInvoiceMasterDataAdapter] = useState(null);
+  const [masterDataAdapter, setMasterDataAdapter] = useState(null);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
-  const showMasterDataPanel = activeDocument?.formType === 'invoice';
+  const showMasterDataPanel = ['invoice', 'offer', 'deliveryNote', 'creditNote', 'reminder', 'businessLetter', 'receipt', 'selfReceipt'].includes(activeDocument?.formType);
   const showDocumentDescription = ![
     'write-invoice',
     'write-offer',
@@ -229,8 +229,8 @@ export default function DocumentsView({
     }, { preserveDocumentsView: true, replace: true });
   }
 
-  const handleInvoiceMasterDataAdapterChange = useCallback((adapter) => {
-    setInvoiceMasterDataAdapter((current) => current === adapter ? current : adapter);
+  const handleMasterDataAdapterChange = useCallback((adapter) => {
+    setMasterDataAdapter((current) => current === adapter ? current : adapter);
   }, []);
 
   return (
@@ -252,27 +252,27 @@ export default function DocumentsView({
                 <p className="intro document-intro">{activeDocument.description}</p>
               )}
 
-              {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor />}
-              {activeDocument.formType === 'businessLetter' && <BusinessLetterDocumentEditor />}
-              {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor />}
+              {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'businessLetter' && <BusinessLetterDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
               {activeDocument.formType === 'invoice' && (
                 <InvoiceDocumentEditor
                   initialSmallBusiness={activeInvoiceSmallBusiness}
                   invoiceVariant={activeInvoiceVariant}
                   onInvoiceVariantChange={handleInvoiceVariantChange}
-                  onMasterDataAdapterChange={handleInvoiceMasterDataAdapterChange}
+                  onMasterDataAdapterChange={handleMasterDataAdapterChange}
                   onSmallBusinessChange={handleInvoiceSmallBusinessChange}
                 />
               )}
-              {activeDocument.formType === 'offer' && <OfferDocumentEditor />}
-              {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor />}
-              {activeDocument.formType === 'reminder' && <ReminderDocumentEditor />}
-              {activeDocument.formType === 'selfReceipt' && <SelfReceiptDocumentEditor />}
+              {activeDocument.formType === 'offer' && <OfferDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'reminder' && <ReminderDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'selfReceipt' && <SelfReceiptDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
             </>
           )}
         </section>
       </div>
-      {showMasterDataPanel && <MasterDataPanel documentAdapter={invoiceMasterDataAdapter} documentType="invoice" documentVariant={activeInvoiceVariant} />}
+      {showMasterDataPanel && <MasterDataPanel documentAdapter={masterDataAdapter} documentType={activeDocument.formType} documentVariant={activeDocument.formType === 'invoice' ? activeInvoiceVariant : undefined} />}
     </main>
   );
 }

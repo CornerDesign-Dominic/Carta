@@ -13,6 +13,12 @@ import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { createDocumentDataCheckState, getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { mapSelfReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
+import { applyOwnDataToSelfReceipt, hasSelfReceiptOwnData, removeOwnDataFromSelfReceipt } from './masterDataPanel/mappings/ownDataToSelfReceipt.js';
+import {
+  applyPartnerToSelfReceipt,
+  hasSelfReceiptPaymentRecipientData,
+  removePartnerFromSelfReceipt,
+} from './masterDataPanel/mappings/partnerToSelfReceipt.js';
 
 
 const initialSelfReceiptLabels = {
@@ -511,7 +517,7 @@ function createSelfReceiptPrintItems({ expenseInfo, positions }) {
   ];
 }
 
-export default function SelfReceiptDocumentEditor() {
+export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -531,6 +537,29 @@ export default function SelfReceiptDocumentEditor() {
   const dateInputRefs = useRef({});
   const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
+  const selfReceiptDataRef = useRef(selfReceiptData);
+  selfReceiptDataRef.current = selfReceiptData;
+  const selfReceiptMasterDataAdapter = useMemo(() => ({
+    partnerRoleLabel: 'Zahlungsempfänger / Lieferant',
+    applyOwnData(record) {
+      setSelfReceiptData((current) => applyOwnDataToSelfReceipt(current, record));
+    },
+    hasOwnDocumentData() {
+      return hasSelfReceiptOwnData(selfReceiptDataRef.current);
+    },
+    removeOwnData() {
+      setSelfReceiptData((current) => removeOwnDataFromSelfReceipt(current));
+    },
+    applyPartner(record) {
+      setSelfReceiptData((current) => applyPartnerToSelfReceipt(current, record));
+    },
+    hasRecipientData() {
+      return hasSelfReceiptPaymentRecipientData(selfReceiptDataRef.current);
+    },
+    removePartner() {
+      setSelfReceiptData((current) => removePartnerFromSelfReceipt(current));
+    },
+  }), []);
   const initialGeneratorStateRef = useRef(null);
   const currentGeneratorState = { labels, selfReceiptData, positions, fieldConfig };
   if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
@@ -538,6 +567,12 @@ export default function SelfReceiptDocumentEditor() {
     () => createSelfReceiptViewData(selfReceiptData),
     [selfReceiptData],
   );
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(selfReceiptMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [onMasterDataAdapterChange, selfReceiptMasterDataAdapter]);
 
   useEffect(() => {
     Object.values(detailTextareaRefs.current).forEach((element) => {

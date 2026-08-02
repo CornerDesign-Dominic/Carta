@@ -18,6 +18,12 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapReminderToDocument } from '../documentModel/reminderMapping.js';
+import { applyOwnDataToReminder, hasReminderOwnData, removeOwnDataFromReminder } from './masterDataPanel/mappings/ownDataToReminder.js';
+import {
+  applyPartnerToReminder,
+  hasReminderRecipientData,
+  removePartnerFromReminder,
+} from './masterDataPanel/mappings/partnerToReminder.js';
 import {
   DEFAULT_REMINDER_VARIANT,
   REMINDER_VARIANT_IDS,
@@ -482,7 +488,7 @@ function ReminderVariantControls({ activeVariant, onSelect }) {
   );
 }
 
-export default function ReminderDocumentEditor() {
+export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -504,6 +510,28 @@ export default function ReminderDocumentEditor() {
   const [textBlocks, setTextBlocks] = useState(defaultReminderTextBlocks);
   const [openItems, setOpenItems] = useState([createOpenItem()]);
   const [charges, setCharges] = useState({ interest: '0', reminderFee: '5.00' });
+  const reminderDataRef = useRef(reminderData);
+  reminderDataRef.current = reminderData;
+  const reminderMasterDataAdapter = useMemo(() => ({
+    applyOwnData(record) {
+      setReminderData((current) => applyOwnDataToReminder(current, record));
+    },
+    hasOwnDocumentData() {
+      return hasReminderOwnData(reminderDataRef.current);
+    },
+    removeOwnData() {
+      setReminderData((current) => removeOwnDataFromReminder(current));
+    },
+    applyPartner(record) {
+      setReminderData((current) => applyPartnerToReminder(current, record));
+    },
+    hasRecipientData() {
+      return hasReminderRecipientData(reminderDataRef.current);
+    },
+    removePartner() {
+      setReminderData((current) => removePartnerFromReminder(current));
+    },
+  }), []);
   const initialGeneratorStateRef = useRef(null);
   const normalizedReminderVariant = REMINDER_VARIANT_IDS.includes(reminderVariant)
     ? reminderVariant
@@ -525,6 +553,12 @@ export default function ReminderDocumentEditor() {
     () => createReminderViewData(reminderData),
     [reminderData],
   );
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(reminderMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [onMasterDataAdapterChange, reminderMasterDataAdapter]);
 
   useEffect(() => {
     textBlocks.forEach((block) => {

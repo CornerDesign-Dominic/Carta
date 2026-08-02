@@ -9,6 +9,12 @@ import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { mapBusinessLetterToDocument } from '../documentModel/additionalDocumentModel.js';
+import { applyOwnDataToBusinessLetter, hasBusinessLetterOwnData, removeOwnDataFromBusinessLetter } from './masterDataPanel/mappings/ownDataToBusinessLetter.js';
+import {
+  applyPartnerToBusinessLetter,
+  hasBusinessLetterRecipientData,
+  removePartnerFromBusinessLetter,
+} from './masterDataPanel/mappings/partnerToBusinessLetter.js';
 
 const initialLabels = {
   title: 'Geschäftsbrief',
@@ -204,7 +210,7 @@ function buildLetterText(content, labels, hiddenFields) {
   ].filter(Boolean).join('\n\n');
 }
 
-export default function BusinessLetterDocumentEditor() {
+export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [labels, setLabels] = useState(initialLabels);
@@ -225,6 +231,29 @@ export default function BusinessLetterDocumentEditor() {
   const dateInputRefs = useRef({});
   const textRefs = useRef({});
   const initialStateRef = useRef(null);
+  const letterDataRef = useRef(letterData);
+  letterDataRef.current = letterData;
+  const businessLetterMasterDataAdapter = useMemo(() => ({
+    partnerRoleLabel: 'Briefempfänger',
+    applyOwnData(record) {
+      setLetterData((current) => applyOwnDataToBusinessLetter(current, record));
+    },
+    hasOwnDocumentData() {
+      return hasBusinessLetterOwnData(letterDataRef.current);
+    },
+    removeOwnData() {
+      setLetterData((current) => removeOwnDataFromBusinessLetter(current));
+    },
+    applyPartner(record) {
+      setLetterData((current) => applyPartnerToBusinessLetter(current, record));
+    },
+    hasRecipientData() {
+      return hasBusinessLetterRecipientData(letterDataRef.current);
+    },
+    removePartner() {
+      setLetterData((current) => removePartnerFromBusinessLetter(current));
+    },
+  }), []);
   const currentState = { labels, letterData, content, fieldConfig };
   if (!initialStateRef.current) initialStateRef.current = structuredClone(currentState);
   const { sender, recipient, details, footerLines } = useMemo(() => createViewData(letterData), [letterData]);
@@ -233,6 +262,12 @@ export default function BusinessLetterDocumentEditor() {
     { type: 'text', id: 'subject', role: 'subject', text: content.subject },
     { type: 'text', id: 'letter', role: 'letter', text: buildLetterText(content, labels, letterContentHidden) },
   ], [content, labels, letterContentHidden]);
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(businessLetterMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [businessLetterMasterDataAdapter, onMasterDataAdapterChange]);
 
   useEffect(() => {
     Object.values(textRefs.current).forEach(resizeTextarea);

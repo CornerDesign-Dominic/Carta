@@ -18,6 +18,16 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { mapCreditNoteToDocument } from '../documentModel/creditNoteMapping.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
+import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import {
+  applyPartnerToCreditNote,
+  hasCreditNoteRecipientData,
+  removePartnerFromCreditNote,
+} from './masterDataPanel/mappings/partnerToCreditNote.js';
+import {
+  isCatalogItemSupportedForCreditNote,
+  mapCatalogItemsToCreditNotePositions,
+} from './masterDataPanel/mappings/catalogItemsToCreditNote.js';
 
 const smallBusinessStorageKey = 'carta.creditNote.smallBusinessMode';
 const smallBusinessTaxNotice =
@@ -779,7 +789,7 @@ function CreditNoteReferenceBlock({
   );
 }
 
-export default function CreditNoteDocumentEditor() {
+export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -801,6 +811,41 @@ export default function CreditNoteDocumentEditor() {
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState([createCreditNotePosition()]);
   const [isSmallBusiness, setIsSmallBusiness] = useState(readSmallBusinessPreference);
+  const offerDataRef = useRef(offerData);
+  const smallBusinessRef = useRef(isSmallBusiness);
+  offerDataRef.current = offerData;
+  smallBusinessRef.current = isSmallBusiness;
+  const creditNoteMasterDataAdapter = useMemo(() => ({
+    applyOwnData(record) {
+      setOfferData((current) => applyOwnDataToInvoice(current, record));
+      setIsSmallBusiness(record?.settings?.isSmallBusiness === true);
+    },
+    hasOwnDocumentData() {
+      return hasInvoiceOwnData(offerDataRef.current) || smallBusinessRef.current;
+    },
+    removeOwnData() {
+      setOfferData((current) => removeOwnDataFromInvoice(current));
+      setIsSmallBusiness(false);
+    },
+    applyPartner(record) {
+      setOfferData((current) => applyPartnerToCreditNote(current, record));
+    },
+    hasRecipientData() {
+      return hasCreditNoteRecipientData(offerDataRef.current);
+    },
+    removePartner() {
+      setOfferData((current) => removePartnerFromCreditNote(current));
+    },
+    canAddCatalogItem(record) {
+      return isCatalogItemSupportedForCreditNote(record);
+    },
+    addCatalogItems(records) {
+      const newPositions = mapCatalogItemsToCreditNotePositions(records);
+      if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
+      setPositions((current) => [...current, ...newPositions]);
+      return { ok: true, count: newPositions.length };
+    },
+  }), []);
   const normalizedCreditNoteVariant = creditNoteVariantIds.includes(creditNoteVariant)
     ? creditNoteVariant
     : 'creditNote';
@@ -824,6 +869,12 @@ export default function CreditNoteDocumentEditor() {
     () => createOfferViewData(offerData),
     [offerData],
   );
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(creditNoteMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [creditNoteMasterDataAdapter, onMasterDataAdapterChange]);
 
   useEffect(() => {
     textBlocks.forEach((block) => {

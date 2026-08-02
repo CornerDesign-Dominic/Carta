@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
@@ -7,6 +7,11 @@ import { getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
+import {
+  applyOwnDataToReceipt,
+  hasReceiptOwnData,
+  removeOwnDataFromReceipt,
+} from './masterDataPanel/mappings/ownDataToReceipt.js';
 
 
 const initialReceiptLabels = {
@@ -703,7 +708,7 @@ function ReceiptLineField({ dataCheck = false, label, onLabelChange, value, onCh
   );
 }
 
-export default function ReceiptDocumentEditor() {
+export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -719,6 +724,19 @@ export default function ReceiptDocumentEditor() {
     recipient: createFieldConfig(receiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(receiptFooterColumns[1]),
   });
+  const receiptDataRef = useRef(receiptData);
+  receiptDataRef.current = receiptData;
+  const receiptMasterDataAdapter = useMemo(() => ({
+    applyOwnData(record) {
+      setReceiptData((current) => applyOwnDataToReceipt(current, record));
+    },
+    hasOwnDocumentData() {
+      return hasReceiptOwnData(receiptDataRef.current);
+    },
+    removeOwnData() {
+      setReceiptData((current) => removeOwnDataFromReceipt(current));
+    },
+  }), []);
   const initialGeneratorStateRef = useRef(null);
   const currentGeneratorState = { labels, receiptData, amountCalculationSource, textBlocks, fieldConfig };
   if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
@@ -728,6 +746,12 @@ export default function ReceiptDocumentEditor() {
     () => createViewData(receiptData),
     [receiptData],
   );
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(receiptMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [onMasterDataAdapterChange, receiptMasterDataAdapter]);
   const formAmount = useMemo(
     () => ({ ...receiptData.amount, grossAmount: amount.grossAmount }),
     [amount.grossAmount, receiptData.amount],
