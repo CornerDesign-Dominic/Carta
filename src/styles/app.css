@@ -3299,6 +3299,49 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-height: 1.35em;
 }
 
+.master-data-applied-record {
+  display: grid;
+  gap: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 34%, var(--color-border));
+  border-radius: 6px;
+  padding: 9px;
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-card));
+}
+
+.master-data-applied-record > span {
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 760;
+}
+
+.master-data-applied-record > strong,
+.master-data-applied-record > small,
+.master-data-panel-note {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.master-data-applied-record > small,
+.master-data-panel-note {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.master-data-panel-actions {
+  display: grid;
+  gap: 7px;
+}
+
+.master-data-panel-actions .partner-button {
+  width: 100%;
+}
+
+.master-data-panel-note {
+  margin: 0;
+}
+
 @media (min-width: 1024px) {
   .documents-layout.has-master-data-panel {
     --document-sidebar-width: 216px;

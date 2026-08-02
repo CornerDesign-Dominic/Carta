@@ -20,6 +20,7 @@ import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapFinalInvoiceToDocument, mapGoodsInvoiceToDocument, mapPartialInvoiceToDocument, mapProgressInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
+import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
@@ -1175,7 +1176,7 @@ function FinalInvoiceSummary({ formatCurrency: formatSummaryCurrency, formatPerc
   );
 }
 
-export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVariant = 'standard', onInvoiceVariantChange, onSmallBusinessChange }) {
+export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVariant = 'standard', onInvoiceVariantChange, onMasterDataAdapterChange, onSmallBusinessChange }) {
   const normalizedInvoiceVariant = invoiceVariantIds.includes(invoiceVariant)
     ? invoiceVariant
     : 'standard';
@@ -1208,6 +1209,28 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const [isSmallBusinessInvoice, setIsSmallBusinessInvoice] = useState(() =>
     typeof initialSmallBusiness === 'boolean' ? initialSmallBusiness : readStoredSmallBusinessMode(),
   );
+  const invoiceDataRef = useRef(invoiceData);
+  const smallBusinessModeRef = useRef(isSmallBusinessInvoice);
+  const onSmallBusinessChangeRef = useRef(onSmallBusinessChange);
+  invoiceDataRef.current = invoiceData;
+  smallBusinessModeRef.current = isSmallBusinessInvoice;
+  onSmallBusinessChangeRef.current = onSmallBusinessChange;
+  const invoiceMasterDataAdapter = useMemo(() => ({
+    applyOwnData(record) {
+      setInvoiceData((current) => applyOwnDataToInvoice(current, record));
+      const nextSmallBusinessMode = record?.settings?.isSmallBusiness === true;
+      setIsSmallBusinessInvoice(nextSmallBusinessMode);
+      onSmallBusinessChangeRef.current?.(nextSmallBusinessMode);
+    },
+    hasOwnDocumentData() {
+      return hasInvoiceOwnData(invoiceDataRef.current) || smallBusinessModeRef.current;
+    },
+    removeOwnData() {
+      setInvoiceData((current) => removeOwnDataFromInvoice(current));
+      setIsSmallBusinessInvoice(false);
+      onSmallBusinessChangeRef.current?.(false);
+    },
+  }), []);
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState(() => [isTextInvoice ? createTextInvoicePosition() : createInvoicePosition()]);
   const [previousPayments, setPreviousPayments] = useState(() => [createPreviousPayment()]);
@@ -1241,6 +1264,12 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       setIsSmallBusinessInvoice(initialSmallBusiness);
     }
   }, [initialSmallBusiness]);
+
+  useEffect(() => {
+    onMasterDataAdapterChange?.(invoiceMasterDataAdapter);
+
+    return () => onMasterDataAdapterChange?.(null);
+  }, [invoiceMasterDataAdapter, onMasterDataAdapterChange]);
 
   useEffect(() => {
     setTextBlockSets((current) => {

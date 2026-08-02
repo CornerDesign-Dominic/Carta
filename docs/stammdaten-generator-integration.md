@@ -59,14 +59,36 @@ Phase 1 integriert das Panel zunächst in die Rechnungsvarianten (Standard-, War
 - Kompakte `aria-live`-Statusmeldungen und die sichtbare Datenschutzinformation.
 - Sichtbare Aktionsbuttons ohne Dokumentwirkung.
 
-**Phase 1 übernimmt ausdrücklich keine Daten in Dokumentgeneratoren.** Sie verändert weder Absender- noch Empfänger- oder Lieferanschriftfelder und fügt keine Positionen hinzu. Die Aktionsbuttons geben ausschließlich die neutrale Meldung aus, dass die Übernahme in einer folgenden Phase ergänzt wird.
+**Phase 1 übernahm ausdrücklich keine Daten in Dokumentgeneratoren.** Diese Einschränkung gilt weiterhin für Partner, Lieferanschriften sowie Leistungen und Artikel.
 
 ## Spätere Phasen
 
-1. **Phase 2 – Eigene Daten:** Auswahl in Absender, Rücksendezeile, Fußbereich und Vorschau übernehmen; Ersetzungswarnung und Rücksetzen ergänzen.
-2. **Phase 3 – Partner:** Partner- und Lieferanschrift getrennt in Empfänger- beziehungsweise Lieferfelder übernehmen; Warnungen und den Übernahmezustand des Panels ergänzen.
-3. **Phase 4 – Leistungen:** Mehrfach ausgewählte Einträge als neue Positionen anhängen, ohne bestehende Positionen zu überschreiben.
-4. **Phase 5 – Rollout:** Panel auf Angebote, Lieferscheine und weitere geeignete Generatoren ausweiten; mobile Detailoptimierung und dokumenttypspezifische Abnahme ergänzen.
+1. **Phase 2 – Eigene Daten:** abgeschlossen; die Auswahl wird in Rechnungen mit Ersetzungswarnung übernommen und kann wieder entfernt werden.
+2. **Phase 3 – Partner:** offen; Partner- und Lieferanschrift getrennt in Empfänger- beziehungsweise Lieferfelder übernehmen; Warnungen und den Übernahmezustand des Panels ergänzen.
+3. **Phase 4 – Leistungen:** offen; Mehrfachauswahl als neue Positionen anhängen, ohne bestehende Positionen zu überschreiben.
+4. **Phase 5 – Rollout:** offen; Panel auf Angebote, Lieferscheine und weitere geeignete Generatoren ausweiten; mobile Detailoptimierung und dokumenttypspezifische Abnahme ergänzen.
+
+## Phase 2: Eigene Daten → Rechnungen
+
+Phase 2 ist umgesetzt. Ausschließlich der Reiter **Eigene Daten** kann in die sechs Rechnungsvarianten (Standard-, Waren-, Text-, Abschlags-, Teil- und Schlussrechnung) übernommen werden. Partner, Lieferanschriften sowie Leistungen und Artikel bleiben unverändert offen.
+
+### Adapter-Schnittstelle
+
+`DocumentsView` übergibt dem Panel einen `documentAdapter`, den `InvoiceDocumentEditor` bereitstellt. Der Adapter besitzt ausschließlich `applyOwnData(record)`, `hasOwnDocumentData()` und `removeOwnData()`. Das Panel kennt keine internen Rechnungszustände und verändert weder DOM noch Local Storage.
+
+### Feldmapping
+
+Der reine Mapper `src/components/masterDataPanel/mappings/ownDataToInvoice.js` übernimmt Unternehmens- und Dokumentkopfname, Anschrift und Rücksendezeile, E-Mail, Telefon, Fax, Website, Steuernummer, USt-IdNr., Handelsregister/Registerdaten, Geschäftsführer/Inhaber sowie Bankname, IBAN und BIC. Nicht vorhandene Werte leeren die unterstützten Zielwerte. Das Rechnungsmodell besitzt kein fachliches Zahlungsziel-Feld; daher wird das optionale Standard-Zahlungsziel nicht übertragen. Das Land und der Kontoinhaber haben ebenfalls kein Ziel im aktuellen Rechnungsmodell.
+
+Der Kleinunternehmerstatus nutzt die bestehende Rechnungslogik und aktualisiert dadurch Berechnung, Vorschau, Druck und PDF-Mapping gemeinsam.
+
+### Ersetzen und Entfernen
+
+Bestehende eigene Daten lösen vor der Übernahme eine Bestätigungsabfrage aus. Das Entfernen wird ebenfalls bestätigt und leert nur Absender-, Kontakt-, Footer-, Bank- und Steuerwerte; Empfänger, Positionen, Rechnungsnummern und Texte bleiben unverändert. Der im Dokument verwendete Datensatz wird im Panel mit Herkunft angezeigt. Wird seine PDF-Datei entfernt, bleiben die Rechnungsdaten erhalten und der Status weist auf die nicht mehr geladene Quelle hin.
+
+### Bekannte Grenzen
+
+Die Übernahme gilt nur für Rechnungen und nur für die laufende Sitzung. Es gibt keine Live-Synchronisation und keine Stammdaten-ID im Rechnungs-PDF. Eine Übernahme von Partnern, Lieferanschriften und Leistungen ist weiterhin nicht implementiert.
 
 ## Abnahmekriterien
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BusinessLetterDocumentEditor from '../components/BusinessLetterDocumentEditor.jsx';
 import CreditNoteDocumentEditor from '../components/CreditNoteDocumentEditor.jsx';
 import DeliveryNoteDocumentEditor from '../components/DeliveryNoteDocumentEditor.jsx';
@@ -168,6 +168,7 @@ export default function DocumentsView({
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
   const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
+  const [invoiceMasterDataAdapter, setInvoiceMasterDataAdapter] = useState(null);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
   const isOverview = activeDocumentId === 'overview';
   const showMasterDataPanel = activeDocument?.formType === 'invoice';
@@ -228,6 +229,10 @@ export default function DocumentsView({
     }, { preserveDocumentsView: true, replace: true });
   }
 
+  const handleInvoiceMasterDataAdapterChange = useCallback((adapter) => {
+    setInvoiceMasterDataAdapter((current) => current === adapter ? current : adapter);
+  }, []);
+
   return (
     <main className={`documents-layout${showMasterDataPanel ? ' has-master-data-panel' : ''}`}>
       <DocumentSidebar
@@ -255,6 +260,7 @@ export default function DocumentsView({
                   initialSmallBusiness={activeInvoiceSmallBusiness}
                   invoiceVariant={activeInvoiceVariant}
                   onInvoiceVariantChange={handleInvoiceVariantChange}
+                  onMasterDataAdapterChange={handleInvoiceMasterDataAdapterChange}
                   onSmallBusinessChange={handleInvoiceSmallBusinessChange}
                 />
               )}
@@ -266,7 +272,7 @@ export default function DocumentsView({
           )}
         </section>
       </div>
-      {showMasterDataPanel && <MasterDataPanel />}
+      {showMasterDataPanel && <MasterDataPanel documentAdapter={invoiceMasterDataAdapter} documentType="invoice" />}
     </main>
   );
 }
