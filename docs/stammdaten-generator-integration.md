@@ -64,7 +64,7 @@ Phase 1 integriert das Panel zunächst in die Rechnungsvarianten (Standard-, War
 ## Spätere Phasen
 
 1. **Phase 2 – Eigene Daten:** abgeschlossen; die Auswahl wird in Rechnungen mit Ersetzungswarnung übernommen und kann wieder entfernt werden.
-2. **Phase 3 – Partner:** offen; Partner- und Lieferanschrift getrennt in Empfänger- beziehungsweise Lieferfelder übernehmen; Warnungen und den Übernahmezustand des Panels ergänzen.
+2. **Phase 3A – Partner → Empfänger:** abgeschlossen; Partnerdaten werden als Empfänger mit Ersetzungswarnung übernommen und können wieder entfernt werden. **Phase 3B – Lieferanschriften** bleibt offen.
 3. **Phase 4 – Leistungen:** offen; Mehrfachauswahl als neue Positionen anhängen, ohne bestehende Positionen zu überschreiben.
 4. **Phase 5 – Rollout:** offen; Panel auf Angebote, Lieferscheine und weitere geeignete Generatoren ausweiten; mobile Detailoptimierung und dokumenttypspezifische Abnahme ergänzen.
 
@@ -88,7 +88,17 @@ Bestehende eigene Daten lösen vor der Übernahme eine Bestätigungsabfrage aus.
 
 ### Bekannte Grenzen
 
-Die Übernahme gilt nur für Rechnungen und nur für die laufende Sitzung. Es gibt keine Live-Synchronisation und keine Stammdaten-ID im Rechnungs-PDF. Eine Übernahme von Partnern, Lieferanschriften und Leistungen ist weiterhin nicht implementiert.
+Die Übernahme gilt nur für Rechnungen und nur für die laufende Sitzung. Es gibt keine Live-Synchronisation und keine Stammdaten-ID im Rechnungs-PDF. Lieferanschriften und Leistungen sind weiterhin nicht implementiert.
+
+## Phase 3A: Partner → Empfänger in Rechnungen
+
+Phase 3A ist umgesetzt. Der Rechnungsadapter stellt zusätzlich `applyPartner(record)`, `hasRecipientData()` und `removePartner()` bereit. Das Panel übergibt ausschließlich den gewählten Partnerdatensatz; es kennt keine internen Rechnungszustände.
+
+Der Mapper `src/components/masterDataPanel/mappings/partnerToInvoice.js` übernimmt Firmenname, Zusatz/zu Händen, Abteilung, Straße, Hausnummer, PLZ, Ort und Kundennummer. Fehlende Partnerwerte leeren die jeweiligen Zielwerte. Lieferantennummer, Kontakt-, Bank- und Steuerdaten, interne Notizen, Aktivstatus und Lieferanschriften werden nicht übernommen.
+
+Vor dem vollständigen Ersetzen vorhandener Empfängerdaten erscheint eine Bestätigungsabfrage. Nach erfolgreicher Übernahme bleibt der verwendete Partner mit Herkunft sichtbar. Das Entfernen leert nur Empfänger und Kundennummer; Lieferanschrift, Absender, Positionen und weitere Rechnungsdaten bleiben erhalten. Wird die Quelldatei entfernt, bleiben die Empfängerdaten im Dokument, während der Panelstatus die fehlende Quelle anzeigt und erneutes Übernehmen deaktiviert.
+
+Der Status bleibt bei allen Rechnungsvarianten der laufenden Sitzung erhalten. Lieferanschriften sind nur im angewendeten Partnerzustand vorhanden und werden in Phase 3A weder angezeigt noch in Rechnungen geschrieben. Phase 3B (Lieferanschriften) und Phase 4 (Leistungen) sind weiterhin offen.
 
 ## Abnahmekriterien
 

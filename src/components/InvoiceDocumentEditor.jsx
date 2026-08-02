@@ -21,6 +21,7 @@ import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapFinalInvoiceToDocument, mapGoodsInvoiceToDocument, mapPartialInvoiceToDocument, mapProgressInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
 import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import { applyPartnerToInvoice, hasInvoiceRecipientData, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
@@ -1229,6 +1230,15 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       setInvoiceData((current) => removeOwnDataFromInvoice(current));
       setIsSmallBusinessInvoice(false);
       onSmallBusinessChangeRef.current?.(false);
+    },
+    applyPartner(record) {
+      setInvoiceData((current) => applyPartnerToInvoice(current, record));
+    },
+    hasRecipientData() {
+      return hasInvoiceRecipientData(invoiceDataRef.current);
+    },
+    removePartner() {
+      setInvoiceData((current) => removePartnerFromInvoice(current));
     },
   }), []);
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
