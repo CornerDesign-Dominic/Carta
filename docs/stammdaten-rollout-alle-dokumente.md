@@ -13,7 +13,7 @@ Die zentrale Basis bleibt `MasterDataPanel.jsx`: Stammdaten-PDFs werden ausschli
 | Eigene Daten | vollständig angebunden: Absender, Kontakt, Footer, Steuer/Bank, Kleinunternehmerstatus |
 | Partner | vollständig angebunden: Empfängeranschrift und Kundennummer |
 | Leistungen und Artikel | vollständig angebunden: kompatible Einträge werden als neue Positionen angehängt |
-| Lieferanschriften | offen; im Partnerzustand vorhanden, aber nicht angezeigt oder übernommen |
+| Lieferanschriften | ausschließlich für Lieferscheine vorgesehen; Rechnungen besitzen keinen Lieferanschriftenbereich |
 | Weitere Dokumenttypen | offen |
 
 Bestehende Rechnungsvarianten sind Standard-, Waren-, Text-, Abschlags-, Teil- und Schlussrechnung. Die vorhandenen, testbaren Mapper sind `ownDataToInvoice.js`, `partnerToInvoice.js` und `catalogItemsToInvoice.js`.
@@ -24,12 +24,12 @@ Bestehende Rechnungsvarianten sind Standard-, Waren-, Text-, Abschlags-, Teil- u
 
 | Dokumenttyp | Aktiver Editor | Eigene Daten | Partner | Leistungen/Artikel | Lieferanschrift | Besonderheiten |
 | --- | --- | --- | --- | --- | --- | --- |
-| Rechnung | `InvoiceDocumentEditor` | Ja, umgesetzt | Ja, umgesetzt | Ja, umgesetzt: Standard/Waren/Abschlag/Teil/Schluss `service`, `goods`; Textrechnung `textService` | Ja, offen (Phase 3B) | `deliveryItem` nie für Rechnungen; Positionen immer anhängen |
+| Rechnung | `InvoiceDocumentEditor` | Ja, umgesetzt | Ja, umgesetzt | Ja, umgesetzt: Standard/Waren/Abschlag/Teil/Schluss `service`, `goods`; Textrechnung `textService` | Nein | `deliveryItem` nie für Rechnungen; Positionen immer anhängen |
 | Angebot | `OfferDocumentEditor` | Ja | Ja | Ja: `service`, `goods`; `textService` nur bei nachgewiesenem Textpositionsmodell | Nein | Angebotsnummer, Gültigkeit und Konditionen nie überschreiben |
-| Lieferschein | `DeliveryNoteDocumentEditor` | Ja | Ja, als Auftraggeber/Empfänger | Ja: `goods`, `deliveryItem`; `service` nur ohne Preis-/Steuerfelder | Ja | Lieferanschrift ist der primäre Empfänger der Lieferung; keine Preis- oder Steuerfelder aus Katalog übernehmen |
-| Gutschrift | `CreditNoteDocumentEditor` | Ja | Ja | Ja: `service`, `goods`; `textService` nur bei passendem Gesamtbetragsmodell | Nein | Vorzeichen, Referenz und Gutschriftssumme verbleiben beim Editor; Positionen nur anhängen |
-| Stornorechnung | nicht vorhanden | Nein, bis ein Editor existiert | Nein, bis ein Editor existiert | Nein, bis ein Editor existiert | Nein | Vor Anlage fachlich klären: vollständige Kopie einer Rechnung oder eigenständiger Beleg? |
-| Rechnungskorrektur | nicht vorhanden | Nein, bis ein Editor existiert | Nein, bis ein Editor existiert | Nein, bis ein Editor existiert | Nein | Vor Anlage fachlich klären: Differenzbeleg, Korrekturrechnung oder Gutschriftprozess |
+| Lieferschein | `DeliveryNoteDocumentEditor` | Ja | Ja | Ja: `goods`, `deliveryItem`; `service` nur ohne Preis-/Steuerfelder | Ja | Der Editor hat nur einen Empfängeradressblock. Die Hauptanschrift des Partners belegt ihn zunächst; eine Lieferanschrift desselben Partners ersetzt ihn. Keine Preis- oder Steuerfelder aus Katalog übernehmen. |
+| Gutschrift | `CreditNoteDocumentEditor` – Variante `creditNote` | Ja | Ja | Ja: `service`, `goods`; `textService` nur bei passendem Gesamtbetragsmodell | Nein | Aktive Variante auf Route `/dokumente/gutschrift`; Vorzeichen, Referenzen und Gutschriftssumme verbleiben beim Editor; Positionen nur anhängen. |
+| Stornorechnung | `CreditNoteDocumentEditor` – Variante `cancellationInvoice` | Ja | Ja | Ja: wie Gutschrift | Nein | Aktive Variante auf Route `/dokumente/gutschrift`; `originalInvoiceNumber` und `cancellationReason` niemals überschreiben. |
+| Rechnungskorrektur | `CreditNoteDocumentEditor` – Variante `invoiceCorrection` | Ja | Ja | Ja: wie Gutschrift | Nein | Aktive Variante auf Route `/dokumente/gutschrift`; `originalInvoiceNumber` und `correctionReason` niemals überschreiben. |
 | Mahnung | `ReminderDocumentEditor` | Ja | Ja | Nein | Nein | Offene Posten, Fristen, Gebühren und Beträge nie aus Katalogpositionen ersetzen |
 | Geschäftsbrief | `BusinessLetterDocumentEditor` | Ja | Ja | Nein | Nein | Partner liefert nur Empfängeranschrift; Betreff, Brieftext, Zeichen und Anlagen bleiben unverändert |
 | Eigenbeleg | `SelfReceiptDocumentEditor` | Ja, als ausstellendes Unternehmen | Ja, als Zahlungsempfänger/Lieferant nach eigener Rollenprüfung | Nein | Nein | Partnerrolle ist nicht Empfänger im Rechnungssinn; separater Mapper mit fachlich eindeutiger Beschriftung nötig |
@@ -43,7 +43,8 @@ Weitere aktive Generatoren gibt es derzeit nicht. Bei jedem neuen `formType` ist
 - Eigene Daten ersetzen vorhandene Absender-, Kontakt-, Footer-, Bank- und Steuerdaten erst nach Warnung und Bestätigung.
 - Partner ersetzen vorhandene Empfängerdaten erst nach Warnung und Bestätigung. Bei Dokumenten mit anderer Partnerrolle ist ein eigener, eindeutig benannter Mapper erforderlich.
 - Leistungen und Artikel werden ausschließlich als neue Positionen angehängt; bestehende Positionen werden nie überschrieben.
-- Lieferanschriften dürfen nur bei einem echten, getrennten Lieferanschriftenbereich übernommen werden. Sie ersetzen weder Rechnungs- noch Briefempfänger.
+- Lieferanschriften dürfen nur bei Dokumenten mit einem tatsächlichen Lieferanschriftenzweck übernommen werden. Rechnungen und Geschäftsbriefe erhalten keine Lieferanschrift. Hat ein Editor – wie der aktuelle Lieferschein – nur einen Empfängeradressblock, ersetzt die Lieferanschrift diesen Block, statt einen zweiten Adressblock zu erzeugen.
+- Eine Lieferanschrift ist ausschließlich auswählbar, wenn sie dem aktuell gewählten Partner gehört. Beim Partnerwechsel wird eine bestehende Lieferanschriftauswahl verworfen; der Empfängeradressblock wird wieder mit der Hauptanschrift des neuen Partners belegt.
 - Entfernte Quelldateien ändern bereits übernommene Dokumentdaten niemals. Das Panel kennzeichnet lediglich die fehlende Quelle.
 - Stammdaten, Auswahl und Herkunft leben nur im React-Sitzungszustand; keine dauerhafte Browser-Speicherung.
 - Keine DOM-Manipulation, globalen Events oder parallelen Editor-Zustände. Gemeinsame Adapter, Contracts und Mapper werden erweitert oder wiederverwendet.
@@ -61,19 +62,19 @@ Weitere aktive Generatoren gibt es derzeit nicht. Bei jedem neuen `formType` ist
 
 ### Phase 5B – Lieferschein inklusive Lieferanschriften
 
-- **Editor:** `DeliveryNoteDocumentEditor` sowie Phase 3B für die bereits in Partnerstammdaten vorhandenen Lieferanschriften.
-- **Adapter:** Eigene Daten; Partner für Rechnungs-/Auftragsempfänger; `applyDeliveryAddress`, `removeDeliveryAddress`, `hasDeliveryAddress`; katalogspezifisches `addDeliveryItems`.
-- **Mapping:** Lieferanschrift `companyName`, `attention`, `department`, Straße, Hausnummer, PLZ, Ort; `goods` und `deliveryItem` in Lieferscheinpositionen. Lieferhinweis nur in ein vorhandenes Hinweisfeld.
-- **Verhalten:** Eigene Warnung beim Ersetzen der Lieferanschrift; Partner- und Lieferanschrift getrennt entfernen; keine Preis- oder Steuermapping-Logik in Lieferscheine.
-- **Abnahme:** Partner mit mehreren Lieferanschriften, Auswahl/Wechsel/Entfernen, Positionsarten, PDF-/JSON-Ausgabe.
+- **Editor und Modell:** `DeliveryNoteDocumentEditor` verwendet aktuell einen einzigen Empfängeradressblock (`deliveryNoteData.recipient`) mit Firmenname, Zusatz/Ansprechpartner sowie Straße, Hausnummer, PLZ und Ort. Einen getrennten Auftraggeber-/Empfänger- und Lieferanschriftenblock gibt es nicht.
+- **Adapter:** Eigene Daten; `applyPartner`, `removePartner`, `hasRecipientData`; `applyDeliveryAddress`, `removeDeliveryAddress`, `hasDeliveryAddress`; katalogspezifisches `addDeliveryItems`.
+- **Verbindliches Zielmapping:** Die Hauptanschrift des gewählten Partners belegt zunächst `deliveryNoteData.recipient`. Wählt der Nutzer eine gespeicherte Lieferanschrift dieses Partners, ersetzt sie in diesem Block `companyName`, `attention`, `name` sowie `address.street`, `address.houseNumber`, `address.postalCode` und `address.city`. Dabei werden Zusatz/zu Händen nach `attention` und Abteilung nach `name` übernommen. Der aktuelle Empfängerblock besitzt kein Landfeld. Der ausgewählte Partner bleibt als zugehöriger Geschäftspartner erhalten. Weil der Editor nur diesen einen Adressblock besitzt, wird keine zusätzliche Lieferadresse gedruckt oder gespeichert.
+- **Verhalten:** Lieferanschriften anderer Partner dürfen weder angeboten noch übernommen werden. Beim Wechsel des Partners wird die bisherige Lieferanschriftauswahl gelöscht und die Hauptanschrift des neuen Partners in den Empfängerblock übernommen. Eigene Warnung beim Ersetzen der Lieferanschrift; Partner- und Lieferanschrift getrennt entfernen; keine Preis- oder Steuermapping-Logik in Lieferscheine.
+- **Katalogmapping und Abnahme:** `goods` und `deliveryItem` werden in Lieferscheinpositionen übernommen; `service` nur ohne Preis-/Steuerfelder. Lieferhinweis nur in ein vorhandenes Hinweisfeld. Abnahme mit mehreren Lieferanschriften desselben Partners, Partnerwechsel, Auswahl/Entfernen, Positionsarten sowie PDF-/JSON-Ausgabe.
 
-### Phase 5C – Gutschrift sowie künftige Stornorechnung und Rechnungskorrektur
+### Phase 5C – Gutschrift, Stornorechnung und Rechnungskorrektur
 
-- **Editor:** `CreditNoteDocumentEditor`; für Storno/Korrektur erst nach Anlage eines aktiven Editors.
-- **Adapter:** wie Angebot, ergänzt um dokumenttypspezifische Positionskompatibilität.
-- **Mapping:** Absender, Empfänger und reguläre Gutschriftspositionen; interne Nummern, Originalbelegreferenzen, Vorzeichen und Korrekturgrund bleiben unverändert.
-- **Risiko:** Vorzeichen- und Steuerlogik darf nicht durch Stammdaten dupliziert werden. Storno- und Korrekturfachlichkeit vor Implementierung verbindlich festlegen.
-- **Abnahme:** Gutschrift mit bestehenden Referenzen, Anhängen mehrerer Positionen, Korrekturszenarien nach Verfügbarkeit.
+- **Editor und Varianten:** Ein aktiver `CreditNoteDocumentEditor` deckt auf der Route `/dokumente/gutschrift` die Varianten `creditNote` (Gutschrift), `cancellationInvoice` (Stornorechnung) und `invoiceCorrection` (Rechnungskorrektur) ab. Die Variantenwahl und deren Feldsichtbarkeit liegen im Editor.
+- **Adapter:** Gemeinsame Absender- und Empfängerübernahme für alle drei Varianten; katalogspezifisches Anhängen kompatibler Positionen, ohne bestehende Positionen zu ersetzen.
+- **Mapping und Schutzfelder:** Die Stammdatenübernahme darf weder `originalInvoiceNumber` noch `cancellationReason`, `correctionReason`, Ursprungsrechnungsreferenzen oder die Variantenlogik verändern. Positionsübernahme ergänzt nur katalogkompatible Werte.
+- **Berechnungen:** Vorzeichen-, Summen-, Steuer- und sonstige Berechnungslogik bleibt ausschließlich im `CreditNoteDocumentEditor`. Mapper dürfen keine parallele Berechnungs- oder Vorzeichenlogik enthalten.
+- **Abnahme:** Jede der drei Varianten mit bestehenden Referenz- und Grundfeldern, gemeinsamer Absender-/Empfängerübernahme, mehrfachem Anhängen sowie PDF-/JSON-Ausgabe prüfen.
 
 ### Phase 5D – Mahnung
 
@@ -121,8 +122,6 @@ Jede Phase dokumentiert und testet mindestens:
 ## Offene fachliche Fragen und Risiken
 
 - Welche Positionstypen und Preis-/Steuerfelder unterstützen Angebot und Gutschrift exakt? Vor dem Mapper die jeweiligen Dokumentmodelle gegenprüfen.
-- Soll eine Lieferanschrift beim Lieferschein den Hauptempfänger ersetzen oder zusätzlich angezeigt werden? Die Zielstruktur und Druckdarstellung müssen vor Phase 5B entschieden sein.
-- Welche fachliche Semantik haben Stornorechnung und Rechnungskorrektur im Produkt? Ein neuer Editor darf erst nach dieser Entscheidung angebunden werden.
 - Welche Partnerrolle soll bei Eigenbeleg und Quittung verwendet werden? „Empfänger“ ist dort nicht zwingend fachlich korrekt.
 - Soll eine Textleistung im Angebot oder in der Gutschrift unterstützt werden? Nur mit einem vorhandenen Gesamtbetrags-/Textpositionsmodell freigeben.
 - Die aktive Repository-Landschaft enthält derzeit keine Auftragsbestätigung. Ihre Matrixzeile bleibt bis zur Anlage des Editors bewusst gesperrt.
