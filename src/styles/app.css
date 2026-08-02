@@ -3342,6 +3342,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   margin: 0;
 }
 
+.master-data-catalog-record.is-unavailable {
+  opacity: 0.62;
+}
+
+.master-data-catalog-unavailable {
+  color: var(--muted);
+  font-style: italic;
+}
+
 @media (min-width: 1024px) {
   .documents-layout.has-master-data-panel {
     --document-sidebar-width: 216px;

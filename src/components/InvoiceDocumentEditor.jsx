@@ -22,6 +22,7 @@ import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapFinalInvoiceToDocument, mapGoodsInvoiceToDocument, mapPartialInvoiceToDocument, mapProgressInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
 import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
 import { applyPartnerToInvoice, hasInvoiceRecipientData, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
+import { isCatalogItemSupportedForInvoiceVariant, mapCatalogItemsToInvoicePositions } from './masterDataPanel/mappings/catalogItemsToInvoice.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
 const invoiceVariants = [
@@ -1213,9 +1214,11 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const invoiceDataRef = useRef(invoiceData);
   const smallBusinessModeRef = useRef(isSmallBusinessInvoice);
   const onSmallBusinessChangeRef = useRef(onSmallBusinessChange);
+  const invoiceVariantRef = useRef(normalizedInvoiceVariant);
   invoiceDataRef.current = invoiceData;
   smallBusinessModeRef.current = isSmallBusinessInvoice;
   onSmallBusinessChangeRef.current = onSmallBusinessChange;
+  invoiceVariantRef.current = normalizedInvoiceVariant;
   const invoiceMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
       setInvoiceData((current) => applyOwnDataToInvoice(current, record));
@@ -1239,6 +1242,15 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     },
     removePartner() {
       setInvoiceData((current) => removePartnerFromInvoice(current));
+    },
+    canAddCatalogItem(record) {
+      return isCatalogItemSupportedForInvoiceVariant(record, invoiceVariantRef.current);
+    },
+    addCatalogItems(records) {
+      const newPositions = mapCatalogItemsToInvoicePositions(records, invoiceVariantRef.current);
+      if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
+      setPositions((current) => [...current, ...newPositions]);
+      return { ok: true, count: newPositions.length };
     },
   }), []);
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);

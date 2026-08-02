@@ -59,13 +59,13 @@ Phase 1 integriert das Panel zunächst in die Rechnungsvarianten (Standard-, War
 - Kompakte `aria-live`-Statusmeldungen und die sichtbare Datenschutzinformation.
 - Sichtbare Aktionsbuttons ohne Dokumentwirkung.
 
-**Phase 1 übernahm ausdrücklich keine Daten in Dokumentgeneratoren.** Diese Einschränkung gilt weiterhin für Partner, Lieferanschriften sowie Leistungen und Artikel.
+**Phase 1 übernahm ausdrücklich keine Daten in Dokumentgeneratoren.** Die noch offene Übernahme betrifft Lieferanschriften und weitere Dokumenttypen.
 
 ## Spätere Phasen
 
 1. **Phase 2 – Eigene Daten:** abgeschlossen; die Auswahl wird in Rechnungen mit Ersetzungswarnung übernommen und kann wieder entfernt werden.
 2. **Phase 3A – Partner → Empfänger:** abgeschlossen; Partnerdaten werden als Empfänger mit Ersetzungswarnung übernommen und können wieder entfernt werden. **Phase 3B – Lieferanschriften** bleibt offen.
-3. **Phase 4 – Leistungen:** offen; Mehrfachauswahl als neue Positionen anhängen, ohne bestehende Positionen zu überschreiben.
+3. **Phase 4 – Leistungen und Artikel → Rechnungen:** abgeschlossen; kompatible Mehrfachauswahl wird als neue Positionen angehängt. Lieferanschriften bleiben offen.
 4. **Phase 5 – Rollout:** offen; Panel auf Angebote, Lieferscheine und weitere geeignete Generatoren ausweiten; mobile Detailoptimierung und dokumenttypspezifische Abnahme ergänzen.
 
 ## Phase 2: Eigene Daten → Rechnungen
@@ -88,7 +88,7 @@ Bestehende eigene Daten lösen vor der Übernahme eine Bestätigungsabfrage aus.
 
 ### Bekannte Grenzen
 
-Die Übernahme gilt nur für Rechnungen und nur für die laufende Sitzung. Es gibt keine Live-Synchronisation und keine Stammdaten-ID im Rechnungs-PDF. Lieferanschriften und Leistungen sind weiterhin nicht implementiert.
+Die Übernahme gilt nur für Rechnungen und nur für die laufende Sitzung. Es gibt keine Live-Synchronisation und keine Stammdaten-ID im Rechnungs-PDF. Lieferanschriften sind weiterhin nicht implementiert.
 
 ## Phase 3A: Partner → Empfänger in Rechnungen
 
@@ -99,6 +99,16 @@ Der Mapper `src/components/masterDataPanel/mappings/partnerToInvoice.js` überni
 Vor dem vollständigen Ersetzen vorhandener Empfängerdaten erscheint eine Bestätigungsabfrage. Nach erfolgreicher Übernahme bleibt der verwendete Partner mit Herkunft sichtbar. Das Entfernen leert nur Empfänger und Kundennummer; Lieferanschrift, Absender, Positionen und weitere Rechnungsdaten bleiben erhalten. Wird die Quelldatei entfernt, bleiben die Empfängerdaten im Dokument, während der Panelstatus die fehlende Quelle anzeigt und erneutes Übernehmen deaktiviert.
 
 Der Status bleibt bei allen Rechnungsvarianten der laufenden Sitzung erhalten. Lieferanschriften sind nur im angewendeten Partnerzustand vorhanden und werden in Phase 3A weder angezeigt noch in Rechnungen geschrieben. Phase 3B (Lieferanschriften) und Phase 4 (Leistungen) sind weiterhin offen.
+
+## Phase 4: Leistungen und Artikel → Rechnungen
+
+Phase 4 ist umgesetzt. Der Rechnungsadapter stellt `canAddCatalogItem(record)` und `addCatalogItems(records)` bereit. Der reine Mapper `src/components/masterDataPanel/mappings/catalogItemsToInvoice.js` erzeugt neue, unabhängige Positions-IDs und hängt Positionen ausschließlich am Ende der aktuellen Rechnung an.
+
+Unterstützt werden `service` und `goods` für Standard-, Waren-, Abschlags-, Teil- und Schlussrechnungen sowie `textService` für Textrechnungen. `deliveryItem` ist für Rechnungen nicht verfügbar; ebenso bleiben reguläre Leistungen und Artikel bei Textrechnungen deaktiviert. Nicht passende Einträge bleiben sichtbar, sind aber nicht auswählbar und werden bei einem Variantenwechsel aus der Auswahl entfernt.
+
+Für reguläre Positionen wird die Standardbeschreibung vor dem Suchwort verwendet, fehlende Mengen erhalten den Fallback `1`, und Einzelpreis sowie Steuersatz werden direkt aus den Stammdaten übernommen. Warenrechnungen erhalten bei Artikeln zusätzlich die Artikelnummer. Textleistungen verwenden ihre Textrechnungsbeschreibung, freie Mengen-/Zeitangabe und den gespeicherten Netto-Positionsbetrag ohne zusätzliche Berechnung. Interne Notizen, Suchwörter, Aktivstatus, Herkunft und Stammdaten-IDs werden nicht übernommen.
+
+Mehrfachauswahl wird atomar ergänzt; bei einem Fehler werden keine Positionen angehängt. Nach Erfolg wird nur die Auswahl geleert. Entfernte Quelldateien entfernen keine bereits eingefügten Rechnungspositionen. Lieferanschriften und weitere Dokumenttypen bleiben offen.
 
 ## Abnahmekriterien
 

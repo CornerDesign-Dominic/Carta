@@ -272,7 +272,7 @@ export default function DocumentsView({
           )}
         </section>
       </div>
-      {showMasterDataPanel && <MasterDataPanel documentAdapter={invoiceMasterDataAdapter} documentType="invoice" />}
+      {showMasterDataPanel && <MasterDataPanel documentAdapter={invoiceMasterDataAdapter} documentType="invoice" documentVariant={activeInvoiceVariant} />}
     </main>
   );
 }
