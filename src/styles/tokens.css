@@ -45,14 +45,12 @@
   --left-sidebar-width: 216px;
   --right-panel-width: 366px;
   --layout-column-gap: 18px;
-  --layout-top-spacing: clamp(18px, 2.6vw, 32px);
+  --layout-content-top: clamp(18px, 2.6vw, 32px);
   --layout-content-max-width: var(--main-content-width);
   --layout-page-gap: var(--layout-column-gap);
   --layout-page-gap-double: 36px;
-  --layout-page-top-offset: var(--layout-top-spacing);
   --layout-header-height: 72px;
-  --layout-sticky-offset: 18px;
-  --layout-sticky-top: calc(var(--layout-header-height) + var(--layout-sticky-offset));
+  --layout-sticky-top: calc(var(--layout-header-height) + var(--layout-content-top));
   --layout-sticky-bottom-gap: 24px;
   --layout-sidebar-width: var(--left-sidebar-width);
   --layout-sidebar-padding: 12px;

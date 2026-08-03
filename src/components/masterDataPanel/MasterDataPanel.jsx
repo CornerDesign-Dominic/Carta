@@ -12,6 +12,18 @@ import { isLastUsedRecord, useMasterDataSession } from './MasterDataSessionProvi
 const masterDataSuccessMessage = 'Auswahl wurde erfolgreich übernommen';
 const masterDataRemovalSuccessMessage = 'Daten wurden erfolgreich entfernt';
 
+export function createMasterDataPanelStatusMessages() {
+  return { ownData: '', partners: '', catalogItems: '' };
+}
+
+export function setMasterDataPanelStatusMessage(statusMessages, tabId, message) {
+  return { ...statusMessages, [tabId]: message };
+}
+
+export function getMasterDataPanelStatusMessage(statusMessages, tabId) {
+  return statusMessages[tabId] ?? '';
+}
+
 export function getSupportedMasterDataTabs(documentAdapter) {
   if (!documentAdapter) return MASTER_DATA_PANEL_TABS;
 
@@ -33,9 +45,9 @@ function MasterDataFileDropzone({ onFiles }) {
   </div>;
 }
 
-function MasterDataLoadedFiles({ files, showRecordCountOnly = false }) {
+export function MasterDataLoadedFiles({ files }) {
   if (!files.length) return null;
-  return <section className="master-data-loaded-files" aria-label="Geladene Stammdatenblätter"><h3>Geladene Dateien</h3><ul>{files.map((file) => <li key={file.id}><div><strong>{file.name}</strong><span>{showRecordCountOnly ? `Anzahl Datensätze: ${file.records.length}` : `${file.typeLabel} · ${file.records.length} ${file.records.length === 1 ? 'Datensatz' : 'Datensätze'}`}</span></div></li>)}</ul></section>;
+  return <section className="master-data-loaded-files" aria-label="Geladene Stammdatenblätter"><h3>Geladene Dateien</h3><ul>{files.map((file) => <li key={file.id}><div><strong>{file.name}</strong><span>Anzahl Datensätze: {file.records.length}</span></div></li>)}</ul></section>;
 }
 
 function formatOwnDataLocation(postalCode, city) {
@@ -79,7 +91,7 @@ export function PartnerDataPanel({ appliedDeliveryAddress, appliedPartnerData, d
   return <div className="master-data-panel-content">{records.length > 0 && <><h3 className="master-data-selection-title">Auswahl</h3><label className="master-data-panel-search"><span>Partner suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, Ort oder Nummer" /></label><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => {
     const isApplied = isAppliedRecord(record, appliedPartnerData);
     const isLastUsed = isLastUsedRecord(record, lastUsedPartner);
-    return <button className={recordClassName({ isApplied, isLastUsed, isSelected: selectedId === record.id })} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getPartnerTypeLabel(record.type)} – {getPartnerDisplayName(record)}</strong><span>{[record.mainAddress.city, record.customerNumber || record.supplierNumber, record.sourceFileName].filter(Boolean).join(' · ')}</span>{record.deliveryAddresses.length > 0 && <small>{record.deliveryAddresses.length} Lieferanschrift{record.deliveryAddresses.length === 1 ? '' : 'en'}</small>}<RecordStatus isApplied={isApplied} isLastUsed={isLastUsed} /></button>;
+    return <button className={recordClassName({ isApplied, isLastUsed, isSelected: selectedId === record.id })} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getPartnerTypeLabel(record.type)} – {getPartnerDisplayName(record)}</strong><span>{[record.mainAddress.city, record.customerNumber || record.supplierNumber].filter(Boolean).join(' · ')}</span>{record.deliveryAddresses.length > 0 && <small>{record.deliveryAddresses.length} Lieferanschrift{record.deliveryAddresses.length === 1 ? '' : 'en'}</small>}<RecordStatus isApplied={isApplied} isLastUsed={isLastUsed} /></button>;
   }) : <p className="master-data-panel-empty">Keine passenden Partner vorhanden.</p>}</div></>}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Auswahl übernehmen</button>{appliedPartnerData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedPartnerData && <><DeliveryAddressPanel addresses={appliedRecord?.deliveryAddresses ?? []} appliedDeliveryAddress={appliedDeliveryAddress} documentAdapter={documentAdapter} disabled={appliedPartnerData.sourceFileRemoved} onApply={onApplyDeliveryAddress} onRemove={onRemoveDeliveryAddress} />{appliedPartnerData.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Partnerdaten bleiben im Dokument erhalten.</p>}</>}</div>;
 }
 
@@ -114,7 +126,7 @@ function MasterDataPanelDialog({ action, onCancel, onConfirm }) {
 export default function MasterDataPanel({ documentAdapter, documentType, documentVariant }) {
   const [activeTab, setActiveTab] = useState('ownData');
   const { loadedFiles, records, lastUsedOwnData, lastUsedPartner, getLoadedFiles, rememberOwnData, rememberPartner, replaceLoadedFile } = useMasterDataSession();
-  const [statusMessage, setStatusMessage] = useState('');
+  const [statusMessages, setStatusMessages] = useState(createMasterDataPanelStatusMessages);
   const [selectedOwnId, setSelectedOwnId] = useState(null);
   const [selectedPartnerId, setSelectedPartnerId] = useState(null);
   const [selectedCatalogIds, setSelectedCatalogIds] = useState([]);
@@ -126,6 +138,9 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
   const partnerRoleLabel = documentAdapter?.partnerRoleLabel ?? 'Empfänger';
   const activeTabIndex = supportedTabs.findIndex((tab) => tab.id === activeTab);
   const activeFiles = loadedFiles[activeTab];
+  function setStatusMessage(tabId, message) {
+    setStatusMessages((current) => setMasterDataPanelStatusMessage(current, tabId, message));
+  }
 
   useEffect(() => {
     const compatibleIds = selectedCatalogIds.filter((id) => {
@@ -134,7 +149,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     });
     if (compatibleIds.length !== selectedCatalogIds.length) {
       setSelectedCatalogIds(compatibleIds);
-      setStatusMessage('Nicht passende Einträge wurden aus der Auswahl entfernt.');
+      setStatusMessage('catalogItems', 'Nicht passende Einträge wurden aus der Auswahl entfernt.');
     }
   }, [documentAdapter, documentType, documentVariant, records.catalogItems, selectedCatalogIds]);
 
@@ -149,7 +164,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     setAppliedPartnerData(null);
     setAppliedDeliveryAddress(null);
     setSelectedCatalogIds([]);
-    setStatusMessage('');
+    setStatusMessages(createMasterDataPanelStatusMessages());
   }, [documentType]);
 
   function selectTab(tabId) { setActiveTab(tabId); }
@@ -163,11 +178,12 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
   async function handleFiles(files) {
     for (const file of files) {
       const result = await readMasterDataPdf(file);
-      if (result.status !== 'valid') { setStatusMessage(result.message); continue; }
-      if (!supportedTabs.some((tab) => tab.id === result.tabId)) { setStatusMessage(`Diese Stammdatenart wird für dieses Dokument nicht unterstützt.`); continue; }
+      const messageTabId = result.tabId ?? activeTab;
+      if (result.status !== 'valid') { setStatusMessage(messageTabId, result.message); continue; }
+      if (!supportedTabs.some((tab) => tab.id === result.tabId)) { setStatusMessage(messageTabId, 'Diese Stammdatenart wird für dieses Dokument nicht unterstützt.'); continue; }
       const sourceFileId = createMasterDataFileId(file, result.document.documentId);
       const existingFiles = getLoadedFiles()[result.tabId];
-      if (existingFiles.some((loadedFile) => loadedFile.id === sourceFileId)) { setStatusMessage('Diese Datei wurde bereits geladen.'); continue; }
+      if (existingFiles.some((loadedFile) => loadedFile.id === sourceFileId)) { setStatusMessage(result.tabId, 'Diese Datei wurde bereits geladen.'); continue; }
       const typeLabel = MASTER_DATA_PANEL_TABS.find((tab) => tab.id === result.tabId)?.label ?? 'Stammdaten';
       const loadedFile = { id: sourceFileId, name: file.name, typeLabel, records: result.document.records.map((record) => ({ ...record, sourceFileId, sourceFileName: file.name })) };
       const replacedSourceIds = new Set(existingFiles.map((loadedFile) => loadedFile.id));
@@ -185,17 +201,17 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
       }
       if (result.tabId === 'catalogItems') setSelectedCatalogIds([]);
       selectTab(result.tabId);
-      setStatusMessage('');
+      setStatusMessage(result.tabId, '');
     }
   }
-  function futureAction() { setStatusMessage('Die Übernahme in das Dokument wird in einer folgenden Phase ergänzt.'); }
+  function futureAction() { setStatusMessage('catalogItems', 'Die Übernahme in das Dokument wird in einer folgenden Phase ergänzt.'); }
   function applyOwnData(record = records.ownData.find((item) => item.id === selectedOwnId)) {
     if (!record || !documentAdapter) return;
     documentAdapter.applyOwnData(record);
     rememberOwnData(record);
     setSelectedOwnId(record.id);
     setAppliedOwnData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getOwnDataDisplayName(record), postalCode: record.address.postalCode, city: record.address.city, vatId: record.taxAndRegister.vatId, sourceFileRemoved: false });
-    setStatusMessage(masterDataSuccessMessage);
+    setStatusMessage('ownData', masterDataSuccessMessage);
   }
   function requestOwnDataApply(record) {
     const selectedRecord = record ?? records.ownData.find((item) => item.id === selectedOwnId);
@@ -220,7 +236,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     setSelectedPartnerId(record.id);
     setAppliedPartnerData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getPartnerDisplayName(record), city: record.mainAddress.city, customerNumber: record.customerNumber, deliveryAddresses: record.deliveryAddresses, partnerRecord: record, sourceFileRemoved: false });
     setAppliedDeliveryAddress(null);
-    setStatusMessage(masterDataSuccessMessage);
+    setStatusMessage('partners', masterDataSuccessMessage);
   }
   function requestPartnerApply(record) {
     const selectedRecord = record?.currentTarget ? records.partners.find((item) => item.id === selectedPartnerId) : record ?? records.partners.find((item) => item.id === selectedPartnerId);
@@ -246,7 +262,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (!address || !partner || !documentAdapter?.canManageDeliveryAddresses || !partner.deliveryAddresses.some((item) => item.id === address.id)) return;
     documentAdapter.applyDeliveryAddress(address);
     setAppliedDeliveryAddress({ addressId: address.id, sourceFileId: appliedPartnerData.sourceFileId, companyName: address.companyName, city: address.city, sourceFileRemoved: false });
-    setStatusMessage(masterDataSuccessMessage);
+    setStatusMessage('partners', masterDataSuccessMessage);
   }
   function requestDeliveryAddressApply(address) {
     if (!address || !documentAdapter?.canManageDeliveryAddresses) return;
@@ -261,7 +277,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (!partner || !documentAdapter?.canManageDeliveryAddresses) return;
     documentAdapter.removeDeliveryAddress(partner);
     setAppliedDeliveryAddress(null);
-    setStatusMessage(masterDataRemovalSuccessMessage);
+    setStatusMessage('partners', masterDataRemovalSuccessMessage);
   }
   function toggleCatalogSelection(recordId) {
     const record = records.catalogItems.find((item) => item.id === recordId);
@@ -272,16 +288,16 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (!documentAdapter) return;
     const selectedRecords = selectedCatalogIds.map((id) => records.catalogItems.find((record) => record.id === id)).filter(Boolean);
     if (!selectedRecords.length || selectedRecords.length !== selectedCatalogIds.length || selectedRecords.some((record) => !documentAdapter.canAddCatalogItem?.(record))) {
-      setStatusMessage('Die ausgewählten Positionen konnten nicht vollständig übernommen werden.');
+      setStatusMessage('catalogItems', 'Die ausgewählten Positionen konnten nicht vollständig übernommen werden.');
       return;
     }
     const result = documentAdapter.addCatalogItems(selectedRecords);
     if (!result?.ok) {
-      setStatusMessage('Die ausgewählten Positionen konnten nicht vollständig übernommen werden.');
+      setStatusMessage('catalogItems', 'Die ausgewählten Positionen konnten nicht vollständig übernommen werden.');
       return;
     }
     setSelectedCatalogIds([]);
-    setStatusMessage(masterDataSuccessMessage);
+    setStatusMessage('catalogItems', masterDataSuccessMessage);
   }
   function confirmDialog() {
     const action = dialog;
@@ -290,7 +306,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (action?.kind === 'remove-own-data') {
       documentAdapter?.removeOwnData();
       setAppliedOwnData(null);
-      setStatusMessage(masterDataRemovalSuccessMessage);
+      setStatusMessage('ownData', masterDataRemovalSuccessMessage);
     }
     if (action?.kind === 'replace-partner') applyPartner(action.record);
     if (action?.kind === 'replace-delivery-address') applyDeliveryAddress(action.address);
@@ -298,9 +314,9 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
       documentAdapter?.removePartner();
       setAppliedPartnerData(null);
       setAppliedDeliveryAddress(null);
-      setStatusMessage(masterDataRemovalSuccessMessage);
+      setStatusMessage('partners', masterDataRemovalSuccessMessage);
     }
   }
 
-  return <aside className="master-data-panel" aria-label="Stammdatenpanel"><header><h2>Stammdaten laden</h2></header><div className="master-data-panel-tabs" role="tablist" aria-label="Stammdatenbereiche" onKeyDown={handleTabKeyDown}>{supportedTabs.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} aria-controls={`master-data-panel-${tab.id}`} id={`master-data-tab-${tab.id}`} tabIndex={activeTab === tab.id ? 0 : -1} className={activeTab === tab.id ? 'is-active' : undefined} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}</div><section id={`master-data-panel-${activeTab}`} role="tabpanel" aria-labelledby={`master-data-tab-${activeTab}`}><MasterDataFileDropzone onFiles={handleFiles} /><MasterDataLoadedFiles files={activeFiles} showRecordCountOnly={activeTab === 'ownData'} />{activeTab === 'ownData' && <OwnDataPanel appliedOwnData={appliedOwnData} documentAdapter={documentAdapter} lastUsedOwnData={lastUsedOwnData} records={records.ownData} selectedId={selectedOwnId} onApply={requestOwnDataApply} onRemove={requestOwnDataRemoval} onSelect={setSelectedOwnId} />}{activeTab === 'partners' && <PartnerDataPanel appliedDeliveryAddress={appliedDeliveryAddress} appliedPartnerData={appliedPartnerData} documentAdapter={documentAdapter} lastUsedPartner={lastUsedPartner} partnerRoleLabel={partnerRoleLabel} records={records.partners} selectedId={selectedPartnerId} onApply={requestPartnerApply} onApplyDeliveryAddress={requestDeliveryAddressApply} onRemove={requestPartnerRemoval} onRemoveDeliveryAddress={removeDeliveryAddress} onSelect={setSelectedPartnerId} />}{activeTab === 'catalogItems' && <CatalogDataPanel canAddCatalogItem={documentAdapter?.canAddCatalogItem} records={records.catalogItems} selectedIds={selectedCatalogIds} onToggle={toggleCatalogSelection} onFutureAction={addSelectedCatalogItems} />}</section>{statusMessage && <p className="master-data-panel-status" aria-live="polite">{statusMessage}</p>}<MasterDataPanelDialog action={dialog} onCancel={() => setDialog(null)} onConfirm={confirmDialog} /></aside>;
+  return <aside className="master-data-panel" aria-label="Stammdatenpanel"><header><h2>Stammdaten laden</h2></header><div className="master-data-panel-tabs" role="tablist" aria-label="Stammdatenbereiche" onKeyDown={handleTabKeyDown}>{supportedTabs.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} aria-controls={`master-data-panel-${tab.id}`} id={`master-data-tab-${tab.id}`} tabIndex={activeTab === tab.id ? 0 : -1} className={activeTab === tab.id ? 'is-active' : undefined} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}</div><section id={`master-data-panel-${activeTab}`} role="tabpanel" aria-labelledby={`master-data-tab-${activeTab}`}><MasterDataFileDropzone onFiles={handleFiles} /><MasterDataLoadedFiles files={activeFiles} />{activeTab === 'ownData' && <OwnDataPanel appliedOwnData={appliedOwnData} documentAdapter={documentAdapter} lastUsedOwnData={lastUsedOwnData} records={records.ownData} selectedId={selectedOwnId} onApply={requestOwnDataApply} onRemove={requestOwnDataRemoval} onSelect={setSelectedOwnId} />}{activeTab === 'partners' && <PartnerDataPanel appliedDeliveryAddress={appliedDeliveryAddress} appliedPartnerData={appliedPartnerData} documentAdapter={documentAdapter} lastUsedPartner={lastUsedPartner} partnerRoleLabel={partnerRoleLabel} records={records.partners} selectedId={selectedPartnerId} onApply={requestPartnerApply} onApplyDeliveryAddress={requestDeliveryAddressApply} onRemove={requestPartnerRemoval} onRemoveDeliveryAddress={removeDeliveryAddress} onSelect={setSelectedPartnerId} />}{activeTab === 'catalogItems' && <CatalogDataPanel canAddCatalogItem={documentAdapter?.canAddCatalogItem} records={records.catalogItems} selectedIds={selectedCatalogIds} onToggle={toggleCatalogSelection} onFutureAction={addSelectedCatalogItems} />}</section>{getMasterDataPanelStatusMessage(statusMessages, activeTab) && <p className="master-data-panel-status" aria-live="polite">{getMasterDataPanelStatusMessage(statusMessages, activeTab)}</p>}<MasterDataPanelDialog action={dialog} onCancel={() => setDialog(null)} onConfirm={confirmDialog} /></aside>;
 }
