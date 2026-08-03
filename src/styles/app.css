@@ -3033,6 +3033,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .master-data-panel {
+  --master-data-panel-section-gap: 14px;
+
   display: grid;
   gap: 14px;
   width: min(100%, 340px);
@@ -3186,7 +3188,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .master-data-loaded-files {
   display: grid;
   gap: 6px;
-  margin-top: 16px;
+  margin-top: var(--master-data-panel-section-gap);
 }
 
 .master-data-loaded-files h3 {
@@ -3236,7 +3238,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .master-data-loaded-files + .master-data-panel-content {
-  margin-top: 14px;
+  margin-top: var(--master-data-panel-section-gap);
+}
+
+.master-data-file-dropzone + .master-data-panel-content {
+  margin-top: var(--master-data-panel-section-gap);
 }
 
 .master-data-selection-title {
@@ -3246,7 +3252,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .master-data-panel-content > .partner-button.is-primary {
-  margin-top: 9px;
+  margin-top: 0;
 }
 
 .master-data-panel-search {

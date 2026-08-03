@@ -32,7 +32,7 @@ describe('master-data panel presentation', () => {
     expect(count(markup, 'Corner Design')).toBe(1);
     expect(count(markup, 'Im Dokument verwendet')).toBe(1);
     expect(count(markup, 'Zuletzt verwendet')).toBe(1);
-    expect(count(markup, 'Eigene Daten übernehmen')).toBe(1);
+    expect(count(markup, 'Auswahl übernehmen')).toBe(1);
     expect(count(markup, 'Aus Dokument entfernen')).toBe(1);
   });
 
@@ -57,7 +57,7 @@ describe('master-data panel presentation', () => {
     expect(count(markup, 'Corner Design')).toBe(1);
     expect(count(markup, 'Im Dokument verwendet')).toBe(1);
     expect(count(markup, 'Musterkunde')).toBe(1);
-    expect(count(markup, 'Partner übernehmen')).toBe(1);
+    expect(count(markup, 'Auswahl übernehmen')).toBe(1);
     expect(count(markup, 'Aus Dokument entfernen')).toBe(1);
   });
 });
