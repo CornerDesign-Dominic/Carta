@@ -19,6 +19,7 @@ import NotFoundView from './views/NotFoundView.jsx';
 import PatchnotesView from './views/PatchnotesView.jsx';
 import ToolsView from './views/ToolsView.jsx';
 import MasterDataView from './views/MasterDataView.jsx';
+import { MasterDataSessionProvider } from './components/masterDataPanel/MasterDataSessionProvider.jsx';
 import { isPatchnotesEnabled } from './config/development.js';
 import { documentSections } from './data/documents.js';
 import { findMasterDataItem, findMasterDataItemByPath } from './data/masterData.js';
@@ -406,49 +407,51 @@ export default function App() {
         onNavigate={handleNavigate}
       />
       <div className="site-main">
-        <Routes>
-          <Route path="/" element={<HomeView onNavigate={handleNavigate} />} />
-          <Route path="/dokumente" element={<DocumentsRoute />} />
-          <Route path="/dokumente/rechnung" element={<Navigate to="/dokumente/rechnung/standard" replace />} />
-          <Route path="/dokumente/rechnung/standard" element={<DocumentsRoute documentId="write-invoice" />} />
-          <Route
-            path="/dokumente/rechnung/kleinunternehmer"
-            element={<Navigate to="/dokumente/rechnung/standard" replace state={{ isSmallBusiness: true }} />}
-          />
-          <Route
-            path="/dokumente/rechnung/text"
-            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="text" />}
-          />
-          <Route
-            path="/dokumente/rechnung/waren"
-            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="goods" />}
-          />
-          <Route
-            path="/dokumente/rechnung/abschlag"
-            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="progressInvoice" />}
-          />
-          <Route
-            path="/dokumente/rechnung/teilrechnung"
-            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="partialInvoice" />}
-          />
-          <Route
-            path="/dokumente/rechnung/schlussrechnung"
-            element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
-          />
-          <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" />} />
-          <Route path="/dokumente/*" element={<DocumentPathRoute />} />
-          <Route path="/tools" element={<ToolsRoute />} />
-          <Route path="/tools/:toolId" element={<LegacyToolRoute />} />
-          <Route path="/stammdaten/*" element={<MasterDataRoute />} />
-          <Route path="/basiszinssatz-tabelle" element={<BaseInterestRateTableView />} />
-          <Route path="/wissen" element={<KnowledgeRoute />} />
-          <Route path="/wissen/:slug" element={<KnowledgeRoute />} />
-          <Route path="/impressum" element={<LegalRoute pageId="impressum" />} />
-          <Route path="/datenschutz" element={<LegalRoute pageId="datenschutz" />} />
-          <Route path="/agb" element={<LegalRoute pageId="agb" />} />
-          {isPatchnotesEnabled && <Route path="/patchnotes" element={<PatchnotesView />} />}
-          <Route path="*" element={<NotFoundRoute />} />
-        </Routes>
+        <MasterDataSessionProvider>
+          <Routes>
+            <Route path="/" element={<HomeView onNavigate={handleNavigate} />} />
+            <Route path="/dokumente" element={<DocumentsRoute />} />
+            <Route path="/dokumente/rechnung" element={<Navigate to="/dokumente/rechnung/standard" replace />} />
+            <Route path="/dokumente/rechnung/standard" element={<DocumentsRoute documentId="write-invoice" />} />
+            <Route
+              path="/dokumente/rechnung/kleinunternehmer"
+              element={<Navigate to="/dokumente/rechnung/standard" replace state={{ isSmallBusiness: true }} />}
+            />
+            <Route
+              path="/dokumente/rechnung/text"
+              element={<DocumentsRoute documentId="write-invoice" invoiceVariant="text" />}
+            />
+            <Route
+              path="/dokumente/rechnung/waren"
+              element={<DocumentsRoute documentId="write-invoice" invoiceVariant="goods" />}
+            />
+            <Route
+              path="/dokumente/rechnung/abschlag"
+              element={<DocumentsRoute documentId="write-invoice" invoiceVariant="progressInvoice" />}
+            />
+            <Route
+              path="/dokumente/rechnung/teilrechnung"
+              element={<DocumentsRoute documentId="write-invoice" invoiceVariant="partialInvoice" />}
+            />
+            <Route
+              path="/dokumente/rechnung/schlussrechnung"
+              element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
+            />
+            <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" />} />
+            <Route path="/dokumente/*" element={<DocumentPathRoute />} />
+            <Route path="/tools" element={<ToolsRoute />} />
+            <Route path="/tools/:toolId" element={<LegacyToolRoute />} />
+            <Route path="/stammdaten/*" element={<MasterDataRoute />} />
+            <Route path="/basiszinssatz-tabelle" element={<BaseInterestRateTableView />} />
+            <Route path="/wissen" element={<KnowledgeRoute />} />
+            <Route path="/wissen/:slug" element={<KnowledgeRoute />} />
+            <Route path="/impressum" element={<LegalRoute pageId="impressum" />} />
+            <Route path="/datenschutz" element={<LegalRoute pageId="datenschutz" />} />
+            <Route path="/agb" element={<LegalRoute pageId="agb" />} />
+            {isPatchnotesEnabled && <Route path="/patchnotes" element={<PatchnotesView />} />}
+            <Route path="*" element={<NotFoundRoute />} />
+          </Routes>
+        </MasterDataSessionProvider>
       </div>
       <Footer
         onNavigate={handleNavigate}

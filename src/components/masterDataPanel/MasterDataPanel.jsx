@@ -7,8 +7,7 @@ import {
   MASTER_DATA_PANEL_TABS,
   readMasterDataPdf,
 } from './masterDataPanelLoader.js';
-
-const initialLoadedFiles = { ownData: [], partners: [], catalogItems: [] };
+import { isLastUsedRecord, useMasterDataSession } from './MasterDataSessionProvider.jsx';
 
 export function getSupportedMasterDataTabs(documentAdapter) {
   if (!documentAdapter) return MASTER_DATA_PANEL_TABS;
@@ -31,25 +30,40 @@ function MasterDataFileDropzone({ onFiles }) {
   </div>;
 }
 
-function MasterDataLoadedFiles({ files }) {
+function MasterDataLoadedFiles({ files, showRecordCountOnly = false }) {
   if (!files.length) return null;
-  return <section className="master-data-loaded-files" aria-label="Geladene Stammdatenblätter"><h3>Geladene Dateien</h3><ul>{files.map((file) => <li key={file.id}><div><strong>{file.name}</strong><span>{file.typeLabel} · {file.records.length} {file.records.length === 1 ? 'Datensatz' : 'Datensätze'}</span></div></li>)}</ul></section>;
+  return <section className="master-data-loaded-files" aria-label="Geladene Stammdatenblätter"><h3>Geladene Dateien</h3><ul>{files.map((file) => <li key={file.id}><div><strong>{file.name}</strong><span>{showRecordCountOnly ? `Anzahl Datensätze: ${file.records.length}` : `${file.typeLabel} · ${file.records.length} ${file.records.length === 1 ? 'Datensatz' : 'Datensätze'}`}</span></div></li>)}</ul></section>;
 }
 
-function OwnDataPanel({ appliedOwnData, documentAdapter, records, selectedId, onApply, onRemove, onSelect, onShowSelection }) {
-  const appliedRecord = appliedOwnData && records.find((record) => record.id === appliedOwnData.recordId && record.sourceFileId === appliedOwnData.sourceFileId);
-
-  if (appliedOwnData) {
-    return <div className="master-data-panel-content master-data-panel-applied-content"><h3 className="master-data-selection-title">Auswahl</h3><section className="master-data-applied-record" aria-label="Im Dokument verwendete eigene Daten"><span>Im Dokument verwendet{appliedOwnData.sourceFileRemoved ? ' – Quelldatei nicht mehr geladen' : ''}</span><strong>{appliedOwnData.companyName}</strong><small>{[appliedOwnData.city, appliedOwnData.sourceFileName].filter(Boolean).join(' · ')}</small></section><div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!appliedRecord || !documentAdapter} onClick={() => onApply(appliedRecord)}>Erneut übernehmen</button><button className="partner-button" type="button" onClick={onShowSelection}>Andere eigene Daten auswählen</button><button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button></div>{appliedOwnData.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Daten bleiben im Dokument erhalten.</p>}</div>;
-  }
-
-  return <div className="master-data-panel-content">{records.length ? <><h3 className="master-data-selection-title">Auswahl</h3><div className="master-data-record-list own-data-panel-list">{records.map((record) => <button className={selectedId === record.id ? 'is-selected' : undefined} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getOwnDataDisplayName(record)}</strong><span>{[record.address.city, record.taxAndRegister.vatId].filter(Boolean).join(' · ') || 'Keine weiteren Angaben'}</span><small>{record.sourceFileName}</small></button>)}</div></> : null}<button className="partner-button is-primary" type="button" disabled={!selectedId || !documentAdapter} onClick={() => onApply()}>In Dokument übernehmen</button></div>;
+function formatOwnDataLocation(postalCode, city) {
+  return [postalCode, city].filter(Boolean).join(' ');
 }
 
-function PartnerDataPanel({ partnerRoleLabel, records, selectedId, onSelect, onFutureAction }) {
+function OwnDataPanel({ appliedOwnData, documentAdapter, lastUsedOwnData, records, selectedId, onApply, onRemove, onSelect }) {
+  const selectedRecord = records.find((record) => record.id === selectedId);
+  const appliedLocation = appliedOwnData && formatOwnDataLocation(appliedOwnData.postalCode, appliedOwnData.city);
+  const isSelectedApplied = Boolean(selectedRecord && appliedOwnData && selectedRecord.id === appliedOwnData.recordId && selectedRecord.sourceFileId === appliedOwnData.sourceFileId);
+
+  return <div className="master-data-panel-content">{(records.length || appliedOwnData) ? <><h3 className="master-data-selection-title">Auswahl</h3>{appliedOwnData && <section className="master-data-applied-record" aria-label="Im Dokument verwendete eigene Daten"><span>Im Dokument verwendet{appliedOwnData.sourceFileRemoved ? ' – Quelldatei nicht mehr geladen' : ''}</span><strong>{appliedOwnData.companyName}</strong>{appliedLocation && <small>{appliedLocation}</small>}{appliedOwnData.vatId && <small>USt-IdNr.: {appliedOwnData.vatId}</small>}</section>}{records.length > 0 && <div className="master-data-record-list own-data-panel-list">{records.map((record) => {
+    const location = formatOwnDataLocation(record.address.postalCode, record.address.city);
+    const isLastUsed = isLastUsedRecord(record, lastUsedOwnData);
+    return <button className={`${selectedId === record.id ? 'is-selected ' : ''}${isLastUsed ? 'is-last-used' : ''}`.trim() || undefined} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getOwnDataDisplayName(record)}</strong>{location && <span>{location}</span>}{record.taxAndRegister.vatId && <small>USt-IdNr.: {record.taxAndRegister.vatId}</small>}{isLastUsed && <em className="master-data-last-used">Zuletzt verwendet</em>}</button>;
+  })}</div>}</> : null}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Eigene Daten übernehmen</button>{appliedOwnData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedOwnData?.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Daten bleiben im Dokument erhalten.</p>}</div>;
+}
+
+function PartnerDataPanel({ appliedDeliveryAddress, appliedPartnerData, documentAdapter, lastUsedPartner, partnerRoleLabel, records, selectedId, onApply, onApplyDeliveryAddress, onRemove, onRemoveDeliveryAddress, onSelect }) {
   const [query, setQuery] = useState('');
   const visibleRecords = records.filter((record) => [record.companyName, record.mainAddress.city, record.customerNumber, record.supplierNumber].some((value) => String(value ?? '').toLocaleLowerCase('de-DE').includes(query.trim().toLocaleLowerCase('de-DE'))));
-  return <div className="master-data-panel-content">{records.length > 0 && <><h3 className="master-data-selection-title">Auswahl</h3><label className="master-data-panel-search"><span>Partner suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, Ort oder Nummer" /></label><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => <button className={selectedId === record.id ? 'is-selected' : undefined} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getPartnerTypeLabel(record.type)} – {getPartnerDisplayName(record)}</strong><span>{[record.mainAddress.city, record.customerNumber || record.supplierNumber, record.sourceFileName].filter(Boolean).join(' · ')}</span>{record.deliveryAddresses.length > 0 && <small>{record.deliveryAddresses.length} Lieferanschrift{record.deliveryAddresses.length === 1 ? '' : 'en'}</small>}</button>) : <p className="master-data-panel-empty">Keine passenden Partner vorhanden.</p>}</div></>}<button className="partner-button is-primary" type="button" disabled={!selectedId} onClick={onFutureAction}>Als {partnerRoleLabel} übernehmen</button></div>;
+  const selectedRecord = records.find((record) => record.id === selectedId);
+  const appliedSourceRecord = appliedPartnerData && records.find((record) => record.id === appliedPartnerData.recordId && record.sourceFileId === appliedPartnerData.sourceFileId);
+  const appliedRecord = appliedSourceRecord ?? appliedPartnerData?.partnerRecord;
+  const appliedDetails = appliedPartnerData && [appliedPartnerData.city, appliedPartnerData.customerNumber].filter(Boolean).join(' · ');
+  const isSelectedApplied = Boolean(selectedRecord && appliedPartnerData && selectedRecord.id === appliedPartnerData.recordId && selectedRecord.sourceFileId === appliedPartnerData.sourceFileId);
+
+  return <div className="master-data-panel-content">{(records.length || appliedPartnerData) && <><h3 className="master-data-selection-title">Auswahl</h3>{appliedPartnerData && <section className="master-data-applied-record" aria-label={`Im Dokument verwendeter ${partnerRoleLabel}`}><span>Im Dokument verwendet{appliedPartnerData.sourceFileRemoved ? ' – Quelldatei nicht mehr geladen' : ''}</span><strong>{appliedPartnerData.companyName}</strong>{appliedDetails && <small>{[appliedDetails, appliedPartnerData.sourceFileName].filter(Boolean).join(' · ')}</small>}</section>}{records.length > 0 && <><label className="master-data-panel-search"><span>Partner suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, Ort oder Nummer" /></label><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => {
+    const isLastUsed = isLastUsedRecord(record, lastUsedPartner);
+    return <button className={`${selectedId === record.id ? 'is-selected ' : ''}${isLastUsed ? 'is-last-used' : ''}`.trim() || undefined} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getPartnerTypeLabel(record.type)} – {getPartnerDisplayName(record)}</strong><span>{[record.mainAddress.city, record.customerNumber || record.supplierNumber, record.sourceFileName].filter(Boolean).join(' · ')}</span>{record.deliveryAddresses.length > 0 && <small>{record.deliveryAddresses.length} Lieferanschrift{record.deliveryAddresses.length === 1 ? '' : 'en'}</small>}{isLastUsed && <em className="master-data-last-used">Zuletzt verwendet</em>}</button>;
+  }) : <p className="master-data-panel-empty">Keine passenden Partner vorhanden.</p>}</div></>}</>}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Partner übernehmen</button>{appliedPartnerData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedPartnerData && <><DeliveryAddressPanel addresses={appliedRecord?.deliveryAddresses ?? []} appliedDeliveryAddress={appliedDeliveryAddress} documentAdapter={documentAdapter} disabled={appliedPartnerData.sourceFileRemoved} onApply={onApplyDeliveryAddress} onRemove={onRemoveDeliveryAddress} />{appliedPartnerData.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Partnerdaten bleiben im Dokument erhalten.</p>}</>}</div>;
 }
 
 function deliveryAddressName(address) {
@@ -60,14 +74,6 @@ function DeliveryAddressPanel({ addresses, appliedDeliveryAddress, documentAdapt
   if (!documentAdapter?.canManageDeliveryAddresses) return null;
 
   return <section className="master-data-delivery-addresses" aria-label="Lieferanschrift"><h3>Lieferanschrift</h3>{addresses.length ? <><div className="master-data-record-list">{addresses.map((address) => <button className={appliedDeliveryAddress?.addressId === address.id ? 'is-selected' : undefined} type="button" disabled={disabled} aria-pressed={appliedDeliveryAddress?.addressId === address.id} key={address.id} onClick={() => onApply(address)}><strong>{deliveryAddressName(address)}</strong><span>{[address.attention, address.street && [address.street, address.houseNumber].filter(Boolean).join(' '), [address.postalCode, address.city].filter(Boolean).join(' ')].filter(Boolean).join(' · ')}</span></button>)}</div>{appliedDeliveryAddress && <button className="partner-button" type="button" disabled={disabled} onClick={onRemove}>Lieferanschrift entfernen</button>}</> : <p className="master-data-panel-empty">Für diesen Partner sind keine Lieferanschriften hinterlegt.</p>}</section>;
-}
-
-function AppliedPartnerPanel({ appliedPartnerData, appliedDeliveryAddress, documentAdapter, partnerRoleLabel, records, onApply, onApplyDeliveryAddress, onRemove, onRemoveDeliveryAddress, onShowSelection }) {
-  const sourceRecord = records.find((record) => record.id === appliedPartnerData.recordId && record.sourceFileId === appliedPartnerData.sourceFileId);
-  const appliedRecord = sourceRecord ?? appliedPartnerData.partnerRecord;
-  const details = [appliedPartnerData.city, appliedPartnerData.customerNumber].filter(Boolean).join(' · ');
-
-  return <div className="master-data-panel-content master-data-panel-applied-content"><h3 className="master-data-selection-title">Auswahl</h3><section className="master-data-applied-record" aria-label={`Im Dokument verwendeter ${partnerRoleLabel}`}><span>Im Dokument verwendet{appliedPartnerData.sourceFileRemoved ? ' – Quelldatei nicht mehr geladen' : ''}</span><strong>{appliedPartnerData.companyName}</strong><small>{[details, appliedPartnerData.sourceFileName].filter(Boolean).join(' · ')}</small></section><div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!sourceRecord || !documentAdapter} onClick={() => onApply(sourceRecord)}>Erneut übernehmen</button><button className="partner-button" type="button" onClick={onShowSelection}>Anderen Partner auswählen</button><button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button></div><DeliveryAddressPanel addresses={appliedRecord?.deliveryAddresses ?? []} appliedDeliveryAddress={appliedDeliveryAddress} documentAdapter={documentAdapter} disabled={appliedPartnerData.sourceFileRemoved} onApply={onApplyDeliveryAddress} onRemove={onRemoveDeliveryAddress} />{appliedPartnerData.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Partnerdaten bleiben im Dokument erhalten.</p>}</div>;
 }
 
 function catalogDetails(record) {
@@ -90,8 +96,7 @@ function MasterDataPanelDialog({ action, onCancel, onConfirm }) {
 
 export default function MasterDataPanel({ documentAdapter, documentType, documentVariant }) {
   const [activeTab, setActiveTab] = useState('ownData');
-  const [loadedFiles, setLoadedFiles] = useState(initialLoadedFiles);
-  const loadedFilesRef = useRef(initialLoadedFiles);
+  const { loadedFiles, records, lastUsedOwnData, lastUsedPartner, getLoadedFiles, rememberOwnData, rememberPartner, replaceLoadedFile } = useMasterDataSession();
   const [statusMessage, setStatusMessage] = useState('');
   const [selectedOwnId, setSelectedOwnId] = useState(null);
   const [selectedPartnerId, setSelectedPartnerId] = useState(null);
@@ -99,13 +104,11 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
   const [appliedOwnData, setAppliedOwnData] = useState(null);
   const [appliedPartnerData, setAppliedPartnerData] = useState(null);
   const [appliedDeliveryAddress, setAppliedDeliveryAddress] = useState(null);
-  const [isPartnerSelectionOpen, setIsPartnerSelectionOpen] = useState(false);
   const [dialog, setDialog] = useState(null);
   const supportedTabs = useMemo(() => getSupportedMasterDataTabs(documentAdapter), [documentAdapter]);
   const partnerRoleLabel = documentAdapter?.partnerRoleLabel ?? 'Empfänger';
   const activeTabIndex = supportedTabs.findIndex((tab) => tab.id === activeTab);
   const activeFiles = loadedFiles[activeTab];
-  const records = useMemo(() => Object.fromEntries(MASTER_DATA_PANEL_TABS.map((tab) => [tab.id, loadedFiles[tab.id].flatMap((file) => file.records)])), [loadedFiles]);
 
   useEffect(() => {
     const compatibleIds = selectedCatalogIds.filter((id) => {
@@ -128,12 +131,10 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     setAppliedOwnData(null);
     setAppliedPartnerData(null);
     setAppliedDeliveryAddress(null);
-    setIsPartnerSelectionOpen(false);
     setSelectedCatalogIds([]);
     setStatusMessage('');
   }, [documentType]);
 
-  function commitLoadedFiles(next) { loadedFilesRef.current = next; setLoadedFiles(next); }
   function selectTab(tabId) { setActiveTab(tabId); }
   function handleTabKeyDown(event) {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
@@ -148,12 +149,12 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
       if (result.status !== 'valid') { setStatusMessage(result.message); continue; }
       if (!supportedTabs.some((tab) => tab.id === result.tabId)) { setStatusMessage(`Diese Stammdatenart wird für dieses Dokument nicht unterstützt.`); continue; }
       const sourceFileId = createMasterDataFileId(file, result.document.documentId);
-      const existingFiles = loadedFilesRef.current[result.tabId];
+      const existingFiles = getLoadedFiles()[result.tabId];
       if (existingFiles.some((loadedFile) => loadedFile.id === sourceFileId)) { setStatusMessage('Diese Datei wurde bereits geladen.'); continue; }
       const typeLabel = MASTER_DATA_PANEL_TABS.find((tab) => tab.id === result.tabId)?.label ?? 'Stammdaten';
       const loadedFile = { id: sourceFileId, name: file.name, typeLabel, records: result.document.records.map((record) => ({ ...record, sourceFileId, sourceFileName: file.name })) };
       const replacedSourceIds = new Set(existingFiles.map((loadedFile) => loadedFile.id));
-      commitLoadedFiles({ ...loadedFilesRef.current, [result.tabId]: [loadedFile] });
+      replaceLoadedFile(result.tabId, loadedFile);
       if (result.tabId === 'ownData') {
         setSelectedOwnId(null);
         if (replacedSourceIds.has(appliedOwnData?.sourceFileId)) setAppliedOwnData((current) => current ? { ...current, sourceFileRemoved: true } : current);
@@ -174,8 +175,9 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
   function applyOwnData(record = records.ownData.find((item) => item.id === selectedOwnId)) {
     if (!record || !documentAdapter) return;
     documentAdapter.applyOwnData(record);
+    rememberOwnData(record);
     setSelectedOwnId(record.id);
-    setAppliedOwnData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getOwnDataDisplayName(record), city: record.address.city, sourceFileRemoved: false });
+    setAppliedOwnData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getOwnDataDisplayName(record), postalCode: record.address.postalCode, city: record.address.city, vatId: record.taxAndRegister.vatId, sourceFileRemoved: false });
     setStatusMessage('Eigene Daten wurden in das Dokument übernommen.');
   }
   function requestOwnDataApply(record) {
@@ -197,10 +199,10 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
   function applyPartner(record = records.partners.find((item) => item.id === selectedPartnerId)) {
     if (!record || !documentAdapter) return;
     documentAdapter.applyPartner(record);
+    rememberPartner(record);
     setSelectedPartnerId(record.id);
     setAppliedPartnerData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getPartnerDisplayName(record), city: record.mainAddress.city, customerNumber: record.customerNumber, deliveryAddresses: record.deliveryAddresses, partnerRecord: record, sourceFileRemoved: false });
     setAppliedDeliveryAddress(null);
-    setIsPartnerSelectionOpen(false);
     setStatusMessage(`Partner wurde als ${partnerRoleLabel} in das Dokument übernommen.`);
   }
   function requestPartnerApply(record) {
@@ -279,10 +281,9 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
       documentAdapter?.removePartner();
       setAppliedPartnerData(null);
       setAppliedDeliveryAddress(null);
-      setIsPartnerSelectionOpen(false);
       setStatusMessage(`Partner wurde als ${partnerRoleLabel} aus dem Dokument entfernt.`);
     }
   }
 
-  return <aside className="master-data-panel" aria-label="Stammdatenpanel"><header><h2>Stammdaten laden</h2></header><div className="master-data-panel-tabs" role="tablist" aria-label="Stammdatenbereiche" onKeyDown={handleTabKeyDown}>{supportedTabs.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} aria-controls={`master-data-panel-${tab.id}`} id={`master-data-tab-${tab.id}`} tabIndex={activeTab === tab.id ? 0 : -1} className={activeTab === tab.id ? 'is-active' : undefined} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}</div><section id={`master-data-panel-${activeTab}`} role="tabpanel" aria-labelledby={`master-data-tab-${activeTab}`}><MasterDataFileDropzone onFiles={handleFiles} /><MasterDataLoadedFiles files={activeFiles} />{activeTab === 'ownData' && <OwnDataPanel appliedOwnData={appliedOwnData} documentAdapter={documentAdapter} records={records.ownData} selectedId={selectedOwnId} onApply={requestOwnDataApply} onRemove={requestOwnDataRemoval} onSelect={setSelectedOwnId} onShowSelection={() => setAppliedOwnData(null)} />}{activeTab === 'partners' && (appliedPartnerData && !isPartnerSelectionOpen ? <AppliedPartnerPanel appliedPartnerData={appliedPartnerData} appliedDeliveryAddress={appliedDeliveryAddress} documentAdapter={documentAdapter} partnerRoleLabel={partnerRoleLabel} records={records.partners} onApply={requestPartnerApply} onApplyDeliveryAddress={requestDeliveryAddressApply} onRemove={requestPartnerRemoval} onRemoveDeliveryAddress={removeDeliveryAddress} onShowSelection={() => setIsPartnerSelectionOpen(true)} /> : <PartnerDataPanel partnerRoleLabel={partnerRoleLabel} records={records.partners} selectedId={selectedPartnerId} onSelect={setSelectedPartnerId} onFutureAction={requestPartnerApply} />)}{activeTab === 'catalogItems' && <CatalogDataPanel canAddCatalogItem={documentAdapter?.canAddCatalogItem} records={records.catalogItems} selectedIds={selectedCatalogIds} onToggle={toggleCatalogSelection} onFutureAction={addSelectedCatalogItems} />}</section>{statusMessage && <p className="master-data-panel-status" aria-live="polite">{statusMessage}</p>}<MasterDataPanelDialog action={dialog} onCancel={() => setDialog(null)} onConfirm={confirmDialog} /></aside>;
+  return <aside className="master-data-panel" aria-label="Stammdatenpanel"><header><h2>Stammdaten laden</h2></header><div className="master-data-panel-tabs" role="tablist" aria-label="Stammdatenbereiche" onKeyDown={handleTabKeyDown}>{supportedTabs.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} aria-controls={`master-data-panel-${tab.id}`} id={`master-data-tab-${tab.id}`} tabIndex={activeTab === tab.id ? 0 : -1} className={activeTab === tab.id ? 'is-active' : undefined} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}</div><section id={`master-data-panel-${activeTab}`} role="tabpanel" aria-labelledby={`master-data-tab-${activeTab}`}><MasterDataFileDropzone onFiles={handleFiles} /><MasterDataLoadedFiles files={activeFiles} showRecordCountOnly={activeTab === 'ownData'} />{activeTab === 'ownData' && <OwnDataPanel appliedOwnData={appliedOwnData} documentAdapter={documentAdapter} lastUsedOwnData={lastUsedOwnData} records={records.ownData} selectedId={selectedOwnId} onApply={requestOwnDataApply} onRemove={requestOwnDataRemoval} onSelect={setSelectedOwnId} />}{activeTab === 'partners' && <PartnerDataPanel appliedDeliveryAddress={appliedDeliveryAddress} appliedPartnerData={appliedPartnerData} documentAdapter={documentAdapter} lastUsedPartner={lastUsedPartner} partnerRoleLabel={partnerRoleLabel} records={records.partners} selectedId={selectedPartnerId} onApply={requestPartnerApply} onApplyDeliveryAddress={requestDeliveryAddressApply} onRemove={requestPartnerRemoval} onRemoveDeliveryAddress={removeDeliveryAddress} onSelect={setSelectedPartnerId} />}{activeTab === 'catalogItems' && <CatalogDataPanel canAddCatalogItem={documentAdapter?.canAddCatalogItem} records={records.catalogItems} selectedIds={selectedCatalogIds} onToggle={toggleCatalogSelection} onFutureAction={addSelectedCatalogItems} />}</section>{statusMessage && <p className="master-data-panel-status" aria-live="polite">{statusMessage}</p>}<MasterDataPanelDialog action={dialog} onCancel={() => setDialog(null)} onConfirm={confirmDialog} /></aside>;
 }

@@ -35,6 +35,10 @@ function pathForInvoiceVariant(variant) {
   return '/dokumente/rechnung/standard';
 }
 
+export function getDocumentSessionResetKey(documentId) {
+  return documentId;
+}
+
 function DocumentUsageMiniVisual({ type }) {
   return (
     <div className={`document-usage-mini document-usage-mini-${type}`} aria-hidden="true">
@@ -272,7 +276,7 @@ export default function DocumentsView({
           )}
         </section>
       </div>
-      {showMasterDataPanel && <MasterDataPanel documentAdapter={masterDataAdapter} documentType={activeDocument.formType} documentVariant={activeDocument.formType === 'invoice' ? activeInvoiceVariant : undefined} />}
+      {showMasterDataPanel && <MasterDataPanel key={getDocumentSessionResetKey(activeDocumentId)} documentAdapter={masterDataAdapter} documentType={activeDocument.formType} documentVariant={activeDocument.formType === 'invoice' ? activeInvoiceVariant : undefined} />}
     </main>
   );
 }
