@@ -40,6 +40,19 @@
   --blue-note: var(--color-primary);
   --shadow: 0 18px 46px rgba(22, 29, 38, 0.08);
   --card-shadow: 0 10px 28px rgba(22, 29, 38, 0.07);
+  --layout-page-max-width: 1500px;
+  --layout-content-max-width: 1000px;
+  --layout-page-gap: 18px;
+  --layout-page-gap-double: 36px;
+  --layout-page-top-offset: clamp(18px, 2.6vw, 32px);
+  --layout-header-height: 72px;
+  --layout-sticky-offset: 18px;
+  --layout-sticky-top: calc(var(--layout-header-height) + var(--layout-sticky-offset));
+  --layout-sticky-bottom-gap: 24px;
+  --layout-sidebar-width: 216px;
+  --layout-sidebar-padding: 12px;
+  --layout-secondary-column-width: 366px;
+  --layout-secondary-collapsed-width: 140px;
 }
 
 :root[data-theme="dark"] {
