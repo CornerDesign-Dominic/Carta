@@ -5,6 +5,7 @@ import {
   hasInvoiceOwnData,
   removeOwnDataFromInvoice,
 } from '../src/components/masterDataPanel/mappings/ownDataToInvoice.js';
+import { getOwnDataSmallBusinessMode } from '../src/components/InvoiceDocumentEditor.jsx';
 
 const invoiceData = {
   sender: {
@@ -62,5 +63,10 @@ describe('own data to invoice mapping', () => {
   it('recognizes existing own document data for the replacement warning', () => {
     expect(hasInvoiceOwnData(invoiceData)).toBe(true);
     expect(hasInvoiceOwnData(removeOwnDataFromInvoice(invoiceData))).toBe(false);
+  });
+
+  it('uses the imported small-business setting for the invoice editor mode', () => {
+    expect(getOwnDataSmallBusinessMode(ownRecord)).toBe(true);
+    expect(getOwnDataSmallBusinessMode({ settings: { isSmallBusiness: false } })).toBe(false);
   });
 });

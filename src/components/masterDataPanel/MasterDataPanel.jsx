@@ -39,31 +39,45 @@ function formatOwnDataLocation(postalCode, city) {
   return [postalCode, city].filter(Boolean).join(' ');
 }
 
-function OwnDataPanel({ appliedOwnData, documentAdapter, lastUsedOwnData, records, selectedId, onApply, onRemove, onSelect }) {
-  const selectedRecord = records.find((record) => record.id === selectedId);
-  const appliedLocation = appliedOwnData && formatOwnDataLocation(appliedOwnData.postalCode, appliedOwnData.city);
-  const isSelectedApplied = Boolean(selectedRecord && appliedOwnData && selectedRecord.id === appliedOwnData.recordId && selectedRecord.sourceFileId === appliedOwnData.sourceFileId);
-
-  return <div className="master-data-panel-content">{(records.length || appliedOwnData) ? <><h3 className="master-data-selection-title">Auswahl</h3>{appliedOwnData && <section className="master-data-applied-record" aria-label="Im Dokument verwendete eigene Daten"><span>Im Dokument verwendet{appliedOwnData.sourceFileRemoved ? ' – Quelldatei nicht mehr geladen' : ''}</span><strong>{appliedOwnData.companyName}</strong>{appliedLocation && <small>{appliedLocation}</small>}{appliedOwnData.vatId && <small>USt-IdNr.: {appliedOwnData.vatId}</small>}</section>}{records.length > 0 && <div className="master-data-record-list own-data-panel-list">{records.map((record) => {
-    const location = formatOwnDataLocation(record.address.postalCode, record.address.city);
-    const isLastUsed = isLastUsedRecord(record, lastUsedOwnData);
-    return <button className={`${selectedId === record.id ? 'is-selected ' : ''}${isLastUsed ? 'is-last-used' : ''}`.trim() || undefined} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getOwnDataDisplayName(record)}</strong>{location && <span>{location}</span>}{record.taxAndRegister.vatId && <small>USt-IdNr.: {record.taxAndRegister.vatId}</small>}{isLastUsed && <em className="master-data-last-used">Zuletzt verwendet</em>}</button>;
-  })}</div>}</> : null}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Eigene Daten übernehmen</button>{appliedOwnData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedOwnData?.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Daten bleiben im Dokument erhalten.</p>}</div>;
+function isAppliedRecord(record, appliedData) {
+  return Boolean(record && appliedData && record.id === appliedData.recordId && record.sourceFileId === appliedData.sourceFileId);
 }
 
-function PartnerDataPanel({ appliedDeliveryAddress, appliedPartnerData, documentAdapter, lastUsedPartner, partnerRoleLabel, records, selectedId, onApply, onApplyDeliveryAddress, onRemove, onRemoveDeliveryAddress, onSelect }) {
+function recordClassName({ isApplied = false, isLastUsed = false, isSelected = false }) {
+  return `${isSelected ? 'is-selected ' : ''}${isApplied ? 'is-applied ' : ''}${isLastUsed ? 'is-last-used' : ''}`.trim() || undefined;
+}
+
+function RecordStatus({ isApplied, isLastUsed }) {
+  if (!isApplied && !isLastUsed) return null;
+
+  return <span className="master-data-record-status">{isApplied && <em className="is-applied">Im Dokument verwendet</em>}{isLastUsed && <em>Zuletzt verwendet</em>}</span>;
+}
+
+export function OwnDataPanel({ appliedOwnData, documentAdapter, lastUsedOwnData, records, selectedId, onApply, onRemove, onSelect }) {
+  const selectedRecord = records.find((record) => record.id === selectedId);
+  const isSelectedApplied = isAppliedRecord(selectedRecord, appliedOwnData);
+
+  return <div className="master-data-panel-content">{records.length > 0 && <><h3 className="master-data-selection-title">Auswahl</h3><div className="master-data-record-list own-data-panel-list">{records.map((record) => {
+    const location = formatOwnDataLocation(record.address.postalCode, record.address.city);
+    const isApplied = isAppliedRecord(record, appliedOwnData);
+    const isLastUsed = isLastUsedRecord(record, lastUsedOwnData);
+    return <button className={recordClassName({ isApplied, isLastUsed, isSelected: selectedId === record.id })} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getOwnDataDisplayName(record)}</strong>{location && <span>{location}</span>}{record.taxAndRegister.vatId && <small>USt-IdNr.: {record.taxAndRegister.vatId}</small>}<RecordStatus isApplied={isApplied} isLastUsed={isLastUsed} /></button>;
+  })}</div></>}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Eigene Daten übernehmen</button>{appliedOwnData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedOwnData?.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Daten bleiben im Dokument erhalten.</p>}</div>;
+}
+
+export function PartnerDataPanel({ appliedDeliveryAddress, appliedPartnerData, documentAdapter, lastUsedPartner, partnerRoleLabel, records, selectedId, onApply, onApplyDeliveryAddress, onRemove, onRemoveDeliveryAddress, onSelect }) {
   const [query, setQuery] = useState('');
   const visibleRecords = records.filter((record) => [record.companyName, record.mainAddress.city, record.customerNumber, record.supplierNumber].some((value) => String(value ?? '').toLocaleLowerCase('de-DE').includes(query.trim().toLocaleLowerCase('de-DE'))));
   const selectedRecord = records.find((record) => record.id === selectedId);
   const appliedSourceRecord = appliedPartnerData && records.find((record) => record.id === appliedPartnerData.recordId && record.sourceFileId === appliedPartnerData.sourceFileId);
   const appliedRecord = appliedSourceRecord ?? appliedPartnerData?.partnerRecord;
-  const appliedDetails = appliedPartnerData && [appliedPartnerData.city, appliedPartnerData.customerNumber].filter(Boolean).join(' · ');
-  const isSelectedApplied = Boolean(selectedRecord && appliedPartnerData && selectedRecord.id === appliedPartnerData.recordId && selectedRecord.sourceFileId === appliedPartnerData.sourceFileId);
+  const isSelectedApplied = isAppliedRecord(selectedRecord, appliedPartnerData);
 
-  return <div className="master-data-panel-content">{(records.length || appliedPartnerData) && <><h3 className="master-data-selection-title">Auswahl</h3>{appliedPartnerData && <section className="master-data-applied-record" aria-label={`Im Dokument verwendeter ${partnerRoleLabel}`}><span>Im Dokument verwendet{appliedPartnerData.sourceFileRemoved ? ' – Quelldatei nicht mehr geladen' : ''}</span><strong>{appliedPartnerData.companyName}</strong>{appliedDetails && <small>{[appliedDetails, appliedPartnerData.sourceFileName].filter(Boolean).join(' · ')}</small>}</section>}{records.length > 0 && <><label className="master-data-panel-search"><span>Partner suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, Ort oder Nummer" /></label><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => {
+  return <div className="master-data-panel-content">{records.length > 0 && <><h3 className="master-data-selection-title">Auswahl</h3><label className="master-data-panel-search"><span>Partner suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, Ort oder Nummer" /></label><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => {
+    const isApplied = isAppliedRecord(record, appliedPartnerData);
     const isLastUsed = isLastUsedRecord(record, lastUsedPartner);
-    return <button className={`${selectedId === record.id ? 'is-selected ' : ''}${isLastUsed ? 'is-last-used' : ''}`.trim() || undefined} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getPartnerTypeLabel(record.type)} – {getPartnerDisplayName(record)}</strong><span>{[record.mainAddress.city, record.customerNumber || record.supplierNumber, record.sourceFileName].filter(Boolean).join(' · ')}</span>{record.deliveryAddresses.length > 0 && <small>{record.deliveryAddresses.length} Lieferanschrift{record.deliveryAddresses.length === 1 ? '' : 'en'}</small>}{isLastUsed && <em className="master-data-last-used">Zuletzt verwendet</em>}</button>;
-  }) : <p className="master-data-panel-empty">Keine passenden Partner vorhanden.</p>}</div></>}</>}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Partner übernehmen</button>{appliedPartnerData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedPartnerData && <><DeliveryAddressPanel addresses={appliedRecord?.deliveryAddresses ?? []} appliedDeliveryAddress={appliedDeliveryAddress} documentAdapter={documentAdapter} disabled={appliedPartnerData.sourceFileRemoved} onApply={onApplyDeliveryAddress} onRemove={onRemoveDeliveryAddress} />{appliedPartnerData.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Partnerdaten bleiben im Dokument erhalten.</p>}</>}</div>;
+    return <button className={recordClassName({ isApplied, isLastUsed, isSelected: selectedId === record.id })} type="button" aria-pressed={selectedId === record.id} key={record.id} onClick={() => onSelect(record.id)}><strong>{getPartnerTypeLabel(record.type)} – {getPartnerDisplayName(record)}</strong><span>{[record.mainAddress.city, record.customerNumber || record.supplierNumber, record.sourceFileName].filter(Boolean).join(' · ')}</span>{record.deliveryAddresses.length > 0 && <small>{record.deliveryAddresses.length} Lieferanschrift{record.deliveryAddresses.length === 1 ? '' : 'en'}</small>}<RecordStatus isApplied={isApplied} isLastUsed={isLastUsed} /></button>;
+  }) : <p className="master-data-panel-empty">Keine passenden Partner vorhanden.</p>}</div></>}<div className="master-data-panel-actions"><button className="partner-button is-primary" type="button" disabled={!selectedRecord || !documentAdapter || isSelectedApplied} onClick={() => onApply()}>Partner übernehmen</button>{appliedPartnerData && <button className="partner-button" type="button" onClick={onRemove}>Aus Dokument entfernen</button>}</div>{appliedPartnerData && <><DeliveryAddressPanel addresses={appliedRecord?.deliveryAddresses ?? []} appliedDeliveryAddress={appliedDeliveryAddress} documentAdapter={documentAdapter} disabled={appliedPartnerData.sourceFileRemoved} onApply={onApplyDeliveryAddress} onRemove={onRemoveDeliveryAddress} />{appliedPartnerData.sourceFileRemoved && <p className="master-data-panel-note">Die Quelldatei wurde aus dem Panel entfernt. Die bereits übernommenen Partnerdaten bleiben im Dokument erhalten.</p>}</>}</div>;
 }
 
 function deliveryAddressName(address) {

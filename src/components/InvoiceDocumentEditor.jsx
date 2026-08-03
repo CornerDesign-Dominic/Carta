@@ -25,6 +25,11 @@ import { applyPartnerToInvoice, hasInvoiceRecipientData, removePartnerFromInvoic
 import { isCatalogItemSupportedForInvoiceVariant, mapCatalogItemsToInvoicePositions } from './masterDataPanel/mappings/catalogItemsToInvoice.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
+
+export function getOwnDataSmallBusinessMode(record) {
+  return record?.settings?.isSmallBusiness === true;
+}
+
 const invoiceVariants = [
   { id: 'standard', label: 'Standardrechnung' },
   { id: 'goods', label: 'Warenrechnung' },
@@ -1222,7 +1227,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const invoiceMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
       setInvoiceData((current) => applyOwnDataToInvoice(current, record));
-      const nextSmallBusinessMode = record?.settings?.isSmallBusiness === true;
+      const nextSmallBusinessMode = getOwnDataSmallBusinessMode(record);
       setIsSmallBusinessInvoice(nextSmallBusinessMode);
       onSmallBusinessChangeRef.current?.(nextSmallBusinessMode);
     },
