@@ -52,7 +52,6 @@
   --layout-sidebar-width: 216px;
   --layout-sidebar-padding: 12px;
   --layout-secondary-column-width: 366px;
-  --layout-secondary-collapsed-width: 140px;
 }
 
 :root[data-theme="dark"] {

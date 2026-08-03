@@ -3034,10 +3034,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .master-data-panel {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   width: min(100%, 340px);
   margin: 24px auto 0;
-  padding: 12px;
+  padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
@@ -3045,18 +3045,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   color: var(--color-text);
 }
 
-.master-data-panel.is-collapsed {
-  display: block;
-  width: auto;
-  margin-top: 0;
-  padding: 6px;
-}
-
 .master-data-panel > header {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 10px;
+  display: block;
 }
 
 .master-data-panel h2,
@@ -3066,10 +3056,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .master-data-panel h2 {
-  font-size: 0.96rem;
+  font-size: 1.08rem;
+  font-weight: 760;
+  letter-spacing: -0.01em;
 }
 
-.master-data-panel > header p,
 .master-data-panel small,
 .master-data-panel em,
 .master-data-panel-status {
@@ -3079,8 +3070,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   line-height: 1.35;
 }
 
-.master-data-panel > header > button,
-.master-data-panel.is-collapsed > button,
 .master-data-loaded-files button {
   border: 1px solid var(--color-border);
   border-radius: 5px;
@@ -3094,57 +3083,95 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .master-data-panel-tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-bottom: 1px solid var(--color-border);
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 6px;
 }
 
 .master-data-panel-tabs button {
   min-width: 0;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  padding: 7px 4px;
-  background: transparent;
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: color-mix(in srgb, var(--color-card) 72%, transparent);
   color: var(--color-muted);
   font: inherit;
   font-size: 0.76rem;
   font-weight: 700;
+  line-height: 1.2;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
 .master-data-panel-tabs button.is-active {
-  border-bottom-color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-accent-surface);
   color: var(--color-primary);
 }
 
 .master-data-panel-tabs button:focus-visible,
-.master-data-panel > header > button:focus-visible,
-.master-data-panel.is-collapsed > button:focus-visible,
 .master-data-loaded-files button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
 .master-data-file-dropzone {
-  display: grid;
-  justify-items: start;
-  gap: 7px;
-  padding: 10px;
-  border: 1px dashed var(--color-border);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--color-card) 70%, transparent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px 12px;
+  border: 1px dashed color-mix(in srgb, var(--color-primary) 72%, var(--color-border));
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-accent-surface) 62%, transparent);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .master-data-file-dropzone.is-dragging {
   border-color: var(--color-primary);
   background: var(--color-accent-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 32%, transparent);
 }
 
 .master-data-file-dropzone p {
+  color: var(--color-text);
   font-size: 0.8rem;
   font-weight: 700;
 }
 
-.master-data-file-dropzone small {
-  font-size: 0.72rem;
+.master-data-file-add-button {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 30px;
+  min-height: 30px;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  padding: 0;
+  background: var(--color-primary);
+  color: var(--color-card);
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 650;
+  line-height: 1;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.master-data-file-add-button:hover {
+  border-color: var(--color-primary-hover);
+  background: var(--color-primary-hover);
+}
+
+.master-data-file-add-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .master-data-loaded-files {
@@ -3366,16 +3393,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
       var(--layout-sidebar-width) + var(--layout-content-max-width) + var(--layout-secondary-column-width) + var(--layout-page-gap-double)
     );
     max-width: none;
-  }
-
-  .documents-layout.has-master-data-panel:has(.master-data-panel.is-collapsed) {
-    grid-template-columns:
-      var(--layout-sidebar-width)
-      minmax(var(--layout-content-max-width), var(--layout-content-max-width))
-      var(--layout-secondary-collapsed-width);
-    min-width: calc(
-      var(--layout-sidebar-width) + var(--layout-content-max-width) + var(--layout-secondary-collapsed-width) + var(--layout-page-gap-double)
-    );
   }
 
   .documents-layout.has-master-data-panel .document-sidebar {

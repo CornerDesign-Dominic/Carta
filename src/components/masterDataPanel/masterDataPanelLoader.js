@@ -17,8 +17,8 @@ import {
 
 export const MASTER_DATA_PANEL_TABS = [
   { id: 'ownData', label: 'Eigene Daten' },
-  { id: 'partners', label: 'Partner' },
-  { id: 'catalogItems', label: 'Leistungen' },
+  { id: 'partners', label: 'Partner & Empfänger' },
+  { id: 'catalogItems', label: 'Leistungen & Artikel' },
 ];
 
 const MAX_ATTACHMENT_BYTES = 4 * 1024 * 1024;
