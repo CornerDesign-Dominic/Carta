@@ -8,7 +8,7 @@ body,
 }
 
 html {
-  scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 body {
@@ -71,8 +71,6 @@ output {
 
 .site-header,
 .site-footer {
-  position: relative;
-  isolation: isolate;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
@@ -80,50 +78,13 @@ output {
   min-width: 0;
 }
 
-.site-header::before,
-.site-footer::before {
-  content: '';
-  position: absolute;
-  inset-block: 0;
-  left: 100%;
-  width: 0;
-  background: var(--site-chrome-background);
-  box-shadow: 0 0 0 100vw var(--site-chrome-background);
-  clip-path: inset(0 -100vw 0 0);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.site-header::after,
-.site-footer::after {
-  content: '';
-  position: absolute;
-  left: 100%;
-  width: 0;
-  height: 1px;
-  background: var(--color-border);
-  box-shadow: 0 0 0 100vw var(--color-border);
-  clip-path: inset(0 -100vw 0 0);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.site-header::after {
-  bottom: 0;
-}
-
-.site-footer::after {
-  top: 0;
-}
-
 .site-header {
-  --site-chrome-background: color-mix(in srgb, var(--color-card) 92%, transparent);
   display: grid;
   grid-template-columns: minmax(160px, 1fr) auto minmax(160px, 1fr);
   align-items: center;
   min-height: var(--layout-header-height);
   padding: 15px clamp(24px, 4vw, 56px);
-  background: var(--site-chrome-background);
+  background: color-mix(in srgb, var(--color-card) 92%, transparent);
   border-bottom: 1px solid var(--color-border);
   box-shadow: 0 8px 22px rgba(22, 29, 38, 0.06);
   backdrop-filter: blur(14px);
