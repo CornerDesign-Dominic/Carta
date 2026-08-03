@@ -9,7 +9,6 @@ body,
 
 html {
   scrollbar-gutter: stable;
-  overflow-x: clip;
 }
 
 body {
@@ -86,11 +85,12 @@ output {
   content: '';
   position: absolute;
   inset-block: 0;
-  left: 0;
-  width: 100%;
-  background: inherit;
+  left: 100%;
+  width: 0;
+  background: var(--site-chrome-background);
+  box-shadow: 0 0 0 100vw var(--site-chrome-background);
+  clip-path: inset(0 -100vw 0 0);
   pointer-events: none;
-  transform: translateX(100%);
   z-index: -1;
 }
 
@@ -98,12 +98,13 @@ output {
 .site-footer::after {
   content: '';
   position: absolute;
-  left: 0;
-  width: 100%;
+  left: 100%;
+  width: 0;
   height: 1px;
   background: var(--color-border);
+  box-shadow: 0 0 0 100vw var(--color-border);
+  clip-path: inset(0 -100vw 0 0);
   pointer-events: none;
-  transform: translateX(100%);
   z-index: -1;
 }
 
@@ -116,12 +117,13 @@ output {
 }
 
 .site-header {
+  --site-chrome-background: color-mix(in srgb, var(--color-card) 92%, transparent);
   display: grid;
   grid-template-columns: minmax(160px, 1fr) auto minmax(160px, 1fr);
   align-items: center;
   min-height: var(--layout-header-height);
   padding: 15px clamp(24px, 4vw, 56px);
-  background: color-mix(in srgb, var(--color-card) 92%, transparent);
+  background: var(--site-chrome-background);
   border-bottom: 1px solid var(--color-border);
   box-shadow: 0 8px 22px rgba(22, 29, 38, 0.06);
   backdrop-filter: blur(14px);
@@ -3420,14 +3422,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .master-data-catalog-record {
   grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
+  align-items: center;
+  column-gap: 10px;
   cursor: pointer;
 }
 
 .master-data-catalog-record input {
   width: 15px;
   height: 15px;
-  margin: 1px 0 0;
+  margin: 0;
   accent-color: var(--color-primary);
 }
 
@@ -8023,6 +8026,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .site-footer {
+  --site-chrome-background: var(--color-surface);
   display: flex;
   margin-top: auto;
   padding: 20px max(28px, calc((100vw - 1000px) / 2));
@@ -8084,7 +8088,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 10px 11px;
-  background: var(--color-surface);
+  background: var(--site-chrome-background);
   color: var(--color-text);
   font: inherit;
   font-size: 0.9rem;
@@ -11944,7 +11948,7 @@ h2,
 }
 
 :root[data-theme="dark"] .site-footer {
-  background: var(--color-footer-surface);
+  --site-chrome-background: var(--color-footer-surface);
   border-top-color: var(--color-border);
   color: var(--color-muted);
 }
