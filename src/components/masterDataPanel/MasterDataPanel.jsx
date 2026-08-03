@@ -9,6 +9,9 @@ import {
 } from './masterDataPanelLoader.js';
 import { isLastUsedRecord, useMasterDataSession } from './MasterDataSessionProvider.jsx';
 
+const masterDataSuccessMessage = 'Auswahl wurde erfolgreich übernommen';
+const masterDataRemovalSuccessMessage = 'Daten wurden erfolgreich entfernt';
+
 export function getSupportedMasterDataTabs(documentAdapter) {
   if (!documentAdapter) return MASTER_DATA_PANEL_TABS;
 
@@ -100,7 +103,7 @@ function CatalogDataPanel({ canAddCatalogItem, records, selectedIds, onToggle, o
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const visibleRecords = records.filter((record) => (typeFilter === 'all' || record.type === typeFilter) && [record.title, record.number, record.internalNote, ...Object.values(record.descriptions)].some((value) => String(value ?? '').toLocaleLowerCase('de-DE').includes(query.trim().toLocaleLowerCase('de-DE'))));
-  return <div className="master-data-panel-content">{records.length > 0 && <><h3 className="master-data-selection-title">Auswahl</h3><div className="master-data-panel-filter-row"><label className="master-data-panel-search"><span>Leistungen suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Bezeichnung oder Beschreibung" /></label><label className="master-data-panel-search"><span>Typ</span><select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="all">Alle</option><option value="service">Leistung</option><option value="goods">Artikel</option><option value="textService">Textleistung</option><option value="deliveryItem">Lieferscheinposition</option></select></label></div><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => { const isSupported = canAddCatalogItem?.(record) === true; return <label className={`master-data-catalog-record${isSupported ? '' : ' is-unavailable'}`} key={record.id}><input type="checkbox" checked={selectedIds.includes(record.id)} disabled={!isSupported} onChange={() => onToggle(record.id)} /><span><strong>{getCatalogItemTypeLabel(record.type)} – {record.title || 'Unbenannter Eintrag'}</strong><small>{catalogDetails(record)}</small>{!isSupported && <small className="master-data-catalog-unavailable">Für dieses Dokument nicht verfügbar</small>}<em>{record.sourceFileName}</em></span></label>; }) : <p className="master-data-panel-empty">Keine passenden Leistungen vorhanden.</p>}</div></>}<button className="partner-button is-primary" type="button" disabled={!selectedIds.length || !canAddCatalogItem} onClick={onFutureAction}>Auswahl übernehmen</button></div>;
+  return <div className="master-data-panel-content">{records.length > 0 && <><h3 className="master-data-selection-title">Auswahl</h3><div className="master-data-panel-filter-row"><label className="master-data-panel-search"><span>Leistungen suchen</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Bezeichnung oder Beschreibung" /></label><label className="master-data-panel-search"><span>Typ</span><select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="all">Alle</option><option value="service">Leistung</option><option value="goods">Artikel</option><option value="textService">Textleistung</option><option value="deliveryItem">Lieferscheinposition</option></select></label></div><div className="master-data-record-list">{visibleRecords.length ? visibleRecords.map((record) => { const isSupported = canAddCatalogItem?.(record) === true; return <label className={`master-data-catalog-record${isSupported ? '' : ' is-unavailable'}`} key={record.id}><input type="checkbox" checked={selectedIds.includes(record.id)} disabled={!isSupported} onChange={() => onToggle(record.id)} /><span><strong>{getCatalogItemTypeLabel(record.type)} – {record.title || 'Unbenannter Eintrag'}</strong><small>{catalogDetails(record)}</small>{!isSupported && <small className="master-data-catalog-unavailable">Für dieses Dokument nicht verfügbar</small>}</span></label>; }) : <p className="master-data-panel-empty">Keine passenden Leistungen vorhanden.</p>}</div></>}<button className="partner-button is-primary" type="button" disabled={!selectedIds.length || !canAddCatalogItem} onClick={onFutureAction}>Auswahl übernehmen</button></div>;
 }
 
 function MasterDataPanelDialog({ action, onCancel, onConfirm }) {
@@ -192,7 +195,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     rememberOwnData(record);
     setSelectedOwnId(record.id);
     setAppliedOwnData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getOwnDataDisplayName(record), postalCode: record.address.postalCode, city: record.address.city, vatId: record.taxAndRegister.vatId, sourceFileRemoved: false });
-    setStatusMessage('Eigene Daten wurden in das Dokument übernommen.');
+    setStatusMessage(masterDataSuccessMessage);
   }
   function requestOwnDataApply(record) {
     const selectedRecord = record ?? records.ownData.find((item) => item.id === selectedOwnId);
@@ -217,7 +220,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     setSelectedPartnerId(record.id);
     setAppliedPartnerData({ recordId: record.id, sourceFileId: record.sourceFileId, sourceFileName: record.sourceFileName, companyName: getPartnerDisplayName(record), city: record.mainAddress.city, customerNumber: record.customerNumber, deliveryAddresses: record.deliveryAddresses, partnerRecord: record, sourceFileRemoved: false });
     setAppliedDeliveryAddress(null);
-    setStatusMessage(`Partner wurde als ${partnerRoleLabel} in das Dokument übernommen.`);
+    setStatusMessage(masterDataSuccessMessage);
   }
   function requestPartnerApply(record) {
     const selectedRecord = record?.currentTarget ? records.partners.find((item) => item.id === selectedPartnerId) : record ?? records.partners.find((item) => item.id === selectedPartnerId);
@@ -243,7 +246,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (!address || !partner || !documentAdapter?.canManageDeliveryAddresses || !partner.deliveryAddresses.some((item) => item.id === address.id)) return;
     documentAdapter.applyDeliveryAddress(address);
     setAppliedDeliveryAddress({ addressId: address.id, sourceFileId: appliedPartnerData.sourceFileId, companyName: address.companyName, city: address.city, sourceFileRemoved: false });
-    setStatusMessage('Lieferanschrift wurde in das Dokument übernommen.');
+    setStatusMessage(masterDataSuccessMessage);
   }
   function requestDeliveryAddressApply(address) {
     if (!address || !documentAdapter?.canManageDeliveryAddresses) return;
@@ -258,7 +261,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (!partner || !documentAdapter?.canManageDeliveryAddresses) return;
     documentAdapter.removeDeliveryAddress(partner);
     setAppliedDeliveryAddress(null);
-    setStatusMessage('Lieferanschrift wurde entfernt. Die Hauptanschrift des Partners wird wieder verwendet.');
+    setStatusMessage(masterDataRemovalSuccessMessage);
   }
   function toggleCatalogSelection(recordId) {
     const record = records.catalogItems.find((item) => item.id === recordId);
@@ -278,7 +281,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
       return;
     }
     setSelectedCatalogIds([]);
-    setStatusMessage(`${result.count} ${result.count === 1 ? 'Position wurde' : 'Positionen wurden'} zum Dokument hinzugefügt.`);
+    setStatusMessage(masterDataSuccessMessage);
   }
   function confirmDialog() {
     const action = dialog;
@@ -287,7 +290,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
     if (action?.kind === 'remove-own-data') {
       documentAdapter?.removeOwnData();
       setAppliedOwnData(null);
-      setStatusMessage('Eigene Daten wurden aus dem Dokument entfernt.');
+      setStatusMessage(masterDataRemovalSuccessMessage);
     }
     if (action?.kind === 'replace-partner') applyPartner(action.record);
     if (action?.kind === 'replace-delivery-address') applyDeliveryAddress(action.address);
@@ -295,7 +298,7 @@ export default function MasterDataPanel({ documentAdapter, documentType, documen
       documentAdapter?.removePartner();
       setAppliedPartnerData(null);
       setAppliedDeliveryAddress(null);
-      setStatusMessage(`Partner wurde als ${partnerRoleLabel} aus dem Dokument entfernt.`);
+      setStatusMessage(masterDataRemovalSuccessMessage);
     }
   }
 

@@ -3275,6 +3275,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   font: inherit;
 }
 
+.master-data-panel-search input:focus,
+.master-data-panel-search select:focus,
+.master-data-panel-search input:focus-visible,
+.master-data-panel-search select:focus-visible {
+  border-color: color-mix(in srgb, var(--color-primary) 58%, var(--color-border));
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
 .master-data-panel-filter-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(92px, 0.48fr);
@@ -3328,8 +3337,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .master-data-record-list span,
 .master-data-record-list .master-data-record-status,
-.master-data-catalog-record small,
-.master-data-catalog-record em {
+.master-data-catalog-record small {
   overflow: hidden;
   color: var(--color-muted);
   font-size: 0.72rem;
