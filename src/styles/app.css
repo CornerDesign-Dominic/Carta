@@ -5237,6 +5237,18 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.35;
 }
 
+.credit-note-sheet .invoice-document-title .credit-note-title-label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: calc(1.35em + 6px);
+  height: auto;
+  padding: 3px 0;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.35;
+}
+
 .reminder-document-title {
   margin-top: -8px;
 }
