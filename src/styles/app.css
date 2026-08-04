@@ -3638,27 +3638,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   outline: 0;
 }
 
-.business-letter-optional-field label {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-
 .business-letter-content .business-letter-subject {
   margin: 0;
   font-size: 1rem;
   font-weight: 760;
   line-height: 1.35;
-}
-
-.business-letter-optional-field .document-label-input {
-  width: auto;
-  min-width: 0;
-  color: #77736b;
-  font-size: 0.68rem;
-  font-weight: 760;
-  line-height: 1.25;
-  text-align: left;
 }
 
 .business-letter-salutation {
@@ -3687,36 +3671,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-width: 0;
 }
 
-.business-letter-optional-fields {
-  display: grid;
-  gap: 10px;
-  margin-top: 0;
-}
-
-.business-letter-optional-field {
+.business-letter-attachments {
   align-items: start;
 }
 
-.business-letter-optional-field textarea {
+.business-letter-attachments textarea {
   min-height: 1.58em;
-}
-
-.business-letter-inline-field label {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.business-letter-inline-field .document-label-input {
-  flex: 0 0 auto;
-  color: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-}
-
-.business-letter-inline-field textarea {
-  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -3758,11 +3718,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .business-letter-print-page .invoice-print-page-number.is-empty {
   visibility: hidden;
-}
-
-.business-letter-print-page .invoice-print-footer {
-  align-self: end;
-  margin-top: 0;
 }
 
 .business-letter-print-page .business-letter-print-subject {

@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
+import DocumentPrintFooter from './documentBlocks/DocumentPrintFooter.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import FooterBlock from './documentBlocks/FooterBlock.jsx';
 import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
@@ -111,7 +112,7 @@ const defaultContent = {
   closing: 'Mit freundlichen Grüßen',
   signerName: 'Max Mustermann',
   signerRole: 'Geschäftsführer',
-  attachments: 'Angebot Nr. 2026-001',
+  attachments: 'Anlagen: Angebot Nr. 2026-001',
 };
 
 function createFieldConfig(definitions) {
@@ -194,7 +195,7 @@ function createPdfFileName(subject) {
 
 function buildLetterText(content, labels, hiddenFields) {
   const attachment = !hiddenFields.includes('attachments') && content.attachments
-    ? `${formatInlineLabel(labels.attachments)} ${content.attachments}`
+    ? formatAttachmentText(content.attachments)
     : '';
   const signature = [
     content.signerName,
@@ -209,8 +210,10 @@ function buildLetterText(content, labels, hiddenFields) {
   ].filter(Boolean).join('\n\n');
 }
 
-function formatInlineLabel(label) {
-  return `${String(label || 'Anlagen').replace(/\s*:+\s*$/, '').trim() || 'Anlagen'}:`;
+function formatAttachmentText(value) {
+  const text = String(value ?? '').trim();
+  if (!text) return '';
+  return /^anlagen\s*:/i.test(text) ? text : `Anlagen: ${text}`;
 }
 
 export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange }) {
@@ -433,6 +436,7 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
     <textarea
       ref={(element) => { textRefs.current[field] = element; }}
       className={className}
+      rows={1}
       aria-label={labels[field]}
       value={content[field]}
       onChange={(event) => { updateContent(field, event.target.value); resizeTextarea(event.target); }}
@@ -464,7 +468,7 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
           {renderTextArea('body', 'business-letter-body')}
           {renderTextInput('closing', 'business-letter-closing')}
           <SignatureFields content={content} hiddenFields={letterContentHidden} labels={labels} onContentChange={updateContent} onToggle={(field) => toggleConfiguredField('letterContent', field)} />
-          <OptionalLetterFields content={content} fields={letterContentOptionalFields.filter(({ field }) => field === 'attachments')} hiddenFields={letterContentHidden.filter((field) => field === 'attachments')} labels={labels} onContentChange={updateContent} onLabelChange={updateLabel} onToggle={(field) => toggleConfiguredField('letterContent', field)} resizeTextarea={resizeTextarea} textRefs={textRefs} />
+          <AttachmentsField content={content} hiddenFields={letterContentHidden} labels={labels} onContentChange={updateContent} onToggle={(field) => toggleConfiguredField('letterContent', field)} resizeTextarea={resizeTextarea} textRefs={textRefs} />
         </section>
         <FooterBlock columns={[footerColumns[0], getOrderedDefinitions('footerMiddle', footerColumns[1]), footerColumns[2]]} footerLines={footerLines} hiddenFields={getHiddenFields('footerMiddle', footerColumns[1])} onFooterLineChange={updateFooterLine} onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)} onToggleField={(field) => toggleConfiguredField('footerMiddle', field)} />
       </A4Page>
@@ -494,19 +498,18 @@ function SignatureFields({ content, hiddenFields, labels, onContentChange, onTog
   );
 }
 
-function OptionalLetterFields({ content, fields, hiddenFields, labels, onContentChange, onLabelChange, onToggle, resizeTextarea: resize, textRefs }) {
+function AttachmentsField({ content, hiddenFields, labels, onContentChange, onToggle, resizeTextarea: resize, textRefs }) {
+  const field = 'attachments';
+  const isHidden = hiddenFields.includes(field);
+
+  if (isHidden) {
+    return <HiddenFieldActions definitions={[{ field, label: labels[field] }]} hiddenFields={[field]} onToggle={onToggle} />;
+  }
+
   return (
-    <div className="business-letter-optional-fields">
-      {fields.filter(({ field }) => !hiddenFields.includes(field)).map(({ field }) => (
-        <div className="business-letter-optional-field business-letter-inline-field invoice-config-row" key={field}>
-          <label>
-            <input className="document-label-input" aria-label={`Beschriftung ${labels[field]}`} value={formatInlineLabel(labels[field])} onChange={(event) => onLabelChange(field, event.target.value.replace(/\s*:+\s*$/, ''))} />
-            <textarea ref={(element) => { textRefs.current[field] = element; }} aria-label={labels[field]} value={content[field]} onChange={(event) => { onContentChange(field, event.target.value); resize(event.target); }} />
-          </label>
-          <FieldActions label={labels[field]} onToggle={() => onToggle(field)} />
-        </div>
-      ))}
-      <HiddenFieldActions definitions={fields} hiddenFields={hiddenFields} onToggle={onToggle} />
+    <div className="business-letter-attachments invoice-config-row">
+      <textarea ref={(element) => { textRefs.current[field] = element; }} aria-label={labels[field]} rows={1} value={formatAttachmentText(content[field])} onChange={(event) => { onContentChange(field, event.target.value); resize(event.target); }} />
+      <FieldActions label={labels[field]} onToggle={() => onToggle(field)} />
     </div>
   );
 }
@@ -538,14 +541,10 @@ const BusinessLetterPrintPages = forwardRef(function BusinessLetterPrintPages({ 
       {page.pageNumber === 1 ? <div className="business-letter-print-first-header"><header className="invoice-print-header"><div><p className="invoice-print-company-name">{sender.company}</p></div><div className="invoice-print-contact">{visibleContactFields.map(({ field, labelField }) => <p key={field}><span>{labels[labelField]}</span>{sender[field]}</p>)}</div></header><section className="invoice-print-address-row"><div className="invoice-print-recipient"><p className="invoice-print-sender-line">{sender.senderLine}</p>{recipientLines.map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</div><div className="invoice-print-details">{visibleDetailFields.map(({ field, type }) => <p key={field}><span>{labels[field]}</span><strong>{type === 'date' ? formatGermanDate(details[field]) : details[field]}</strong></p>)}</div></section></div> : <header className="invoice-print-header invoice-print-continuation-header"><p className="invoice-print-company-name">{sender.company}</p></header>}
       <div className="invoice-print-page-content">{page.items.map((item, index) => item.role === 'subject' ? <h2 className="invoice-print-title business-letter-print-subject" key={`${item.id}-${index}`}>{item.text}</h2> : <p className="invoice-print-flow-text" key={`${item.id}-${index}`}>{item.text}</p>)}</div>
       <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>{totalPages > 1 ? `${page.pageNumber}/${totalPages}` : ''}</p>
-      <BusinessLetterPrintFooter footerLines={footerLines} visibleFooterFields={visibleFooterFields} />
+      <DocumentPrintFooter footerLines={footerLines} visibleMiddleFields={visibleFooterFields} />
     </article>)}
   </div>;
 });
-
-function BusinessLetterPrintFooter({ footerLines, visibleFooterFields }) {
-  return <footer className="invoice-print-footer"><section>{['companyName', 'companyStreet', 'companyCity', 'companyExtra'].map((field) => footerLines[field]).filter(Boolean).map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</section><section>{visibleFooterFields.map(({ field }) => footerLines[field]).filter(Boolean).map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</section><section>{['bankName', 'iban', 'bic', 'bankExtra'].map((field) => footerLines[field]).filter(Boolean).map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</section></footer>;
-}
 
 function getOuterHeight(element) {
   const styles = window.getComputedStyle(element);
