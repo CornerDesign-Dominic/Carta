@@ -428,7 +428,6 @@ export interface BusinessLetterGeneratorState {
     signerName: string;
     signerRole: string;
     attachments: string;
-    distribution: string;
   };
   fieldConfig: {
     contact: FieldConfiguration;

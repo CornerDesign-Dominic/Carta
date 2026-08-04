@@ -30,7 +30,6 @@ const initialLabels = {
   signerName: 'Name',
   signerRole: 'Funktion',
   attachments: 'Anlagen',
-  distribution: 'Verteiler',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactFax: 'Fax',
@@ -81,7 +80,6 @@ const footerColumns = [
 const letterContentOptionalFields = [
   { field: 'signerRole', label: 'Funktion' },
   { field: 'attachments', label: 'Anlagen' },
-  { field: 'distribution', label: 'Verteiler' },
 ];
 
 const defaultLetterData = {
@@ -93,11 +91,11 @@ const defaultLetterData = {
   },
   recipient: {
     companyName: 'Empfängerunternehmen',
-    attention: '',
-    name: '',
+    attention: 'z. Hd. Ansprechpartner',
+    name: 'Abteilung',
     address: { street: 'Empfängerstraße', houseNumber: '1', postalCode: '12345', city: 'Musterstadt' },
   },
-  details: { yourReference: '', ourReference: '', contactPerson: '', place: 'Berlin', letterDate: new Date().toISOString().slice(0, 10) },
+  details: { yourReference: 'AB-2026-015', ourReference: 'DF-2026-042', contactPerson: 'Dominic Franz', place: 'Berlin', letterDate: new Date().toISOString().slice(0, 10) },
   references: {},
   footer: {
     company: { companyName: 'Belege24 Muster GmbH', street: 'Musterstraße', houseNumber: '12', postalCode: '10115', city: 'Berlin', extra: '' },
@@ -111,10 +109,9 @@ const defaultContent = {
   salutation: 'Sehr geehrte Damen und Herren,',
   body: 'hiermit erhalten Sie dieses Schreiben zur weiteren Bearbeitung. Bitte prüfen Sie die Angaben und melden Sie sich bei Rückfragen gerne bei uns.',
   closing: 'Mit freundlichen Grüßen',
-  signerName: '',
-  signerRole: '',
-  attachments: '',
-  distribution: '',
+  signerName: 'Dominic Franz',
+  signerRole: 'Geschäftsführer',
+  attachments: 'Angebot Nr. 2026-001',
 };
 
 function createFieldConfig(definitions) {
@@ -199,14 +196,16 @@ function buildLetterText(content, labels, hiddenFields) {
   const optional = (field) => !hiddenFields.includes(field) && content[field]
     ? `${labels[field]}: ${content[field]}`
     : '';
+  const signature = [
+    content.signerName,
+    !hiddenFields.includes('signerRole') ? content.signerRole : '',
+  ].filter(Boolean).join('\n');
   return [
     content.salutation,
     content.body,
     content.closing,
-    content.signerName,
-    optional('signerRole'),
+    signature,
     optional('attachments'),
-    optional('distribution'),
   ].filter(Boolean).join('\n\n');
 }
 
@@ -435,6 +434,14 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
       onChange={(event) => { updateContent(field, event.target.value); resizeTextarea(event.target); }}
     />
   );
+  const renderTextInput = (field, className = '') => (
+    <input
+      className={className}
+      aria-label={labels[field]}
+      value={content[field]}
+      onChange={(event) => updateContent(field, event.target.value)}
+    />
+  );
 
   return (
     <div className="visual-editor invoice-visual-editor business-letter-visual-editor">
@@ -448,18 +455,12 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
           <DocumentMetaBlock dateInputRefs={dateInputRefs} details={details} fields={getOrderedDefinitions('details', detailFields)} hiddenFields={getHiddenFields('details', detailFields)} labels={labels} onDatePicker={openDatePicker} onDetailChange={updateDetail} onLabelChange={updateLabel} onMoveField={(field, direction) => moveConfiguredField('details', field, direction)} onToggleField={(field) => toggleConfiguredField('details', field)} />
         </section>
         <section className="business-letter-content">
-          <label className="business-letter-subject">
-            <input className="document-label-input" aria-label="Beschriftung Betreff" value={labels.subject} onChange={(event) => updateLabel('subject', event.target.value)} />
-            {renderTextArea('subject')}
-          </label>
+          {renderTextArea('subject', 'business-letter-subject')}
           {renderTextArea('salutation', 'business-letter-salutation')}
           {renderTextArea('body', 'business-letter-body')}
-          {renderTextArea('closing', 'business-letter-closing')}
-          <label className="business-letter-signer">
-            <input className="document-label-input" aria-label="Beschriftung Name" value={labels.signerName} onChange={(event) => updateLabel('signerName', event.target.value)} />
-            {renderTextArea('signerName')}
-          </label>
-          <OptionalLetterFields content={content} fields={letterContentOptionalFields} hiddenFields={letterContentHidden} labels={labels} onContentChange={updateContent} onLabelChange={updateLabel} onToggle={(field) => toggleConfiguredField('letterContent', field)} resizeTextarea={resizeTextarea} textRefs={textRefs} />
+          {renderTextInput('closing', 'business-letter-closing')}
+          <SignatureFields content={content} hiddenFields={letterContentHidden} labels={labels} onContentChange={updateContent} onToggle={(field) => toggleConfiguredField('letterContent', field)} />
+          <OptionalLetterFields content={content} fields={letterContentOptionalFields.filter(({ field }) => field === 'attachments')} hiddenFields={letterContentHidden.filter((field) => field === 'attachments')} labels={labels} onContentChange={updateContent} onLabelChange={updateLabel} onToggle={(field) => toggleConfiguredField('letterContent', field)} resizeTextarea={resizeTextarea} textRefs={textRefs} />
         </section>
         <FooterBlock columns={[footerColumns[0], getOrderedDefinitions('footerMiddle', footerColumns[1]), footerColumns[2]]} footerLines={footerLines} hiddenFields={getHiddenFields('footerMiddle', footerColumns[1])} onFooterLineChange={updateFooterLine} onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)} onToggleField={(field) => toggleConfiguredField('footerMiddle', field)} />
       </A4Page>
@@ -468,6 +469,23 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
         <MeasuredBusinessLetterPaginator ref={paginatorRef} items={printItems} />
         <BusinessLetterPrintPages ref={printPagesRef} content={content} details={details} footerLines={footerLines} hiddenContentFields={letterContentHidden} labels={labels} pages={printPages} recipient={recipient} sender={sender} visibleContactFields={getOrderedDefinitions('contact', contactFields).filter(({ field }) => !fieldConfig.contact.hidden.includes(field))} visibleDetailFields={getOrderedDefinitions('details', detailFields).filter(({ field }) => !fieldConfig.details.hidden.includes(field))} visibleRecipientFields={recipientOptionalFields.filter(({ field }) => !fieldConfig.recipient.hidden.includes(field))} visibleFooterFields={getOrderedDefinitions('footerMiddle', footerColumns[1]).filter(({ field }) => !fieldConfig.footerMiddle.hidden.includes(field))} />
       </>}
+    </div>
+  );
+}
+
+function SignatureFields({ content, hiddenFields, labels, onContentChange, onToggle }) {
+  const roleHidden = hiddenFields.includes('signerRole');
+
+  return (
+    <div className="business-letter-signature">
+      <input aria-label={labels.signerName} value={content.signerName} onChange={(event) => onContentChange('signerName', event.target.value)} />
+      {!roleHidden && (
+        <div className="business-letter-signature-role invoice-config-row">
+          <input aria-label={labels.signerRole} value={content.signerRole} onChange={(event) => onContentChange('signerRole', event.target.value)} />
+          <FieldActions label={labels.signerRole} onToggle={() => onToggle('signerRole')} />
+        </div>
+      )}
+      {roleHidden && <HiddenFieldActions definitions={[{ field: 'signerRole', label: labels.signerRole }]} hiddenFields={['signerRole']} onToggle={onToggle} />}
     </div>
   );
 }

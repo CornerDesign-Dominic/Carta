@@ -15,7 +15,7 @@ function createState(): BusinessLetterGeneratorState {
   return {
     labels: {
       title: 'Geschäftsbrief', yourReference: 'Ihr Zeichen', ourReference: 'Unser Zeichen', contactPerson: 'Ansprechpartner', place: 'Ort', letterDate: 'Datum',
-      subject: 'Betreff', salutation: 'Anrede', body: 'Brieftext', closing: 'Grußformel', signerName: 'Name', signerRole: 'Funktion', attachments: 'Anlagen', distribution: 'Verteiler',
+      subject: 'Betreff', salutation: 'Anrede', body: 'Brieftext', closing: 'Grußformel', signerName: 'Name', signerRole: 'Funktion', attachments: 'Anlagen',
       contactEmail: 'E-Mail', contactPhone: 'Telefon', contactFax: 'Fax', contactWebsite: 'Website',
     },
     letterData: {
@@ -25,13 +25,13 @@ function createState(): BusinessLetterGeneratorState {
       references: {},
       footer: { company: { companyName: 'Sender GmbH', street: 'Weg', houseNumber: '1', postalCode: '10115', city: 'Berlin', extra: '' }, tax: { vatIdLabel: 'USt-IdNr.:', vatId: 'DE1', taxNumberLabel: 'Steuernummer:', taxNumber: '1', commercialRegister: '', representation: '' }, bank: { bankName: '', ibanLabel: 'IBAN:', iban: '', bicLabel: 'BIC:', bic: '', bankExtra: '' } },
     },
-    content: { subject: 'Betreff des Schreibens', salutation: 'Sehr geehrte Damen und Herren,', body: 'Absatz eins.\n\nAbsatz zwei.', closing: 'Mit freundlichen Grüßen', signerName: 'Max Mustermann', signerRole: 'Geschäftsführung', attachments: 'Anlage', distribution: 'Ablage' },
+    content: { subject: 'Betreff des Schreibens', salutation: 'Sehr geehrte Damen und Herren,', body: 'Absatz eins.\n\nAbsatz zwei.', closing: 'Mit freundlichen Grüßen', signerName: 'Dominic Franz', signerRole: 'Geschäftsführer', attachments: 'Angebot Nr. 2026-001' },
     fieldConfig: {
       contact: config(['email', 'phone', 'fax', 'website']),
       details: config(['yourReference', 'ourReference', 'contactPerson', 'place', 'letterDate']),
       recipient: config(['attention', 'name']),
       footerMiddle: config(['vatId', 'taxNumber', 'commercialRegister', 'managingDirector']),
-      letterContent: { hidden: ['distribution'], order: ['signerRole', 'attachments', 'distribution'] },
+      letterContent: { hidden: [], order: ['signerRole', 'attachments'] },
     },
   };
 }
@@ -43,7 +43,8 @@ describe('business letter document model', () => {
 
     expect(document.document.documentType).toBe('businessLetter');
     expect(document.documentData.state.content).toEqual(state.content);
-    expect(document.documentData.state.fieldConfig.letterContent.hidden).toEqual(['distribution']);
+    expect(document.documentData.state.content).not.toHaveProperty('distribution');
+    expect(document.documentData.state.fieldConfig.letterContent.hidden).toEqual([]);
     expect(restoreBusinessLetterState(document)).toEqual({ status: 'valid', state });
   });
 

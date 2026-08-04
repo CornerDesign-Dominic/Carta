@@ -3612,7 +3612,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   line-height: 1.58;
 }
 
-.business-letter-content textarea {
+.business-letter-content textarea,
+.business-letter-content > input,
+.business-letter-signature input {
   box-sizing: border-box;
   display: block;
   width: 100%;
@@ -3629,13 +3631,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   white-space: pre-wrap;
 }
 
-.business-letter-content textarea:focus {
+.business-letter-content textarea:focus,
+.business-letter-content > input:focus,
+.business-letter-signature input:focus {
   border-color: var(--color-focus);
   outline: 0;
 }
 
-.business-letter-subject,
-.business-letter-signer,
 .business-letter-optional-field label {
   display: grid;
   gap: 3px;
@@ -3649,8 +3651,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   line-height: 1.35;
 }
 
-.business-letter-subject .document-label-input,
-.business-letter-signer .document-label-input,
 .business-letter-optional-field .document-label-input {
   width: auto;
   min-width: 0;
@@ -3670,17 +3670,27 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .business-letter-closing {
-  margin-top: 4px;
+  margin: 0;
 }
 
-.business-letter-signer {
-  margin-top: 4px;
+.business-letter-signature {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.business-letter-signature-role {
+  align-items: center;
+}
+
+.business-letter-signature-role > input {
+  min-width: 0;
 }
 
 .business-letter-optional-fields {
   display: grid;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .business-letter-optional-field {

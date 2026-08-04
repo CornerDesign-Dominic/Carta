@@ -172,7 +172,7 @@ const allDocumentSections = [
       {
         heading: 'Übersichtlich und flexibel',
         paragraphs: [
-          'Zeichen, Ansprechpartner, Anlagen und Verteiler können bei Bedarf eingeblendet werden. So bleibt der Brief aufgeräumt, ohne auf wichtige Angaben verzichten zu müssen.',
+          'Zeichen, Ansprechpartner und Anlagen können bei Bedarf eingeblendet werden. So bleibt der Brief aufgeräumt, ohne auf wichtige Angaben verzichten zu müssen.',
         ],
       },
     ],
