@@ -3747,8 +3747,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .business-letter-print-page .invoice-print-footer {
   align-self: end;
-  justify-self: stretch;
-  width: 100%;
   margin-top: 0;
 }
 
@@ -6778,6 +6776,9 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .invoice-print-footer {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
   gap: 8px 18px;
   margin-top: auto;
   padding-top: 8px;
