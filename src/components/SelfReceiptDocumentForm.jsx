@@ -59,11 +59,10 @@ const defaultDetails = {
 };
 
 const defaultExpenseInfo = {
-  occasion: 'Bewirtung während eines kurzfristigen Projekttermins ohne ausgehändigten Fremdbeleg.',
-  reason:
-    'Der ursprüngliche Fremdbeleg wurde trotz Nachfrage nicht ausgehändigt beziehungsweise war nachträglich nicht mehr beschaffbar.',
+  occasion: 'Bewirtung mit Projektpartnern im Rahmen eines Kundentermins.',
+  reason: 'Originalbeleg trotz Nachfrage nicht erhalten.',
   settlementType: 'Bar',
-  location: 'Berlin',
+  location: 'Hotel am Park, Berlin',
 };
 
 const defaultPosition = {
@@ -526,29 +525,27 @@ export default function SelfReceiptDocumentForm({
             <h3>Eigenbeleg-Details</h3>
             <div className="invoice-panel-grid">
               <SelfReceiptPanelTextarea
-                label="Anlass der Ausgabe"
+                label="Betrieblicher Anlass der Ausgabe"
                 name="expense-occasion"
                 placeholder={selfReceiptFormDefaults.expenseInfo.occasion}
                 value={expenseInfo.occasion}
                 onChange={(value) => updateExpenseInfo('occasion', value)}
               />
               <SelfReceiptPanelTextarea
-                label="Grund für Eigenbeleg / fehlenden Fremdbeleg"
+                label="Grund für den Eigenbeleg"
                 name="expense-reason"
                 placeholder={selfReceiptFormDefaults.expenseInfo.reason}
                 value={expenseInfo.reason}
                 onChange={(value) => updateExpenseInfo('reason', value)}
               />
               <SelfReceiptPanelInput
-                className="invoice-panel-field-wide"
                 label="Zahlungsart"
                 name="expense-settlement-kind"
                 value={expenseInfo.settlementType}
                 onChange={(value) => updateExpenseInfo('settlementType', value)}
               />
               <SelfReceiptPanelInput
-                className="invoice-panel-field-wide"
-                label="Ort der Ausgabe"
+                label="Ausgabestelle / Ort"
                 name="expense-location"
                 value={expenseInfo.location}
                 onChange={(value) => updateExpenseInfo('location', value)}

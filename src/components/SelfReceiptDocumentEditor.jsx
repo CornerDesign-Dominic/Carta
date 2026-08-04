@@ -39,10 +39,10 @@ const initialSelfReceiptLabels = {
   net: 'Nettobetrag',
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Gesamtbetrag',
-  occasion: 'Anlass der Ausgabe',
-  reason: 'Grund für Eigenbeleg / fehlenden Fremdbeleg',
+  occasion: 'Betrieblicher Anlass der Ausgabe',
+  reason: 'Grund für den Eigenbeleg',
   settlementType: 'Zahlungsart',
-  location: 'Ort der Ausgabe',
+  location: 'Ausgabestelle / Ort',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactFax: 'Fax',
@@ -152,11 +152,10 @@ const defaultSelfReceiptData = {
     costCenter: 'KST-200',
   },
   expenseInfo: {
-    occasion: 'Bewirtung während eines kurzfristigen Projekttermins ohne ausgehändigten Fremdbeleg.',
-    reason:
-      'Der ursprüngliche Fremdbeleg wurde trotz Nachfrage nicht ausgehändigt beziehungsweise war nachträglich nicht mehr beschaffbar.',
+    occasion: 'Bewirtung mit Projektpartnern im Rahmen eines Kundentermins.',
+    reason: 'Originalbeleg trotz Nachfrage nicht erhalten.',
     settlementType: 'Bar',
-    location: 'Berlin',
+    location: 'Hotel am Park, Berlin',
   },
   footer: {
     company: {
@@ -187,10 +186,10 @@ const defaultSelfReceiptData = {
 };
 
 const selfReceiptDetailFields = [
-  { field: 'occasion', labelField: 'occasion', type: 'textarea', ariaLabel: 'Anlass der Ausgabe' },
-  { field: 'reason', labelField: 'reason', type: 'textarea', ariaLabel: 'Grund für Eigenbeleg oder fehlenden Fremdbeleg' },
+  { field: 'occasion', labelField: 'occasion', type: 'textarea', ariaLabel: 'Betrieblicher Anlass der Ausgabe' },
+  { field: 'reason', labelField: 'reason', type: 'textarea', ariaLabel: 'Grund für den Eigenbeleg' },
   { field: 'settlementType', labelField: 'settlementType', type: 'text', ariaLabel: 'Art der Ausgabeabwicklung' },
-  { field: 'location', labelField: 'location', type: 'text', ariaLabel: 'Ort der Ausgabe' },
+  { field: 'location', labelField: 'location', type: 'text', ariaLabel: 'Ausgabestelle oder Ort' },
 ];
 
 const selfReceiptPrintLayout = {
@@ -505,13 +504,25 @@ function normalizeExpenseInfo(expenseInfo = {}) {
 }
 
 function createSelfReceiptPrintItems({ expenseInfo, positions }) {
-  return [
-    ...selfReceiptDetailFields.map((definition) => ({
-      type: definition.type === 'textarea' ? 'detailText' : 'detailValue',
+  const textItems = selfReceiptDetailFields
+    .filter((definition) => definition.type === 'textarea')
+    .map((definition) => ({
+      type: 'detailText',
       field: definition.field,
       labelField: definition.labelField,
       value: expenseInfo[definition.field],
-    })),
+    }));
+  const valueItems = selfReceiptDetailFields
+    .filter((definition) => definition.type !== 'textarea')
+    .map((definition) => ({
+      field: definition.field,
+      labelField: definition.labelField,
+      value: expenseInfo[definition.field],
+    }));
+
+  return [
+    ...textItems,
+    { type: 'detailValues', values: valueItems },
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     { type: 'summary' },
   ];
@@ -1183,9 +1194,9 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
       </div>
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
-        <div className="self-receipt-print-detail-card" data-measure-detail-value>
-          <p className="self-receipt-print-detail-label">{labels.settlementType}</p>
-          <p className="self-receipt-print-detail-text">{expenseInfo.settlementType}</p>
+        <div className="self-receipt-print-detail-grid" data-measure-detail-values>
+          <SelfReceiptPrintDetailValue label={labels.settlementType} value={expenseInfo.settlementType} />
+          <SelfReceiptPrintDetailValue label={labels.location} value={expenseInfo.location} />
         </div>
         <div data-measure-detail-text>
           <SelfReceiptPrintDetailText label={labels.occasion} text={expenseInfo.occasion} />
@@ -1234,7 +1245,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
   const firstContent = measureRoot.querySelector('[data-measure-first-content]');
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
-  const detailValueProbe = measureRoot.querySelector('[data-measure-detail-value]');
+  const detailValuesProbe = measureRoot.querySelector('[data-measure-detail-values]');
   const detailTextProbe = measureRoot.querySelector('[data-measure-detail-text] .self-receipt-print-detail-card');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
@@ -1245,7 +1256,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader || !detailTextProbe || !detailValueProbe) {
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader || !detailTextProbe || !detailValuesProbe) {
     return null;
   }
 
@@ -1266,10 +1277,15 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     return getOuterHeight(detailTextProbe);
   }
 
-  function measureDetailValueHeight(label, text) {
-    detailValueProbe.querySelector('.self-receipt-print-detail-label').textContent = label;
-    detailValueProbe.querySelector('.self-receipt-print-detail-text').textContent = text;
-    return getOuterHeight(detailValueProbe);
+  function measureDetailValuesHeight(values) {
+    const cards = detailValuesProbe.querySelectorAll('.self-receipt-print-detail-card');
+
+    values.forEach((value, index) => {
+      cards[index].querySelector('.self-receipt-print-detail-label').textContent = labels[value.labelField];
+      cards[index].querySelector('.self-receipt-print-detail-text').textContent = value.value;
+    });
+
+    return getOuterHeight(detailValuesProbe);
   }
 
   function getItemHeight(item) {
@@ -1281,8 +1297,8 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
       return measureDetailTextHeight(labels[item.labelField], item.value);
     }
 
-    if (item.type === 'detailValue') {
-      return measureDetailValueHeight(labels[item.labelField], item.value);
+    if (item.type === 'detailValues') {
+      return measureDetailValuesHeight(item.values);
     }
 
     if (item.type === 'position') {
@@ -1368,8 +1384,10 @@ function arePrintItemsEqual(first, second) {
     return first.field === second.field && first.value === second.value;
   }
 
-  if (first.type === 'detailValue') {
-    return first.field === second.field && first.value === second.value;
+  if (first.type === 'detailValues') {
+    return first.values.length === second.values.length && first.values.every((value, index) => (
+      value.field === second.values[index]?.field && value.value === second.values[index]?.value
+    ));
   }
 
   if (first.type === 'position') {
@@ -1578,10 +1596,16 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
       );
     }
 
-    if (item.type === 'detailValue') {
+    if (item.type === 'detailValues') {
       renderedItems.push(
-        <div className="self-receipt-print-detail-grid" key={`${item.field}-${index}`}>
-          <SelfReceiptPrintDetailValue label={labels[item.labelField]} value={item.value} />
+        <div className="self-receipt-print-detail-grid" key={`detail-values-${index}`}>
+          {item.values.map((value) => (
+            <SelfReceiptPrintDetailValue
+              key={value.field}
+              label={labels[value.labelField]}
+              value={value.value}
+            />
+          ))}
         </div>,
       );
     }
