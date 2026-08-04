@@ -3605,7 +3605,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .business-letter-content {
   display: grid;
-  gap: 16px;
+  gap: 1.58em;
   margin: 0 0 28px;
   color: #34312c;
   font-size: 0.86rem;
@@ -3644,8 +3644,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-width: 0;
 }
 
-.business-letter-subject {
-  margin: 0 0 4px;
+.business-letter-content .business-letter-subject {
+  margin: 0;
   font-size: 1rem;
   font-weight: 760;
   line-height: 1.35;
@@ -3662,11 +3662,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .business-letter-salutation {
-  margin-top: 8px;
+  margin: 0;
 }
 
 .business-letter-body {
-  min-height: 7.9em !important;
+  min-height: 1.58em !important;
 }
 
 .business-letter-closing {
@@ -3701,9 +3701,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-height: 1.58em;
 }
 
-.business-letter-sheet > .invoice-footer-data {
-  align-self: stretch;
-  width: 100%;
+.business-letter-inline-field label {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.business-letter-inline-field .document-label-input {
+  flex: 0 0 auto;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.business-letter-inline-field textarea {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .business-letter-print-page {
@@ -3726,6 +3740,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   align-self: stretch;
   height: var(--business-letter-print-content-max-height);
   max-height: var(--business-letter-print-content-max-height);
+  gap: 0;
   overflow: hidden;
 }
 
@@ -3750,8 +3765,19 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   margin-top: 0;
 }
 
-.business-letter-print-subject {
-  font-size: 1.12rem;
+.business-letter-print-page .business-letter-print-subject {
+  margin: 0 0 1.58em;
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.business-letter-print-page .invoice-print-flow-text {
+  width: 100%;
+  max-width: none;
+  color: #34312c;
+  font-size: 0.86rem;
+  line-height: 1.58;
 }
 
 .business-letter-measure-content {
@@ -6057,9 +6083,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.35;
 }
 
-.invoice-footer-data {
+.invoice-footer-data,
+.invoice-print-footer {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
   gap: 8px 18px;
   margin-top: auto;
   padding-top: 8px;
@@ -6071,7 +6101,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   page-break-inside: avoid;
 }
 
-.invoice-footer-data section {
+.invoice-footer-data section,
+.invoice-print-footer section {
   position: relative;
   display: grid;
   align-content: start;
@@ -6079,7 +6110,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   min-width: 0;
 }
 
-.invoice-footer-data section + section {
+.invoice-footer-data section + section,
+.invoice-print-footer section + section {
   padding-left: 12px;
   border-left: 1px solid rgba(225, 220, 210, 0.72);
 }
@@ -6771,33 +6803,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .offer-print-page .invoice-print-footer {
   align-self: end;
   margin-top: 0;
-}
-
-.invoice-print-footer {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  justify-self: stretch;
-  width: 100%;
-  box-sizing: border-box;
-  gap: 8px 18px;
-  margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px solid #dcd7cd;
-  color: #5f5e59;
-  font-size: 9px;
-  line-height: 1.18;
-}
-
-.invoice-print-footer section {
-  display: grid;
-  align-content: start;
-  gap: 2px;
-  min-width: 0;
-}
-
-.invoice-print-footer section + section {
-  padding-left: 12px;
-  border-left: 1px solid rgba(225, 220, 210, 0.72);
 }
 
 .invoice-print-footer p {

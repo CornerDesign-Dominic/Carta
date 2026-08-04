@@ -193,8 +193,8 @@ function createPdfFileName(subject) {
 }
 
 function buildLetterText(content, labels, hiddenFields) {
-  const optional = (field) => !hiddenFields.includes(field) && content[field]
-    ? `${labels[field]}: ${content[field]}`
+  const attachment = !hiddenFields.includes('attachments') && content.attachments
+    ? `${formatInlineLabel(labels.attachments)} ${content.attachments}`
     : '';
   const signature = [
     content.signerName,
@@ -205,8 +205,12 @@ function buildLetterText(content, labels, hiddenFields) {
     content.body,
     content.closing,
     signature,
-    optional('attachments'),
+    attachment,
   ].filter(Boolean).join('\n\n');
+}
+
+function formatInlineLabel(label) {
+  return `${String(label || 'Anlagen').replace(/\s*:+\s*$/, '').trim() || 'Anlagen'}:`;
 }
 
 export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange }) {
@@ -494,9 +498,9 @@ function OptionalLetterFields({ content, fields, hiddenFields, labels, onContent
   return (
     <div className="business-letter-optional-fields">
       {fields.filter(({ field }) => !hiddenFields.includes(field)).map(({ field }) => (
-        <div className="business-letter-optional-field invoice-config-row" key={field}>
+        <div className="business-letter-optional-field business-letter-inline-field invoice-config-row" key={field}>
           <label>
-            <input className="document-label-input" aria-label={`Beschriftung ${labels[field]}`} value={labels[field]} onChange={(event) => onLabelChange(field, event.target.value)} />
+            <input className="document-label-input" aria-label={`Beschriftung ${labels[field]}`} value={formatInlineLabel(labels[field])} onChange={(event) => onLabelChange(field, event.target.value.replace(/\s*:+\s*$/, ''))} />
             <textarea ref={(element) => { textRefs.current[field] = element; }} aria-label={labels[field]} value={content[field]} onChange={(event) => { onContentChange(field, event.target.value); resize(event.target); }} />
           </label>
           <FieldActions label={labels[field]} onToggle={() => onToggle(field)} />
