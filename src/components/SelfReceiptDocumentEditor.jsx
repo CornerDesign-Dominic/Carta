@@ -191,6 +191,7 @@ const selfReceiptDetailFields = [
   { field: 'settlementType', labelField: 'settlementType', ariaLabel: 'Zahlungsart' },
   { field: 'location', labelField: 'location', ariaLabel: 'Ausgabestelle oder Ort' },
 ];
+const selfReceiptSignatureFields = [{ field: 'signature', label: 'Unterschrift' }];
 
 const selfReceiptPrintLayout = {
   blockGap: 16,
@@ -216,6 +217,7 @@ function normalizeFieldConfig(config) {
     contact: createFieldConfig(selfReceiptContactFields),
     details: createFieldConfig(selfReceiptMetaFields),
     expenseInfo: createFieldConfig(selfReceiptDetailFields),
+    signature: createFieldConfig(selfReceiptSignatureFields),
     recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
   };
@@ -228,6 +230,7 @@ function normalizeFieldConfig(config) {
     contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
     details: normalizeFieldConfigBlock(config.details, fallback.details),
     expenseInfo: normalizeFieldConfigBlock(config.expenseInfo, fallback.expenseInfo),
+    signature: normalizeFieldConfigBlock(config.signature, fallback.signature),
     recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
     footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
   };
@@ -504,7 +507,7 @@ function normalizeExpenseInfo(expenseInfo = {}) {
   };
 }
 
-function createSelfReceiptPrintItems({ expenseInfo, positions, visibleDetailDefinitions }) {
+function createSelfReceiptPrintItems({ expenseInfo, positions, showSignature, visibleDetailDefinitions }) {
   return [
     ...visibleDetailDefinitions.map((definition) => ({
       type: 'detail',
@@ -513,6 +516,7 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, visibleDetailDefi
     })),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     { type: 'summary' },
+    ...(showSignature ? [{ type: 'signature' }] : []),
   ];
 }
 
@@ -526,6 +530,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     contact: createFieldConfig(selfReceiptContactFields),
     details: createFieldConfig(selfReceiptMetaFields),
     expenseInfo: createFieldConfig(selfReceiptDetailFields),
+    signature: createFieldConfig(selfReceiptSignatureFields),
     recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
   });
@@ -618,8 +623,8 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     [fieldConfig.expenseInfo],
   );
   const printItems = useMemo(
-    () => createSelfReceiptPrintItems({ expenseInfo, positions, visibleDetailDefinitions: visibleExpenseDefinitions }),
-    [expenseInfo, positions, visibleExpenseDefinitions],
+    () => createSelfReceiptPrintItems({ expenseInfo, positions, showSignature: !fieldConfig.signature.hidden.includes('signature'), visibleDetailDefinitions: visibleExpenseDefinitions }),
+    [expenseInfo, fieldConfig.signature.hidden, positions, visibleExpenseDefinitions],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -802,6 +807,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
       contact: createFieldConfig(selfReceiptContactFields),
       details: createFieldConfig(selfReceiptMetaFields),
       expenseInfo: createFieldConfig(selfReceiptDetailFields),
+      signature: createFieldConfig(selfReceiptSignatureFields),
       recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
       footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
     });
@@ -1097,6 +1103,22 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           onLabelChange={updateLabel}
         />
 
+        {!getHiddenFields('signature').includes('signature') && (
+          <section className="invoice-flow-config-row self-receipt-signature" aria-label="Unterschrift">
+            <FieldActions label="Unterschrift" onToggle={() => toggleConfiguredField('signature', 'signature')} />
+            <div className="self-receipt-signature-content">
+              <div className="self-receipt-signature-line" />
+              <p>Unterschrift</p>
+            </div>
+          </section>
+        )}
+        <HiddenFieldActions
+          className="self-receipt-hidden-signature"
+          definitions={selfReceiptSignatureFields}
+          hiddenFields={getHiddenFields('signature')}
+          onToggle={(field) => toggleConfiguredField('signature', field)}
+        />
+
         <FooterBlock
           columns={[
             selfReceiptFooterColumns[0],
@@ -1208,6 +1230,9 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
         <div data-measure-summary>
           <SelfReceiptPrintSummary labels={labels} totals={totals} />
         </div>
+        <div data-measure-signature>
+          <SelfReceiptPrintSignature />
+        </div>
       </div>
     </div>
   );
@@ -1223,6 +1248,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const detailProbe = measureRoot.querySelector('[data-measure-detail] .self-receipt-print-detail-line');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+  const signatureProbe = measureRoot.querySelector('[data-measure-signature] .self-receipt-print-signature');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
   const positionRows = new Map(
     [...measureRoot.querySelectorAll('[data-measure-position-row]')].map((row) => [
@@ -1231,7 +1257,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader || !detailProbe) {
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !signatureProbe || !positionHeader || !detailProbe) {
     return null;
   }
 
@@ -1266,6 +1292,10 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
 
     if (item.type === 'summary') {
       return getOuterHeight(summaryProbe);
+    }
+
+    if (item.type === 'signature') {
+      return getOuterHeight(signatureProbe);
     }
 
     return 0;
@@ -1541,6 +1571,10 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
       renderedItems.push(<SelfReceiptPrintSummary key="summary" labels={labels} totals={totals} />);
     }
 
+    if (item.type === 'signature') {
+      renderedItems.push(<SelfReceiptPrintSignature key="signature" />);
+    }
+
     if (item.type === 'detail') {
       renderedItems.push(
         <SelfReceiptPrintDetailLine key={`${item.field}-${index}`} value={item.value} />,
@@ -1556,6 +1590,15 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
 function SelfReceiptPrintDetailLine({ value }) {
   return (
     <p className="self-receipt-print-detail-line">{value}</p>
+  );
+}
+
+function SelfReceiptPrintSignature() {
+  return (
+    <section className="self-receipt-print-signature">
+      <div />
+      <p>Unterschrift</p>
+    </section>
   );
 }
 

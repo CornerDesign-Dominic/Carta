@@ -82,6 +82,8 @@ export default function SelfReceiptExpenseTable({
                   }}
                   aria-label={`Beschreibung Position ${index + 1}`}
                   className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
+                  rows={1}
+                  wrap="soft"
                   value={position.description}
                   onChange={(event) => {
                     onPositionChange(position.id, 'description', event.target.value);

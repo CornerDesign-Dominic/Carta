@@ -6807,6 +6807,30 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   left: -30px;
 }
 
+.self-receipt-signature {
+  width: 100%;
+  margin-top: 22px;
+}
+
+.self-receipt-signature-content {
+  width: min(100%, 33.333%);
+}
+
+.self-receipt-signature-line {
+  border-top: 1px solid currentColor;
+}
+
+.self-receipt-signature-content p {
+  margin: 4px 0 0;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+
+.self-receipt-hidden-signature .invoice-hidden-field-actions {
+  right: auto;
+  left: -30px;
+}
+
 .self-receipt-expense-table td,
 .self-receipt-expense-table th {
   vertical-align: top;
@@ -6832,7 +6856,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .self-receipt-expense-table textarea {
-  min-height: 46px;
+  min-height: 1.45em;
+  padding: 0;
   resize: none;
   white-space: pre-wrap;
 }
@@ -6848,6 +6873,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 11pt;
   line-height: 1.4;
   white-space: pre-wrap;
+}
+
+.self-receipt-print-signature {
+  width: min(100%, 33.333%);
+  margin: 0;
+}
+
+.self-receipt-print-signature > div {
+  border-top: 1px solid #4d4b46;
+}
+
+.self-receipt-print-signature p {
+  margin: 4px 0 0;
+  color: #4d4b46;
+  font-size: 11pt;
+  line-height: 1.4;
 }
 
 .self-receipt-print-position-table th:nth-child(1),
