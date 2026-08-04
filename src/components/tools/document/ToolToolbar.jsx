@@ -39,9 +39,6 @@ export default function ToolToolbar({
       </div>
 
       <div className="tool-document-toolbar-group">
-        <button type="button" title="Druckdialog öffnen" aria-label="Druckdialog öffnen" onClick={onPrint}>
-          Drucken
-        </button>
         <button
           type="button"
           title="PDF-Datei erstellen"
@@ -50,6 +47,9 @@ export default function ToolToolbar({
           disabled={isExporting}
         >
           {isExporting ? exportingLabel : 'PDF erstellen'}
+        </button>
+        <button type="button" title="Druckdialog öffnen" aria-label="Druckdialog öffnen" onClick={onPrint}>
+          Drucken
         </button>
       </div>
     </div>

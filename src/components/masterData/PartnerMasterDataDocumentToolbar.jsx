@@ -14,6 +14,14 @@ export default function PartnerMasterDataDocumentToolbar({
   return (
     <div className={`visual-toolbar ${className}`} aria-label={`${labelPrefix} Aktionen`}>
       <div className="visual-toolbar-group">
+        <button type="button" aria-label={`${labelPrefix} PDF erstellen`} title={`${labelPrefix} PDF erstellen`} disabled={isExporting} onClick={onCreatePdf}>
+          {isExporting ? 'PDF wird erstellt …' : 'PDF erstellen'}
+        </button>
+        <button type="button" aria-label={`${labelPrefix} drucken`} title={`${labelPrefix} drucken`} disabled={isExporting} onClick={onPrint}>
+          Drucken
+        </button>
+      </div>
+      <div className="visual-toolbar-group">
         <input
           ref={pdfInputRef}
           type="file"
@@ -34,14 +42,10 @@ export default function PartnerMasterDataDocumentToolbar({
         >
           PDF laden
         </button>
-        <button type="button" aria-label={`${labelPrefix} drucken`} title={`${labelPrefix} drucken`} disabled={isExporting} onClick={onPrint}>
-          Drucken
-        </button>
-        <button type="button" aria-label={`${labelPrefix} PDF erstellen`} title={`${labelPrefix} PDF erstellen`} disabled={isExporting} onClick={onCreatePdf}>
-          {isExporting ? 'PDF wird erstellt …' : 'PDF erstellen'}
-        </button>
-        <button type="button" aria-label={`Neue ${labelPrefix}-Sammlung erstellen`} title={`Neue ${labelPrefix}-Sammlung erstellen`} disabled={isExporting} onClick={onNewCollection}>
-          Neu
+      </div>
+      <div className="visual-toolbar-group visual-toolbar-new-group">
+        <button type="button" aria-label={`${labelPrefix}-Sammlung zurücksetzen`} title={`${labelPrefix}-Sammlung zurücksetzen`} disabled={isExporting} onClick={onNewCollection}>
+          Zurücksetzen
         </button>
       </div>
     </div>

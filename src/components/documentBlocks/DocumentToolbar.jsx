@@ -76,43 +76,6 @@ export default function DocumentToolbar({
         )}
       </div>
       <div className="visual-toolbar-group">
-        {onLoadPdf && (
-          <>
-            <input
-              ref={pdfInputRef}
-              type="file"
-              accept="application/pdf,.pdf"
-              hidden
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                event.target.value = '';
-                if (file) onLoadPdf(file);
-              }}
-            />
-            <button
-              type="button"
-              title="Belege24-PDF laden"
-              aria-label="Belege24-PDF laden"
-              onClick={() => {
-                trackDocumentAction('load_pdf');
-                pdfInputRef.current?.click();
-              }}
-            >
-              PDF laden
-            </button>
-          </>
-        )}
-        <button
-          type="button"
-          title="Druckdialog öffnen"
-          aria-label="Druckdialog öffnen"
-          onClick={() => {
-            trackDocumentAction('print');
-            onPrint?.();
-          }}
-        >
-          Drucken
-        </button>
         <button
           type="button"
           title="PDF-Datei erstellen"
@@ -125,14 +88,51 @@ export default function DocumentToolbar({
         >
           {isExporting ? exportingLabel : 'PDF erstellen'}
         </button>
+        <button
+          type="button"
+          title="Druckdialog öffnen"
+          aria-label="Druckdialog öffnen"
+          onClick={() => {
+            trackDocumentAction('print');
+            onPrint?.();
+          }}
+        >
+          Drucken
+        </button>
       </div>
+      {onLoadPdf && (
+        <div className="visual-toolbar-group">
+          <input
+            ref={pdfInputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            hidden
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = '';
+              if (file) onLoadPdf(file);
+            }}
+          />
+          <button
+            type="button"
+            title="Belege24-PDF laden"
+            aria-label="Belege24-PDF laden"
+            onClick={() => {
+              trackDocumentAction('load_pdf');
+              pdfInputRef.current?.click();
+            }}
+          >
+            PDF laden
+          </button>
+        </div>
+      )}
       {onNewDocument && (
         <div className="visual-toolbar-group visual-toolbar-new-group">
           <button
             className="visual-toolbar-new-button"
             type="button"
-            title="Neues Dokument erstellen"
-            aria-label="Neues Dokument erstellen"
+            title="Dokument zurücksetzen"
+            aria-label="Dokument zurücksetzen"
             onClick={() => {
               const confirmed = window.confirm(
                 'Möchtest du dieses Dokument wirklich zurücksetzen? Alle aktuellen Eingaben gehen verloren.',
@@ -146,7 +146,7 @@ export default function DocumentToolbar({
               onNewDocument?.();
             }}
           >
-            Neu
+            Zurücksetzen
           </button>
         </div>
       )}

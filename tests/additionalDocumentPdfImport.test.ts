@@ -24,6 +24,7 @@ function receiptState(): ReceiptGeneratorState { return { labels: labels(receipt
 async function plainPdf() { const pdf = await PDFDocument.create(); pdf.addPage([595, 842]); return pdf.save(); }
 
 function selfReceiptState(): SelfReceiptEditorState { const business = data({ selfReceiptId: 'EB-1', receiptDate: '2026-07-24', expenseDate: '2026-07-23' }, { internalReference: 'I', externalReference: 'E', costCenter: 'K-1' }); return { labels: labels(selfReceiptLabelKeys), selfReceiptData: { sender: business.sender, recipient: business.recipient, details: { selfReceiptId: 'EB-1', receiptDate: '2026-07-24', expenseDate: '2026-07-23' }, references: { internalReference: 'I', externalReference: 'E', costCenter: 'K-1' }, footer: business.footer, expenseInfo: { occasion: 'Termin', reason: 'Kein Fremdbeleg', settlementType: 'Bar', location: 'Berlin' } }, positions: [{ id: '123e4567-e89b-42d3-a456-426614174002', description: 'Leistung', netAmount: '42,00', taxRate: '19' }], fieldConfig: { ...businessConfig(['selfReceiptId', 'receiptDate', 'expenseDate', 'internalReference', 'externalReference', 'costCenter']), expenseInfo: { hidden: ['reason'], order: ['occasion', 'reason', 'settlementType', 'location'] }, signature: { hidden: ['signature'], order: ['signature'] } } }; }
+function shortSelfReceiptState(): SelfReceiptEditorState { return { ...selfReceiptState(), selfReceiptVariant: 'short', shortSelfReceipt: { title: 'Eigenbeleg Barzahlung', receiptNumber: 'Beleg Nr. 001', recipientAddress: 'Firma Meier\nMusterstraße 12\n12345 Musterhausen', purpose: 'Bürostuhl', reason: 'Originalbeleg verloren', date: '2026-07-24', amount: { calculationSource: 'netAmount', sourceAmount: '100,00', taxRate: '19' }, fieldConfig: { signature: { hidden: ['signature'], order: ['signature'] } } } }; }
 
 describe('offer, delivery note and receipt PDF imports', () => {
   it('roundtrips complete validated offer source data', async () => {
@@ -54,6 +55,15 @@ describe('offer, delivery note and receipt PDF imports', () => {
     expect(document.document.documentType).toBe('selfReceipt');
     expect(document.documentData.state.positions[0]).not.toHaveProperty('category');
     expect(document.documentData.state).not.toHaveProperty('textBlocks');
+    expect(restoreSelfReceiptState(document)).toEqual({ status: 'valid', state });
+    await expect(importSelfReceiptPdf(await embedBelege24DocumentInPdf(await plainPdf(), document))).resolves.toEqual({ status: 'valid', state, message: 'PDF erfolgreich geladen.' });
+  });
+
+  it('roundtrips the validated short self receipt variant and its visible-state configuration', async () => {
+    const state = shortSelfReceiptState(); const document = mapSelfReceiptToDocument(state);
+    expect(validateBelege24Document(document)).toEqual({ valid: true, errors: [] });
+    expect(document.documentData.state.selfReceiptVariant).toBe('short');
+    expect(document.documentData.state.shortSelfReceipt?.fieldConfig.signature.hidden).toEqual(['signature']);
     expect(restoreSelfReceiptState(document)).toEqual({ status: 'valid', state });
     await expect(importSelfReceiptPdf(await embedBelege24DocumentInPdf(await plainPdf(), document))).resolves.toEqual({ status: 'valid', state, message: 'PDF erfolgreich geladen.' });
   });

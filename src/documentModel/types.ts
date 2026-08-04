@@ -377,6 +377,7 @@ export interface ReceiptPersistedGeneratorState extends Omit<ReceiptGeneratorSta
 }
 
 export interface SelfReceiptGeneratorState {
+  selfReceiptVariant?: 'standard' | 'short';
   labels: Record<string, string>;
   selfReceiptData: {
     sender: { companyName: string; returnAddress: string; address: DocumentAddress; contact: { email: string; phone: string; fax: string; website: string } };
@@ -388,6 +389,20 @@ export interface SelfReceiptGeneratorState {
   };
   positions: Array<{ id: Uuid; description: string; netAmount: string; taxRate: string }>;
   fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; expenseInfo: FieldConfiguration; signature: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
+  shortSelfReceipt?: {
+    title: string;
+    receiptNumber: string;
+    recipientAddress: string;
+    purpose: string;
+    reason: string;
+    date: IsoDate | '';
+    amount: {
+      calculationSource: 'netAmount' | 'grossAmount';
+      sourceAmount: string;
+      taxRate: string;
+    };
+    fieldConfig: { signature: FieldConfiguration };
+  };
 }
 
 export type OfferDocument = Belege24Document<'offer', OfferDocumentData>;

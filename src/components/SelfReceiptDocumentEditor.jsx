@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import A4Page from './documentBlocks/A4Page.jsx';
+import ShortSelfReceiptDocument from './ShortSelfReceiptDocument.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import FooterBlock from './documentBlocks/FooterBlock.jsx';
@@ -192,6 +193,10 @@ const selfReceiptDetailFields = [
   { field: 'location', labelField: 'location', ariaLabel: 'Ausgabestelle oder Ort' },
 ];
 const selfReceiptSignatureFields = [{ field: 'signature', label: 'Unterschrift' }];
+const selfReceiptVariants = [
+  { id: 'standard', label: 'Eigenbeleg (A4)' },
+  { id: 'short', label: 'Kurz-Eigenbeleg (DIN A5)' },
+];
 
 const selfReceiptPrintLayout = {
   blockGap: 16,
@@ -203,6 +208,31 @@ function createSelfReceiptPosition() {
   return {
     id: crypto.randomUUID(),
     ...defaultSelfReceiptPositionForCheck,
+  };
+}
+
+function currentLocalIsoDate() {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  return now.toISOString().slice(0, 10);
+}
+
+function createShortSelfReceiptData() {
+  return {
+    title: 'Eigenbeleg',
+    receiptNumber: 'Beleg Nr. 001',
+    recipientAddress: 'Firma Meier\nMusterstraße 12\n12345 Musterhausen',
+    purpose: 'Kauf eines Bürostuhls bei Kaufhaus XYZ',
+    reason: 'Verlust des Originalbelegs',
+    date: currentLocalIsoDate(),
+    amount: {
+      calculationSource: 'netAmount',
+      sourceAmount: '100,00',
+      taxRate: '19',
+    },
+    fieldConfig: {
+      signature: { hidden: [], order: ['signature'] },
+    },
   };
 }
 
@@ -526,6 +556,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
+  const [selfReceiptVariant, setSelfReceiptVariant] = useState('standard');
   const [labels, setLabels] = useState(initialSelfReceiptLabels);
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(selfReceiptContactFields),
@@ -544,6 +575,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const dateInputRefs = useRef({});
   const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
+  const [shortSelfReceipt, setShortSelfReceipt] = useState(createShortSelfReceiptData);
   const selfReceiptDataRef = useRef(selfReceiptData);
   selfReceiptDataRef.current = selfReceiptData;
   const selfReceiptMasterDataAdapter = useMemo(() => ({
@@ -568,7 +600,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     },
   }), []);
   const initialGeneratorStateRef = useRef(null);
-  const currentGeneratorState = { labels, selfReceiptData, positions, fieldConfig };
+  const currentGeneratorState = { selfReceiptVariant, labels, selfReceiptData, positions, fieldConfig, shortSelfReceipt };
   if (!initialGeneratorStateRef.current) initialGeneratorStateRef.current = structuredClone(currentGeneratorState);
   const { sender, recipient, details, expenseInfo, footerLines } = useMemo(
     () => createSelfReceiptViewData(selfReceiptData),
@@ -669,6 +701,26 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
 
   function updateLabel(field, value) {
     setLabels((current) => ({ ...current, [field]: value }));
+  }
+
+  function updateShortSelfReceipt(value) {
+    setShortSelfReceipt(value);
+  }
+
+  function toggleShortSignature() {
+    setShortSelfReceipt((current) => {
+      const hidden = current.fieldConfig.signature.hidden.includes('signature')
+        ? current.fieldConfig.signature.hidden.filter((field) => field !== 'signature')
+        : [...current.fieldConfig.signature.hidden, 'signature'];
+
+      return {
+        ...current,
+        fieldConfig: {
+          ...current.fieldConfig,
+          signature: { ...current.fieldConfig.signature, hidden },
+        },
+      };
+    });
   }
 
   function updateSender(field, value) {
@@ -803,6 +855,17 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   }
 
   function handleNewDocument() {
+    if (selfReceiptVariant === 'short') {
+      setShortSelfReceipt(createShortSelfReceiptData());
+      setHighlightFields(false);
+      setIsDataCheckMode(false);
+      setIsFormPanelOpen(false);
+      setIsExportRenderActive(false);
+      setIsExporting(false);
+      initialGeneratorStateRef.current = null;
+      return;
+    }
+
     setLabels(initialSelfReceiptLabels);
     setFieldConfig({
       contact: createFieldConfig(selfReceiptContactFields),
@@ -832,6 +895,16 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     setIsExporting(true);
 
     try {
+      if (selfReceiptVariant === 'short') {
+        await requestPdfDownload({
+          sheet: sheetRef.current,
+          documentType: 'selfReceipt',
+          filename: createPdfFileName(shortSelfReceipt.title, shortSelfReceipt.receiptNumber),
+          belege24Document: mapSelfReceiptToDocument(currentGeneratorState),
+        });
+        return;
+      }
+
       await refreshPrintPages();
       await requestPdfDownload({
         sheet: sheetRef.current,
@@ -872,10 +945,12 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     if (!confirmSelfReceiptOverwrite(currentGeneratorState, initialGeneratorStateRef.current, () => window.confirm('Der aktuelle Eigenbeleg enthält Änderungen. Möchtest du ihn vollständig durch die Daten aus der PDF ersetzen?'))) return;
 
     const restored = result.state;
+    setSelfReceiptVariant(restored.selfReceiptVariant ?? 'standard');
     setLabels(restored.labels);
     setSelfReceiptData(restored.selfReceiptData);
     setPositions(restored.positions);
     setFieldConfig(restored.fieldConfig);
+    setShortSelfReceipt(restored.shortSelfReceipt ?? createShortSelfReceiptData());
     setHighlightFields(false);
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
@@ -886,6 +961,20 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   }
 
   async function handlePrint() {
+    if (selfReceiptVariant === 'short') {
+      document.body.classList.add('document-print-mode', 'receipt-print-mode');
+      window.print();
+
+      const cleanup = () => {
+        document.body.classList.remove('document-print-mode', 'receipt-print-mode');
+        window.removeEventListener('afterprint', cleanup);
+      };
+
+      window.addEventListener('afterprint', cleanup);
+      window.setTimeout(cleanup, 1200);
+      return;
+    }
+
     try {
       await refreshPrintPages();
       document.body.classList.add('document-print-mode');
@@ -969,7 +1058,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
 
   return (
     <div className="visual-editor invoice-visual-editor">
-      {SHOW_DOCUMENT_FORM_PANEL && (
+      {SHOW_DOCUMENT_FORM_PANEL && selfReceiptVariant === 'standard' && (
         <SelfReceiptDocumentForm
           addPosition={addPosition}
           details={selfReceiptData.details}
@@ -992,6 +1081,20 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
         />
       )}
 
+      <div className="document-choice-bar self-receipt-variant-choice-bar" aria-label="Eigenbelegvariante auswählen">
+        {selfReceiptVariants.map((variant) => (
+          <button
+            className={selfReceiptVariant === variant.id ? 'is-active' : undefined}
+            type="button"
+            aria-pressed={selfReceiptVariant === variant.id}
+            key={variant.id}
+            onClick={() => setSelfReceiptVariant(variant.id)}
+          >
+            {variant.label}
+          </button>
+        ))}
+      </div>
+
       <DocumentToolbar
         ariaLabel="Eigenbeleg Werkzeuge"
         isDataCheckActive={isDataCheckMode}
@@ -1006,6 +1109,18 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
       />
 
       <p className="document-mode-hint">{viewModeHint}</p>
+
+      {selfReceiptVariant === 'short' ? (
+        <ShortSelfReceiptDocument
+          data={shortSelfReceipt}
+          editable={highlightFields}
+          isDataCheckMode={isDataCheckMode}
+          onChange={updateShortSelfReceipt}
+          onToggleSignature={toggleShortSignature}
+          pageRef={sheetRef}
+        />
+      ) : (
+        <>
 
       <A4Page
         ref={sheetRef}
@@ -1171,6 +1286,8 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           />
         </>
       ) : null}
+        </>
+      )}
     </div>
   );
 }
