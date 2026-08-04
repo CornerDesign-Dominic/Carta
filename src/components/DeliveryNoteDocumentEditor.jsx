@@ -521,6 +521,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
+  const titleTextareaRef = useRef(null);
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [deliveryNoteData, setDeliveryNoteData] = useState(defaultDeliveryNoteData);
@@ -581,12 +582,14 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   }, [deliveryNoteMasterDataAdapter, onMasterDataAdapterChange]);
 
   useEffect(() => {
+    resizeTextarea(titleTextareaRef.current);
+
     textBlocks.forEach((block) => {
       if (block.visible) {
         resizeTextarea(textBlockRefs.current[block.id]);
       }
     });
-  }, [textBlocks]);
+  }, [labels.title, textBlocks]);
 
   const printItems = useMemo(
     () => createDeliveryNotePrintItems({ positions, textBlocks }),
@@ -1123,11 +1126,17 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
         </section>
 
         <h2 className="invoice-document-title">
-          <input
+          <textarea
+            ref={titleTextareaRef}
             className="document-label-input document-title-label"
             aria-label="Dokumenttitel"
+            rows={1}
+            wrap="soft"
             value={labels.title}
-            onChange={(event) => updateLabel('title', event.target.value)}
+            onChange={(event) => {
+              updateLabel('title', event.target.value);
+              resizeTextarea(event.target);
+            }}
           />
         </h2>
 

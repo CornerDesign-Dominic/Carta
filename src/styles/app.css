@@ -5249,6 +5249,42 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.35;
 }
 
+.delivery-note-sheet .invoice-document-title .document-title-label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: calc(1.35em + 6px);
+  height: auto;
+  padding: 3px 0;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.35;
+}
+
+.offer-document-sheet .invoice-document-title .document-title-label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: calc(1.35em + 6px);
+  height: auto;
+  padding: 3px 0;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.35;
+}
+
+.invoice-document-sheet .invoice-document-title .document-title-label {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: calc(1.35em + 6px);
+  height: auto;
+  padding: 3px 0;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.35;
+}
+
 .reminder-document-title {
   margin-top: -8px;
 }
