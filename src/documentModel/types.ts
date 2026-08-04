@@ -387,7 +387,7 @@ export interface SelfReceiptGeneratorState {
     footer: DocumentFooter;
   };
   positions: Array<{ id: Uuid; expenseDate: string; description: string; netAmount: string; taxRate: string }>;
-  fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
+  fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; expenseInfo: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
 }
 
 export type OfferDocument = Belege24Document<'offer', OfferDocumentData>;

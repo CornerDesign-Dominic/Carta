@@ -6768,29 +6768,39 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-document-fields {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 18px;
+  gap: 7px;
   margin-bottom: 24px;
 }
 
-.self-receipt-detail-card {
+.self-receipt-detail-line {
   align-items: start;
 }
 
-.self-receipt-detail-card > label {
-  display: grid;
-  gap: 6px;
+.self-receipt-detail-line-content {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
   width: 100%;
 }
 
-.self-receipt-detail-card-wide {
-  grid-column: 1 / -1;
+.self-receipt-detail-line-content > .document-label-input {
+  flex: 0 1 19rem;
+  min-width: 0;
+  font-weight: 700;
 }
 
-.self-receipt-detail-card textarea {
-  min-height: 82px;
+.self-receipt-detail-line-content > textarea {
+  flex: 1 1 12rem;
+  min-width: 0;
+  min-height: 1.45em;
+  padding: 0;
   resize: none;
   white-space: pre-wrap;
+}
+
+.self-receipt-hidden-detail-fields .invoice-hidden-field-actions {
+  right: auto;
+  left: -30px;
 }
 
 .self-receipt-expense-table td,
@@ -6838,32 +6848,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: right;
 }
 
-.self-receipt-print-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.self-receipt-print-detail-card {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-}
-
-.self-receipt-print-detail-label {
-  margin: 0;
-  color: #77736b;
-  font-size: 9px;
-  font-weight: 760;
-  text-transform: uppercase;
-}
-
-.self-receipt-print-detail-text {
+.self-receipt-print-detail-line {
   margin: 0;
   color: #4d4b46;
   font-size: 11pt;
   line-height: 1.4;
   white-space: pre-wrap;
+}
+
+.self-receipt-print-detail-label {
+  color: inherit;
+  font-size: inherit;
+  font-weight: 760;
+}
+
+.self-receipt-print-detail-text {
+  color: inherit;
 }
 
 .self-receipt-print-position-table th:nth-child(1),
@@ -6903,8 +6903,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     grid-template-columns: 1fr;
   }
 
-  .self-receipt-print-detail-grid {
-    grid-template-columns: 1fr;
+  .self-receipt-detail-line-content {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+
+  .self-receipt-detail-line-content > .document-label-input {
+    flex-basis: calc(100% - 1.1em);
+  }
+
+  .self-receipt-detail-line-content > textarea {
+    flex-basis: 100%;
   }
 }
 

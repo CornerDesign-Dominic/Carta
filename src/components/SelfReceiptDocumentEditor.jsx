@@ -3,6 +3,7 @@ import A4Page from './documentBlocks/A4Page.jsx';
 import DocumentMetaBlock from './documentBlocks/DocumentMetaBlock.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import FooterBlock from './documentBlocks/FooterBlock.jsx';
+import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
 import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
 import SenderBlock from './documentBlocks/SenderBlock.jsx';
 import TotalsBox from './documentBlocks/TotalsBox.jsx';
@@ -186,10 +187,10 @@ const defaultSelfReceiptData = {
 };
 
 const selfReceiptDetailFields = [
-  { field: 'occasion', labelField: 'occasion', type: 'textarea', ariaLabel: 'Betrieblicher Anlass der Ausgabe' },
-  { field: 'reason', labelField: 'reason', type: 'textarea', ariaLabel: 'Grund für den Eigenbeleg' },
-  { field: 'settlementType', labelField: 'settlementType', type: 'text', ariaLabel: 'Art der Ausgabeabwicklung' },
-  { field: 'location', labelField: 'location', type: 'text', ariaLabel: 'Ausgabestelle oder Ort' },
+  { field: 'occasion', labelField: 'occasion', ariaLabel: 'Betrieblicher Anlass der Ausgabe' },
+  { field: 'reason', labelField: 'reason', ariaLabel: 'Grund für den Eigenbeleg' },
+  { field: 'settlementType', labelField: 'settlementType', ariaLabel: 'Zahlungsart' },
+  { field: 'location', labelField: 'location', ariaLabel: 'Ausgabestelle oder Ort' },
 ];
 
 const selfReceiptPrintLayout = {
@@ -215,6 +216,7 @@ function normalizeFieldConfig(config) {
   const fallback = {
     contact: createFieldConfig(selfReceiptContactFields),
     details: createFieldConfig(selfReceiptMetaFields),
+    expenseInfo: createFieldConfig(selfReceiptDetailFields),
     recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
   };
@@ -226,6 +228,7 @@ function normalizeFieldConfig(config) {
   return {
     contact: normalizeFieldConfigBlock(config.contact, fallback.contact),
     details: normalizeFieldConfigBlock(config.details, fallback.details),
+    expenseInfo: normalizeFieldConfigBlock(config.expenseInfo, fallback.expenseInfo),
     recipient: normalizeFieldConfigBlock(config.recipient, fallback.recipient),
     footerMiddle: normalizeFieldConfigBlock(config.footerMiddle, fallback.footerMiddle),
   };
@@ -503,26 +506,14 @@ function normalizeExpenseInfo(expenseInfo = {}) {
   };
 }
 
-function createSelfReceiptPrintItems({ expenseInfo, positions }) {
-  const textItems = selfReceiptDetailFields
-    .filter((definition) => definition.type === 'textarea')
-    .map((definition) => ({
-      type: 'detailText',
-      field: definition.field,
-      labelField: definition.labelField,
-      value: expenseInfo[definition.field],
-    }));
-  const valueItems = selfReceiptDetailFields
-    .filter((definition) => definition.type !== 'textarea')
-    .map((definition) => ({
-      field: definition.field,
-      labelField: definition.labelField,
-      value: expenseInfo[definition.field],
-    }));
-
+function createSelfReceiptPrintItems({ expenseInfo, positions, visibleDetailDefinitions }) {
   return [
-    ...textItems,
-    { type: 'detailValues', values: valueItems },
+    ...visibleDetailDefinitions.map((definition) => ({
+      type: 'detail',
+      field: definition.field,
+      labelField: definition.labelField,
+      value: expenseInfo[definition.field],
+    })),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
     { type: 'summary' },
   ];
@@ -537,6 +528,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(selfReceiptContactFields),
     details: createFieldConfig(selfReceiptMetaFields),
+    expenseInfo: createFieldConfig(selfReceiptDetailFields),
     recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
     footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
   });
@@ -620,9 +612,14 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     };
   }, [positions]);
 
+  const visibleExpenseDefinitions = useMemo(
+    () => getOrderedDefinitions('expenseInfo', selfReceiptDetailFields)
+      .filter((definition) => !fieldConfig.expenseInfo.hidden.includes(definition.field)),
+    [fieldConfig.expenseInfo],
+  );
   const printItems = useMemo(
-    () => createSelfReceiptPrintItems({ expenseInfo, positions }),
-    [expenseInfo, positions],
+    () => createSelfReceiptPrintItems({ expenseInfo, positions, visibleDetailDefinitions: visibleExpenseDefinitions }),
+    [expenseInfo, positions, visibleExpenseDefinitions],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -804,6 +801,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     setFieldConfig({
       contact: createFieldConfig(selfReceiptContactFields),
       details: createFieldConfig(selfReceiptMetaFields),
+      expenseInfo: createFieldConfig(selfReceiptDetailFields),
       recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
       footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
     });
@@ -942,48 +940,30 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   function renderExpenseField(definition) {
     const label = labels[definition.labelField];
     const value = expenseInfo[definition.field];
-
-    if (definition.type === 'textarea') {
-      return (
-        <div className="invoice-config-row self-receipt-detail-card self-receipt-detail-card-wide" key={definition.field}>
-          <label>
-            <input
-              className="document-label-input"
-              aria-label={`Beschriftung ${definition.ariaLabel}`}
-              value={label}
-              onChange={(event) => updateLabel(definition.labelField, event.target.value)}
-            />
-            <textarea
-              ref={(element) => {
-                detailTextareaRefs.current[definition.field] = element;
-              }}
-              className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
-              aria-label={definition.ariaLabel}
-              value={value}
-              onChange={(event) => {
-                updateExpenseInfo(definition.field, event.target.value);
-                resizeTextarea(event.target);
-              }}
-            />
-          </label>
-        </div>
-      );
-    }
-
     return (
-      <div className="invoice-config-row self-receipt-detail-card" key={definition.field}>
-        <label>
+      <div className="invoice-flow-config-row self-receipt-detail-line" key={definition.field}>
+        <FieldActions label={label} onToggle={() => toggleConfiguredField('expenseInfo', definition.field)} />
+        <label className="self-receipt-detail-line-content">
           <input
             className="document-label-input"
             aria-label={`Beschriftung ${definition.ariaLabel}`}
             value={label}
             onChange={(event) => updateLabel(definition.labelField, event.target.value)}
           />
-          <input
+          <span aria-hidden="true">:</span>
+          <textarea
+            ref={(element) => {
+              detailTextareaRefs.current[definition.field] = element;
+            }}
             className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
             aria-label={definition.ariaLabel}
+            rows={1}
+            wrap="soft"
             value={value}
-            onChange={(event) => updateExpenseInfo(definition.field, event.target.value)}
+            onChange={(event) => {
+              updateExpenseInfo(definition.field, event.target.value);
+              resizeTextarea(event.target);
+            }}
           />
         </label>
       </div>
@@ -1085,7 +1065,13 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
         </h2>
 
         <section className="self-receipt-document-fields" aria-label="Eigenbeleg-Details">
-          {selfReceiptDetailFields.map(renderExpenseField)}
+          {visibleExpenseDefinitions.map(renderExpenseField)}
+          <HiddenFieldActions
+            className="self-receipt-hidden-detail-fields"
+            definitions={selfReceiptDetailFields}
+            hiddenFields={getHiddenFields('expenseInfo')}
+            onToggle={(field) => toggleConfiguredField('expenseInfo', field)}
+          />
         </section>
 
         <SelfReceiptExpenseTable
@@ -1194,12 +1180,8 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
       </div>
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
-        <div className="self-receipt-print-detail-grid" data-measure-detail-values>
-          <SelfReceiptPrintDetailValue label={labels.settlementType} value={expenseInfo.settlementType} />
-          <SelfReceiptPrintDetailValue label={labels.location} value={expenseInfo.location} />
-        </div>
-        <div data-measure-detail-text>
-          <SelfReceiptPrintDetailText label={labels.occasion} text={expenseInfo.occasion} />
+        <div data-measure-detail>
+          <SelfReceiptPrintDetailLine label={labels.occasion} value={expenseInfo.occasion} />
         </div>
         <table className="invoice-print-position-table self-receipt-print-position-table">
           <thead>
@@ -1245,8 +1227,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
   const firstContent = measureRoot.querySelector('[data-measure-first-content]');
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
-  const detailValuesProbe = measureRoot.querySelector('[data-measure-detail-values]');
-  const detailTextProbe = measureRoot.querySelector('[data-measure-detail-text] .self-receipt-print-detail-card');
+  const detailProbe = measureRoot.querySelector('[data-measure-detail] .self-receipt-print-detail-line');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
   const positionRows = new Map(
@@ -1256,7 +1237,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader || !detailTextProbe || !detailValuesProbe) {
+  if (!firstContent || !followContent || !textProbe || !summaryProbe || !positionHeader || !detailProbe) {
     return null;
   }
 
@@ -1271,21 +1252,10 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     return getOuterHeight(textProbe);
   }
 
-  function measureDetailTextHeight(label, text) {
-    detailTextProbe.querySelector('.self-receipt-print-detail-label').textContent = label;
-    detailTextProbe.querySelector('.self-receipt-print-detail-text').textContent = text;
-    return getOuterHeight(detailTextProbe);
-  }
-
-  function measureDetailValuesHeight(values) {
-    const cards = detailValuesProbe.querySelectorAll('.self-receipt-print-detail-card');
-
-    values.forEach((value, index) => {
-      cards[index].querySelector('.self-receipt-print-detail-label').textContent = labels[value.labelField];
-      cards[index].querySelector('.self-receipt-print-detail-text').textContent = value.value;
-    });
-
-    return getOuterHeight(detailValuesProbe);
+  function measureDetailHeight(label, text) {
+    detailProbe.querySelector('.self-receipt-print-detail-label').textContent = `${label}:`;
+    detailProbe.querySelector('.self-receipt-print-detail-text').textContent = text;
+    return getOuterHeight(detailProbe);
   }
 
   function getItemHeight(item) {
@@ -1293,12 +1263,8 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
       return measureTextHeight(item.text);
     }
 
-    if (item.type === 'detailText') {
-      return measureDetailTextHeight(labels[item.labelField], item.value);
-    }
-
-    if (item.type === 'detailValues') {
-      return measureDetailValuesHeight(item.values);
+    if (item.type === 'detail') {
+      return measureDetailHeight(labels[item.labelField], item.value);
     }
 
     if (item.type === 'position') {
@@ -1320,9 +1286,9 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
   }
 
-  function splitDetailTextItem(item, availableHeight) {
+  function splitDetailItem(item, availableHeight) {
     const label = labels[item.labelField];
-    const split = takeMeasuredText(item.value, availableHeight, (text) => measureDetailTextHeight(label, text));
+    const split = takeMeasuredText(item.value, availableHeight, (text) => measureDetailHeight(label, text));
 
     if (!split) {
       return null;
@@ -1346,8 +1312,8 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
         return split ? { current: { ...item, text: split.currentText }, next: { ...item, text: split.remainingText } } : null;
       }
 
-      if (item.type === 'detailText') {
-        return splitDetailTextItem(item, availableHeight);
+      if (item.type === 'detail') {
+        return splitDetailItem(item, availableHeight);
       }
 
       return null;
@@ -1380,14 +1346,8 @@ function arePrintItemsEqual(first, second) {
     return first.id === second.id && first.text === second.text;
   }
 
-  if (first.type === 'detailText') {
+  if (first.type === 'detail') {
     return first.field === second.field && first.value === second.value;
-  }
-
-  if (first.type === 'detailValues') {
-    return first.values.length === second.values.length && first.values.every((value, index) => (
-      value.field === second.values[index]?.field && value.value === second.values[index]?.value
-    ));
   }
 
   if (first.type === 'position') {
@@ -1590,23 +1550,9 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
       renderedItems.push(<SelfReceiptPrintSummary key="summary" labels={labels} totals={totals} />);
     }
 
-    if (item.type === 'detailText') {
+    if (item.type === 'detail') {
       renderedItems.push(
-        <SelfReceiptPrintDetailText key={`${item.field}-${index}`} label={labels[item.labelField]} text={item.value} />,
-      );
-    }
-
-    if (item.type === 'detailValues') {
-      renderedItems.push(
-        <div className="self-receipt-print-detail-grid" key={`detail-values-${index}`}>
-          {item.values.map((value) => (
-            <SelfReceiptPrintDetailValue
-              key={value.field}
-              label={labels[value.labelField]}
-              value={value.value}
-            />
-          ))}
-        </div>,
+        <SelfReceiptPrintDetailLine key={`${item.field}-${index}`} label={labels[item.labelField]} value={item.value} />,
       );
     }
 
@@ -1616,21 +1562,12 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
   return renderedItems;
 }
 
-function SelfReceiptPrintDetailText({ label, text }) {
+function SelfReceiptPrintDetailLine({ label, value }) {
   return (
-    <section className="self-receipt-print-detail-card">
-      <p className="self-receipt-print-detail-label">{label}</p>
-      <p className="self-receipt-print-detail-text">{text}</p>
-    </section>
-  );
-}
-
-function SelfReceiptPrintDetailValue({ label, value }) {
-  return (
-    <section className="self-receipt-print-detail-card">
-      <p className="self-receipt-print-detail-label">{label}</p>
-      <p className="self-receipt-print-detail-text">{value}</p>
-    </section>
+    <p className="self-receipt-print-detail-line">
+      <span className="self-receipt-print-detail-label">{label}:</span>{' '}
+      <span className="self-receipt-print-detail-text">{value}</span>
+    </p>
   );
 }
 
