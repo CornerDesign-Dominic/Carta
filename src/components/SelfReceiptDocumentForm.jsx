@@ -366,7 +366,6 @@ export default function SelfReceiptDocumentForm({
             </div>
 
             <div className="invoice-panel-section">
-              <h3>Zahlungsempfänger / Lieferant</h3>
               <div className="invoice-panel-grid">
                 <SelfReceiptPanelInput
                   className="invoice-panel-field-wide"

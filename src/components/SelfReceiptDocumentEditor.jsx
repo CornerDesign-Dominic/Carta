@@ -36,9 +36,9 @@ const initialSelfReceiptLabels = {
   netAmount: 'Netto',
   tax: 'USt.',
   grossAmount: 'Brutto',
-  net: 'Netto',
-  taxAmount: 'USt.',
-  grandTotal: 'Brutto',
+  net: 'Nettobetrag',
+  taxAmount: 'Umsatzsteuer',
+  grandTotal: 'Gesamtbetrag',
   occasion: 'Anlass der Ausgabe',
   reason: 'Grund für Eigenbeleg / fehlenden Fremdbeleg',
   settlementType: 'Zahlungsart',
@@ -872,11 +872,11 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   async function handlePrint() {
     try {
       await refreshPrintPages();
-      document.body.classList.add('document-print-mode', 'offer-print-mode');
+      document.body.classList.add('document-print-mode');
       window.print();
     } finally {
       const cleanup = () => {
-        document.body.classList.remove('document-print-mode', 'offer-print-mode');
+        document.body.classList.remove('document-print-mode');
         setIsExportRenderActive(false);
         window.removeEventListener('afterprint', cleanup);
       };
@@ -1038,18 +1038,15 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
         />
 
         <section className="invoice-address-row">
-          <div className="self-receipt-recipient-section">
-            <p className="self-receipt-recipient-heading">{labels.recipientTitle}</p>
-            <RecipientBlock
-              dataCheckFields={dataCheckState.recipient}
-              hiddenFields={getHiddenFields('recipient')}
-              recipient={recipient}
-              senderLine={sender.senderLine}
-              onRecipientChange={updateRecipient}
-              onSenderLineChange={(value) => updateSender('senderLine', value)}
-              onToggleField={(field) => toggleConfiguredField('recipient', field)}
-            />
-          </div>
+          <RecipientBlock
+            dataCheckFields={dataCheckState.recipient}
+            hiddenFields={getHiddenFields('recipient')}
+            recipient={recipient}
+            senderLine={sender.senderLine}
+            onRecipientChange={updateRecipient}
+            onSenderLineChange={(value) => updateSender('senderLine', value)}
+            onToggleField={(field) => toggleConfiguredField('recipient', field)}
+          />
 
           <DocumentMetaBlock
             dataCheckFields={dataCheckState.details}
@@ -1506,7 +1503,6 @@ function SelfReceiptPrintFirstPageHeader({
 
       <section className="invoice-print-address-row">
         <div className="invoice-print-recipient self-receipt-print-recipient">
-          <p className="self-receipt-print-recipient-title">{labels.recipientTitle}</p>
           <p className="invoice-print-sender-line">{sender.senderLine}</p>
           {recipientLines.filter(Boolean).map((line) => (
             <p key={line}>{line}</p>
