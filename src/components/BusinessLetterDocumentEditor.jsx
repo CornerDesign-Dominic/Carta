@@ -95,7 +95,7 @@ const defaultLetterData = {
     name: 'Abteilung',
     address: { street: 'Empfängerstraße', houseNumber: '1', postalCode: '12345', city: 'Musterstadt' },
   },
-  details: { yourReference: 'AB-2026-015', ourReference: 'DF-2026-042', contactPerson: 'Dominic Franz', place: 'Berlin', letterDate: new Date().toISOString().slice(0, 10) },
+  details: { yourReference: 'KD-2026-015', ourReference: 'BR-2026-042', contactPerson: 'Max Mustermann', place: 'Berlin', letterDate: new Date().toISOString().slice(0, 10) },
   references: {},
   footer: {
     company: { companyName: 'Belege24 Muster GmbH', street: 'Musterstraße', houseNumber: '12', postalCode: '10115', city: 'Berlin', extra: '' },
@@ -109,7 +109,7 @@ const defaultContent = {
   salutation: 'Sehr geehrte Damen und Herren,',
   body: 'hiermit erhalten Sie dieses Schreiben zur weiteren Bearbeitung. Bitte prüfen Sie die Angaben und melden Sie sich bei Rückfragen gerne bei uns.',
   closing: 'Mit freundlichen Grüßen',
-  signerName: 'Dominic Franz',
+  signerName: 'Max Mustermann',
   signerRole: 'Geschäftsführer',
   attachments: 'Angebot Nr. 2026-001',
 };

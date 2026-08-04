@@ -84,6 +84,7 @@ export default async function handler(request: any, response: any) {
         'offer',
         'reminder',
         'creditNote',
+        'businessLetter',
         'deliveryNote',
         'selfReceipt',
         'receipt',

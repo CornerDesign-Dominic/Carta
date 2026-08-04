@@ -3701,6 +3701,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   min-height: 1.58em;
 }
 
+.business-letter-sheet > .invoice-footer-data {
+  align-self: stretch;
+  width: 100%;
+}
+
 .business-letter-print-page {
   --business-letter-print-page-number-height: 6mm;
   display: grid;
@@ -3742,6 +3747,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 
 .business-letter-print-page .invoice-print-footer {
   align-self: end;
+  justify-self: stretch;
+  width: 100%;
   margin-top: 0;
 }
 

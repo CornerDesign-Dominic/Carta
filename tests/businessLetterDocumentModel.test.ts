@@ -25,7 +25,7 @@ function createState(): BusinessLetterGeneratorState {
       references: {},
       footer: { company: { companyName: 'Sender GmbH', street: 'Weg', houseNumber: '1', postalCode: '10115', city: 'Berlin', extra: '' }, tax: { vatIdLabel: 'USt-IdNr.:', vatId: 'DE1', taxNumberLabel: 'Steuernummer:', taxNumber: '1', commercialRegister: '', representation: '' }, bank: { bankName: '', ibanLabel: 'IBAN:', iban: '', bicLabel: 'BIC:', bic: '', bankExtra: '' } },
     },
-    content: { subject: 'Betreff des Schreibens', salutation: 'Sehr geehrte Damen und Herren,', body: 'Absatz eins.\n\nAbsatz zwei.', closing: 'Mit freundlichen Grüßen', signerName: 'Dominic Franz', signerRole: 'Geschäftsführer', attachments: 'Angebot Nr. 2026-001' },
+    content: { subject: 'Betreff des Schreibens', salutation: 'Sehr geehrte Damen und Herren,', body: 'Absatz eins.\n\nAbsatz zwei.', closing: 'Mit freundlichen Grüßen', signerName: 'Max Mustermann', signerRole: 'Geschäftsführer', attachments: 'Angebot Nr. 2026-001' },
     fieldConfig: {
       contact: config(['email', 'phone', 'fax', 'website']),
       details: config(['yourReference', 'ourReference', 'contactPerson', 'place', 'letterDate']),
