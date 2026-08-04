@@ -59,14 +59,13 @@ const defaultDetails = {
 };
 
 const defaultExpenseInfo = {
-  occasion: 'Bewirtung mit Projektpartnern im Rahmen eines Kundentermins.',
-  reason: 'Originalbeleg trotz Nachfrage nicht erhalten.',
-  settlementType: 'Bar',
-  location: 'Hotel am Park, Berlin',
+  occasion: 'Betrieblicher Anlass der Ausgabe:',
+  reason: 'Grund für den Eigenbeleg:',
+  settlementType: 'Zahlungsart:',
+  location: 'Ausgabestelle / Ort:',
 };
 
 const defaultPosition = {
-  expenseDate: '2026-05-07',
   description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
   netAmount: '42,00',
   taxRate: '19',
@@ -159,7 +158,6 @@ function getFooterAutoComplete(field) {
 }
 
 function getSelfReceiptInputPlaceholder(name) {
-  if (name.startsWith('position-') && name.endsWith('-expense-date')) return selfReceiptFormDefaults.position.expenseDate;
   if (name.startsWith('position-') && name.endsWith('-description')) return selfReceiptFormDefaults.position.description;
   if (name.startsWith('position-') && name.endsWith('-net-amount')) return selfReceiptFormDefaults.position.netAmount;
   if (name.startsWith('position-') && name.endsWith('-tax-rate')) return selfReceiptFormDefaults.position.taxRate;
@@ -559,13 +557,6 @@ export default function SelfReceiptDocumentForm({
               {positions.map((position, index) => (
                 <div className="invoice-panel-position" key={position.id}>
                   <span>{index + 1}</span>
-                  <SelfReceiptPanelInput
-                    label="Datum"
-                    name={`position-${index + 1}-expense-date`}
-                    type="date"
-                    value={position.expenseDate}
-                    onChange={(value) => updatePosition(position.id, 'expenseDate', value)}
-                  />
                   <SelfReceiptPanelTextarea
                     label="Beschreibung"
                     name={`position-${index + 1}-description`}

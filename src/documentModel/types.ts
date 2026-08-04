@@ -386,7 +386,7 @@ export interface SelfReceiptGeneratorState {
     expenseInfo: { occasion: string; reason: string; settlementType: string; location: string };
     footer: DocumentFooter;
   };
-  positions: Array<{ id: Uuid; expenseDate: string; description: string; netAmount: string; taxRate: string }>;
+  positions: Array<{ id: Uuid; description: string; netAmount: string; taxRate: string }>;
   fieldConfig: { contact: FieldConfiguration; details: FieldConfiguration; expenseInfo: FieldConfiguration; recipient: FieldConfiguration; footerMiddle: FieldConfiguration };
 }
 

@@ -32,7 +32,6 @@ const initialSelfReceiptLabels = {
   externalReference: 'Externe Referenz',
   costCenter: 'Kostenstelle',
   position: 'Pos.',
-  expensePositionDate: 'Datum',
   description: 'Beschreibung',
   netAmount: 'Netto',
   tax: 'USt.',
@@ -153,10 +152,10 @@ const defaultSelfReceiptData = {
     costCenter: 'KST-200',
   },
   expenseInfo: {
-    occasion: 'Bewirtung mit Projektpartnern im Rahmen eines Kundentermins.',
-    reason: 'Originalbeleg trotz Nachfrage nicht erhalten.',
-    settlementType: 'Bar',
-    location: 'Hotel am Park, Berlin',
+    occasion: 'Betrieblicher Anlass der Ausgabe:',
+    reason: 'Grund für den Eigenbeleg:',
+    settlementType: 'Zahlungsart:',
+    location: 'Ausgabestelle / Ort:',
   },
   footer: {
     company: {
@@ -358,7 +357,6 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
 
 const defaultSelfReceiptViewData = createSelfReceiptViewData(defaultSelfReceiptData);
 const defaultSelfReceiptPositionForCheck = {
-  expenseDate: '2026-05-07',
   description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
   netAmount: '42,00',
   taxRate: '19',
@@ -511,7 +509,6 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, visibleDetailDefi
     ...visibleDetailDefinitions.map((definition) => ({
       type: 'detail',
       field: definition.field,
-      labelField: definition.labelField,
       value: expenseInfo[definition.field],
     })),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
@@ -535,6 +532,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const sheetRef = useRef(null);
   const printPagesRef = useRef(null);
   const paginatorRef = useRef(null);
+  const titleTextareaRef = useRef(null);
   const detailTextareaRefs = useRef({});
   const positionTextareaRefs = useRef({});
   const dateInputRefs = useRef({});
@@ -578,6 +576,8 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   }, [onMasterDataAdapterChange, selfReceiptMasterDataAdapter]);
 
   useEffect(() => {
+    resizeTextarea(titleTextareaRef.current);
+
     Object.values(detailTextareaRefs.current).forEach((element) => {
       resizeTextarea(element);
     });
@@ -585,7 +585,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     Object.values(positionTextareaRefs.current).forEach((element) => {
       resizeTextarea(element);
     });
-  }, [expenseInfo, positions]);
+  }, [expenseInfo, labels.title, positions]);
 
   const totals = useMemo(() => {
     const summary = positions.reduce(
@@ -630,7 +630,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
       details,
       footerLines,
       isActive: isDataCheckMode,
-      positionFields: ['expenseDate', 'description', 'netAmount', 'taxRate'],
+      positionFields: ['description', 'netAmount', 'taxRate'],
       positions,
       recipient,
       recipientHiddenFields: fieldConfig.recipient.hidden,
@@ -938,34 +938,24 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   }
 
   function renderExpenseField(definition) {
-    const label = labels[definition.labelField];
     const value = expenseInfo[definition.field];
     return (
       <div className="invoice-flow-config-row self-receipt-detail-line" key={definition.field}>
-        <FieldActions label={label} onToggle={() => toggleConfiguredField('expenseInfo', definition.field)} />
-        <label className="self-receipt-detail-line-content">
-          <input
-            className="document-label-input"
-            aria-label={`Beschriftung ${definition.ariaLabel}`}
-            value={label}
-            onChange={(event) => updateLabel(definition.labelField, event.target.value)}
-          />
-          <span aria-hidden="true">:</span>
-          <textarea
-            ref={(element) => {
-              detailTextareaRefs.current[definition.field] = element;
-            }}
-            className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
-            aria-label={definition.ariaLabel}
-            rows={1}
-            wrap="soft"
-            value={value}
-            onChange={(event) => {
-              updateExpenseInfo(definition.field, event.target.value);
-              resizeTextarea(event.target);
-            }}
-          />
-        </label>
+        <FieldActions label={definition.ariaLabel} onToggle={() => toggleConfiguredField('expenseInfo', definition.field)} />
+        <textarea
+          ref={(element) => {
+            detailTextareaRefs.current[definition.field] = element;
+          }}
+          className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
+          aria-label={definition.ariaLabel}
+          rows={1}
+          wrap="soft"
+          value={value}
+          onChange={(event) => {
+            updateExpenseInfo(definition.field, event.target.value);
+            resizeTextarea(event.target);
+          }}
+        />
       </div>
     );
   }
@@ -1056,11 +1046,17 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
         </section>
 
         <h2 className="invoice-document-title">
-          <input
+          <textarea
+            ref={titleTextareaRef}
             className="document-label-input document-title-label"
             aria-label="Dokumenttitel"
+            rows={1}
+            wrap="soft"
             value={labels.title}
-            onChange={(event) => updateLabel('title', event.target.value)}
+            onChange={(event) => {
+              updateLabel('title', event.target.value);
+              resizeTextarea(event.target);
+            }}
           />
         </h2>
 
@@ -1181,13 +1177,12 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
         <div data-measure-detail>
-          <SelfReceiptPrintDetailLine label={labels.occasion} value={expenseInfo.occasion} />
+          <SelfReceiptPrintDetailLine value={expenseInfo.occasion} />
         </div>
         <table className="invoice-print-position-table self-receipt-print-position-table">
           <thead>
             <tr data-measure-position-header>
               <th>{labels.position}</th>
-              <th>{labels.expensePositionDate}</th>
               <th>{labels.description}</th>
               <th>{labels.netAmount}</th>
               <th>{labels.tax}</th>
@@ -1201,7 +1196,6 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
               return (
                 <tr data-measure-position-row={String(index)} key={position.id}>
                   <td>{index + 1}</td>
-                  <td>{formatGermanDate(position.expenseDate)}</td>
                   <td>{position.description}</td>
                   <td>{formatCurrency(calculated.net)}</td>
                   <td>{formatPercent(calculated.taxRate)}%</td>
@@ -1252,9 +1246,8 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     return getOuterHeight(textProbe);
   }
 
-  function measureDetailHeight(label, text) {
-    detailProbe.querySelector('.self-receipt-print-detail-label').textContent = `${label}:`;
-    detailProbe.querySelector('.self-receipt-print-detail-text').textContent = text;
+  function measureDetailHeight(text) {
+    detailProbe.textContent = text;
     return getOuterHeight(detailProbe);
   }
 
@@ -1264,7 +1257,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     }
 
     if (item.type === 'detail') {
-      return measureDetailHeight(labels[item.labelField], item.value);
+      return measureDetailHeight(item.value);
     }
 
     if (item.type === 'position') {
@@ -1287,8 +1280,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
   }
 
   function splitDetailItem(item, availableHeight) {
-    const label = labels[item.labelField];
-    const split = takeMeasuredText(item.value, availableHeight, (text) => measureDetailHeight(label, text));
+    const split = takeMeasuredText(item.value, availableHeight, measureDetailHeight);
 
     if (!split) {
       return null;
@@ -1354,7 +1346,6 @@ function arePrintItemsEqual(first, second) {
     return (
       first.index === second.index &&
       first.position.id === second.position.id &&
-      first.position.expenseDate === second.position.expenseDate &&
       first.position.description === second.position.description &&
       first.position.netAmount === second.position.netAmount &&
       first.position.taxRate === second.position.taxRate
@@ -1499,7 +1490,7 @@ function SelfReceiptPrintFirstPageHeader({
         </div>
       </section>
 
-      <h2 className="invoice-print-title">{labels.title}</h2>
+      <h2 className="invoice-print-title self-receipt-print-title">{labels.title}</h2>
     </div>
   );
 }
@@ -1552,7 +1543,7 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
 
     if (item.type === 'detail') {
       renderedItems.push(
-        <SelfReceiptPrintDetailLine key={`${item.field}-${index}`} label={labels[item.labelField]} value={item.value} />,
+        <SelfReceiptPrintDetailLine key={`${item.field}-${index}`} value={item.value} />,
       );
     }
 
@@ -1562,12 +1553,9 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
   return renderedItems;
 }
 
-function SelfReceiptPrintDetailLine({ label, value }) {
+function SelfReceiptPrintDetailLine({ value }) {
   return (
-    <p className="self-receipt-print-detail-line">
-      <span className="self-receipt-print-detail-label">{label}:</span>{' '}
-      <span className="self-receipt-print-detail-text">{value}</span>
-    </p>
+    <p className="self-receipt-print-detail-line">{value}</p>
   );
 }
 
@@ -1577,7 +1565,6 @@ function SelfReceiptPrintPositionTable({ labels, positionItems }) {
       <thead>
         <tr>
           <th>{labels.position}</th>
-          <th>{labels.expensePositionDate}</th>
           <th>{labels.description}</th>
           <th>{labels.netAmount}</th>
           <th>{labels.tax}</th>
@@ -1591,7 +1578,6 @@ function SelfReceiptPrintPositionTable({ labels, positionItems }) {
           return (
             <tr key={position.id}>
               <td>{index + 1}</td>
-              <td>{formatGermanDate(position.expenseDate)}</td>
               <td>{position.description}</td>
               <td>{formatCurrency(calculated.net)}</td>
               <td>{formatPercent(calculated.taxRate)}%</td>

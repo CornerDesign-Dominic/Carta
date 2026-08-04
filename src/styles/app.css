@@ -5213,6 +5213,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   box-sizing: border-box;
 }
 
+.self-receipt-sheet .invoice-document-title .document-title-label {
+  display: block;
+  width: 100%;
+  min-height: 1.35em;
+  height: auto;
+  padding: 0;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.35;
+}
+
 .reminder-document-title {
   margin-top: -8px;
 }
@@ -6300,6 +6311,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   page-break-inside: avoid;
 }
 
+.self-receipt-print-title {
+  width: 100%;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .invoice-print-project-info.is-single-column {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -6776,21 +6793,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   align-items: start;
 }
 
-.self-receipt-detail-line-content {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
+.self-receipt-detail-line > textarea {
   width: 100%;
-}
-
-.self-receipt-detail-line-content > .document-label-input {
-  flex: 0 1 19rem;
-  min-width: 0;
-  font-weight: 700;
-}
-
-.self-receipt-detail-line-content > textarea {
-  flex: 1 1 12rem;
   min-width: 0;
   min-height: 1.45em;
   padding: 0;
@@ -6815,26 +6819,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-expense-table th:nth-child(2),
 .self-receipt-expense-table td:nth-child(2) {
-  width: 15%;
+  width: 58%;
 }
 
 .self-receipt-expense-table th:nth-child(3),
-.self-receipt-expense-table td:nth-child(3) {
-  width: 42%;
-}
-
+.self-receipt-expense-table td:nth-child(3),
 .self-receipt-expense-table th:nth-child(4),
 .self-receipt-expense-table td:nth-child(4),
 .self-receipt-expense-table th:nth-child(5),
-.self-receipt-expense-table td:nth-child(5),
-.self-receipt-expense-table th:nth-child(6),
-.self-receipt-expense-table td:nth-child(6) {
-  width: 11%;
-}
-
-.self-receipt-expense-table th:nth-child(7),
-.self-receipt-expense-table td:nth-child(7) {
-  width: 4%;
+.self-receipt-expense-table td:nth-child(5) {
+  width: 12%;
 }
 
 .self-receipt-expense-table textarea {
@@ -6856,16 +6850,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   white-space: pre-wrap;
 }
 
-.self-receipt-print-detail-label {
-  color: inherit;
-  font-size: inherit;
-  font-weight: 760;
-}
-
-.self-receipt-print-detail-text {
-  color: inherit;
-}
-
 .self-receipt-print-position-table th:nth-child(1),
 .self-receipt-print-position-table td:nth-child(1) {
   width: 6%;
@@ -6873,28 +6857,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-print-position-table th:nth-child(2),
 .self-receipt-print-position-table td:nth-child(2) {
-  width: 15%;
-}
-
-.self-receipt-print-position-table th:nth-child(3),
-.self-receipt-print-position-table td:nth-child(3) {
-  width: 43%;
+  width: 58%;
   white-space: pre-wrap;
 }
 
+.self-receipt-print-position-table th:nth-child(3),
+.self-receipt-print-position-table td:nth-child(3),
 .self-receipt-print-position-table th:nth-child(4),
 .self-receipt-print-position-table td:nth-child(4),
 .self-receipt-print-position-table th:nth-child(5),
-.self-receipt-print-position-table td:nth-child(5),
-.self-receipt-print-position-table th:nth-child(6),
-.self-receipt-print-position-table td:nth-child(6) {
+.self-receipt-print-position-table td:nth-child(5) {
   width: 12%;
 }
 
-.self-receipt-print-position-table th:nth-child(4),
-.self-receipt-print-position-table td:nth-child(4),
-.self-receipt-print-position-table th:nth-child(6),
-.self-receipt-print-position-table td:nth-child(6) {
+.self-receipt-print-position-table th:nth-child(3),
+.self-receipt-print-position-table td:nth-child(3),
+.self-receipt-print-position-table th:nth-child(5),
+.self-receipt-print-position-table td:nth-child(5) {
   text-align: right;
 }
 
@@ -6903,18 +6882,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
     grid-template-columns: 1fr;
   }
 
-  .self-receipt-detail-line-content {
-    align-items: start;
-    flex-wrap: wrap;
-  }
-
-  .self-receipt-detail-line-content > .document-label-input {
-    flex-basis: calc(100% - 1.1em);
-  }
-
-  .self-receipt-detail-line-content > textarea {
-    flex-basis: 100%;
-  }
 }
 
 .form-section {

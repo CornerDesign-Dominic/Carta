@@ -15,7 +15,6 @@ export default function SelfReceiptExpenseTable({
 }) {
   const tableLabels = [
     ['position', 'Tabellenkopf Position'],
-    ['expensePositionDate', 'Tabellenkopf Datum'],
     ['description', 'Tabellenkopf Beschreibung'],
     ['netAmount', 'Tabellenkopf Netto'],
     ['tax', 'Tabellenkopf Umsatzsteuer'],
@@ -36,7 +35,6 @@ export default function SelfReceiptExpenseTable({
               />
             </th>
           ))}
-          <th />
         </tr>
       </thead>
       <tbody>
@@ -76,15 +74,6 @@ export default function SelfReceiptExpenseTable({
                   </button>
                 </span>
                 {index + 1}
-              </td>
-              <td>
-                <input
-                  aria-label={`Datum Position ${index + 1}`}
-                  className={dataCheckPositions[position.id]?.expenseDate ? 'document-data-check-marker' : undefined}
-                  type="date"
-                  value={position.expenseDate}
-                  onChange={(event) => onPositionChange(position.id, 'expenseDate', event.target.value)}
-                />
               </td>
               <td>
                 <textarea
