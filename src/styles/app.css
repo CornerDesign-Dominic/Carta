@@ -6800,6 +6800,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   width: 100%;
   min-width: 0;
   min-height: 1.45em;
+  overflow: hidden;
   padding: 0;
   resize: none;
   white-space: pre-wrap;
@@ -6870,6 +6871,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: right;
 }
 
+.self-receipt-expense-table th:nth-child(5) .document-label-input {
+  text-align: right;
+}
+
 .self-receipt-print-detail-line {
   margin: 0;
   color: #4d4b46;
@@ -6916,17 +6921,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-print-position-table th:nth-child(2),
 .self-receipt-print-position-table td:nth-child(2) {
-  width: 58%;
+  width: 62%;
   white-space: pre-wrap;
 }
 
 .self-receipt-print-position-table th:nth-child(3),
-.self-receipt-print-position-table td:nth-child(3),
+.self-receipt-print-position-table td:nth-child(3) {
+  width: 11%;
+}
+
 .self-receipt-print-position-table th:nth-child(4),
-.self-receipt-print-position-table td:nth-child(4),
+.self-receipt-print-position-table td:nth-child(4) {
+  width: 11%;
+}
+
 .self-receipt-print-position-table th:nth-child(5),
 .self-receipt-print-position-table td:nth-child(5) {
-  width: 12%;
+  width: 10%;
 }
 
 .self-receipt-print-position-table th:nth-child(3),
