@@ -3678,6 +3678,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 .business-letter-attachments textarea {
   min-height: 1.58em;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .business-letter-print-page {
@@ -3733,6 +3734,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   color: #34312c;
   font-size: 0.86rem;
   line-height: 1.58;
+  overflow-wrap: anywhere;
 }
 
 .business-letter-measure-content {

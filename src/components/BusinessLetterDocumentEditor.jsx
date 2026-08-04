@@ -211,9 +211,9 @@ function buildLetterText(content, labels, hiddenFields) {
 }
 
 function formatAttachmentText(value) {
-  const text = String(value ?? '').trim();
-  if (!text) return '';
-  return /^anlagen\s*:/i.test(text) ? text : `Anlagen: ${text}`;
+  const text = String(value ?? '');
+  if (!text.trim()) return '';
+  return /^\s*anlagen\s*:/i.test(text) ? text : `Anlagen: ${text}`;
 }
 
 export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange }) {
@@ -508,7 +508,7 @@ function AttachmentsField({ content, hiddenFields, labels, onContentChange, onTo
 
   return (
     <div className="business-letter-attachments invoice-config-row">
-      <textarea ref={(element) => { textRefs.current[field] = element; }} aria-label={labels[field]} rows={1} value={formatAttachmentText(content[field])} onChange={(event) => { onContentChange(field, event.target.value); resize(event.target); }} />
+      <textarea ref={(element) => { textRefs.current[field] = element; }} aria-label={labels[field]} rows={1} wrap="soft" value={formatAttachmentText(content[field])} onChange={(event) => { onContentChange(field, event.target.value); resize(event.target); }} />
       <FieldActions label={labels[field]} onToggle={() => onToggle(field)} />
     </div>
   );
