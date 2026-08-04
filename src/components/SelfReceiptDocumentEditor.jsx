@@ -195,6 +195,7 @@ const selfReceiptSignatureFields = [{ field: 'signature', label: 'Unterschrift' 
 
 const selfReceiptPrintLayout = {
   blockGap: 16,
+  detailGap: 4,
   smallSafetyBuffer: 8,
 };
 
@@ -1304,9 +1305,10 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
   function getItemGap(page, item) {
     const previousItem = page.items[page.items.length - 1];
     const startsPositionTable = item.type === 'position' && previousItem?.type !== 'position';
-    const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position');
+    const continuesDetailBlock = item.type === 'detail' && previousItem?.type === 'detail';
+    const startsNewBlock = page.items.length > 0 && !(item.type === 'position' && previousItem?.type === 'position') && !continuesDetailBlock;
 
-    return (startsNewBlock ? blockGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
+    return (startsNewBlock ? blockGap : 0) + (continuesDetailBlock ? selfReceiptPrintLayout.detailGap : 0) + (startsPositionTable ? positionHeaderHeight : 0);
   }
 
   function splitDetailItem(item, availableHeight) {
@@ -1576,9 +1578,21 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
     }
 
     if (item.type === 'detail') {
+      const detailItems = [];
+
+      while (items[index]?.type === 'detail') {
+        detailItems.push(items[index]);
+        index += 1;
+      }
+
       renderedItems.push(
-        <SelfReceiptPrintDetailLine key={`${item.field}-${index}`} value={item.value} />,
+        <section className="self-receipt-print-detail-block" key={`details-${detailItems[0].field}`}>
+          {detailItems.map((detail) => (
+            <SelfReceiptPrintDetailLine key={detail.field} value={detail.value} />
+          ))}
+        </section>,
       );
+      continue;
     }
 
     index += 1;

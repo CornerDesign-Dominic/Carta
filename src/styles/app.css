@@ -5216,9 +5216,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .self-receipt-sheet .invoice-document-title .document-title-label {
   display: block;
   width: 100%;
-  min-height: 1.35em;
+  box-sizing: border-box;
+  min-height: calc(1.35em + 6px);
   height: auto;
-  padding: 0;
+  padding: 3px 0;
   overflow: hidden;
   resize: none;
   line-height: 1.35;
@@ -6313,6 +6314,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-print-title {
   width: 100%;
+  box-sizing: border-box;
+  padding: 3px 0;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
@@ -6873,6 +6876,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-size: 11pt;
   line-height: 1.4;
   white-space: pre-wrap;
+}
+
+.self-receipt-print-title {
+  margin-bottom: 20px;
+}
+
+.self-receipt-print-detail-block {
+  display: grid;
+  gap: 4px;
 }
 
 .self-receipt-print-signature {
