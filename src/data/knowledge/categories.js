@@ -9,6 +9,7 @@ export const knowledgeCategories = [
       { slug: 'lieferschein', title: 'Lieferschein' },
       { slug: 'gutschrift', title: 'Gutschrift' },
       { slug: 'quittung', title: 'Quittung' },
+      { slug: 'eigenbeleg', title: 'Eigenbeleg' },
     ],
   },
   {

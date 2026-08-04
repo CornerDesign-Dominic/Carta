@@ -6812,7 +6812,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-signature {
   width: 100%;
-  margin-top: 22px;
+  margin-top: 37px;
 }
 
 .self-receipt-signature-content {
@@ -6889,7 +6889,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-print-signature {
   width: min(100%, 33.333%);
-  margin: 0;
+  margin: 15px 0 0;
 }
 
 .self-receipt-print-signature > div {
@@ -6906,6 +6906,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .self-receipt-print-position-table th:nth-child(1),
 .self-receipt-print-position-table td:nth-child(1) {
   width: 6%;
+}
+
+/* Keep the printed cost table's column spacing in step with the web table. */
+.self-receipt-print-position-table th,
+.self-receipt-print-position-table td {
+  padding: 6px;
 }
 
 .self-receipt-print-position-table th:nth-child(2),
