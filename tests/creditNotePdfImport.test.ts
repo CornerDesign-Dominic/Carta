@@ -23,7 +23,16 @@ function createCreditNoteState(creditNoteVariant: CreditNoteVariant = 'creditNot
       footer: { company: { companyName: 'Muster GmbH', street: 'Straße', houseNumber: '1', postalCode: '10115', city: 'Berlin', extra: 'Extra' }, tax: { vatIdLabel: 'USt-IdNr.', vatId: 'DE1', taxNumberLabel: 'Steuernummer', taxNumber: '1', commercialRegister: 'HRB 1', representation: 'GF' }, bank: { bankName: 'Bank', ibanLabel: 'IBAN', iban: 'DE1', bicLabel: 'BIC', bic: 'BIC1', bankExtra: 'Hinweis' } },
     },
     positions: [{ id: '123e4567-e89b-42d3-a456-426614174000', description: 'Leistung', unitPrice: '10,00', quantity: '2', unit: 'Stück', taxRate: '19' }],
-    textBlocks: [{ id: 'intro', label: 'Einleitung', value: 'Text', visible: true }],
+    textBlocks: [
+      { id: 'intro', label: 'Einleitung', value: 'Text', visible: true },
+      ...(creditNoteVariant === 'creditNote'
+        ? [
+            { id: 'payoutNotice', label: 'Auszahlungshinweis', value: 'Die Zahlung wird auf folgende Bankverbindung vorgenommen:', visible: true },
+            { id: 'payoutIban', label: 'IBAN', value: 'IBAN: DE12 3456 7890 1234 5678 90', visible: true },
+            { id: 'payoutBic', label: 'BIC', value: 'BIC:', visible: false },
+          ]
+        : []),
+    ],
     fieldConfig: { contact: { hidden: ['fax'], order: ['email'] }, details: { hidden: [], order: ['creditNoteNumber'] }, recipient: { hidden: [], order: ['attention'] }, footerMiddle: { hidden: [], order: ['vatId'] } },
   };
 }

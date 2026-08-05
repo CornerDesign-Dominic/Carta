@@ -21,7 +21,17 @@ function createCreditNoteState(creditNoteVariant: CreditNoteVariant): CreditNote
       footer: { company: { companyName: '', street: '', houseNumber: '', postalCode: '', city: '', extra: '  ' }, tax: { vatIdLabel: '', vatId: '', taxNumberLabel: '', taxNumber: '', commercialRegister: '', representation: '' }, bank: { bankName: '', ibanLabel: '', iban: '', bicLabel: '', bic: '', bankExtra: '' } },
     },
     positions: [{ id: '123e4567-e89b-42d3-a456-426614174000', description: 'Öl', unitPrice: '001,20', quantity: ' 2 ', unit: '', taxRate: '7,5' }, { id: '123e4567-e89b-42d3-a456-426614174001', description: '', unitPrice: '', quantity: '', unit: 'Stk.', taxRate: '' }],
-    textBlocks: [{ id: 'intro', label: 'Einleitung', value: '  Ä  ', visible: true }, { id: 'closing', label: 'Ende', value: '', visible: false }],
+    textBlocks: [
+      { id: 'intro', label: 'Einleitung', value: '  Ä  ', visible: true },
+      { id: 'closing', label: 'Ende', value: '', visible: false },
+      ...(creditNoteVariant === 'creditNote'
+        ? [
+            { id: 'payoutNotice', label: 'Auszahlungshinweis', value: 'Die Zahlung wird auf folgende Bankverbindung vorgenommen:', visible: true },
+            { id: 'payoutIban', label: 'IBAN', value: 'IBAN: DE12 3456 7890 1234 5678 90', visible: false },
+            { id: 'payoutBic', label: 'BIC', value: 'BIC:', visible: true },
+          ]
+        : []),
+    ],
     fieldConfig: { contact: { hidden: [], order: ['email'] }, details: { hidden: ['serviceDate'], order: ['creditNoteNumber'] }, recipient: { hidden: [], order: ['attention'] }, footerMiddle: { hidden: [], order: ['vatId'] } },
   };
 }

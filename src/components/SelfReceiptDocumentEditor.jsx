@@ -225,6 +225,9 @@ function createShortSelfReceiptData() {
     purpose: 'Kauf eines Bürostuhls bei Kaufhaus XYZ',
     reason: 'Verlust des Originalbelegs',
     date: currentLocalIsoDate(),
+    dateLabel: 'Datum',
+    signatureLabel: 'Stempel / Unterschrift',
+    signatureValue: '',
     amount: {
       calculationSource: 'netAmount',
       sourceAmount: '100,00',
@@ -232,6 +235,7 @@ function createShortSelfReceiptData() {
     },
     fieldConfig: {
       signature: { hidden: [], order: ['signature'] },
+      header: { hidden: [], order: ['company', 'streetLine', 'cityLine'] },
     },
   };
 }
@@ -739,6 +743,23 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     });
   }
 
+  function toggleShortAddressField(field) {
+    setShortSelfReceipt((current) => {
+      const header = current.fieldConfig.header ?? { hidden: [], order: ['company', 'streetLine', 'cityLine'] };
+      const hidden = header.hidden.includes(field)
+        ? header.hidden.filter((entry) => entry !== field)
+        : [...header.hidden, field];
+
+      return {
+        ...current,
+        fieldConfig: {
+          ...current.fieldConfig,
+          header: { ...header, hidden },
+        },
+      };
+    });
+  }
+
   function updateSender(field, value) {
     setSelfReceiptData((current) => {
       if (field === 'company') {
@@ -1133,6 +1154,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           isDataCheckMode={isDataCheckMode}
           onChange={updateShortSelfReceipt}
           onOwnAddressChange={updateShortOwnAddress}
+          onToggleAddressField={toggleShortAddressField}
           onToggleSignature={toggleShortSignature}
           ownAddress={sender}
           pageRef={sheetRef}

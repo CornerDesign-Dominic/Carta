@@ -4602,6 +4602,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   outline-color: rgba(74, 103, 119, 0.48);
 }
 
+.short-self-receipt-sheet.is-export-mode .receipt-line-field .receipt-line-label,
+.short-self-receipt-sheet.is-export-mode .receipt-line-field .receipt-line-value,
+body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .receipt-line-field .receipt-line-label,
+body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .receipt-line-field .receipt-line-value {
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
 .receipt-place-date-line {
   grid-template-columns: 118px minmax(0, 1fr);
   margin-top: 2px;
@@ -4798,8 +4807,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   grid-template-columns: minmax(0, 1fr);
 }
 
-.short-self-receipt-date-field > input,
-.short-self-receipt-signature-space {
+.short-self-receipt-date-field > input:not(.document-label-input),
+.short-self-receipt-signature-input {
   box-sizing: border-box;
   width: 100%;
   height: 74px;
@@ -4812,10 +4821,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   color: #000000;
   font-size: 0.82rem;
   line-height: 1.3;
+  text-align: left;
+  vertical-align: top;
 }
 
-.short-self-receipt-date-field > input {
+.short-self-receipt-date-field > input:not(.document-label-input) {
   font: inherit;
+}
+
+.short-self-receipt-signature-input {
+  resize: none;
+}
+
+.short-self-receipt-sheet.is-highlight-mode:not(.is-export-mode) .short-self-receipt-date-field > input:not(.document-label-input),
+.short-self-receipt-sheet.is-highlight-mode:not(.is-export-mode) .short-self-receipt-signature-input {
+  border: 1px solid rgba(74, 103, 119, 0.28);
+  background: rgba(236, 244, 246, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
 }
 
 .short-self-receipt-signature {
@@ -5430,6 +5452,12 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .offer-sheet textarea.invoice-flow-text {
   overflow: hidden;
   resize: none;
+}
+
+.credit-note-sheet .credit-note-payout-text {
+  min-height: 1.35em;
+  margin-bottom: 0;
+  line-height: 1.35;
 }
 
 .invoice-position-table th,

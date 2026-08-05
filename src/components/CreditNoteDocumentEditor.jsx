@@ -449,6 +449,29 @@ const defaultOfferTextBlocks = [
   },
 ];
 
+const defaultCreditNotePayoutTextBlocks = [
+  {
+    id: 'payoutNotice',
+    label: 'Auszahlungshinweis',
+    value: 'Die Zahlung wird auf folgende Bankverbindung vorgenommen:',
+    visible: true,
+  },
+  {
+    id: 'payoutIban',
+    label: 'IBAN',
+    value: 'IBAN:',
+    visible: true,
+  },
+  {
+    id: 'payoutBic',
+    label: 'BIC',
+    value: 'BIC:',
+    visible: true,
+  },
+];
+
+const creditNotePayoutBlockIds = new Set(defaultCreditNotePayoutTextBlocks.map((block) => block.id));
+
 function createCreditNotePosition() {
   return {
     id: crypto.randomUUID(),
@@ -586,8 +609,15 @@ function createPdfFileName(title, number) {
   return `${baseTitle || 'gutschrift'}-${baseNumber || 'dokument'}.pdf`;
 }
 
-function normalizeTextBlocks(templateTextBlocks, legacyIntroText, legacyClosingText) {
-  const defaults = defaultOfferTextBlocks.map((block) => ({ ...block }));
+function getDefaultCreditNoteTextBlocks(variant = 'creditNote') {
+  return [
+    ...defaultOfferTextBlocks,
+    ...(variant === 'creditNote' ? defaultCreditNotePayoutTextBlocks : []),
+  ].map((block) => ({ ...block }));
+}
+
+function normalizeTextBlocks(templateTextBlocks, legacyIntroText, legacyClosingText, variant = 'creditNote') {
+  const defaults = getDefaultCreditNoteTextBlocks(variant);
 
   if (!Array.isArray(templateTextBlocks)) {
     return defaults.map((block) => {
@@ -625,7 +655,7 @@ function normalizeTextBlocks(templateTextBlocks, legacyIntroText, legacyClosingT
 function createCreditNoteTextBlocks(variant = 'creditNote') {
   const config = creditNoteVariantConfig[variant] ?? creditNoteVariantConfig.creditNote;
 
-  return normalizeTextBlocks().map((block) => {
+  return normalizeTextBlocks(undefined, undefined, undefined, variant).map((block) => {
     if (block.id === 'intro') {
       return { ...block, value: config.intro };
     }
@@ -649,7 +679,7 @@ function normalizeTextBlocksForVariant(templateTextBlocks, variant = 'creditNote
     return createCreditNoteTextBlocks(variant);
   }
 
-  return normalizeTextBlocks(templateTextBlocks);
+  return normalizeTextBlocks(templateTextBlocks, undefined, undefined, variant);
 }
 
 const offerPrintLayout = {
@@ -659,6 +689,7 @@ const offerPrintLayout = {
 
 function createOfferPrintItems({
   correction,
+  creditNoteVariant,
   isSmallBusiness = false,
   labels,
   positions,
@@ -668,6 +699,11 @@ function createOfferPrintItems({
   const introBlock = textBlocks.find((block) => block.id === 'intro');
   const closingBlock = textBlocks.find((block) => block.id === 'closing');
   const smallBusinessNoticeBlock = textBlocks.find((block) => block.id === 'smallBusinessNotice');
+  const payoutBlocks = creditNoteVariant === 'creditNote'
+    ? defaultCreditNotePayoutTextBlocks
+      .map(({ id }) => textBlocks.find((block) => block.id === id))
+      .filter((block) => block?.visible)
+    : [];
   const visibleReferences = referenceFields
     .map((definition) => ({
       ...definition,
@@ -721,6 +757,11 @@ function createOfferPrintItems({
           },
         ]
       : []),
+    ...payoutBlocks.map((block) => ({
+      type: 'text',
+      id: block.id,
+      text: block.value,
+    })),
   ];
 }
 
@@ -830,6 +871,21 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     },
     applyPartner(record) {
       setOfferData((current) => applyPartnerToCreditNote(current, record));
+      const partnerBank = record?.bank ?? {};
+      setTextBlockSets((current) => ({
+        ...current,
+        creditNote: normalizeTextBlocksForVariant(current.creditNote, 'creditNote').map((block) => {
+          if (block.id === 'payoutIban' && block.value === 'IBAN:' && partnerBank.iban) {
+            return { ...block, value: `IBAN: ${partnerBank.iban}` };
+          }
+
+          if (block.id === 'payoutBic' && block.value === 'BIC:' && partnerBank.bic) {
+            return { ...block, value: `BIC: ${partnerBank.bic}` };
+          }
+
+          return block;
+        }),
+      }));
     },
     hasRecipientData() {
       return hasCreditNoteRecipientData(offerDataRef.current);
@@ -919,13 +975,14 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     () =>
       createOfferPrintItems({
         correction,
+        creditNoteVariant: normalizedCreditNoteVariant,
         isSmallBusiness,
         labels,
         positions,
         referenceFields,
         textBlocks,
       }),
-    [correction, isSmallBusiness, labels, positions, referenceFields, textBlocks],
+    [correction, isSmallBusiness, labels, normalizedCreditNoteVariant, positions, referenceFields, textBlocks],
   );
   const dataCheckState = useMemo(
     () =>
@@ -1406,7 +1463,13 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     setLabels(restored.labels);
     setOfferData(restored.offerData);
     setCreditNoteVariant(restored.creditNoteVariant);
-    setTextBlockSets((current) => ({ ...current, [restored.creditNoteVariant]: restored.textBlocks }));
+    setTextBlockSets((current) => ({
+      ...current,
+      [restored.creditNoteVariant]: normalizeTextBlocksForVariant(
+        restored.textBlocks,
+        restored.creditNoteVariant,
+      ),
+    }));
     setPositions(restored.positions);
     setIsSmallBusiness(restored.isSmallBusiness);
     setFieldConfig(restored.fieldConfig);
@@ -1460,6 +1523,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
             textBlockRefs.current[block.id] = element;
           }}
           ariaLabel={block.label}
+          className={creditNotePayoutBlockIds.has(block.id) ? 'credit-note-payout-text' : ''}
           value={block.value}
           onChange={(value, event) => {
             updateTextBlock(block.id, { value });
@@ -1647,6 +1711,14 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
         {isSmallBusiness && renderTextBlock(textBlocks.find((block) => block.id === 'smallBusinessNotice'), 1)}
 
         {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 2)}
+
+        {normalizedCreditNoteVariant === 'creditNote' && (
+          <>
+            {renderTextBlock(textBlocks.find((block) => block.id === 'payoutNotice'), 3)}
+            {renderTextBlock(textBlocks.find((block) => block.id === 'payoutIban'), 4)}
+            {renderTextBlock(textBlocks.find((block) => block.id === 'payoutBic'), 5)}
+          </>
+        )}
 
         <FooterBlock
           columns={[

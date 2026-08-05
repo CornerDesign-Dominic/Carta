@@ -396,12 +396,15 @@ export interface SelfReceiptGeneratorState {
     purpose: string;
     reason: string;
     date: IsoDate | '';
+    dateLabel: string;
+    signatureLabel: string;
+    signatureValue: string;
     amount: {
       calculationSource: 'netAmount' | 'grossAmount';
       sourceAmount: string;
       taxRate: string;
     };
-    fieldConfig: { signature: FieldConfiguration };
+    fieldConfig: { signature: FieldConfiguration; header: FieldConfiguration };
   };
 }
 
