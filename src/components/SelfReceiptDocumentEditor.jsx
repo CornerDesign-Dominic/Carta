@@ -188,7 +188,6 @@ const defaultSelfReceiptData = {
 };
 
 const selfReceiptDetailFields = [
-  { field: 'occasion', labelField: 'occasion', ariaLabel: 'Betrieblicher Anlass der Ausgabe' },
   { field: 'reason', labelField: 'reason', ariaLabel: 'Grund für den Eigenbeleg' },
   { field: 'settlementType', labelField: 'settlementType', ariaLabel: 'Zahlungsart' },
   { field: 'location', labelField: 'location', ariaLabel: 'Ausgabestelle oder Ort' },
@@ -394,7 +393,7 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
 const defaultSelfReceiptViewData = createSelfReceiptViewData(defaultSelfReceiptData);
 const defaultSelfReceiptPositionForCheck = {
   description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
-  netAmount: '42,00',
+  netAmount: '0',
   taxRate: '19',
 };
 
@@ -1359,7 +1358,7 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
       <div className="offer-measure-content">
         <p className="invoice-print-flow-text" data-measure-text-probe />
         <div data-measure-detail>
-          <SelfReceiptPrintDetailLine value={expenseInfo.occasion} />
+          <SelfReceiptPrintDetailLine value={expenseInfo.reason} />
         </div>
         <table className="invoice-print-position-table self-receipt-print-position-table">
           <thead>

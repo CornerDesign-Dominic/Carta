@@ -204,7 +204,7 @@ export default function ShortSelfReceiptDocument({
 
       <section className="receipt-lines" aria-label="Angaben zur Ausgabe">
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Beleg-Nr.:</span>
+          <span className="receipt-line-label">Belegnummer:</span>
           <textarea
             ref={(element) => { textareaRefs.current.receiptNumber = element; }}
             className="receipt-line-value short-self-receipt-number"
@@ -219,7 +219,7 @@ export default function ShortSelfReceiptDocument({
           />
         </label>
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Aufwand:</span>
+          <span className="receipt-line-label">Ausgabe für:</span>
           <textarea
             ref={(element) => { textareaRefs.current.purpose = element; }}
             className="receipt-line-value"
@@ -234,7 +234,7 @@ export default function ShortSelfReceiptDocument({
           />
         </label>
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Grund:</span>
+          <span className="receipt-line-label">Grund für den Eigenbeleg:</span>
           <textarea
             ref={(element) => { textareaRefs.current.reason = element; }}
             className="receipt-line-value"
@@ -260,7 +260,7 @@ export default function ShortSelfReceiptDocument({
           />
           <input
             aria-label="Datum"
-            type="date"
+            type="text"
             value={data.date}
             onChange={(event) => update('date', event.target.value)}
           />

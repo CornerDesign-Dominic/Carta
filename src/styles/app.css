@@ -4801,6 +4801,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .short-self-receipt-sheet .receipt-line-field {
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 16px;
   align-items: center;
 }
 

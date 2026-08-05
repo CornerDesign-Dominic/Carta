@@ -523,13 +523,6 @@ export default function SelfReceiptDocumentForm({
             <h3>Eigenbeleg-Details</h3>
             <div className="invoice-panel-grid">
               <SelfReceiptPanelTextarea
-                label="Betrieblicher Anlass der Ausgabe"
-                name="expense-occasion"
-                placeholder={selfReceiptFormDefaults.expenseInfo.occasion}
-                value={expenseInfo.occasion}
-                onChange={(value) => updateExpenseInfo('occasion', value)}
-              />
-              <SelfReceiptPanelTextarea
                 label="Grund für den Eigenbeleg"
                 name="expense-reason"
                 placeholder={selfReceiptFormDefaults.expenseInfo.reason}
