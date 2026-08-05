@@ -237,10 +237,10 @@ export default function ShortSelfReceiptDocument({
           />
         </label>
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Datum</span>
+          <span className="receipt-line-label">Tag der Ausgabe</span>
           <input
             className="receipt-line-value short-self-receipt-expense-date"
-            aria-label="Datum"
+            aria-label="Tag der Ausgabe"
             type="date"
             value={data.expenseDate}
             onChange={(event) => update('expenseDate', event.target.value)}
