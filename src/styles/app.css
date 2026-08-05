@@ -1685,6 +1685,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-evenly;
   width: 100%;
   max-width: 100%;
   padding: var(--document-toolbar-space);
@@ -8587,6 +8588,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   .visual-toolbar {
     align-items: stretch;
     flex-direction: column;
+    justify-content: flex-start;
   }
 
   .visual-toolbar-group,
@@ -8613,6 +8615,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   .tool-document-toolbar {
     align-items: stretch;
     flex-direction: column;
+    justify-content: flex-start;
   }
 
   .invoice-form-panel-body,
@@ -9931,6 +9934,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-evenly;
   padding: var(--document-toolbar-space);
   border: 1px solid rgba(201, 196, 186, 0.66);
   border-radius: 6px;
