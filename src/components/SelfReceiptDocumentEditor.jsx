@@ -193,8 +193,8 @@ const selfReceiptDetailFields = [
 ];
 const selfReceiptSignatureFields = [{ field: 'signature', label: 'Unterschrift' }];
 const selfReceiptVariants = [
-  { id: 'standard', label: 'Ausführlicher Eigenbeleg (A4)' },
   { id: 'short', label: 'Einfacher Eigenbeleg (A5)' },
+  { id: 'standard', label: 'Ausführlicher Eigenbeleg (A4)' },
 ];
 
 const selfReceiptPrintLayout = {
@@ -562,7 +562,7 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, showSignature, vi
 }
 
 export default function SelfReceiptDocumentEditor({
-  initialSelfReceiptVariant = 'standard',
+  initialSelfReceiptVariant = 'short',
   onMasterDataAdapterChange,
   onSelfReceiptVariantChange,
 }) {

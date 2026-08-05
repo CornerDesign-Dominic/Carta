@@ -87,7 +87,7 @@ export default function ShortSelfReceiptDocument({
 
   useEffect(() => {
     Object.values(textareaRefs.current).forEach(resizeTextarea);
-  }, [data.location, data.recipientAddress, data.purpose, data.reason, data.receiptNumber, data.title]);
+  }, [data.date, data.lineLabels, data.location, data.recipientAddress, data.purpose, data.reason, data.receiptNumber, data.title]);
 
   function update(field, value) {
     onChange({ ...data, [field]: value });
@@ -354,11 +354,17 @@ export default function ShortSelfReceiptDocument({
               value={noteLabel}
               onChange={(event) => update('dateLabel', event.target.value)}
             />
-            <input
+            <textarea
+              ref={(element) => { textareaRefs.current.note = element; }}
+              className="short-self-receipt-note-input"
               aria-label={noteLabel || 'Vermerk'}
-              type="text"
+              rows={1}
+              wrap="soft"
               value={data.date}
-              onChange={(event) => update('date', event.target.value)}
+              onChange={(event) => {
+                update('date', event.target.value);
+                resizeTextarea(event.target);
+              }}
             />
           </div>
         )}

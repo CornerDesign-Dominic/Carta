@@ -50,6 +50,7 @@ const invoicePaths = new Set([
 ]);
 const selfReceiptPaths = new Set([
   '/dokumente/eigenbeleg',
+  '/dokumente/eigenbeleg/a4',
   '/dokumente/eigenbeleg/a5',
 ]);
 
@@ -97,8 +98,8 @@ function pathForNavigation(item) {
       return '/dokumente/rechnung/standard';
     }
 
-    if (item.documentId === 'write-self-receipt' && item.selfReceiptVariant === 'short') {
-      return '/dokumente/eigenbeleg/a5';
+    if (item.documentId === 'write-self-receipt' && item.selfReceiptVariant === 'standard') {
+      return '/dokumente/eigenbeleg/a4';
     }
 
     return generatorPathById.get(item.documentId) ?? '/dokumente';
@@ -187,7 +188,7 @@ function readStoredTheme() {
   return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : null;
 }
 
-function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard', selfReceiptVariant = 'standard' }) {
+function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard', selfReceiptVariant = 'short' }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -446,7 +447,8 @@ export default function App() {
               path="/dokumente/rechnung/schlussrechnung"
               element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
             />
-            <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" />} />
+            <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="short" />} />
+            <Route path="/dokumente/eigenbeleg/a4" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="standard" />} />
             <Route path="/dokumente/eigenbeleg/a5" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="short" />} />
             <Route path="/dokumente/*" element={<DocumentPathRoute />} />
             <Route path="/tools" element={<ToolsRoute />} />

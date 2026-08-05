@@ -36,7 +36,7 @@ function pathForInvoiceVariant(variant) {
 }
 
 function pathForSelfReceiptVariant(variant) {
-  return variant === 'short' ? '/dokumente/eigenbeleg/a5' : '/dokumente/eigenbeleg';
+  return variant === 'standard' ? '/dokumente/eigenbeleg/a4' : '/dokumente/eigenbeleg';
 }
 
 export function getDocumentSessionResetKey(documentId) {
@@ -171,7 +171,7 @@ export default function DocumentsView({
   initialDocumentId = 'overview',
   initialInvoiceSmallBusiness,
   initialInvoiceVariant = 'standard',
-  initialSelfReceiptVariant = 'standard',
+  initialSelfReceiptVariant = 'short',
   onNavigate,
 }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
