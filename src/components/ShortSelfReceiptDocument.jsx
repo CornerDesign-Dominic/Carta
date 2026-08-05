@@ -261,8 +261,8 @@ export default function ShortSelfReceiptDocument({
             }}
           />
         </label>
-        <label className="receipt-line-field">
-          <span className="receipt-line-label">Zahlungsempfänger (Name & Adresse)</span>
+        <label className="receipt-line-field short-self-receipt-recipient-field">
+          <span className="receipt-line-label">Zahlungsempfänger<br />(Name & Adresse)</span>
           <textarea
             ref={(element) => { textareaRefs.current.location = element; }}
             className="receipt-line-value"

@@ -4805,9 +4805,25 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .short-self-receipt-sheet .receipt-line-field {
-  grid-template-columns: 235px minmax(0, 1fr);
+  grid-template-columns: 205px minmax(0, 1fr);
   gap: 16px;
   align-items: center;
+}
+
+.short-self-receipt-sheet .short-self-receipt-recipient-field {
+  min-height: 48px;
+}
+
+.short-self-receipt-sheet .short-self-receipt-recipient-field .receipt-line-label,
+.short-self-receipt-sheet .short-self-receipt-recipient-field .receipt-line-value {
+  height: 44px;
+  min-height: 44px;
+}
+
+.short-self-receipt-sheet .short-self-receipt-recipient-field .receipt-line-label {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0 !important;
 }
 
 .short-self-receipt-amount-box {
@@ -4883,9 +4899,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .short-self-receipt-hidden-bottom-fields {
   position: absolute;
+  top: -26px;
+  right: 0;
+  left: auto;
+}
+
+.short-self-receipt-hidden-bottom-fields .invoice-hidden-field-actions {
   top: 0;
-  right: auto;
-  left: 0;
+  right: 0;
+  left: auto;
+  flex-direction: row;
+  gap: 6px;
 }
 
 .invoice-document-header {
