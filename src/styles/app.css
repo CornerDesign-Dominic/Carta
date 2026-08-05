@@ -4795,6 +4795,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   resize: none;
 }
 
+.short-self-receipt-sheet .receipt-line-label {
+  resize: none;
+  overflow: hidden;
+}
+
 .short-self-receipt-sheet .short-self-receipt-expense-date {
   text-align: left;
 }
@@ -4821,9 +4826,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .short-self-receipt-sheet .short-self-receipt-recipient-field .receipt-line-label {
-  display: flex;
-  align-items: center;
-  padding-bottom: 0 !important;
+  display: block;
+  padding: 5px 0 !important;
 }
 
 .short-self-receipt-amount-box {

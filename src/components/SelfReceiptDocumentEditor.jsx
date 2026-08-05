@@ -215,6 +215,13 @@ function createShortSelfReceiptData() {
     title: 'Eigenbeleg',
     receiptNumber: '',
     expenseDate: '',
+    lineLabels: {
+      receiptNumber: 'Belegnummer',
+      reason: 'Grund für den Eigenbeleg',
+      expenseDate: 'Tag der Ausgabe',
+      purpose: 'Ausgabe für',
+      location: 'Zahlungsempfänger\n(Name & Adresse)',
+    },
     recipientAddress: '',
     purpose: '',
     reason: '',

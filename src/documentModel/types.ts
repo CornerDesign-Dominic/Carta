@@ -393,6 +393,7 @@ export interface SelfReceiptGeneratorState {
     title: string;
     receiptNumber: string;
     expenseDate: IsoDate | '';
+    lineLabels: { receiptNumber: string; reason: string; expenseDate: string; purpose: string; location: string };
     recipientAddress: string;
     purpose: string;
     reason: string;

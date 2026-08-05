@@ -32,6 +32,14 @@ const selfReceiptSignatureFields = ['signature'];
 const shortSelfReceiptNoteFields = ['note'];
 const shortSelfReceiptSignatureFields = ['signature'];
 const shortSelfReceiptHeaderFields = ['company', 'streetLine', 'cityLine'];
+const shortSelfReceiptLineLabelFields = ['receiptNumber', 'reason', 'expenseDate', 'purpose', 'location'];
+const defaultShortSelfReceiptLineLabels = {
+  receiptNumber: 'Belegnummer',
+  reason: 'Grund für den Eigenbeleg',
+  expenseDate: 'Tag der Ausgabe',
+  purpose: 'Ausgabe für',
+  location: 'Zahlungsempfänger\n(Name & Adresse)',
+};
 const businessLetterLabels = ['title', 'yourReference', 'ourReference', 'contactPerson', 'place', 'letterDate', 'subject', 'salutation', 'body', 'closing', 'signerName', 'signerRole', 'attachments', 'contactEmail', 'contactPhone', 'contactFax', 'contactWebsite'];
 const businessConfigFields = { contact: ['email', 'phone', 'fax', 'website'], details: ['offerNumber', 'offerDate', 'validUntil', 'internalNumber', 'externalNumber', 'customerNumber'], recipient: ['attention', 'name'], footerMiddle: ['vatId', 'taxNumber', 'commercialRegister', 'managingDirector'] };
 
@@ -101,7 +109,7 @@ function normalizeShortSelfReceiptFieldConfig(fieldConfig: unknown): NonNullable
       : { hidden: [], order: [...shortSelfReceiptHeaderFields] },
   };
 }
-function isShortSelfReceipt(value: unknown): boolean { return isRecord(value) && hasStrings(value, ['title', 'receiptNumber', 'recipientAddress', 'purpose', 'reason', 'date']) && (!('expenseDate' in value) || typeof value.expenseDate === 'string') && (!('dateLabel' in value) || typeof value.dateLabel === 'string') && (!('signatureLabel' in value) || typeof value.signatureLabel === 'string') && (!('signatureValue' in value) || typeof value.signatureValue === 'string') && (!('ownAddress' in value) || hasStrings(value.ownAddress, ['company', 'street', 'cityLine'])) && isRecord(value.amount) && hasStrings(value.amount, ['calculationSource', 'sourceAmount', 'taxRate']) && (value.amount.calculationSource === 'netAmount' || value.amount.calculationSource === 'grossAmount') && isRecord(value.fieldConfig) && isConfig(value.fieldConfig.signature, shortSelfReceiptSignatureFields) && (!('note' in value.fieldConfig) || isConfig(value.fieldConfig.note, shortSelfReceiptNoteFields)) && (!('header' in value.fieldConfig) || isConfig(value.fieldConfig.header, shortSelfReceiptHeaderFields)); }
+function isShortSelfReceipt(value: unknown): boolean { return isRecord(value) && hasStrings(value, ['title', 'receiptNumber', 'recipientAddress', 'purpose', 'reason', 'date']) && (!('expenseDate' in value) || typeof value.expenseDate === 'string') && (!('lineLabels' in value) || hasStrings(value.lineLabels, shortSelfReceiptLineLabelFields)) && (!('dateLabel' in value) || typeof value.dateLabel === 'string') && (!('signatureLabel' in value) || typeof value.signatureLabel === 'string') && (!('signatureValue' in value) || typeof value.signatureValue === 'string') && (!('ownAddress' in value) || hasStrings(value.ownAddress, ['company', 'street', 'cityLine'])) && isRecord(value.amount) && hasStrings(value.amount, ['calculationSource', 'sourceAmount', 'taxRate']) && (value.amount.calculationSource === 'netAmount' || value.amount.calculationSource === 'grossAmount') && isRecord(value.fieldConfig) && isConfig(value.fieldConfig.signature, shortSelfReceiptSignatureFields) && (!('note' in value.fieldConfig) || isConfig(value.fieldConfig.note, shortSelfReceiptNoteFields)) && (!('header' in value.fieldConfig) || isConfig(value.fieldConfig.header, shortSelfReceiptHeaderFields)); }
 function createSelfReceiptState(state: SelfReceiptEditorState): SelfReceiptEditorState {
   const normalized = {
     labels: Object.fromEntries(selfReceiptLabels.map((key) => [key, state.labels[key]])),
@@ -114,6 +122,9 @@ function createSelfReceiptState(state: SelfReceiptEditorState): SelfReceiptEdito
   if (state.shortSelfReceipt) normalized.shortSelfReceipt = {
     ...structuredClone(state.shortSelfReceipt),
     expenseDate: typeof state.shortSelfReceipt.expenseDate === 'string' ? state.shortSelfReceipt.expenseDate : '',
+    lineLabels: isRecord(state.shortSelfReceipt.lineLabels) && hasStrings(state.shortSelfReceipt.lineLabels, shortSelfReceiptLineLabelFields)
+      ? structuredClone(state.shortSelfReceipt.lineLabels)
+      : { ...defaultShortSelfReceiptLineLabels },
     location: typeof state.shortSelfReceipt.location === 'string' ? state.shortSelfReceipt.location : '',
     dateLabel: typeof state.shortSelfReceipt.dateLabel === 'string' ? state.shortSelfReceipt.dateLabel : 'Vermerk',
     signatureLabel: typeof state.shortSelfReceipt.signatureLabel === 'string' ? state.shortSelfReceipt.signatureLabel : 'Stempel / Unterschrift',
