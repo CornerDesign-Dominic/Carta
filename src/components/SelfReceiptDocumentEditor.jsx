@@ -186,6 +186,42 @@ const defaultSelfReceiptData = {
   },
 };
 
+const emptySelfReceiptData = {
+  sender: {
+    companyName: '',
+    address: { street: '', houseNumber: '', postalCode: '', city: '' },
+    returnAddress: '',
+    contact: { email: '', phone: '', fax: '', website: '' },
+  },
+  recipient: {
+    companyName: '',
+    attention: '',
+    name: '',
+    address: { street: '', houseNumber: '', postalCode: '', city: '' },
+  },
+  details: {
+    selfReceiptId: '',
+    receiptDate: '',
+    expenseDate: '',
+  },
+  references: {
+    internalReference: '',
+    externalReference: '',
+    costCenter: '',
+  },
+  expenseInfo: {
+    occasion: 'Betrieblicher Anlass der Ausgabe:',
+    reason: 'Grund für den Eigenbeleg:',
+    settlementType: 'Zahlungsart:',
+    location: 'Ausgabestelle / Ort:',
+  },
+  footer: {
+    company: { companyName: '', street: '', houseNumber: '', postalCode: '', city: '', extra: '' },
+    tax: { vatIdLabel: '', vatId: '', taxNumberLabel: '', taxNumber: '', commercialRegister: '', representation: '' },
+    bank: { bankName: '', ibanLabel: '', iban: '', bicLabel: '', bic: '', bankExtra: '' },
+  },
+};
+
 const selfReceiptDetailFields = [
   { field: 'occasion', labelField: 'occasion', ariaLabel: 'Betrieblicher Anlass der Ausgabe' },
   { field: 'reason', labelField: 'reason', ariaLabel: 'Grund für den Eigenbeleg' },
@@ -207,25 +243,27 @@ const selfReceiptPrintLayout = {
 function createSelfReceiptPosition() {
   return {
     id: crypto.randomUUID(),
-    ...defaultSelfReceiptPositionForCheck,
+    description: '',
+    netAmount: '',
+    taxRate: '0',
   };
 }
 
 function createShortSelfReceiptData() {
   return {
     title: 'Eigenbeleg',
-    receiptNumber: 'Beleg Nr. 001',
-    recipientAddress: 'Firma Meier\nMusterstraße 12\n12345 Musterhausen',
-    purpose: 'Kauf eines Bürostuhls bei Kaufhaus XYZ',
-    reason: 'Verlust des Originalbelegs',
+    receiptNumber: '',
+    recipientAddress: '',
+    purpose: '',
+    reason: '',
     date: '',
     dateLabel: 'Datum',
     signatureLabel: 'Stempel / Unterschrift',
     signatureValue: '',
     amount: {
       calculationSource: 'netAmount',
-      sourceAmount: '100,00',
-      taxRate: '19',
+      sourceAmount: '',
+      taxRate: '0',
     },
     fieldConfig: {
       signature: { hidden: [], order: ['signature'] },
@@ -573,7 +611,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const detailTextareaRefs = useRef({});
   const positionTextareaRefs = useRef({});
   const dateInputRefs = useRef({});
-  const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
+  const [selfReceiptData, setSelfReceiptData] = useState(emptySelfReceiptData);
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
   const [shortSelfReceipt, setShortSelfReceipt] = useState(createShortSelfReceiptData);
   const selfReceiptDataRef = useRef(selfReceiptData);
@@ -906,7 +944,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
       recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
       footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
     });
-    setSelfReceiptData(defaultSelfReceiptData);
+    setSelfReceiptData(emptySelfReceiptData);
     setPositions([createSelfReceiptPosition()]);
     setHighlightFields(false);
     setIsDataCheckMode(false);

@@ -5469,6 +5469,11 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   line-height: 1.35;
 }
 
+.credit-note-print-payout-block {
+  display: grid;
+  gap: 0;
+}
+
 .invoice-position-table th,
 .invoice-position-table td {
   padding-right: 3px;

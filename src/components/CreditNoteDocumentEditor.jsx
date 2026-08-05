@@ -1516,6 +1516,8 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
       );
     }
 
+    const isPayoutBlock = creditNotePayoutBlockIds.has(block.id);
+
     return (
       <div className="invoice-flow-config-row" key={block.id}>
         <TextBlock
@@ -1523,8 +1525,9 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
             textBlockRefs.current[block.id] = element;
           }}
           ariaLabel={block.label}
-          className={creditNotePayoutBlockIds.has(block.id) ? 'credit-note-payout-text' : ''}
+          className={isPayoutBlock ? 'credit-note-payout-text' : ''}
           value={block.value}
+          rows={isPayoutBlock ? 1 : undefined}
           onChange={(value, event) => {
             updateTextBlock(block.id, { value });
             resizeTextarea(event.target);
@@ -2142,6 +2145,24 @@ function OfferPrintPageItems({ isSmallBusiness = false, items, labels, totals })
 
   while (index < items.length) {
     const item = items[index];
+
+    if (item.type === 'text' && creditNotePayoutBlockIds.has(item.id)) {
+      const payoutItems = [];
+
+      while (items[index]?.type === 'text' && creditNotePayoutBlockIds.has(items[index].id)) {
+        payoutItems.push(items[index]);
+        index += 1;
+      }
+
+      renderedItems.push(
+        <div className="credit-note-print-payout-block" key={`payout-${payoutItems[0].id}`}>
+          {payoutItems.map((payoutItem) => (
+            <p className="invoice-print-flow-text" key={payoutItem.id}>{payoutItem.text}</p>
+          ))}
+        </div>,
+      );
+      continue;
+    }
 
     if (item.type === 'references') {
       renderedItems.push(
