@@ -4828,7 +4828,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .short-self-receipt-sheet .short-self-receipt-recipient-field .receipt-line-label {
   align-self: start;
   display: block;
-  padding: 5px 0 !important;
+  padding: 0 0 7px !important;
   transform: translateY(-2px);
 }
 
@@ -4867,7 +4867,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .short-self-receipt-note-input {
-  text-align: right;
+  text-align: left;
   resize: none;
 }
 
