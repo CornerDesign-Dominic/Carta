@@ -92,8 +92,24 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
       className={`receipt-sheet short-self-receipt-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
       editable={editable}
     >
-      <header className="receipt-header short-self-receipt-header">
-        <div className="short-self-receipt-heading">
+      <header className="receipt-header">
+        <div className="receipt-header-address short-self-receipt-recipient-header">
+          <span className="short-self-receipt-recipient-label">Empfänger</span>
+          <textarea
+            ref={(element) => { textareaRefs.current.recipientAddress = element; }}
+            className="short-self-receipt-recipient-address"
+            aria-label="Empfänger der Ausgabe"
+            rows={1}
+            wrap="soft"
+            value={data.recipientAddress}
+            onChange={(event) => {
+              update('recipientAddress', event.target.value);
+              resizeTextarea(event.target);
+            }}
+          />
+        </div>
+
+        <div className="receipt-header-summary">
           <h2 className="invoice-document-title receipt-document-title">
             <textarea
               ref={(element) => { textareaRefs.current.title = element; }}
@@ -108,69 +124,56 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
               }}
             />
           </h2>
+          <section className="receipt-amount-box short-self-receipt-amount-box" aria-label="Betragsdarstellung">
+            <label>
+              <span className="receipt-fixed-amount-label">Ausgaben netto:</span>
+              <input
+                aria-label="Ausgaben netto"
+                value={amounts.netAmount}
+                onChange={(event) => updateAmount('netAmount', event.target.value)}
+                onBlur={() => formatEditedAmount('netAmount')}
+              />
+              <span className="receipt-amount-unit" aria-hidden="true">€</span>
+            </label>
+            <label className="short-self-receipt-tax-line">
+              <span className="receipt-fixed-amount-label">
+                zzgl.
+                <input
+                  aria-label="Umsatzsteuersatz"
+                  value={data.amount.taxRate}
+                  onChange={(event) => updateAmount('taxRate', event.target.value)}
+                />
+                % MwSt:
+              </span>
+              <input className="receipt-readonly-amount" aria-label="Umsatzsteuerbetrag" value={amounts.taxAmount} readOnly />
+              <span className="receipt-amount-unit" aria-hidden="true">€</span>
+            </label>
+            <label className="is-emphasized">
+              <span className="receipt-fixed-amount-label">Ausgaben brutto:</span>
+              <input
+                aria-label="Ausgaben brutto"
+                value={amounts.grossAmount}
+                onChange={(event) => updateAmount('grossAmount', event.target.value)}
+                onBlur={() => formatEditedAmount('grossAmount')}
+              />
+              <span className="receipt-amount-unit" aria-hidden="true">€</span>
+            </label>
+          </section>
+        </div>
+      </header>
+
+      <section className="receipt-lines" aria-label="Angaben zur Ausgabe">
+        <label className="receipt-line-field">
+          <span className="receipt-line-label">Beleg-Nr.:</span>
           <textarea
             ref={(element) => { textareaRefs.current.receiptNumber = element; }}
-            className="short-self-receipt-number"
+            className="receipt-line-value short-self-receipt-number"
             aria-label="Belegnummer"
             rows={1}
             wrap="soft"
             value={data.receiptNumber}
             onChange={(event) => {
               update('receiptNumber', event.target.value);
-              resizeTextarea(event.target);
-            }}
-          />
-        </div>
-
-        <section className="receipt-amount-box short-self-receipt-amount-box" aria-label="Betragsdarstellung">
-          <label>
-            <span className="receipt-fixed-amount-label">Ausgaben netto:</span>
-            <input
-              aria-label="Ausgaben netto"
-              value={amounts.netAmount}
-              onChange={(event) => updateAmount('netAmount', event.target.value)}
-              onBlur={() => formatEditedAmount('netAmount')}
-            />
-            <span className="receipt-amount-unit" aria-hidden="true">€</span>
-          </label>
-          <label className="short-self-receipt-tax-line">
-            <span className="receipt-fixed-amount-label">
-              zzgl.
-              <input
-                aria-label="Umsatzsteuersatz"
-                value={data.amount.taxRate}
-                onChange={(event) => updateAmount('taxRate', event.target.value)}
-              />
-              % MwSt:
-            </span>
-            <input className="receipt-readonly-amount" aria-label="Umsatzsteuerbetrag" value={amounts.taxAmount} readOnly />
-            <span className="receipt-amount-unit" aria-hidden="true">€</span>
-          </label>
-          <label className="is-emphasized">
-            <span className="receipt-fixed-amount-label">Ausgaben brutto:</span>
-            <input
-              aria-label="Ausgaben brutto"
-              value={amounts.grossAmount}
-              onChange={(event) => updateAmount('grossAmount', event.target.value)}
-              onBlur={() => formatEditedAmount('grossAmount')}
-            />
-            <span className="receipt-amount-unit" aria-hidden="true">€</span>
-          </label>
-        </section>
-      </header>
-
-      <section className="receipt-lines" aria-label="Angaben zur Ausgabe">
-        <label className="receipt-line-field short-self-receipt-recipient">
-          <span className="receipt-line-label">Empfänger:</span>
-          <textarea
-            ref={(element) => { textareaRefs.current.recipientAddress = element; }}
-            className="receipt-line-value"
-            aria-label="Empfänger der Ausgabe"
-            rows={1}
-            wrap="soft"
-            value={data.recipientAddress}
-            onChange={(event) => {
-              update('recipientAddress', event.target.value);
               resizeTextarea(event.target);
             }}
           />
