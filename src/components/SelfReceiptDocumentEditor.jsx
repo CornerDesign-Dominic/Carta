@@ -211,12 +211,6 @@ function createSelfReceiptPosition() {
   };
 }
 
-function currentLocalIsoDate() {
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  return now.toISOString().slice(0, 10);
-}
-
 function createShortSelfReceiptData() {
   return {
     title: 'Eigenbeleg',
@@ -224,7 +218,7 @@ function createShortSelfReceiptData() {
     recipientAddress: 'Firma Meier\nMusterstraße 12\n12345 Musterhausen',
     purpose: 'Kauf eines Bürostuhls bei Kaufhaus XYZ',
     reason: 'Verlust des Originalbelegs',
-    date: currentLocalIsoDate(),
+    date: '',
     dateLabel: 'Datum',
     signatureLabel: 'Stempel / Unterschrift',
     signatureValue: '',

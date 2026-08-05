@@ -4795,6 +4795,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   resize: none;
 }
 
+.short-self-receipt-sheet .receipt-line-field .receipt-line-label,
+.short-self-receipt-sheet .receipt-line-field .receipt-line-value {
+  align-self: center;
+}
+
+.short-self-receipt-sheet .receipt-line-field {
+  align-items: center;
+}
+
 .short-self-receipt-amount-box {
   align-self: start;
 }
