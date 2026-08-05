@@ -1808,6 +1808,37 @@ h1 {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
+/* Keep both self-receipt variants balanced regardless of their label length. */
+.self-receipt-variant-choice-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, 560px);
+  box-sizing: border-box;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 12px;
+}
+
+.self-receipt-variant-choice-bar button {
+  display: grid;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  place-items: center;
+  text-align: center;
+}
+
+@media (max-width: 540px) {
+  .self-receipt-variant-choice-bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .self-receipt-variant-choice-bar button {
+    min-height: 48px;
+  }
+}
+
 .document-mode-hint {
   margin: -18px auto -8px;
   width: 100%;
@@ -6578,6 +6609,107 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   overflow-wrap: anywhere;
 }
 
+/* The export uses the same information hierarchy as the A4 editor. */
+.self-receipt-print-first-page-header {
+  display: grid;
+  min-height: 0;
+}
+
+.self-receipt-print-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(248px, 34%);
+  gap: 36px;
+  align-items: start;
+  margin-bottom: 14px;
+  padding: 2px 0 14px;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-print-title-block {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+}
+
+.self-receipt-print-overview .self-receipt-print-title {
+  margin: 0;
+}
+
+.self-receipt-print-number {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px;
+  width: min(100%, 300px);
+  margin: 0;
+  color: #4d4b46;
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.self-receipt-print-number strong {
+  overflow-wrap: anywhere;
+  color: #232320;
+  font-weight: 760;
+}
+
+.self-receipt-print-overview .invoice-print-summary {
+  justify-self: stretch;
+  align-self: stretch;
+  width: 100%;
+  margin: 0;
+  gap: 0;
+}
+
+.self-receipt-print-overview .invoice-print-summary > div {
+  min-height: 28px;
+  padding: 5px 0;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-print-overview .invoice-print-summary > div:last-child {
+  margin-top: 0;
+  padding-top: 5px;
+  border-top: 0;
+  color: #232320;
+  font-weight: 760;
+}
+
+.self-receipt-print-first-page-header .invoice-print-header {
+  grid-template-columns: minmax(0, 1fr) minmax(248px, 34%);
+  gap: 36px;
+  min-height: 0;
+  margin: 0;
+  padding: 0 0 13px;
+  border-bottom: 1px solid #e1ddd4;
+}
+
+.self-receipt-print-first-page-header .invoice-print-contact p {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.self-receipt-print-first-page-header .invoice-print-address-row {
+  grid-template-columns: minmax(0, 1.1fr) minmax(230px, 0.9fr);
+  gap: 36px;
+  align-items: stretch;
+  margin: 0;
+  padding: 13px 0 16px;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-print-first-page-header .invoice-print-details {
+  width: 100%;
+  padding: 0;
+  font-size: 0.76rem;
+  line-height: 1.28;
+}
+
+.self-receipt-print-first-page-header .invoice-print-details p {
+  grid-template-columns: minmax(112px, 0.7fr) minmax(0, 1fr);
+  gap: 10px;
+  min-height: 20px;
+}
+
 .invoice-print-project-info.is-single-column {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -7050,6 +7182,177 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   margin-bottom: 24px;
 }
 
+/* The A4 self receipt follows the compact, ruled information hierarchy of the receipt. */
+.self-receipt-sheet {
+  display: flex;
+  flex-direction: column;
+}
+
+.self-receipt-a4-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(248px, 34%);
+  gap: 36px;
+  align-items: start;
+  margin-bottom: 14px;
+  padding: 2px 0 14px;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-a4-title-block {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+}
+
+.self-receipt-a4-overview .invoice-document-title {
+  margin: 0;
+}
+
+.self-receipt-a4-number {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px;
+  width: min(100%, 300px);
+  margin: 0;
+  color: #4d4b46;
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.self-receipt-a4-number strong {
+  overflow-wrap: anywhere;
+  color: #232320;
+  font-weight: 760;
+}
+
+.self-receipt-a4-overview .invoice-document-summary {
+  justify-self: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.self-receipt-a4-overview .invoice-document-summary > div {
+  min-height: 28px;
+  padding: 5px 0;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-a4-overview .invoice-document-summary > div:last-child {
+  font-weight: 760;
+}
+
+.self-receipt-a4-overview .invoice-document-summary strong {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.self-receipt-sheet .invoice-document-header {
+  grid-template-columns: minmax(0, 1fr) minmax(248px, 34%);
+  gap: 36px;
+  min-height: 0;
+  margin: 0;
+  padding: 0 0 13px;
+  border-bottom: 1px solid #e1ddd4;
+}
+
+.self-receipt-sheet .invoice-document-header .editable-group input {
+  font-size: 1.05rem;
+}
+
+.self-receipt-sheet .invoice-sender-side {
+  justify-self: stretch;
+  font-size: 0.72rem;
+}
+
+.self-receipt-sheet .invoice-sender-side label {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.self-receipt-a4-information {
+  display: grid;
+  gap: 13px;
+  padding: 13px 0 16px;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-a4-information .invoice-address-row {
+  grid-template-columns: minmax(0, 1.1fr) minmax(230px, 0.9fr);
+  gap: 36px;
+  align-items: stretch;
+  margin: 0;
+}
+
+.self-receipt-a4-information .invoice-recipient-fields {
+  align-content: start;
+  padding-right: 0;
+  border-right: 0;
+}
+
+.self-receipt-a4-information .invoice-details {
+  justify-self: stretch;
+  width: 100%;
+  padding: 0;
+  font-size: 0.76rem;
+  line-height: 1.28;
+}
+
+.self-receipt-a4-information .invoice-details label {
+  grid-template-columns: minmax(112px, 0.7fr) minmax(0, 1fr);
+  gap: 10px;
+  min-height: 20px;
+}
+
+.self-receipt-a4-information .invoice-details label > input,
+.self-receipt-a4-information .invoice-details label > .document-label-input {
+  min-height: 20px;
+  line-height: 1.25;
+}
+
+.self-receipt-a4-information .invoice-details .invoice-config-row {
+  min-height: 20px;
+}
+
+.self-receipt-a4-information .self-receipt-document-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 26px;
+  margin: 0;
+}
+
+.self-receipt-a4-information .self-receipt-detail-line {
+  min-width: 0;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-a4-information .self-receipt-detail-line > textarea {
+  min-height: 1.55em;
+  padding: 2px 0 5px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.self-receipt-sheet.is-highlight-mode .self-receipt-a4-information .self-receipt-detail-line > textarea {
+  border-color: rgba(74, 103, 119, 0.28);
+  background: rgba(236, 244, 246, 0.72);
+}
+
+.self-receipt-sheet .self-receipt-expense-table {
+  margin-top: 16px;
+}
+
+.self-receipt-sheet .offer-add-position {
+  margin-top: 7px;
+}
+
+.self-receipt-sheet .invoice-footer-data {
+  margin-top: 18px;
+}
+
 .self-receipt-detail-line {
   align-items: start;
 }
@@ -7071,7 +7374,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .self-receipt-signature {
   width: 100%;
-  margin-top: 37px;
+  margin-top: auto;
+  padding-top: 30px;
 }
 
 .self-receipt-signature-content {
@@ -7142,12 +7446,23 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 .self-receipt-print-title {
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .self-receipt-print-detail-block {
   display: grid;
-  gap: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 26px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid #cfc9be;
+}
+
+.self-receipt-print-detail-block .self-receipt-print-detail-line {
+  min-height: 1.55em;
+  padding: 2px 0 5px;
+  border-bottom: 1px solid #cfc9be;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 .self-receipt-print-signature {
@@ -7206,6 +7521,17 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 }
 
 @media (max-width: 860px) {
+  .self-receipt-a4-overview,
+  .self-receipt-sheet .invoice-document-header,
+  .self-receipt-a4-information .invoice-address-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .self-receipt-a4-information .self-receipt-document-fields {
+    grid-template-columns: 1fr;
+  }
+
   .self-receipt-document-fields {
     grid-template-columns: 1fr;
   }

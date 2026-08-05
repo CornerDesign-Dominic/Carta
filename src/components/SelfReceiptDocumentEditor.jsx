@@ -194,8 +194,8 @@ const selfReceiptDetailFields = [
 ];
 const selfReceiptSignatureFields = [{ field: 'signature', label: 'Unterschrift' }];
 const selfReceiptVariants = [
-  { id: 'standard', label: 'Eigenbeleg (A4)' },
-  { id: 'short', label: 'Kurz-Eigenbeleg (DIN A5)' },
+  { id: 'standard', label: 'Ausführlicher Eigenbeleg (A4)' },
+  { id: 'short', label: 'Einfacher Eigenbeleg (A5)' },
 ];
 
 const selfReceiptPrintLayout = {
@@ -546,7 +546,6 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, showSignature, vi
       value: expenseInfo[definition.field],
     })),
     ...positions.map((position, index) => ({ type: 'position', index, position })),
-    { type: 'summary' },
     ...(showSignature ? [{ type: 'signature' }] : []),
   ];
 }
@@ -1128,6 +1127,38 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
         className={`offer-sheet invoice-sheet self-receipt-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`}
         editable={highlightFields}
       >
+        <section className="self-receipt-a4-overview" aria-label="Eigenbelegübersicht">
+          <div className="self-receipt-a4-title-block">
+            <h2 className="invoice-document-title">
+              <textarea
+                ref={titleTextareaRef}
+                className="document-label-input document-title-label"
+                aria-label="Dokumenttitel"
+                rows={1}
+                wrap="soft"
+                value={labels.title}
+                onChange={(event) => {
+                  updateLabel('title', event.target.value);
+                  resizeTextarea(event.target);
+                }}
+              />
+            </h2>
+            <p className="self-receipt-a4-number">
+              <span>{labels.selfReceiptId}</span>
+              <strong>{details.selfReceiptId}</strong>
+            </p>
+          </div>
+
+          <TotalsBox
+            ariaLabel="Eigenbelegsummen"
+            formatCurrency={formatCurrency}
+            formatPercent={formatPercent}
+            labels={labels}
+            totals={totals}
+            onLabelChange={updateLabel}
+          />
+        </section>
+
         <SenderBlock
           contactFields={getOrderedDefinitions('contact', selfReceiptContactFields)}
           dataCheckFields={dataCheckState.sender}
@@ -1140,56 +1171,43 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           onToggleField={(field) => toggleConfiguredField('contact', field)}
         />
 
-        <section className="invoice-address-row">
-          <RecipientBlock
-            dataCheckFields={dataCheckState.recipient}
-            hiddenFields={getHiddenFields('recipient')}
-            recipient={recipient}
-            senderLine={sender.senderLine}
-            onRecipientChange={updateRecipient}
-            onSenderLineChange={(value) => updateSender('senderLine', value)}
-            onToggleField={(field) => toggleConfiguredField('recipient', field)}
-          />
+        <section className="self-receipt-a4-information" aria-label="Angaben zum Eigenbeleg">
+          <section className="invoice-address-row">
+            <RecipientBlock
+              dataCheckFields={dataCheckState.recipient}
+              hiddenFields={getHiddenFields('recipient')}
+              recipient={recipient}
+              senderLine={sender.senderLine}
+              onRecipientChange={updateRecipient}
+              onSenderLineChange={(value) => updateSender('senderLine', value)}
+              onToggleField={(field) => toggleConfiguredField('recipient', field)}
+            />
 
-          <DocumentMetaBlock
-            dataCheckFields={dataCheckState.details}
-            dateInputRefs={dateInputRefs}
-            details={details}
-            emphasizedField="selfReceiptId"
-            fields={getOrderedDefinitions('details', selfReceiptMetaFields)}
-            hiddenFields={getHiddenFields('details')}
-            labels={labels}
-            onDatePicker={openDatePicker}
-            onDetailChange={updateDetail}
-            onLabelChange={updateLabel}
-            onMoveField={(field, direction) => moveConfiguredField('details', field, direction)}
-            onToggleField={(field) => toggleConfiguredField('details', field)}
-          />
-        </section>
+            <DocumentMetaBlock
+              dataCheckFields={dataCheckState.details}
+              dateInputRefs={dateInputRefs}
+              details={details}
+              emphasizedField="selfReceiptId"
+              fields={getOrderedDefinitions('details', selfReceiptMetaFields)}
+              hiddenFields={getHiddenFields('details')}
+              labels={labels}
+              onDatePicker={openDatePicker}
+              onDetailChange={updateDetail}
+              onLabelChange={updateLabel}
+              onMoveField={(field, direction) => moveConfiguredField('details', field, direction)}
+              onToggleField={(field) => toggleConfiguredField('details', field)}
+            />
+          </section>
 
-        <h2 className="invoice-document-title">
-          <textarea
-            ref={titleTextareaRef}
-            className="document-label-input document-title-label"
-            aria-label="Dokumenttitel"
-            rows={1}
-            wrap="soft"
-            value={labels.title}
-            onChange={(event) => {
-              updateLabel('title', event.target.value);
-              resizeTextarea(event.target);
-            }}
-          />
-        </h2>
-
-        <section className="self-receipt-document-fields" aria-label="Eigenbeleg-Details">
-          {visibleExpenseDefinitions.map(renderExpenseField)}
-          <HiddenFieldActions
-            className="self-receipt-hidden-detail-fields"
-            definitions={selfReceiptDetailFields}
-            hiddenFields={getHiddenFields('expenseInfo')}
-            onToggle={(field) => toggleConfiguredField('expenseInfo', field)}
-          />
+          <section className="self-receipt-document-fields" aria-label="Eigenbeleg-Details">
+            {visibleExpenseDefinitions.map(renderExpenseField)}
+            <HiddenFieldActions
+              className="self-receipt-hidden-detail-fields"
+              definitions={selfReceiptDetailFields}
+              hiddenFields={getHiddenFields('expenseInfo')}
+              onToggle={(field) => toggleConfiguredField('expenseInfo', field)}
+            />
+          </section>
         </section>
 
         <SelfReceiptExpenseTable
@@ -1209,15 +1227,6 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
         <button className="offer-add-position" type="button" onClick={addPosition}>
           + Position hinzufügen
         </button>
-
-        <TotalsBox
-          ariaLabel="Eigenbelegsummen"
-          formatCurrency={formatCurrency}
-          formatPercent={formatPercent}
-          labels={labels}
-          totals={totals}
-          onLabelChange={updateLabel}
-        />
 
         {!getHiddenFields('signature').includes('signature') && (
           <section className="invoice-flow-config-row self-receipt-signature" aria-label="Unterschrift">
@@ -1254,13 +1263,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
 
       {isExportRenderActive ? (
         <>
-          <MeasuredSelfReceiptPaginator
-            ref={paginatorRef}
-            expenseInfo={expenseInfo}
-            items={printItems}
-            labels={labels}
-            totals={totals}
-          />
+          <MeasuredSelfReceiptPaginator ref={paginatorRef} expenseInfo={expenseInfo} items={printItems} labels={labels} />
           <SelfReceiptPrintPages
             ref={printPagesRef}
             details={details}
@@ -1293,7 +1296,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
 }
 
 const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPaginator(
-  { expenseInfo, items, labels, totals },
+  { expenseInfo, items, labels },
   ref,
 ) {
   const measureRootRef = useRef(null);
@@ -1345,9 +1348,6 @@ const MeasuredSelfReceiptPaginator = forwardRef(function MeasuredSelfReceiptPagi
             })}
           </tbody>
         </table>
-        <div data-measure-summary>
-          <SelfReceiptPrintSummary labels={labels} totals={totals} />
-        </div>
         <div data-measure-signature>
           <SelfReceiptPrintSignature />
         </div>
@@ -1365,7 +1365,6 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
   const followContent = measureRoot.querySelector('[data-measure-follow-content]');
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const detailProbe = measureRoot.querySelector('[data-measure-detail] .self-receipt-print-detail-line');
-  const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
   const signatureProbe = measureRoot.querySelector('[data-measure-signature] .self-receipt-print-signature');
   const positionHeader = measureRoot.querySelector('[data-measure-position-header]');
   const positionRows = new Map(
@@ -1375,7 +1374,7 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
     ]),
   );
 
-  if (!firstContent || !followContent || !textProbe || !summaryProbe || !signatureProbe || !positionHeader || !detailProbe) {
+  if (!firstContent || !followContent || !textProbe || !signatureProbe || !positionHeader || !detailProbe) {
     return null;
   }
 
@@ -1406,10 +1405,6 @@ function measureSelfReceiptPages(measureRoot, items, labels) {
 
     if (item.type === 'position') {
       return positionRows.get(String(item.index)) || 0;
-    }
-
-    if (item.type === 'summary') {
-      return getOuterHeight(summaryProbe);
     }
 
     if (item.type === 'signature') {
@@ -1558,6 +1553,7 @@ const SelfReceiptPrintPages = forwardRef(function SelfReceiptPrintPages(
               labels={labels}
               recipient={recipient}
               sender={sender}
+              totals={totals}
               visibleContactDefinitions={visibleContactDefinitions}
               visibleDetailDefinitions={visibleDetailDefinitions}
               visibleRecipientFields={visibleRecipientFields}
@@ -1567,7 +1563,7 @@ const SelfReceiptPrintPages = forwardRef(function SelfReceiptPrintPages(
           )}
 
           <div className="invoice-print-page-content">
-            <SelfReceiptPrintPageItems expenseInfo={expenseInfo} items={page.items} labels={labels} totals={totals} />
+            <SelfReceiptPrintPageItems expenseInfo={expenseInfo} items={page.items} labels={labels} />
           </div>
 
           <p className={`invoice-print-page-number${totalPages > 1 ? '' : ' is-empty'}`}>
@@ -1589,6 +1585,7 @@ function SelfReceiptPrintFirstPageHeader({
   labels,
   recipient,
   sender,
+  totals,
   visibleContactDefinitions,
   visibleDetailDefinitions,
   visibleRecipientFields,
@@ -1604,7 +1601,18 @@ function SelfReceiptPrintFirstPageHeader({
   ];
 
   return (
-    <div className="offer-print-first-page-header">
+    <div className="self-receipt-print-first-page-header">
+      <section className="self-receipt-print-overview">
+        <div className="self-receipt-print-title-block">
+          <h2 className="invoice-print-title self-receipt-print-title">{labels.title}</h2>
+          <p className="self-receipt-print-number">
+            <span>{labels.selfReceiptId}</span>
+            <strong>{details.selfReceiptId}</strong>
+          </p>
+        </div>
+        <SelfReceiptPrintSummary labels={labels} totals={totals} />
+      </section>
+
       <header className="invoice-print-header">
         <div>
           <p className="invoice-print-company-name">{sender.company}</p>
@@ -1639,7 +1647,6 @@ function SelfReceiptPrintFirstPageHeader({
         </div>
       </section>
 
-      <h2 className="invoice-print-title self-receipt-print-title">{labels.title}</h2>
     </div>
   );
 }
@@ -1661,7 +1668,7 @@ function SelfReceiptPrintDetailRow({ emphasized = false, label, value }) {
   );
 }
 
-function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
+function SelfReceiptPrintPageItems({ expenseInfo, items, labels }) {
   const renderedItems = [];
   let index = 0;
 
@@ -1684,10 +1691,6 @@ function SelfReceiptPrintPageItems({ expenseInfo, items, labels, totals }) {
         />,
       );
       continue;
-    }
-
-    if (item.type === 'summary') {
-      renderedItems.push(<SelfReceiptPrintSummary key="summary" labels={labels} totals={totals} />);
     }
 
     if (item.type === 'signature') {
