@@ -1753,6 +1753,35 @@ h1 {
   color: #ffffff;
 }
 
+/* Action labels may change with state, but their toolbar slots stay still. */
+.visual-toolbar .document-toolbar-edit-button,
+.tool-document-toolbar .document-toolbar-edit-button {
+  min-width: 112px;
+}
+
+.visual-toolbar .document-toolbar-data-check-button,
+.tool-document-toolbar .document-toolbar-data-check-button {
+  min-width: 116px;
+}
+
+.visual-toolbar .document-toolbar-export-button,
+.tool-document-toolbar .document-toolbar-export-button {
+  min-width: 148px;
+}
+
+.visual-toolbar .document-toolbar-print-button,
+.tool-document-toolbar .document-toolbar-print-button {
+  min-width: 94px;
+}
+
+.visual-toolbar .document-toolbar-load-button {
+  min-width: 108px;
+}
+
+.visual-toolbar .document-toolbar-reset-button {
+  min-width: 124px;
+}
+
 .visual-toolbar-new-button {
   border-color: rgba(67, 97, 116, 0.45);
   background: rgba(232, 241, 244, 0.82);

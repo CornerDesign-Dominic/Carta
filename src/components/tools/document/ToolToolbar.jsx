@@ -15,7 +15,7 @@ export default function ToolToolbar({
     <div className="tool-document-toolbar" aria-label={ariaLabel}>
       <div className="tool-document-toolbar-group">
         <button
-          className={isEditable ? 'is-active' : undefined}
+          className={`document-toolbar-edit-button${isEditable ? ' is-active' : ''}`}
           type="button"
           title="Bearbeitbare Felder im Dokument anzeigen"
           aria-label="Bearbeitbare Felder im Dokument anzeigen"
@@ -26,7 +26,7 @@ export default function ToolToolbar({
         </button>
         {onToggleDataCheck && (
           <button
-            className={isDataCheckActive ? 'is-active' : undefined}
+            className={`document-toolbar-data-check-button${isDataCheckActive ? ' is-active' : ''}`}
             type="button"
             title="Beispieldaten im Dokument markieren"
             aria-label="Beispieldaten im Dokument markieren"
@@ -40,6 +40,7 @@ export default function ToolToolbar({
 
       <div className="tool-document-toolbar-group">
         <button
+          className="document-toolbar-export-button"
           type="button"
           title="PDF-Datei erstellen"
           aria-label="PDF-Datei erstellen"
@@ -48,7 +49,7 @@ export default function ToolToolbar({
         >
           {isExporting ? exportingLabel : 'PDF erstellen'}
         </button>
-        <button type="button" title="Druckdialog öffnen" aria-label="Druckdialog öffnen" onClick={onPrint}>
+        <button className="document-toolbar-print-button" type="button" title="Druckdialog öffnen" aria-label="Druckdialog öffnen" onClick={onPrint}>
           Drucken
         </button>
       </div>

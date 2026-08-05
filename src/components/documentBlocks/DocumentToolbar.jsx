@@ -47,7 +47,7 @@ export default function DocumentToolbar({
     <div className="visual-toolbar" aria-label={ariaLabel}>
       <div className="visual-toolbar-group">
         <button
-          className={isEditable ? 'is-active' : undefined}
+          className={`document-toolbar-edit-button${isEditable ? ' is-active' : ''}`}
           type="button"
           title="Bearbeitbare Felder im Dokument anzeigen"
           aria-label="Bearbeitbare Felder im Dokument anzeigen"
@@ -61,7 +61,7 @@ export default function DocumentToolbar({
         </button>
         {onToggleDataCheck && (
           <button
-            className={isDataCheckActive ? 'is-active' : undefined}
+            className={`document-toolbar-data-check-button${isDataCheckActive ? ' is-active' : ''}`}
             type="button"
             title="Beispieldaten im Dokument markieren"
             aria-label="Beispieldaten im Dokument markieren"
@@ -77,6 +77,7 @@ export default function DocumentToolbar({
       </div>
       <div className="visual-toolbar-group">
         <button
+          className="document-toolbar-export-button"
           type="button"
           title="PDF-Datei erstellen"
           aria-label="PDF-Datei erstellen"
@@ -89,6 +90,7 @@ export default function DocumentToolbar({
           {isExporting ? exportingLabel : 'PDF erstellen'}
         </button>
         <button
+          className="document-toolbar-print-button"
           type="button"
           title="Druckdialog öffnen"
           aria-label="Druckdialog öffnen"
@@ -114,6 +116,7 @@ export default function DocumentToolbar({
             }}
           />
           <button
+            className="document-toolbar-load-button"
             type="button"
             title="Belege24-PDF laden"
             aria-label="Belege24-PDF laden"
@@ -129,7 +132,7 @@ export default function DocumentToolbar({
       {onNewDocument && (
         <div className="visual-toolbar-group visual-toolbar-new-group">
           <button
-            className="visual-toolbar-new-button"
+            className="visual-toolbar-new-button document-toolbar-reset-button"
             type="button"
             title="Dokument zurücksetzen"
             aria-label="Dokument zurücksetzen"
