@@ -75,7 +75,7 @@ export default function ShortSelfReceiptDocument({
 
   useEffect(() => {
     Object.values(textareaRefs.current).forEach(resizeTextarea);
-  }, [data.recipientAddress, data.purpose, data.reason, data.receiptNumber, data.title]);
+  }, [data.location, data.recipientAddress, data.purpose, data.reason, data.receiptNumber, data.title]);
 
   function update(field, value) {
     onChange({ ...data, [field]: value });
@@ -204,7 +204,7 @@ export default function ShortSelfReceiptDocument({
 
       <section className="receipt-lines" aria-label="Angaben zur Ausgabe">
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Belegnummer:</span>
+          <span className="receipt-line-label">Belegnummer</span>
           <textarea
             ref={(element) => { textareaRefs.current.receiptNumber = element; }}
             className="receipt-line-value short-self-receipt-number"
@@ -219,7 +219,7 @@ export default function ShortSelfReceiptDocument({
           />
         </label>
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Ausgabe für:</span>
+          <span className="receipt-line-label">Ausgabe für</span>
           <textarea
             ref={(element) => { textareaRefs.current.purpose = element; }}
             className="receipt-line-value"
@@ -234,7 +234,7 @@ export default function ShortSelfReceiptDocument({
           />
         </label>
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Grund für den Eigenbeleg:</span>
+          <span className="receipt-line-label">Grund für den Eigenbeleg</span>
           <textarea
             ref={(element) => { textareaRefs.current.reason = element; }}
             className="receipt-line-value"
@@ -244,6 +244,21 @@ export default function ShortSelfReceiptDocument({
             value={data.reason}
             onChange={(event) => {
               update('reason', event.target.value);
+              resizeTextarea(event.target);
+            }}
+          />
+        </label>
+        <label className="receipt-line-field">
+          <span className="receipt-line-label">Zahlungsempfänger (Name & Adresse)</span>
+          <textarea
+            ref={(element) => { textareaRefs.current.location = element; }}
+            className="receipt-line-value"
+            aria-label="Zahlungsempfänger mit Name und Adresse"
+            rows={1}
+            wrap="soft"
+            value={data.location}
+            onChange={(event) => {
+              update('location', event.target.value);
               resizeTextarea(event.target);
             }}
           />

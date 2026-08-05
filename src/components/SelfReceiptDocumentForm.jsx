@@ -62,7 +62,7 @@ const defaultExpenseInfo = {
   occasion: 'Betrieblicher Anlass der Ausgabe:',
   reason: 'Grund für den Eigenbeleg:',
   settlementType: 'Zahlungsart:',
-  location: 'Ausgabestelle / Ort:',
+  location: 'Zahlungsempfänger (Name & Adresse)',
 };
 
 const defaultPosition = {
@@ -506,15 +506,6 @@ export default function SelfReceiptDocumentForm({
                   value={references.externalReference}
                   onChange={(value) => updateDetail('externalReference', value)}
                 />
-                <SelfReceiptPanelInput
-                  autoComplete="off"
-                  inputMode="text"
-                  label="Kostenstelle"
-                  name="receipt-cost-center"
-                  spellCheck={false}
-                  value={references.costCenter}
-                  onChange={(value) => updateDetail('costCenter', value)}
-                />
               </div>
             </div>
           </div>
@@ -536,7 +527,7 @@ export default function SelfReceiptDocumentForm({
                 onChange={(value) => updateExpenseInfo('settlementType', value)}
               />
               <SelfReceiptPanelInput
-                label="Ausgabestelle / Ort"
+                label="Zahlungsempfänger (Name & Adresse)"
                 name="expense-location"
                 value={expenseInfo.location}
                 onChange={(value) => updateExpenseInfo('location', value)}

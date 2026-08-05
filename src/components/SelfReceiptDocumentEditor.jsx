@@ -44,7 +44,7 @@ const initialSelfReceiptLabels = {
   occasion: 'Betrieblicher Anlass der Ausgabe',
   reason: 'Grund für den Eigenbeleg',
   settlementType: 'Zahlungsart',
-  location: 'Ausgabestelle / Ort',
+  location: 'Zahlungsempfänger (Name & Adresse)',
   contactEmail: 'E-Mail',
   contactPhone: 'Telefon',
   contactFax: 'Fax',
@@ -64,7 +64,6 @@ const selfReceiptMetaFields = [
   { field: 'expenseDate', ariaLabel: 'Ausgabendatum', type: 'date' },
   { autoComplete: 'new-password', field: 'internalReference', ariaLabel: 'Interne Referenz', name: 'carta-self-receipt-internal-reference', type: 'text' },
   { autoComplete: 'new-password', field: 'externalReference', ariaLabel: 'Externe Referenz', name: 'carta-self-receipt-external-reference', type: 'text' },
-  { autoComplete: 'new-password', field: 'costCenter', ariaLabel: 'Kostenstelle', name: 'carta-self-receipt-cost-center', type: 'text' },
 ];
 
 const selfReceiptRecipientOptionalFields = [
@@ -157,7 +156,7 @@ const defaultSelfReceiptData = {
     occasion: 'Betrieblicher Anlass der Ausgabe:',
     reason: 'Grund für den Eigenbeleg:',
     settlementType: 'Zahlungsart:',
-    location: 'Ausgabestelle / Ort:',
+    location: 'Zahlungsempfänger (Name & Adresse)',
   },
   footer: {
     company: {
@@ -190,7 +189,7 @@ const defaultSelfReceiptData = {
 const selfReceiptDetailFields = [
   { field: 'reason', labelField: 'reason', ariaLabel: 'Grund für den Eigenbeleg' },
   { field: 'settlementType', labelField: 'settlementType', ariaLabel: 'Zahlungsart' },
-  { field: 'location', labelField: 'location', ariaLabel: 'Ausgabestelle oder Ort' },
+  { field: 'location', labelField: 'location', ariaLabel: 'Zahlungsempfänger mit Name und Adresse' },
 ];
 const selfReceiptSignatureFields = [{ field: 'signature', label: 'Unterschrift' }];
 const selfReceiptVariants = [
@@ -218,6 +217,7 @@ function createShortSelfReceiptData() {
     recipientAddress: '',
     purpose: '',
     reason: '',
+    location: '',
     date: '',
     dateLabel: 'Datum',
     signatureLabel: 'Stempel / Unterschrift',

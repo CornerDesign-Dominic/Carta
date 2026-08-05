@@ -395,6 +395,7 @@ export interface SelfReceiptGeneratorState {
     recipientAddress: string;
     purpose: string;
     reason: string;
+    location: string;
     date: IsoDate | '';
     dateLabel: string;
     signatureLabel: string;
