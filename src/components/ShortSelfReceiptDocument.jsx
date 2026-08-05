@@ -77,6 +77,7 @@ export default function ShortSelfReceiptDocument({
   pageRef,
 }) {
   const textareaRefs = useRef({});
+  const expenseDateInputRef = useRef(null);
   const amounts = useMemo(() => calculateAmounts(data.amount), [data.amount]);
   const signatureHidden = data.fieldConfig.signature.hidden.includes('signature');
   const noteHidden = data.fieldConfig.note?.hidden.includes('note') ?? false;
@@ -98,6 +99,11 @@ export default function ShortSelfReceiptDocument({
       ...data,
       lineLabels: { ...lineLabels, [field]: value },
     });
+  }
+
+  function openExpenseDatePicker() {
+    expenseDateInputRef.current?.showPicker?.();
+    expenseDateInputRef.current?.focus();
   }
 
   function updateAmount(field, value) {
@@ -284,13 +290,24 @@ export default function ShortSelfReceiptDocument({
               resizeTextarea(event.target);
             }}
           />
-          <input
-            className="receipt-line-value short-self-receipt-expense-date"
-            aria-label="Tag der Ausgabe"
-            type="date"
-            value={data.expenseDate}
-            onChange={(event) => update('expenseDate', event.target.value)}
-          />
+          <span className="short-self-receipt-expense-date-field">
+            <input
+              ref={expenseDateInputRef}
+              className="receipt-line-value short-self-receipt-expense-date"
+              aria-label="Tag der Ausgabe"
+              type="date"
+              value={data.expenseDate}
+              onChange={(event) => update('expenseDate', event.target.value)}
+            />
+            <button
+              className="invoice-icon-action invoice-date-picker"
+              type="button"
+              aria-label="Datum auswählen"
+              onClick={openExpenseDatePicker}
+            >
+              <span aria-hidden="true" />
+            </button>
+          </span>
         </label>
         <label className="receipt-line-field">
           <textarea

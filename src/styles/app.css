@@ -4804,6 +4804,29 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   text-align: left;
 }
 
+.short-self-receipt-expense-date-field {
+  position: relative;
+  display: block;
+  align-self: center;
+  min-width: 0;
+}
+
+.short-self-receipt-expense-date-field .short-self-receipt-expense-date {
+  padding-right: 26px !important;
+}
+
+.short-self-receipt-expense-date-field .short-self-receipt-expense-date::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.short-self-receipt-expense-date-field .invoice-date-picker {
+  top: 50%;
+  right: 0;
+  left: auto;
+  transform: translateY(-50%);
+}
+
 .short-self-receipt-sheet .receipt-line-field .receipt-line-label,
 .short-self-receipt-sheet .receipt-line-field .receipt-line-value {
   align-self: center;
