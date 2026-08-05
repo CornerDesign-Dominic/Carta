@@ -4882,6 +4882,16 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
 }
 
+.short-self-receipt-sheet.is-export-mode .short-self-receipt-date-field > input,
+.short-self-receipt-sheet.is-export-mode .short-self-receipt-signature-input,
+body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-self-receipt-date-field > input,
+body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-self-receipt-signature-input {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
 .short-self-receipt-signature {
   position: relative;
   display: grid;
