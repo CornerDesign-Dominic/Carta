@@ -35,6 +35,10 @@ function pathForInvoiceVariant(variant) {
   return '/dokumente/rechnung/standard';
 }
 
+function pathForSelfReceiptVariant(variant) {
+  return variant === 'short' ? '/dokumente/eigenbeleg/a5' : '/dokumente/eigenbeleg';
+}
+
 export function getDocumentSessionResetKey(documentId) {
   return documentId;
 }
@@ -167,10 +171,12 @@ export default function DocumentsView({
   initialDocumentId = 'overview',
   initialInvoiceSmallBusiness,
   initialInvoiceVariant = 'standard',
+  initialSelfReceiptVariant = 'standard',
   onNavigate,
 }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
+  const [activeSelfReceiptVariant, setActiveSelfReceiptVariant] = useState(initialSelfReceiptVariant);
   const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
   const [masterDataAdapter, setMasterDataAdapter] = useState(null);
   const { item: activeDocument, parentId } = findDocumentItem(activeDocumentId);
@@ -195,6 +201,10 @@ export default function DocumentsView({
   useEffect(() => {
     setActiveInvoiceVariant(initialInvoiceVariant);
   }, [initialInvoiceVariant]);
+
+  useEffect(() => {
+    setActiveSelfReceiptVariant(initialSelfReceiptVariant);
+  }, [initialSelfReceiptVariant]);
 
   useEffect(() => {
     setActiveInvoiceSmallBusiness(initialInvoiceSmallBusiness);
@@ -231,6 +241,17 @@ export default function DocumentsView({
       isSmallBusiness,
       path: pathForInvoiceVariant(activeInvoiceVariant),
     }, { preserveDocumentsView: true, replace: true });
+  }
+
+  function handleSelfReceiptVariantChange(variant) {
+    const nextVariant = variant === 'short' ? 'short' : 'standard';
+    setActiveSelfReceiptVariant(nextVariant);
+    onNavigate?.({
+      view: 'documents',
+      documentId: 'write-self-receipt',
+      selfReceiptVariant: nextVariant,
+      path: pathForSelfReceiptVariant(nextVariant),
+    }, { preserveDocumentsView: true });
   }
 
   const handleMasterDataAdapterChange = useCallback((adapter) => {
@@ -271,7 +292,13 @@ export default function DocumentsView({
               {activeDocument.formType === 'offer' && <OfferDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
               {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
               {activeDocument.formType === 'reminder' && <ReminderDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
-              {activeDocument.formType === 'selfReceipt' && <SelfReceiptDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'selfReceipt' && (
+                <SelfReceiptDocumentEditor
+                  initialSelfReceiptVariant={activeSelfReceiptVariant}
+                  onMasterDataAdapterChange={handleMasterDataAdapterChange}
+                  onSelfReceiptVariantChange={handleSelfReceiptVariantChange}
+                />
+              )}
             </>
           )}
         </section>

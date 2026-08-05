@@ -48,6 +48,10 @@ const invoicePaths = new Set([
   '/dokumente/rechnung/teilrechnung',
   '/dokumente/rechnung/schlussrechnung',
 ]);
+const selfReceiptPaths = new Set([
+  '/dokumente/eigenbeleg',
+  '/dokumente/eigenbeleg/a5',
+]);
 
 function pathForNavigation(item) {
   if (item.path) {
@@ -93,6 +97,10 @@ function pathForNavigation(item) {
       return '/dokumente/rechnung/standard';
     }
 
+    if (item.documentId === 'write-self-receipt' && item.selfReceiptVariant === 'short') {
+      return '/dokumente/eigenbeleg/a5';
+    }
+
     return generatorPathById.get(item.documentId) ?? '/dokumente';
   }
 
@@ -130,7 +138,7 @@ function viewFromPath(pathname) {
 
   if (
     pathname === '/dokumente'
-    || pathname === '/dokumente/eigenbeleg'
+    || selfReceiptPaths.has(pathname)
     || invoicePaths.has(pathname)
     || generatorIdByPath.has(pathname)
   ) {
@@ -179,7 +187,7 @@ function readStoredTheme() {
   return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : null;
 }
 
-function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard' }) {
+function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard', selfReceiptVariant = 'standard' }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -195,6 +203,7 @@ function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard' }
       initialDocumentId={documentId}
       initialInvoiceSmallBusiness={location.state?.isSmallBusiness}
       initialInvoiceVariant={invoiceVariant}
+      initialSelfReceiptVariant={selfReceiptVariant}
       onNavigate={handleNavigate}
     />
   );
@@ -438,6 +447,7 @@ export default function App() {
               element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
             />
             <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" />} />
+            <Route path="/dokumente/eigenbeleg/a5" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="short" />} />
             <Route path="/dokumente/*" element={<DocumentPathRoute />} />
             <Route path="/tools" element={<ToolsRoute />} />
             <Route path="/tools/:toolId" element={<LegacyToolRoute />} />

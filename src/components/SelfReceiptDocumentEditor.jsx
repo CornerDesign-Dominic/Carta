@@ -554,12 +554,18 @@ function createSelfReceiptPrintItems({ expenseInfo, positions, showSignature, vi
   ];
 }
 
-export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange }) {
+export default function SelfReceiptDocumentEditor({
+  initialSelfReceiptVariant = 'standard',
+  onMasterDataAdapterChange,
+  onSelfReceiptVariantChange,
+}) {
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
-  const [selfReceiptVariant, setSelfReceiptVariant] = useState('standard');
+  const [selfReceiptVariant, setSelfReceiptVariant] = useState(
+    initialSelfReceiptVariant === 'short' ? 'short' : 'standard',
+  );
   const [labels, setLabels] = useState(initialSelfReceiptLabels);
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(selfReceiptContactFields),
@@ -581,6 +587,10 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const [shortSelfReceipt, setShortSelfReceipt] = useState(createShortSelfReceiptData);
   const selfReceiptDataRef = useRef(selfReceiptData);
   selfReceiptDataRef.current = selfReceiptData;
+
+  useEffect(() => {
+    setSelfReceiptVariant(initialSelfReceiptVariant === 'short' ? 'short' : 'standard');
+  }, [initialSelfReceiptVariant]);
   const selfReceiptMasterDataAdapter = useMemo(() => ({
     partnerRoleLabel: 'Zahlungsempfänger / Lieferant',
     applyOwnData(record) {
@@ -721,6 +731,12 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
 
   function updateShortSelfReceipt(value) {
     setShortSelfReceipt(value);
+  }
+
+  function selectSelfReceiptVariant(variant) {
+    const nextVariant = variant === 'short' ? 'short' : 'standard';
+    setSelfReceiptVariant(nextVariant);
+    onSelfReceiptVariantChange?.(nextVariant);
   }
 
   function updateShortOwnAddress(field, value) {
@@ -1002,7 +1018,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     if (!confirmSelfReceiptOverwrite(currentGeneratorState, initialGeneratorStateRef.current, () => window.confirm('Der aktuelle Eigenbeleg enthält Änderungen. Möchtest du ihn vollständig durch die Daten aus der PDF ersetzen?'))) return;
 
     const restored = result.state;
-    setSelfReceiptVariant(restored.selfReceiptVariant ?? 'standard');
+    selectSelfReceiptVariant(restored.selfReceiptVariant ?? 'standard');
     setLabels(restored.labels);
     setSelfReceiptData(restored.selfReceiptData);
     setPositions(restored.positions);
@@ -1145,7 +1161,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
             type="button"
             aria-pressed={selfReceiptVariant === variant.id}
             key={variant.id}
-            onClick={() => setSelfReceiptVariant(variant.id)}
+            onClick={() => selectSelfReceiptVariant(variant.id)}
           >
             {variant.label}
           </button>
