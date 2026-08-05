@@ -62,8 +62,6 @@ const selfReceiptMetaFields = [
   { autoComplete: 'new-password', field: 'selfReceiptId', ariaLabel: 'Interne Belegkennung', name: 'carta-self-receipt-id', type: 'text' },
   { field: 'receiptDate', ariaLabel: 'Belegdatum', type: 'date' },
   { field: 'expenseDate', ariaLabel: 'Ausgabendatum', type: 'date' },
-  { autoComplete: 'new-password', field: 'internalReference', ariaLabel: 'Interne Referenz', name: 'carta-self-receipt-internal-reference', type: 'text' },
-  { autoComplete: 'new-password', field: 'externalReference', ariaLabel: 'Externe Referenz', name: 'carta-self-receipt-external-reference', type: 'text' },
 ];
 
 const selfReceiptRecipientOptionalFields = [

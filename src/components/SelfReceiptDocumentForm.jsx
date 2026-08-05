@@ -485,29 +485,6 @@ export default function SelfReceiptDocumentForm({
               </div>
             </div>
 
-            <div className="invoice-panel-section">
-              <h3>Referenzen</h3>
-              <div className="invoice-panel-grid invoice-panel-grid-stacked">
-                <SelfReceiptPanelInput
-                  autoComplete="off"
-                  inputMode="text"
-                  label="Interne Referenz"
-                  name="receipt-internal-reference"
-                  spellCheck={false}
-                  value={references.internalReference}
-                  onChange={(value) => updateDetail('internalReference', value)}
-                />
-                <SelfReceiptPanelInput
-                  autoComplete="off"
-                  inputMode="text"
-                  label="Externe Referenz"
-                  name="receipt-external-reference"
-                  spellCheck={false}
-                  value={references.externalReference}
-                  onChange={(value) => updateDetail('externalReference', value)}
-                />
-              </div>
-            </div>
           </div>
 
           <div className="invoice-panel-section invoice-panel-section-wide">
