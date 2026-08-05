@@ -214,12 +214,13 @@ function createShortSelfReceiptData() {
   return {
     title: 'Eigenbeleg',
     receiptNumber: '',
+    expenseDate: '',
     recipientAddress: '',
     purpose: '',
     reason: '',
     location: '',
     date: '',
-    dateLabel: 'Datum',
+    dateLabel: 'Vermerk',
     signatureLabel: 'Stempel / Unterschrift',
     signatureValue: '',
     ownAddress: { company: '', street: '', cityLine: '' },
@@ -229,6 +230,7 @@ function createShortSelfReceiptData() {
       taxRate: '0',
     },
     fieldConfig: {
+      note: { hidden: [], order: ['note'] },
       signature: { hidden: [], order: ['signature'] },
       header: { hidden: [], order: ['company', 'streetLine', 'cityLine'] },
     },
@@ -744,6 +746,23 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     });
   }
 
+  function toggleShortNote() {
+    setShortSelfReceipt((current) => {
+      const note = current.fieldConfig.note ?? { hidden: [], order: ['note'] };
+      const hidden = note.hidden.includes('note')
+        ? note.hidden.filter((field) => field !== 'note')
+        : [...note.hidden, 'note'];
+
+      return {
+        ...current,
+        fieldConfig: {
+          ...current.fieldConfig,
+          note: { ...note, hidden },
+        },
+      };
+    });
+  }
+
   function toggleShortAddressField(field) {
     setShortSelfReceipt((current) => {
       const header = current.fieldConfig.header ?? { hidden: [], order: ['company', 'streetLine', 'cityLine'] };
@@ -1156,6 +1175,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           onChange={updateShortSelfReceipt}
           onOwnAddressChange={updateShortOwnAddress}
           onToggleAddressField={toggleShortAddressField}
+          onToggleNote={toggleShortNote}
           onToggleSignature={toggleShortSignature}
           ownAddress={shortSelfReceipt.ownAddress}
           pageRef={sheetRef}

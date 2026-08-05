@@ -63,6 +63,7 @@ export default function ShortSelfReceiptDocument({
   onChange,
   onOwnAddressChange,
   onToggleAddressField,
+  onToggleNote,
   onToggleSignature,
   ownAddress,
   pageRef,
@@ -70,7 +71,9 @@ export default function ShortSelfReceiptDocument({
   const textareaRefs = useRef({});
   const amounts = useMemo(() => calculateAmounts(data.amount), [data.amount]);
   const signatureHidden = data.fieldConfig.signature.hidden.includes('signature');
+  const noteHidden = data.fieldConfig.note?.hidden.includes('note') ?? false;
   const hiddenAddressFields = data.fieldConfig.header?.hidden ?? [];
+  const noteLabel = data.dateLabel ?? 'Vermerk';
   const signatureLabel = data.signatureLabel ?? 'Stempel / Unterschrift';
 
   useEffect(() => {
@@ -219,21 +222,6 @@ export default function ShortSelfReceiptDocument({
           />
         </label>
         <label className="receipt-line-field">
-          <span className="receipt-line-label">Ausgabe für</span>
-          <textarea
-            ref={(element) => { textareaRefs.current.purpose = element; }}
-            className="receipt-line-value"
-            aria-label="Aufwendung für"
-            rows={1}
-            wrap="soft"
-            value={data.purpose}
-            onChange={(event) => {
-              update('purpose', event.target.value);
-              resizeTextarea(event.target);
-            }}
-          />
-        </label>
-        <label className="receipt-line-field">
           <span className="receipt-line-label">Grund für den Eigenbeleg</span>
           <textarea
             ref={(element) => { textareaRefs.current.reason = element; }}
@@ -244,6 +232,31 @@ export default function ShortSelfReceiptDocument({
             value={data.reason}
             onChange={(event) => {
               update('reason', event.target.value);
+              resizeTextarea(event.target);
+            }}
+          />
+        </label>
+        <label className="receipt-line-field">
+          <span className="receipt-line-label">Datum</span>
+          <input
+            className="receipt-line-value short-self-receipt-expense-date"
+            aria-label="Datum"
+            type="date"
+            value={data.expenseDate}
+            onChange={(event) => update('expenseDate', event.target.value)}
+          />
+        </label>
+        <label className="receipt-line-field">
+          <span className="receipt-line-label">Ausgabe für</span>
+          <textarea
+            ref={(element) => { textareaRefs.current.purpose = element; }}
+            className="receipt-line-value"
+            aria-label="Aufwendung für"
+            rows={1}
+            wrap="soft"
+            value={data.purpose}
+            onChange={(event) => {
+              update('purpose', event.target.value);
               resizeTextarea(event.target);
             }}
           />
@@ -265,21 +278,24 @@ export default function ShortSelfReceiptDocument({
         </label>
       </section>
 
-      <section className={`receipt-bottom-row short-self-receipt-bottom${signatureHidden ? ' is-signature-hidden' : ''}`} aria-label="Datum und Unterschrift">
-        <label className="receipt-bottom-field short-self-receipt-date-field">
-          <input
-            className="document-label-input"
-            aria-label="Beschriftung Datum"
-            value={data.dateLabel ?? 'Datum'}
-            onChange={(event) => update('dateLabel', event.target.value)}
-          />
-          <input
-            aria-label="Datum"
-            type="text"
-            value={data.date}
-            onChange={(event) => update('date', event.target.value)}
-          />
-        </label>
+      <section className={`receipt-bottom-row short-self-receipt-bottom${noteHidden ? ' is-note-hidden' : ''}${signatureHidden ? ' is-signature-hidden' : ''}`} aria-label="Vermerk und Unterschrift">
+        {!noteHidden && (
+          <div className="invoice-flow-config-row receipt-bottom-field short-self-receipt-date-field">
+            <FieldActions label={noteLabel || 'Vermerk'} onToggle={onToggleNote} />
+            <input
+              className="document-label-input"
+              aria-label="Beschriftung Vermerk"
+              value={noteLabel}
+              onChange={(event) => update('dateLabel', event.target.value)}
+            />
+            <input
+              aria-label={noteLabel || 'Vermerk'}
+              type="text"
+              value={data.date}
+              onChange={(event) => update('date', event.target.value)}
+            />
+          </div>
+        )}
         {!signatureHidden && (
           <div className="invoice-flow-config-row receipt-bottom-field short-self-receipt-signature">
             <FieldActions label={signatureLabel || 'Unterschrift'} onToggle={onToggleSignature} />
@@ -298,10 +314,16 @@ export default function ShortSelfReceiptDocument({
           </div>
         )}
         <HiddenFieldActions
-          className="short-self-receipt-hidden-signature"
-          definitions={[{ field: 'signature', label: signatureLabel || 'Unterschrift' }]}
-          hiddenFields={signatureHidden ? ['signature'] : []}
-          onToggle={onToggleSignature}
+          className="short-self-receipt-hidden-bottom-fields"
+          definitions={[
+            { field: 'note', label: noteLabel || 'Vermerk' },
+            { field: 'signature', label: signatureLabel || 'Unterschrift' },
+          ]}
+          hiddenFields={[
+            ...(noteHidden ? ['note'] : []),
+            ...(signatureHidden ? ['signature'] : []),
+          ]}
+          onToggle={(field) => (field === 'note' ? onToggleNote() : onToggleSignature())}
         />
       </section>
     </A5LandscapePage>

@@ -392,6 +392,7 @@ export interface SelfReceiptGeneratorState {
   shortSelfReceipt?: {
     title: string;
     receiptNumber: string;
+    expenseDate: IsoDate | '';
     recipientAddress: string;
     purpose: string;
     reason: string;
@@ -406,7 +407,7 @@ export interface SelfReceiptGeneratorState {
       sourceAmount: string;
       taxRate: string;
     };
-    fieldConfig: { signature: FieldConfiguration; header: FieldConfiguration };
+    fieldConfig: { note: FieldConfiguration; signature: FieldConfiguration; header: FieldConfiguration };
   };
 }
 

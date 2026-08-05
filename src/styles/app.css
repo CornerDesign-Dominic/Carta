@@ -4795,6 +4795,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   resize: none;
 }
 
+.short-self-receipt-sheet .short-self-receipt-expense-date {
+  text-align: left;
+}
+
 .short-self-receipt-sheet .receipt-line-field .receipt-line-label,
 .short-self-receipt-sheet .receipt-line-field .receipt-line-value {
   align-self: center;
@@ -4818,6 +4822,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   grid-template-columns: minmax(0, 1fr);
 }
 
+.short-self-receipt-bottom.is-note-hidden {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .short-self-receipt-date-field > input:not(.document-label-input),
 .short-self-receipt-signature-input {
   box-sizing: border-box;
@@ -4838,6 +4846,13 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 
 .short-self-receipt-date-field > input:not(.document-label-input) {
   font: inherit;
+}
+
+.short-self-receipt-date-field .invoice-field-actions {
+  top: 0;
+  left: -30px;
+  right: auto;
+  transform: none;
 }
 
 .short-self-receipt-signature-input {
@@ -4866,7 +4881,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   transform: none;
 }
 
-.short-self-receipt-hidden-signature {
+.short-self-receipt-hidden-bottom-fields {
   position: absolute;
   top: 0;
   right: auto;
