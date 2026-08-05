@@ -159,9 +159,9 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
         </section>
       </header>
 
-      <section className="receipt-lines short-self-receipt-lines" aria-label="Angaben zur Ausgabe">
-        <label className="receipt-line-field short-self-receipt-field is-recipient">
-          <span className="receipt-line-label">Empfänger der Ausgabe:</span>
+      <section className="receipt-lines" aria-label="Angaben zur Ausgabe">
+        <label className="receipt-line-field short-self-receipt-recipient">
+          <span className="receipt-line-label">Empfänger:</span>
           <textarea
             ref={(element) => { textareaRefs.current.recipientAddress = element; }}
             className="receipt-line-value"
@@ -175,8 +175,8 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
             }}
           />
         </label>
-        <label className="receipt-line-field short-self-receipt-field">
-          <span className="receipt-line-label">Aufwendung für:</span>
+        <label className="receipt-line-field">
+          <span className="receipt-line-label">Aufwand:</span>
           <textarea
             ref={(element) => { textareaRefs.current.purpose = element; }}
             className="receipt-line-value"
@@ -190,8 +190,8 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
             }}
           />
         </label>
-        <label className="receipt-line-field short-self-receipt-field">
-          <span className="receipt-line-label">Grund für Eigenbeleg:</span>
+        <label className="receipt-line-field">
+          <span className="receipt-line-label">Grund:</span>
           <textarea
             ref={(element) => { textareaRefs.current.reason = element; }}
             className="receipt-line-value"
@@ -207,7 +207,7 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
         </label>
       </section>
 
-      <section className={`short-self-receipt-bottom${signatureHidden ? ' is-signature-hidden' : ''}`} aria-label="Datum und Unterschrift">
+      <section className={`receipt-bottom-row short-self-receipt-bottom${signatureHidden ? ' is-signature-hidden' : ''}`} aria-label="Datum und Unterschrift">
         <label className="short-self-receipt-line-field">
           <input aria-label="Datum" type="date" value={data.date} onChange={(event) => update('date', event.target.value)} />
           <span>Datum</span>
