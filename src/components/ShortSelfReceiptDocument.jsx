@@ -52,7 +52,16 @@ function resizeTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
-export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMode, onChange, onToggleSignature, pageRef }) {
+export default function ShortSelfReceiptDocument({
+  data,
+  editable,
+  isDataCheckMode,
+  onChange,
+  onOwnAddressChange,
+  onToggleSignature,
+  ownAddress,
+  pageRef,
+}) {
   const textareaRefs = useRef({});
   const amounts = useMemo(() => calculateAmounts(data.amount), [data.amount]);
   const signatureHidden = data.fieldConfig.signature.hidden.includes('signature');
@@ -93,20 +102,28 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
       editable={editable}
     >
       <header className="receipt-header">
-        <div className="receipt-header-address short-self-receipt-recipient-header">
-          <span className="short-self-receipt-recipient-label">Empfänger</span>
-          <textarea
-            ref={(element) => { textareaRefs.current.recipientAddress = element; }}
-            className="short-self-receipt-recipient-address"
-            aria-label="Empfänger der Ausgabe"
-            rows={1}
-            wrap="soft"
-            value={data.recipientAddress}
-            onChange={(event) => {
-              update('recipientAddress', event.target.value);
-              resizeTextarea(event.target);
-            }}
-          />
+        <div className="receipt-header-address">
+          <div className="receipt-header-row editable-group">
+            <input
+              aria-label="Eigene Firma"
+              value={ownAddress.company}
+              onChange={(event) => onOwnAddressChange('company', event.target.value)}
+            />
+          </div>
+          <div className="receipt-header-row">
+            <input
+              aria-label="Eigene Straße und Hausnummer"
+              value={ownAddress.street}
+              onChange={(event) => onOwnAddressChange('street', event.target.value)}
+            />
+          </div>
+          <div className="receipt-header-row">
+            <input
+              aria-label="Eigene PLZ und Stadt"
+              value={ownAddress.cityLine}
+              onChange={(event) => onOwnAddressChange('cityLine', event.target.value)}
+            />
+          </div>
         </div>
 
         <div className="receipt-header-summary">
@@ -126,7 +143,7 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
           </h2>
           <section className="receipt-amount-box short-self-receipt-amount-box" aria-label="Betragsdarstellung">
             <label>
-              <span className="receipt-fixed-amount-label">Ausgaben netto:</span>
+              <span className="document-label-input receipt-fixed-amount-label">Ausgaben netto:</span>
               <input
                 aria-label="Ausgaben netto"
                 value={amounts.netAmount}
@@ -135,21 +152,22 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
               />
               <span className="receipt-amount-unit" aria-hidden="true">€</span>
             </label>
-            <label className="short-self-receipt-tax-line">
-              <span className="receipt-fixed-amount-label">
-                zzgl.
-                <input
-                  aria-label="Umsatzsteuersatz"
-                  value={data.amount.taxRate}
-                  onChange={(event) => updateAmount('taxRate', event.target.value)}
-                />
-                % MwSt:
-              </span>
+            <label className="receipt-tax-line">
+              <span className="document-label-input receipt-fixed-amount-label">USt.-Satz:</span>
+              <input
+                aria-label="Umsatzsteuersatz"
+                value={data.amount.taxRate}
+                onChange={(event) => updateAmount('taxRate', event.target.value)}
+              />
+              <span className="receipt-amount-unit" aria-hidden="true">%</span>
+            </label>
+            <label>
+              <span className="document-label-input receipt-fixed-amount-label">USt.-Betrag:</span>
               <input className="receipt-readonly-amount" aria-label="Umsatzsteuerbetrag" value={amounts.taxAmount} readOnly />
               <span className="receipt-amount-unit" aria-hidden="true">€</span>
             </label>
             <label className="is-emphasized">
-              <span className="receipt-fixed-amount-label">Ausgaben brutto:</span>
+              <span className="document-label-input receipt-fixed-amount-label">Ausgaben brutto:</span>
               <input
                 aria-label="Ausgaben brutto"
                 value={amounts.grossAmount}
@@ -211,17 +229,20 @@ export default function ShortSelfReceiptDocument({ data, editable, isDataCheckMo
       </section>
 
       <section className={`receipt-bottom-row short-self-receipt-bottom${signatureHidden ? ' is-signature-hidden' : ''}`} aria-label="Datum und Unterschrift">
-        <label className="short-self-receipt-line-field">
-          <input aria-label="Datum" type="date" value={data.date} onChange={(event) => update('date', event.target.value)} />
-          <span>Datum</span>
+        <label className="receipt-bottom-field short-self-receipt-date-field">
+          <span className="document-label-input">Datum</span>
+          <input
+            aria-label="Datum"
+            type="date"
+            value={data.date}
+            onChange={(event) => update('date', event.target.value)}
+          />
         </label>
         {!signatureHidden && (
-          <div className="invoice-flow-config-row short-self-receipt-signature">
+          <div className="invoice-flow-config-row receipt-bottom-field short-self-receipt-signature">
             <FieldActions label="(Stempel/) Unterschrift" onToggle={onToggleSignature} />
-            <div className="short-self-receipt-line-field" aria-label="(Stempel/) Unterschrift">
-              <div aria-hidden="true" />
-              <span>(Stempel/) Unterschrift</span>
-            </div>
+            <span className="document-label-input">(Stempel/) Unterschrift</span>
+            <div className="short-self-receipt-signature-space" aria-label="(Stempel/) Unterschrift" />
           </div>
         )}
         <HiddenFieldActions

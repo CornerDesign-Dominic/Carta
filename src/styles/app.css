@@ -4765,10 +4765,14 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   font-weight: 720;
 }
 
+.short-self-receipt-sheet .receipt-document-title {
+  width: 100%;
+}
+
 .short-self-receipt-sheet .receipt-document-title .document-title-label {
   display: block;
   box-sizing: border-box;
-  width: min(100%, 210px);
+  width: 100%;
   min-height: 38px;
   height: auto;
   padding: 3px 0 0;
@@ -4776,32 +4780,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   resize: none;
   line-height: 1.3;
   text-align: right;
-}
-
-.short-self-receipt-recipient-header {
-  gap: 4px;
-}
-
-.short-self-receipt-recipient-label {
-  color: #000000;
-  font-size: 0.68rem;
-  font-weight: 720;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.short-self-receipt-recipient-address {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 3.75em;
-  padding: 0 !important;
-  border-color: transparent;
-  background: transparent;
-  color: #000000;
-  font-size: 0.82rem;
-  line-height: 1.24;
-  overflow: hidden;
-  resize: none;
 }
 
 .short-self-receipt-sheet .receipt-line-value {
@@ -4812,37 +4790,6 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   align-self: start;
 }
 
-.short-self-receipt-amount-box .short-self-receipt-tax-line {
-  align-items: center;
-}
-
-.short-self-receipt-tax-line .receipt-fixed-amount-label {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 3px;
-}
-
-.short-self-receipt-tax-line .receipt-fixed-amount-label input {
-  width: 2.5ch;
-  min-width: 2.5ch;
-  min-height: 18px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  text-align: right;
-}
-
-.short-self-receipt-sheet.is-highlight-mode .short-self-receipt-recipient-address {
-  border-color: rgba(74, 103, 119, 0.28);
-  background: rgba(236, 244, 246, 0.72);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
-}
-
 .short-self-receipt-bottom {
   position: relative;
 }
@@ -4851,43 +4798,31 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   grid-template-columns: minmax(0, 1fr);
 }
 
-.short-self-receipt-line-field {
-  display: grid;
-  grid-template-rows: 26px auto;
-  gap: 4px;
-  min-width: 0;
-}
-
-.short-self-receipt-line-field > input,
-.short-self-receipt-line-field > div {
+.short-self-receipt-date-field > input,
+.short-self-receipt-signature-space {
   box-sizing: border-box;
   width: 100%;
-  height: 26px;
-  min-height: 26px;
-  padding: 0 0 4px !important;
+  height: 74px;
+  min-height: 74px;
+  max-height: 74px;
+  padding: 6px !important;
   border: 0;
-  border-bottom: 1px solid #cfc9be;
-  border-radius: 0;
+  border-radius: 4px;
   background: transparent;
   color: #000000;
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.short-self-receipt-date-field > input {
   font: inherit;
-  line-height: 1.25;
-}
-
-.short-self-receipt-line-field > input {
-  text-align: left;
-}
-
-.short-self-receipt-line-field > span {
-  color: #000000;
-  font-size: 0.72rem;
-  font-weight: 720;
-  line-height: 1.2;
 }
 
 .short-self-receipt-signature {
   position: relative;
-  display: block;
+  display: grid;
+  grid-template-rows: auto 74px;
+  gap: 7px;
   min-width: 0;
 }
 

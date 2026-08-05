@@ -347,6 +347,8 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
     sender: {
       company: sender.companyName,
       senderLine: sender.returnAddress,
+      street: joinLine(sender.address.street, sender.address.houseNumber),
+      cityLine: joinLine(sender.address.postalCode, sender.address.city),
       email: sender.contact.email,
       phone: sender.contact.phone,
       fax: sender.contact.fax,
@@ -705,6 +707,20 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
 
   function updateShortSelfReceipt(value) {
     setShortSelfReceipt(value);
+  }
+
+  function updateShortOwnAddress(field, value) {
+    if (field === 'company') {
+      updateSender('company', value);
+      return;
+    }
+
+    if (field === 'street') {
+      updateSender('address', splitStreetLine(value));
+      return;
+    }
+
+    updateSender('address', splitCityLine(value));
   }
 
   function toggleShortSignature() {
@@ -1116,7 +1132,9 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           editable={highlightFields}
           isDataCheckMode={isDataCheckMode}
           onChange={updateShortSelfReceipt}
+          onOwnAddressChange={updateShortOwnAddress}
           onToggleSignature={toggleShortSignature}
+          ownAddress={sender}
           pageRef={sheetRef}
         />
       ) : (
