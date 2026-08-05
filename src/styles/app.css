@@ -4886,10 +4886,10 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
 .short-self-receipt-sheet.is-export-mode .short-self-receipt-signature-input,
 body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-self-receipt-date-field > input,
 body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-self-receipt-signature-input {
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  outline: none;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .short-self-receipt-signature {
