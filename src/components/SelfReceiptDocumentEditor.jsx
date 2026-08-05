@@ -16,6 +16,7 @@ import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { createDocumentDataCheckState, getDocumentModeHint } from '../utils/documentDataCheck.js';
 import { mapSelfReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
 import { applyOwnDataToSelfReceipt, hasSelfReceiptOwnData, removeOwnDataFromSelfReceipt } from './masterDataPanel/mappings/ownDataToSelfReceipt.js';
+import { mapOwnDataToInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
 import {
   applyPartnerToSelfReceipt,
   hasSelfReceiptPaymentRecipientData,
@@ -186,42 +187,6 @@ const defaultSelfReceiptData = {
   },
 };
 
-const emptySelfReceiptData = {
-  sender: {
-    companyName: '',
-    address: { street: '', houseNumber: '', postalCode: '', city: '' },
-    returnAddress: '',
-    contact: { email: '', phone: '', fax: '', website: '' },
-  },
-  recipient: {
-    companyName: '',
-    attention: '',
-    name: '',
-    address: { street: '', houseNumber: '', postalCode: '', city: '' },
-  },
-  details: {
-    selfReceiptId: '',
-    receiptDate: '',
-    expenseDate: '',
-  },
-  references: {
-    internalReference: '',
-    externalReference: '',
-    costCenter: '',
-  },
-  expenseInfo: {
-    occasion: 'Betrieblicher Anlass der Ausgabe:',
-    reason: 'Grund für den Eigenbeleg:',
-    settlementType: 'Zahlungsart:',
-    location: 'Ausgabestelle / Ort:',
-  },
-  footer: {
-    company: { companyName: '', street: '', houseNumber: '', postalCode: '', city: '', extra: '' },
-    tax: { vatIdLabel: '', vatId: '', taxNumberLabel: '', taxNumber: '', commercialRegister: '', representation: '' },
-    bank: { bankName: '', ibanLabel: '', iban: '', bicLabel: '', bic: '', bankExtra: '' },
-  },
-};
-
 const selfReceiptDetailFields = [
   { field: 'occasion', labelField: 'occasion', ariaLabel: 'Betrieblicher Anlass der Ausgabe' },
   { field: 'reason', labelField: 'reason', ariaLabel: 'Grund für den Eigenbeleg' },
@@ -243,9 +208,7 @@ const selfReceiptPrintLayout = {
 function createSelfReceiptPosition() {
   return {
     id: crypto.randomUUID(),
-    description: '',
-    netAmount: '',
-    taxRate: '0',
+    ...defaultSelfReceiptPositionForCheck,
   };
 }
 
@@ -260,6 +223,7 @@ function createShortSelfReceiptData() {
     dateLabel: 'Datum',
     signatureLabel: 'Stempel / Unterschrift',
     signatureValue: '',
+    ownAddress: { company: '', street: '', cityLine: '' },
     amount: {
       calculationSource: 'netAmount',
       sourceAmount: '',
@@ -611,7 +575,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   const detailTextareaRefs = useRef({});
   const positionTextareaRefs = useRef({});
   const dateInputRefs = useRef({});
-  const [selfReceiptData, setSelfReceiptData] = useState(emptySelfReceiptData);
+  const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
   const [shortSelfReceipt, setShortSelfReceipt] = useState(createShortSelfReceiptData);
   const selfReceiptDataRef = useRef(selfReceiptData);
@@ -620,12 +584,25 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
     partnerRoleLabel: 'Zahlungsempfänger / Lieferant',
     applyOwnData(record) {
       setSelfReceiptData((current) => applyOwnDataToSelfReceipt(current, record));
+      const sender = mapOwnDataToInvoice(record).sender;
+      setShortSelfReceipt((current) => ({
+        ...current,
+        ownAddress: {
+          company: sender.companyName,
+          street: joinLine(sender.address.street, sender.address.houseNumber),
+          cityLine: joinLine(sender.address.postalCode, sender.address.city),
+        },
+      }));
     },
     hasOwnDocumentData() {
       return hasSelfReceiptOwnData(selfReceiptDataRef.current);
     },
     removeOwnData() {
       setSelfReceiptData((current) => removeOwnDataFromSelfReceipt(current));
+      setShortSelfReceipt((current) => ({
+        ...current,
+        ownAddress: { company: '', street: '', cityLine: '' },
+      }));
     },
     applyPartner(record) {
       setSelfReceiptData((current) => applyPartnerToSelfReceipt(current, record));
@@ -746,17 +723,10 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
   }
 
   function updateShortOwnAddress(field, value) {
-    if (field === 'company') {
-      updateSender('company', value);
-      return;
-    }
-
-    if (field === 'street') {
-      updateSender('address', splitStreetLine(value));
-      return;
-    }
-
-    updateSender('address', splitCityLine(value));
+    setShortSelfReceipt((current) => ({
+      ...current,
+      ownAddress: { ...current.ownAddress, [field]: value },
+    }));
   }
 
   function toggleShortSignature() {
@@ -944,7 +914,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
       recipient: createFieldConfig(selfReceiptRecipientOptionalFields),
       footerMiddle: createFieldConfig(selfReceiptFooterColumns[1]),
     });
-    setSelfReceiptData(emptySelfReceiptData);
+    setSelfReceiptData(defaultSelfReceiptData);
     setPositions([createSelfReceiptPosition()]);
     setHighlightFields(false);
     setIsDataCheckMode(false);
@@ -1188,7 +1158,7 @@ export default function SelfReceiptDocumentEditor({ onMasterDataAdapterChange })
           onOwnAddressChange={updateShortOwnAddress}
           onToggleAddressField={toggleShortAddressField}
           onToggleSignature={toggleShortSignature}
-          ownAddress={sender}
+          ownAddress={shortSelfReceipt.ownAddress}
           pageRef={sheetRef}
         />
       ) : (

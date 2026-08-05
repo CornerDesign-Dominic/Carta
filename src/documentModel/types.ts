@@ -399,6 +399,7 @@ export interface SelfReceiptGeneratorState {
     dateLabel: string;
     signatureLabel: string;
     signatureValue: string;
+    ownAddress: { company: string; street: string; cityLine: string };
     amount: {
       calculationSource: 'netAmount' | 'grossAmount';
       sourceAmount: string;
