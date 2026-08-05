@@ -4829,7 +4829,7 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .receipt-bottom-field
   align-self: start;
   display: block;
   padding: 0 0 7px !important;
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .short-self-receipt-amount-box {
