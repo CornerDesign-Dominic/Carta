@@ -1683,11 +1683,13 @@ h1 {
   --document-toolbar-space: 10px;
   box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 0;
   width: 100%;
   max-width: 100%;
+  overflow-x: auto;
   padding: var(--document-toolbar-space);
   border: 1px solid rgba(201, 196, 186, 0.66);
   border-radius: 6px;
@@ -1698,6 +1700,7 @@ h1 {
 .visual-toolbar-group {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
   gap: var(--document-toolbar-space);
   min-width: 0;
 }
@@ -1720,7 +1723,9 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 148px;
+  flex: 0 0 auto;
+  inline-size: auto;
+  min-inline-size: 116px;
   block-size: 36px;
   border: 1px solid rgba(201, 196, 186, 0.72);
   border-radius: 5px;
@@ -1735,6 +1740,13 @@ h1 {
     border-color 160ms ease,
     color 160ms ease,
     box-shadow 160ms ease;
+}
+
+.visual-toolbar .document-toolbar-edit-button,
+.visual-toolbar .document-toolbar-export-button,
+.tool-document-toolbar .document-toolbar-edit-button,
+.tool-document-toolbar .document-toolbar-export-button {
+  inline-size: 148px;
 }
 
 .visual-toolbar button:disabled {
@@ -5523,6 +5535,49 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   resize: none;
 }
 
+.invoice-payment-terms {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  color: #34312c;
+  font-size: 11pt;
+  line-height: 1.35;
+}
+
+.invoice-payment-terms input {
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #232320;
+  font: inherit;
+}
+
+.invoice-payment-terms > input {
+  width: 42px;
+  padding: 0 2px;
+  text-align: center;
+}
+
+.invoice-payment-terms .invoice-payment-due-date {
+  width: 108px;
+  height: 20px;
+  min-height: 20px;
+}
+
+.invoice-payment-terms .invoice-date-input {
+  min-height: 20px;
+  line-height: 1.35;
+}
+
+.invoice-payment-terms .invoice-date-display {
+  justify-self: start;
+  text-align: left;
+}
+
 .credit-note-sheet .credit-note-payout-text {
   min-height: 1.35em;
   margin-bottom: 0;
@@ -7007,6 +7062,21 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 
 .invoice-print-summary strong {
   color: #232320;
+  white-space: nowrap;
+}
+
+.invoice-print-payment-terms {
+  margin: 0;
+  color: #34312c;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.invoice-print-payment-terms strong {
+  color: #232320;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -8565,34 +8635,34 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 
   .visual-toolbar {
     align-items: stretch;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
   }
 
   .visual-toolbar-group,
   .tool-document-toolbar-group {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     padding: 0;
   }
 
   .visual-toolbar-group:not(:last-child),
   .tool-document-toolbar-group:not(:last-child) {
-    padding-right: 0;
-    padding-bottom: var(--document-toolbar-space);
+    padding-right: var(--document-toolbar-space);
+    padding-bottom: 0;
   }
 
   .visual-toolbar-group + .visual-toolbar-group,
   .tool-document-toolbar-group + .tool-document-toolbar-group {
-    border-left: 0;
-    border-top: 1px solid rgba(201, 196, 186, 0.7);
-    padding-top: var(--document-toolbar-space);
-    padding-left: 0;
+    border-left: 1px solid rgba(201, 196, 186, 0.7);
+    border-top: 0;
+    padding-top: 0;
+    padding-left: var(--document-toolbar-space);
   }
 
   .tool-document-toolbar {
     align-items: stretch;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
   }
 
@@ -9910,9 +9980,12 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 .tool-document-toolbar {
   --document-toolbar-space: 10px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 0;
+  max-width: 100%;
+  overflow-x: auto;
   padding: var(--document-toolbar-space);
   border: 1px solid rgba(201, 196, 186, 0.66);
   border-radius: 6px;
@@ -9923,6 +9996,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 .tool-document-toolbar-group {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
   gap: var(--document-toolbar-space);
   min-width: 0;
 }

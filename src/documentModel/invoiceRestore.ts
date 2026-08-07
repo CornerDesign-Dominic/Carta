@@ -48,6 +48,24 @@ const defaultProjectFieldConfiguration: FieldConfiguration = {
   ],
 };
 
+function parseIsoDate(value: unknown): Date | null {
+  const match = typeof value === 'string' ? value.match(/^(\d{4})-(\d{2})-(\d{2})$/) : null;
+  if (!match) return null;
+
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function addDaysToIsoDate(value: unknown, days: string): string {
+  const date = parseIsoDate(value);
+  const numericDays = Number.parseInt(days, 10);
+
+  if (!date || !Number.isFinite(numericDays)) return '';
+
+  date.setUTCDate(date.getUTCDate() + numericDays);
+  return date.toISOString().slice(0, 10);
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -304,6 +322,15 @@ function restoreInvoiceState(
   if (invoice && typeof invoice.serviceDate === 'string' && invoice.serviceDate !== '' && !datePattern.test(invoice.serviceDate)) {
     invalidErrors.push('documentData.invoice.serviceDate must be empty or YYYY-MM-DD');
   }
+  if (invoice && 'paymentTermDays' in invoice && typeof invoice.paymentTermDays !== 'string') {
+    invalidErrors.push('documentData.invoice.paymentTermDays must be a string');
+  }
+  if (invoice && 'dueDate' in invoice && typeof invoice.dueDate !== 'string') {
+    invalidErrors.push('documentData.invoice.dueDate must be a string');
+  }
+  if (invoice && typeof invoice.dueDate === 'string' && invoice.dueDate !== '' && !datePattern.test(invoice.dueDate)) {
+    invalidErrors.push('documentData.invoice.dueDate must be empty or YYYY-MM-DD');
+  }
   if (documentData?.invoiceVariant !== expectedInvoiceVariant) {
     return {
       status: 'wrong-invoice-variant',
@@ -351,6 +378,10 @@ function restoreInvoiceState(
   const typedDocument = document as unknown as StandardInvoiceDocument;
   const data = typedDocument.documentData;
   const shared = typedDocument.sharedData;
+  const paymentTermDays = typeof data.invoice.paymentTermDays === 'string' ? data.invoice.paymentTermDays : '14';
+  const dueDate = typeof data.invoice.dueDate === 'string'
+    ? data.invoice.dueDate
+    : addDaysToIsoDate(data.invoice.invoiceDate, paymentTermDays);
   const fields = shared.sender.companyFooter.columns.map((column) =>
     column.fields.map((field) => ({ ...field })),
   );
@@ -388,6 +419,8 @@ function restoreInvoiceState(
           invoiceNumber: data.invoice.invoiceNumber,
           invoiceDate: data.invoice.invoiceDate,
           serviceDate: data.invoice.serviceDate,
+          paymentTermDays,
+          dueDate,
         },
         references: {
           internalNumber: data.invoice.internalNumber,

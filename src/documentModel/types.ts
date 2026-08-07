@@ -155,6 +155,8 @@ export interface StandardInvoiceDocumentData {
     invoiceNumber: string;
     invoiceDate: IsoDate | '';
     serviceDate: IsoDate | '';
+    paymentTermDays: string;
+    dueDate: IsoDate | '';
     internalNumber: string;
     externalNumber: string;
   };

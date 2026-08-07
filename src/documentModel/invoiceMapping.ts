@@ -44,7 +44,13 @@ export interface StandardInvoiceGeneratorState {
       name: string;
       address: AddressState;
     };
-    details: { invoiceNumber: string; invoiceDate: string; serviceDate: string };
+    details: {
+      invoiceNumber: string;
+      invoiceDate: string;
+      serviceDate: string;
+      paymentTermDays: string;
+      dueDate: string;
+    };
     references: { internalNumber: string; externalNumber: string; customerNumber: string };
     project: {
       progressPaymentNumber: string;

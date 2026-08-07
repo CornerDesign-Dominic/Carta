@@ -62,6 +62,8 @@ function createState(): StandardInvoiceGeneratorState {
         invoiceNumber: 'RE-2026-001',
         invoiceDate: '2026-05-07',
         serviceDate: '2026-05-07',
+        paymentTermDays: '14',
+        dueDate: '2026-05-21',
       },
       references: {
         internalNumber: '',

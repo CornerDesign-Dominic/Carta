@@ -53,7 +53,7 @@ const smallBusinessTaxNotice =
 const textInvoiceIntro =
   'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag und das entgegengebrachte Vertrauen.\n\nFür meine Leistungen erlaube ich mir, Ihnen folgende Positionen in Rechnung zu stellen:';
 const textInvoiceClosing =
-  'Bitte begleichen Sie den Gesamtbetrag innerhalb der angegebenen Zahlungsfrist auf das unten genannte Konto.\n\nBei Rückfragen stehe ich Ihnen gerne zur Verfügung.\n\nMit freundlichen Grüßen';
+  'Bitte zahlen Sie innerhalb der angegebenen Frist auf das unten genannte Konto.\n\nBei Rückfragen stehe ich Ihnen gerne zur Verfügung.\n\nMit freundlichen Grüßen';
 
 const tradeInvoiceTextDefaults = {
   progressInvoice: {
@@ -95,6 +95,7 @@ const initialInvoiceLabels = {
   net: 'Nettobetrag',
   taxAmount: 'Umsatzsteuer',
   grandTotal: 'Rechnungsbetrag',
+  paymentTerms: 'Zahlungsziel',
   progressPaymentNumber: 'Abschlag',
   projectName: 'Projekt / Bauvorhaben',
   orderNumber: 'Auftrags- oder Angebotsnummer',
@@ -257,6 +258,8 @@ const defaultInvoiceData = {
     invoiceNumber: 'RE-2026-001',
     invoiceDate: '2026-05-07',
     serviceDate: '2026-05-07',
+    paymentTermDays: '14',
+    dueDate: '2026-05-21',
   },
   references: {
     internalNumber: 'INT-1001',
@@ -310,7 +313,7 @@ const defaultInvoiceTextBlocks = [
     id: 'closing',
     label: 'Nachlauftext',
     value:
-      'Bitte begleichen Sie den Rechnungsbetrag innerhalb der angegebenen Zahlungsfrist. Vielen Dank für die angenehme Zusammenarbeit.',
+      'Bitte zahlen Sie innerhalb der angegebenen Frist. Vielen Dank für die angenehme Zusammenarbeit.',
     visible: true,
   },
   {
@@ -744,6 +747,37 @@ function formatGermanDate(value) {
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
 
+function parseIsoDate(value) {
+  const match = String(value ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatIsoDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function addDaysToIsoDate(value, days) {
+  const date = parseIsoDate(value);
+  const numericDays = Number.parseInt(String(days ?? '').trim(), 10);
+
+  if (!date || !Number.isFinite(numericDays)) return '';
+
+  date.setUTCDate(date.getUTCDate() + numericDays);
+  return formatIsoDate(date);
+}
+
+function getDaysBetweenIsoDates(startValue, endValue) {
+  const start = parseIsoDate(startValue);
+  const end = parseIsoDate(endValue);
+
+  if (!start || !end) return '';
+
+  return String(Math.round((end.getTime() - start.getTime()) / 86400000));
+}
+
 function calculatePosition(position, { isSmallBusinessInvoice = false, isTextInvoice = false } = {}) {
   const net = isTextInvoice ? toNumber(position.unitPrice) : toNumber(position.unitPrice) * toNumber(position.quantity);
   const taxRate = isSmallBusinessInvoice ? 0 : Math.max(0, toNumber(position.taxRate));
@@ -880,6 +914,7 @@ function createSlug(value) {
 }
 
 export function createInvoicePrintItems({
+  details,
   isFinalInvoice,
   isPartialInvoice,
   isProgressInvoice,
@@ -908,6 +943,15 @@ export function createInvoicePrintItems({
     ...(isFinalInvoice ? previousPayments.map((payment, index) => ({ type: 'previousPayment', index, payment })) : []),
     { type: 'summary' },
     ...(closingBlock?.visible ? [{ type: 'text', id: 'closing', text: closingBlock.value }] : []),
+    ...(details
+      ? [
+          {
+            type: 'paymentTerms',
+            paymentTermDays: details.paymentTermDays,
+            dueDate: details.dueDate,
+          },
+        ]
+      : []),
     ...(isSmallBusinessInvoice && smallBusinessNoticeBlock?.visible
       ? [{ type: 'text', id: 'smallBusinessNotice', text: smallBusinessNoticeBlock.value }]
       : []),
@@ -1008,6 +1052,52 @@ function InvoiceProjectBlock({
         onToggle={onToggleField}
       />
     </>
+  );
+}
+
+function InvoicePaymentTermsRow({
+  dateInputRefs,
+  details,
+  onDatePicker,
+  onDueDateChange,
+  onPaymentTermDaysChange,
+}) {
+  return (
+    <section className="invoice-payment-terms" aria-label="Zahlungsziel">
+      <span>Zahlbar innerhalb von</span>
+      <input
+        aria-label="Zahlungsziel in Tagen"
+        inputMode="numeric"
+        min="0"
+        type="number"
+        value={details.paymentTermDays}
+        onChange={(event) => onPaymentTermDaysChange(event.target.value)}
+      />
+      <span>Tagen, bis zum</span>
+      <span className="invoice-date-field invoice-payment-due-date">
+        <span className="invoice-date-display" aria-hidden="true">
+          {formatGermanDate(details.dueDate)}
+        </span>
+        <input
+          ref={(element) => {
+            dateInputRefs.current.dueDate = element;
+          }}
+          className="invoice-date-input"
+          aria-label="Fälligkeitsdatum"
+          type="date"
+          value={details.dueDate}
+          onChange={(event) => onDueDateChange(event.target.value)}
+        />
+        <button
+          className="invoice-icon-action invoice-date-picker"
+          type="button"
+          aria-label="Fälligkeitsdatum auswählen"
+          onClick={() => onDatePicker('dueDate')}
+        >
+          <span aria-hidden="true" />
+        </button>
+      </span>
+    </section>
   );
 }
 
@@ -1370,6 +1460,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const printItems = useMemo(
     () =>
       createInvoicePrintItems({
+        details,
         isFinalInvoice,
         isPartialInvoice,
         isProgressInvoice,
@@ -1380,7 +1471,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         textBlocks,
         visibleProjectFields,
       }),
-    [isFinalInvoice, isPartialInvoice, isProgressInvoice, isSmallBusinessInvoice, positions, previousPayments, project, textBlocks, visibleProjectFields],
+    [details, isFinalInvoice, isPartialInvoice, isProgressInvoice, isSmallBusinessInvoice, positions, previousPayments, project, textBlocks, visibleProjectFields],
   );
   const dataCheckState = useMemo(
     () =>
@@ -1514,7 +1605,46 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         return { ...current, references: { ...current.references, [field]: value } };
       }
 
+      if (field === 'invoiceDate') {
+        return {
+          ...current,
+          details: {
+            ...current.details,
+            invoiceDate: value,
+            dueDate: addDaysToIsoDate(value, current.details.paymentTermDays) || current.details.dueDate,
+          },
+        };
+      }
+
       return { ...current, details: { ...current.details, [field]: value } };
+    });
+  }
+
+  function updatePaymentTermDays(value) {
+    const normalizedValue = String(value ?? '').replace(/[^\d]/g, '');
+
+    setInvoiceData((current) => ({
+      ...current,
+      details: {
+        ...current.details,
+        paymentTermDays: normalizedValue,
+        dueDate: addDaysToIsoDate(current.details.invoiceDate, normalizedValue) || current.details.dueDate,
+      },
+    }));
+  }
+
+  function updateDueDate(value) {
+    setInvoiceData((current) => {
+      const days = getDaysBetweenIsoDates(current.details.invoiceDate, value);
+
+      return {
+        ...current,
+        details: {
+          ...current.details,
+          dueDate: value,
+          paymentTermDays: days === '' ? current.details.paymentTermDays : days,
+        },
+      };
     });
   }
 
@@ -2168,6 +2298,14 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
         {renderTextBlock(textBlocks.find((block) => block.id === 'closing'), 1, isSmallBusinessInvoice ? 2 : 1)}
 
+        <InvoicePaymentTermsRow
+          dateInputRefs={dateInputRefs}
+          details={details}
+          onDatePicker={openDatePicker}
+          onDueDateChange={updateDueDate}
+          onPaymentTermDaysChange={updatePaymentTermDays}
+        />
+
         {isSmallBusinessInvoice && renderTextBlock(textBlocks.find((block) => block.id === 'smallBusinessNotice'), 2, 2)}
 
         <FooterBlock
@@ -2266,6 +2404,7 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
   const positionItems = items.filter((item) => item.type === 'position');
   const previousPaymentItems = items.filter((item) => item.type === 'previousPayment');
   const projectInfoItem = items.find((item) => item.type === 'projectInfo');
+  const paymentTermsItem = items.find((item) => item.type === 'paymentTerms');
   const isProjectInfoMeasured = isFinalInvoice || isPartialInvoice || isProgressInvoice;
 
   function measureNow() {
@@ -2348,6 +2487,14 @@ const MeasuredInvoicePaginator = forwardRef(function MeasuredInvoicePaginator(
         <div data-measure-summary>
           <InvoicePrintSummary isFinalInvoice={isFinalInvoice} isSmallBusinessInvoice={isSmallBusinessInvoice} labels={labels} totals={totals} />
         </div>
+        <div data-measure-payment-terms>
+          {paymentTermsItem && (
+            <InvoicePrintPaymentTerms
+              dueDate={paymentTermsItem.dueDate}
+              paymentTermDays={paymentTermsItem.paymentTermDays}
+            />
+          )}
+        </div>
         <div data-measure-previous-payments>
           {isFinalInvoice && (
             <InvoicePrintPreviousPaymentsTable
@@ -2407,6 +2554,7 @@ export function measureInvoicePages(
   const textProbe = measureRoot.querySelector('[data-measure-text-probe]');
   const projectInfoProbe = measureRoot.querySelector('[data-measure-project-info]');
   const summaryProbe = measureRoot.querySelector('[data-measure-summary] .invoice-print-summary');
+  const paymentTermsProbe = measureRoot.querySelector('[data-measure-payment-terms] .invoice-print-payment-terms');
   const previousPaymentsProbe = measureRoot.querySelector(
     '[data-measure-previous-payments] .invoice-print-previous-payments',
   );
@@ -2424,7 +2572,10 @@ export function measureInvoicePages(
     ]),
   );
 
+  const hasPaymentTerms = items.some((item) => item.type === 'paymentTerms');
+
   if (!firstContent || !followContent || !textProbe || !summaryProbe) return null;
+  if (hasPaymentTerms && !paymentTermsProbe) return null;
   const shouldMeasureProjectInfo = isFinalInvoice || isProjectInfoMeasured;
 
   if (shouldMeasureProjectInfo && !projectInfoProbe) return null;
@@ -2472,6 +2623,7 @@ export function measureInvoicePages(
     if (item.type === 'position') return positionRows.get(String(item.index)) || 0;
     if (item.type === 'previousPayment') return previousPaymentRows.get(String(item.index)) || 0;
     if (item.type === 'summary') return getOuterHeight(summaryProbe);
+    if (item.type === 'paymentTerms') return paymentTermsProbe ? getOuterHeight(paymentTermsProbe) : 0;
     return 0;
   }
 
@@ -2511,6 +2663,9 @@ function arePrintPagesEqual(currentPages, nextPages) {
 function arePrintItemsEqual(first, second) {
   if (first.type !== second.type) return false;
   if (first.type === 'text') return first.id === second.id && first.text === second.text;
+  if (first.type === 'paymentTerms') {
+    return first.paymentTermDays === second.paymentTermDays && first.dueDate === second.dueDate;
+  }
   if (first.type === 'projectInfo') {
     return (
       first.visibleProjectFields.map(({ field }) => field).join('|') ===
@@ -2808,6 +2963,16 @@ function InvoicePrintPageItems({
       );
     }
 
+    if (item.type === 'paymentTerms') {
+      renderedItems.push(
+        <InvoicePrintPaymentTerms
+          dueDate={item.dueDate}
+          key={`payment-terms-${index}`}
+          paymentTermDays={item.paymentTermDays}
+        />,
+      );
+    }
+
     if (item.type === 'projectInfo') {
       renderedItems.push(
         <InvoicePrintProjectInfo
@@ -2825,6 +2990,14 @@ function InvoicePrintPageItems({
   }
 
   return renderedItems;
+}
+
+function InvoicePrintPaymentTerms({ dueDate, paymentTermDays }) {
+  return (
+    <p className="invoice-print-payment-terms">
+      Zahlbar innerhalb von <strong>{paymentTermDays}</strong> Tagen, bis zum <strong>{formatGermanDate(dueDate)}</strong>.
+    </p>
+  );
 }
 
 function InvoicePrintProjectInfo({ isFinalInvoice = false, isSingleColumn = false, labels, projectInfo, visibleProjectFields }) {
