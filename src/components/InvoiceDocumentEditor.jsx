@@ -1069,7 +1069,8 @@ function InvoicePaymentTermsRow({
         aria-label="Zahlungsziel in Tagen"
         inputMode="numeric"
         min="0"
-        type="number"
+        pattern="[0-9]*"
+        type="text"
         value={details.paymentTermDays}
         onChange={(event) => onPaymentTermDaysChange(event.target.value)}
       />
@@ -2995,7 +2996,7 @@ function InvoicePrintPageItems({
 function InvoicePrintPaymentTerms({ dueDate, paymentTermDays }) {
   return (
     <p className="invoice-print-payment-terms">
-      Zahlbar innerhalb von <strong>{paymentTermDays}</strong> Tagen, bis zum <strong>{formatGermanDate(dueDate)}</strong>.
+      Zahlbar innerhalb von {paymentTermDays} Tagen, bis zum {formatGermanDate(dueDate)}.
     </p>
   );
 }

@@ -5541,7 +5541,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   flex-wrap: wrap;
   gap: 4px;
   min-width: 0;
-  margin: 0;
+  margin: 0 0 12px;
   color: #34312c;
   font-size: 11pt;
   line-height: 1.35;
@@ -5563,7 +5563,8 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 }
 
 .invoice-payment-terms .invoice-payment-due-date {
-  width: 108px;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  width: 128px;
   height: 20px;
   min-height: 20px;
 }
@@ -5574,8 +5575,18 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 }
 
 .invoice-payment-terms .invoice-date-display {
+  grid-column: 1;
   justify-self: start;
   text-align: left;
+}
+
+.invoice-payment-terms .invoice-date-picker {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  opacity: 1;
+  transform: none;
 }
 
 .credit-note-sheet .credit-note-payout-text {
@@ -7066,18 +7077,13 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 }
 
 .invoice-print-payment-terms {
+  max-width: 620px;
   margin: 0;
-  color: #34312c;
-  font-size: 0.78rem;
-  line-height: 1.35;
+  color: #4d4b46;
+  font-size: 11pt;
+  line-height: 1.45;
   break-inside: avoid;
   page-break-inside: avoid;
-}
-
-.invoice-print-payment-terms strong {
-  color: #232320;
-  font-weight: 700;
-  white-space: nowrap;
 }
 
 .invoice-print-page-number {
