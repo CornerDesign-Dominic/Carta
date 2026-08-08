@@ -8,6 +8,15 @@ import RecipientBlock from './documentBlocks/RecipientBlock.jsx';
 import SenderBlock from './documentBlocks/SenderBlock.jsx';
 import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
+import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
+  createDocumentDataCheckState,
+  createMasterDataOrigin,
+  getDocumentModeHint,
+  markChangedViewOrigins,
+  mergeDataCheckStateWithOrigins,
+} from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { mapBusinessLetterToDocument } from '../documentModel/additionalDocumentModel.js';
 import { applyOwnDataToBusinessLetter, hasBusinessLetterOwnData, removeOwnDataFromBusinessLetter } from './masterDataPanel/mappings/ownDataToBusinessLetter.js';
@@ -160,6 +169,34 @@ function createViewData(letterData) {
   };
 }
 
+const defaultBusinessLetterViewData = createViewData(defaultLetterData);
+const ownDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
+const partnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+];
+
 function splitStreetLine(value = '') {
   const trimmed = String(value).trim();
   const match = trimmed.match(/^(.*?)(?:\s+(\d+\s*[a-zA-Z]?))$/);
@@ -218,9 +255,11 @@ function formatAttachmentText(value) {
 
 export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange }) {
   const [highlightFields, setHighlightFields] = useState(false);
+  const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [labels, setLabels] = useState(initialLabels);
   const [letterData, setLetterData] = useState(defaultLetterData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [content, setContent] = useState(defaultContent);
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(contactFields),
@@ -242,27 +281,66 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
   const businessLetterMasterDataAdapter = useMemo(() => ({
     partnerRoleLabel: 'Briefempfänger',
     applyOwnData(record) {
-      setLetterData((current) => applyOwnDataToBusinessLetter(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setLetterData((current) => {
+        const next = applyOwnDataToBusinessLetter(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createViewData(current), createViewData(next), origin, ownDataOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasOwnDocumentData() {
       return hasBusinessLetterOwnData(letterDataRef.current);
     },
     removeOwnData() {
       setLetterData((current) => removeOwnDataFromBusinessLetter(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, ownDataOriginViewPaths));
     },
     applyPartner(record) {
-      setLetterData((current) => applyPartnerToBusinessLetter(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setLetterData((current) => {
+        const next = applyPartnerToBusinessLetter(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createViewData(current), createViewData(next), origin, partnerOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasRecipientData() {
       return hasBusinessLetterRecipientData(letterDataRef.current);
     },
     removePartner() {
       setLetterData((current) => removePartnerFromBusinessLetter(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
   }), []);
   const currentState = { labels, letterData, content, fieldConfig };
   if (!initialStateRef.current) initialStateRef.current = structuredClone(currentState);
   const { sender, recipient, details, footerLines } = useMemo(() => createViewData(letterData), [letterData]);
+  const dataCheckState = useMemo(
+    () => mergeDataCheckStateWithOrigins(createDocumentDataCheckState({
+      defaultViewData: defaultBusinessLetterViewData,
+      details,
+      footerLines,
+      isActive: isDataCheckMode,
+      positions: [],
+      recipient,
+      recipientHiddenFields: fieldConfig.recipient.hidden,
+      sender,
+      visibleContactFields: getOrderedDefinitions('contact', contactFields).filter(
+        ({ field }) => !fieldConfig.contact.hidden.includes(field),
+      ),
+      visibleDetailFields: getOrderedDefinitions('details', detailFields).filter(
+        ({ field }) => !fieldConfig.details.hidden.includes(field),
+      ),
+      visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', footerColumns[1]).filter(
+        ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+      ),
+    }), masterDataFieldOrigins, isDataCheckMode),
+    [details, fieldConfig, footerLines, isDataCheckMode, masterDataFieldOrigins, recipient, sender],
+  );
+  const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
   const letterContentHidden = fieldConfig.letterContent.hidden;
   const printItems = useMemo(() => [
     { type: 'text', id: 'subject', role: 'subject', text: content.subject },
@@ -290,7 +368,15 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
 
   function updateLabel(field, value) { setLabels((current) => ({ ...current, [field]: value })); }
   function updateContent(field, value) { setContent((current) => ({ ...current, [field]: value })); }
-  function toggleEditableMode() { setHighlightFields((current) => !current); }
+  function toggleEditableMode() {
+    setIsDataCheckMode(false);
+    setHighlightFields((current) => !current);
+  }
+
+  function toggleDataCheckMode() {
+    setHighlightFields(false);
+    setIsDataCheckMode((current) => !current);
+  }
 
   function toggleConfiguredField(block, field) {
     setFieldConfig((current) => ({
@@ -316,6 +402,18 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    setMasterDataFieldOrigins((origins) =>
+      clearMasterDataOriginsForPaths(origins, originPathsByField[field] ?? [['sender', field]]),
+    );
     setLetterData((current) => {
       if (field === 'company') {
         const sender = { ...current.sender, companyName: value };
@@ -331,6 +429,10 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
   }
 
   function updateRecipient(field, value) {
+    const originPaths = field === 'address'
+      ? [['recipient', 'street'], ['recipient', 'cityLine']]
+      : [['recipient', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setLetterData((current) => {
       if (field === 'company') return { ...current, recipient: { ...current.recipient, companyName: value } };
       if (field === 'street') return { ...current, recipient: { ...current.recipient, address: { ...current.recipient.address, ...splitStreetLine(value) } } };
@@ -340,10 +442,12 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setLetterData((current) => ({ ...current, details: { ...current.details, [field]: value } }));
   }
 
   function updateFooterLine(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['footerLines', field]));
     setLetterData((current) => {
       const footer = structuredClone(current.footer);
       const normalized = String(value ?? '').trim();
@@ -385,7 +489,9 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
     setContent(defaultContent);
     setFieldConfig({ contact: createFieldConfig(contactFields), details: createFieldConfig(detailFields), recipient: createFieldConfig(recipientOptionalFields), footerMiddle: createFieldConfig(footerColumns[1]), letterContent: createFieldConfig(letterContentOptionalFields) });
     setHighlightFields(false);
+    setIsDataCheckMode(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialStateRef.current = null;
   }
 
@@ -418,7 +524,9 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
     setContent(restored.content);
     setFieldConfig(restored.fieldConfig);
     setHighlightFields(false);
+    setIsDataCheckMode(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialStateRef.current = structuredClone(restored);
     window.alert(result.message);
   }
@@ -453,14 +561,14 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
 
   return (
     <div className="visual-editor invoice-visual-editor business-letter-visual-editor">
-      <DocumentToolbar ariaLabel="Geschäftsbrief Werkzeuge" isEditable={highlightFields} isExporting={isExporting} onCreatePdf={handleCreatePdf} onLoadPdf={handleLoadPdf} onNewDocument={handleNewDocument} onPrint={handlePrint} onToggleEditable={toggleEditableMode} />
-      <p className="document-mode-hint">{highlightFields ? 'Bearbeitungsmodus: alle Eingabefelder sind hervorgehoben.' : 'Vorschau: Der Brief wird wie in der Ausgabe dargestellt.'}</p>
+      <DocumentToolbar ariaLabel="Geschäftsbrief Werkzeuge" isDataCheckActive={isDataCheckMode} isEditable={highlightFields} isExporting={isExporting} onCreatePdf={handleCreatePdf} onLoadPdf={handleLoadPdf} onNewDocument={handleNewDocument} onPrint={handlePrint} onToggleDataCheck={toggleDataCheckMode} onToggleEditable={toggleEditableMode} />
+      <p className="document-mode-hint">{viewModeHint}</p>
 
-      <A4Page ref={sheetRef} ariaLabel="Editierbarer Geschäftsbrief" className="offer-sheet invoice-sheet business-letter-sheet" editable={highlightFields}>
-        <SenderBlock contactFields={getOrderedDefinitions('contact', contactFields)} hiddenFields={getHiddenFields('contact', contactFields)} labels={labels} sender={sender} onLabelChange={updateLabel} onMoveField={(field, direction) => moveConfiguredField('contact', field, direction)} onSenderChange={updateSender} onToggleField={(field) => toggleConfiguredField('contact', field)} />
+      <A4Page ref={sheetRef} ariaLabel="Editierbarer Geschäftsbrief" className={`offer-sheet invoice-sheet business-letter-sheet${isDataCheckMode ? ' is-data-check-mode' : ''}`} editable={highlightFields}>
+        <SenderBlock contactFields={getOrderedDefinitions('contact', contactFields)} dataCheckFields={dataCheckState.sender} hiddenFields={getHiddenFields('contact', contactFields)} labels={labels} sender={sender} onLabelChange={updateLabel} onMoveField={(field, direction) => moveConfiguredField('contact', field, direction)} onSenderChange={updateSender} onToggleField={(field) => toggleConfiguredField('contact', field)} />
         <section className="invoice-address-row business-letter-address-row">
-          <RecipientBlock hiddenFields={getHiddenFields('recipient', recipientOptionalFields)} recipient={recipient} senderLine={sender.senderLine} onRecipientChange={updateRecipient} onSenderLineChange={(value) => updateSender('senderLine', value)} onToggleField={(field) => toggleConfiguredField('recipient', field)} />
-          <DocumentMetaBlock dateInputRefs={dateInputRefs} details={details} fields={getOrderedDefinitions('details', detailFields)} hiddenFields={getHiddenFields('details', detailFields)} labels={labels} onDatePicker={openDatePicker} onDetailChange={updateDetail} onLabelChange={updateLabel} onMoveField={(field, direction) => moveConfiguredField('details', field, direction)} onToggleField={(field) => toggleConfiguredField('details', field)} />
+          <RecipientBlock dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }} hiddenFields={getHiddenFields('recipient', recipientOptionalFields)} recipient={recipient} senderLine={sender.senderLine} onRecipientChange={updateRecipient} onSenderLineChange={(value) => updateSender('senderLine', value)} onToggleField={(field) => toggleConfiguredField('recipient', field)} />
+          <DocumentMetaBlock dataCheckFields={dataCheckState.details} dateInputRefs={dateInputRefs} details={details} fields={getOrderedDefinitions('details', detailFields)} hiddenFields={getHiddenFields('details', detailFields)} labels={labels} onDatePicker={openDatePicker} onDetailChange={updateDetail} onLabelChange={updateLabel} onMoveField={(field, direction) => moveConfiguredField('details', field, direction)} onToggleField={(field) => toggleConfiguredField('details', field)} />
         </section>
         <section className="business-letter-content">
           {renderTextArea('subject', 'business-letter-subject')}
@@ -470,7 +578,7 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
           <SignatureFields content={content} hiddenFields={letterContentHidden} labels={labels} onContentChange={updateContent} onToggle={(field) => toggleConfiguredField('letterContent', field)} />
           <AttachmentsField content={content} hiddenFields={letterContentHidden} labels={labels} onContentChange={updateContent} onToggle={(field) => toggleConfiguredField('letterContent', field)} resizeTextarea={resizeTextarea} textRefs={textRefs} />
         </section>
-        <FooterBlock columns={[footerColumns[0], getOrderedDefinitions('footerMiddle', footerColumns[1]), footerColumns[2]]} footerLines={footerLines} hiddenFields={getHiddenFields('footerMiddle', footerColumns[1])} onFooterLineChange={updateFooterLine} onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)} onToggleField={(field) => toggleConfiguredField('footerMiddle', field)} />
+        <FooterBlock columns={[footerColumns[0], getOrderedDefinitions('footerMiddle', footerColumns[1]), footerColumns[2]]} dataCheckFields={dataCheckState.footerLines} footerLines={footerLines} hiddenFields={getHiddenFields('footerMiddle', footerColumns[1])} onFooterLineChange={updateFooterLine} onMoveField={(field, direction) => moveConfiguredField('footerMiddle', field, direction)} onToggleField={(field) => toggleConfiguredField('footerMiddle', field)} />
       </A4Page>
 
       {isExportRenderActive && <>

@@ -295,7 +295,7 @@ const allDocumentSections = [
     label: 'Eigenbelege',
     title: 'Eigenbelege',
     description:
-      'Erstelle Eigenbelege für Ausgaben ohne vorhandenen Fremdbeleg mit Formular, direkter Dokumentbearbeitung, PDF und Druck.',
+      'Erstelle Eigenbelege für Ausgaben ohne vorhandenen Fremdbeleg mit Formular, direkter Dokumentbearbeitung, PDF und Druck. Wahlweise als einfacher Kurzbeleg im DIN-A5-Format oder als ausführlicher Eigenbeleg im DIN-A4-Format.',
     contentSections: [
       {
         heading: 'Was ist ein Eigenbeleg?',

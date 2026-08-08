@@ -1308,6 +1308,13 @@ h1 {
   color: color-mix(in srgb, #8a6514 82%, var(--color-text));
 }
 
+.document-workflow-visual-variant-note {
+  margin: 14px 4px 0;
+  color: var(--color-muted);
+  font-size: 0.52rem;
+  line-height: 1.45;
+}
+
 .document-workflow-visual-footer {
   position: absolute;
   right: 14px;

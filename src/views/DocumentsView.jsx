@@ -69,6 +69,9 @@ function DocumentWorkflowVisual() {
         <span className="document-usage-mini-line">Position · Beratungsleistung</span>
         <span className="document-usage-mini-line">Gesamtbetrag · 1.856,40 €</span>
       </div>
+      <p className="document-workflow-visual-variant-note">
+        Eigenbeleg: Kurzbeleg in DIN A5 oder ausführlicher Eigenbeleg in DIN A4
+      </p>
       <div className="document-workflow-visual-footer">
         Musterfirma GmbH · kontakt@musterfirma.de
       </div>
