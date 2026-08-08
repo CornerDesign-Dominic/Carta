@@ -79,18 +79,21 @@ function MasterDataOverview({ onSelectItem }) {
       item: masterDataItems.find((item) => item.id === 'own-data'),
       title: 'Deine eigenen Daten',
       text: 'Deine eigenen Daten werden später in den Dokumenten für Absenderdaten, Kontaktdaten und die Fußzeile verwendet. Achte besonders darauf, Unternehmens-, Steuer- und Bankdaten vollständig und aktuell zu halten.',
+      actionLabel: 'Eigene Daten verwalten',
       visual: 'ownData',
     },
     {
       item: masterDataItems.find((item) => item.id === 'partners'),
       title: 'Partner und Lieferadressen',
       text: 'Partner- und Lieferadressdaten werden später für Empfänger, Ansprechpartner, Rechnungsadressen und abweichende Lieferadressen verwendet. Prüfe deshalb Namen, Anschriften und zugehörige Kunden- oder Lieferantennummern sorgfältig.',
+      actionLabel: 'Partnerdaten verwalten',
       visual: 'partners',
     },
     {
       item: masterDataItems.find((item) => item.id === 'services'),
       title: 'Deine Leistungen und Artikel',
       text: 'Leistungen und Artikel kannst du später als Positionen in passenden Dokumenten verwenden. Achte darauf, Bezeichnung, Einheit, Preis und Umsatzsteuersatz korrekt und eindeutig zu hinterlegen.',
+      actionLabel: 'Leistungen & Artikel verwalten',
       visual: 'catalogItems',
     },
   ];
@@ -140,7 +143,7 @@ function MasterDataOverview({ onSelectItem }) {
                   href={section.item.path}
                   onClick={(event) => handleCardClick(event, section.item)}
                 >
-                  {section.item.actionLabel} <span aria-hidden="true">→</span>
+                  {section.actionLabel}
                 </a>
               </div>
               <MasterDataMiniVisual type={section.visual} />
