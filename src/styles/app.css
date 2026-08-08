@@ -12801,8 +12801,11 @@ h2,
 
 .master-data-selection-grid {
   display: grid;
-  gap: 16px;
   margin-top: 20px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
 }
 
 .master-data-selection-row {
@@ -12811,12 +12814,11 @@ h2,
   align-items: center;
   gap: 26px;
   padding: 22px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
 }
 
 .master-data-selection-row:first-child {
+  border-top: 0;
   padding-top: 22px;
 }
 
