@@ -21,6 +21,17 @@ function MasterDataMiniVisual({ type }) {
     document: ['Stammdaten', 'übersichtlich', 'PDF'],
     reuse: ['Partner wählen', 'Daten übernehmen', 'Dokument bereit'],
     local: ['Direkt im Browser', 'Keine Anmeldung', 'Lokal verarbeiten'],
+    ownData: ['Absenderdaten', 'Kontaktdaten', 'Fußzeile'],
+    partners: ['Partner', 'Rechnungsadresse', 'Lieferadresse'],
+    catalogItems: ['Leistung oder Artikel', 'Einheit und Menge', 'Preis und Umsatzsteuer'],
+  };
+
+  const titlesByType = {
+    document: 'Sammlung',
+    reuse: 'Dokument',
+    ownData: 'Eigene Daten',
+    partners: 'Partnerdaten',
+    catalogItems: 'Leistungen & Artikel',
   };
 
   return (
@@ -30,7 +41,7 @@ function MasterDataMiniVisual({ type }) {
         <span>Stammdaten</span>
       </div>
       <div className="master-data-mini-title">
-        {type === 'document' ? 'Sammlung' : type === 'reuse' ? 'Dokument' : 'Übersicht'}
+        {titlesByType[type] ?? 'Übersicht'}
       </div>
       <div className="master-data-mini-fields">
         {labelsByType[type].map((label, index) => (
@@ -51,24 +62,34 @@ function MasterDataMiniVisual({ type }) {
 function MasterDataOverview({ onSelectItem }) {
   const usageSections = [
     {
-      title: 'Stammdaten anlegen',
-      text: 'Erfasse wiederkehrende Angaben einmalig in einer übersichtlichen Stammdatensammlung. So müssen Unternehmens-, Partner- oder Leistungsdaten nicht für jedes Dokument erneut eingegeben werden.',
-      visual: 'collect',
+      title: 'Deine Daten bleiben bei dir.',
+      text: 'Wir haben uns für diese Art der Stammdatenverwaltung entschieden, um garantieren zu können, dass deine Daten nur von dir verarbeitet werden.',
+      visual: 'local',
     },
     {
-      title: 'Als lesbares Dokument speichern',
-      text: 'Die Stammdaten werden später als übersichtliches PDF-Dokument ausgegeben. Dadurch bleibt die Sammlung auch ohne besondere technische Kenntnisse lesbar und nachvollziehbar.',
+      title: 'Wie funktionieren die Stammdaten?',
+      text: 'Wir bieten dir für unsere Belege drei Arten von Stammdaten an: ein Stammdatenblatt für deine eigenen Daten, ein Stammdatenblatt für deine Partner und Lieferadressen sowie eine Sammlung für Leistungen und Artikel. Für jede der drei Kategorien wird ein PDF-Dokument generiert. Die darin enthaltenen Daten sind als JSON-Datei in die PDF eingebettet. So werden sie später direkt aus der PDF in die Belege24-Dokumente übertragen. Die Stammdatenblätter können jederzeit hochgeladen und angepasst werden.',
       visual: 'document',
     },
+  ];
+  const selectionSections = [
     {
-      title: 'In Dokumenten wiederverwenden',
-      text: 'Geladene Stammdaten können später ausgewählt und gezielt in Rechnungen, Angebote, Lieferscheine und weitere Dokumente übernommen werden.',
-      visual: 'reuse',
+      item: masterDataItems.find((item) => item.id === 'own-data'),
+      title: 'Deine eigenen Daten',
+      text: 'Deine eigenen Daten werden später in den Dokumenten für Absenderdaten, Kontaktdaten und die Fußzeile verwendet. Achte besonders darauf, Unternehmens-, Steuer- und Bankdaten vollständig und aktuell zu halten.',
+      visual: 'ownData',
     },
     {
-      title: 'Lokal und ohne Anmeldung',
-      text: 'Die Verarbeitung soll direkt im Browser erfolgen. Stammdatendateien werden nicht dauerhaft bei Belege24 gespeichert und können ohne Benutzerkonto verwendet werden.',
-      visual: 'local',
+      item: masterDataItems.find((item) => item.id === 'partners'),
+      title: 'Partner und Lieferadressen',
+      text: 'Partner- und Lieferadressdaten werden später für Empfänger, Ansprechpartner, Rechnungsadressen und abweichende Lieferadressen verwendet. Prüfe deshalb Namen, Anschriften und zugehörige Kunden- oder Lieferantennummern sorgfältig.',
+      visual: 'partners',
+    },
+    {
+      item: masterDataItems.find((item) => item.id === 'services'),
+      title: 'Deine Leistungen und Artikel',
+      text: 'Leistungen und Artikel kannst du später als Positionen in passenden Dokumenten verwenden. Achte darauf, Bezeichnung, Einheit, Preis und Umsatzsteuersatz korrekt und eindeutig zu hinterlegen.',
+      visual: 'catalogItems',
     },
   ];
 
@@ -83,11 +104,10 @@ function MasterDataOverview({ onSelectItem }) {
 
   return (
     <>
-      <h1 id="master-data-title">Verwalte deine Stammdaten</h1>
+      <h1 id="master-data-title">Verwende Stammdatenblätter</h1>
       <p className="intro master-data-intro">
-        Erstelle übersichtliche Stammdatensammlungen für deine eigenen Unternehmensdaten,
-        Geschäftspartner sowie wiederkehrende Leistungen und Artikel. Die Daten können später
-        in Belege24-Dokumenten wiederverwendet werden.
+        Erstelle, verwalte und nutze Stammdatenblätter für deine Dokumente. Spare damit Zeit und
+        vermeide Fehler durch das Vergessen von Daten oder durch einfache Tippfehler.
       </p>
 
       <section className="master-data-usage-section" aria-label="Über Stammdaten">
@@ -102,22 +122,32 @@ function MasterDataOverview({ onSelectItem }) {
             </section>
           ))}
         </div>
+        <section className="master-data-status-note" aria-label="Hinweis zum Schutz deiner Stammdaten">
+          <p>
+            Bitte achte auf deine Stammdatenblätter, denn sie enthalten deine Daten. Achte darauf,
+            sie nicht an Dritte weiterzugeben.
+          </p>
+        </section>
       </section>
 
       <section className="master-data-selection" aria-labelledby="master-data-selection-title">
-        <h2 id="master-data-selection-title">Welche Stammdaten möchtest du anlegen?</h2>
-        <div className="master-data-card-grid">
-          {masterDataItems.map((item) => (
-            <a
-              className="master-data-card"
-              href={item.path}
-              key={item.id}
-              onClick={(event) => handleCardClick(event, item)}
-            >
-              <h3>{item.title}</h3>
-              <p>{item.selectionDescription}</p>
-              <span className="master-data-card-action">{item.actionLabel} <span aria-hidden="true">→</span></span>
-            </a>
+        <h2 id="master-data-selection-title">Wähle dein Stammdatenblatt</h2>
+        <div className="master-data-selection-grid">
+          {selectionSections.map((section) => (
+            <section className="master-data-selection-row" key={section.item.id}>
+              <div className="master-data-selection-copy">
+                <h3>{section.title}</h3>
+                <p>{section.text}</p>
+                <a
+                  className="partner-button master-data-selection-button"
+                  href={section.item.path}
+                  onClick={(event) => handleCardClick(event, section.item)}
+                >
+                  {section.item.actionLabel} <span aria-hidden="true">→</span>
+                </a>
+              </div>
+              <MasterDataMiniVisual type={section.visual} />
+            </section>
           ))}
         </div>
       </section>
