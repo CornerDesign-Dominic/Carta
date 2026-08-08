@@ -12846,6 +12846,31 @@ h2,
   text-decoration: none;
 }
 
+.master-data-info-content {
+  max-width: 720px;
+  margin-top: clamp(34px, 4vw, 46px);
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.master-data-info-content h2 {
+  margin: 0 0 12px;
+  color: var(--color-text);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  line-height: 1.4;
+}
+
+.master-data-info-content p {
+  margin: 0 0 10px;
+  color: var(--color-muted);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.master-data-info-content p:last-child {
+  margin-bottom: 0;
+}
+
 .master-data-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

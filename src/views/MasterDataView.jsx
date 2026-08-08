@@ -63,11 +63,15 @@ function MasterDataOverview({ onSelectItem }) {
   const usageSections = [
     {
       title: 'Deine Daten bleiben bei dir.',
-      text: 'Wir haben uns für diese Art der Stammdatenverwaltung entschieden, um garantieren zu können, dass deine Daten nur von dir verarbeitet werden.',
+      text: 'Belege24 nutzt diese Form der Stammdatenverwaltung, damit deine Daten bei dir bleiben und nur von dir verarbeitet werden.',
+    },
+    {
+      title: 'Einmal anlegen. Immer wieder verwenden.',
+      text: 'Bereite eigene Daten, Partnerdaten sowie Leistungen und Artikel einmal vor. Übernimm sie anschließend in passende Belege24-Dokumente – für weniger wiederholte Eingaben, schnelleres Arbeiten und weniger Tippfehler.',
     },
     {
       title: 'Wie funktionieren die Stammdaten?',
-      text: 'Wir bieten dir für unsere Belege drei Arten von Stammdaten an: ein Stammdatenblatt für deine eigenen Daten, ein Stammdatenblatt für deine Partner und Lieferadressen sowie eine Sammlung für Leistungen und Artikel. Für jede der drei Kategorien wird ein PDF-Dokument generiert. Die darin enthaltenen Daten sind als JSON-Datei in die PDF eingebettet. So werden sie später direkt aus der PDF in die Belege24-Dokumente übertragen. Die Stammdatenblätter können jederzeit hochgeladen und angepasst werden.',
+      text: 'Für eigene Daten, Partner und Lieferadressen sowie Leistungen und Artikel gibt es jeweils ein Stammdatenblatt als PDF. Die benötigten Daten sind technisch in der PDF hinterlegt und können später in Belege24 geladen, übernommen und angepasst werden.',
     },
   ];
   const selectionSections = [
@@ -104,8 +108,8 @@ function MasterDataOverview({ onSelectItem }) {
     <>
       <h1 id="master-data-title">Verwende Stammdatenblätter</h1>
       <p className="intro master-data-intro">
-        Erstelle, verwalte und nutze Stammdatenblätter für deine Dokumente. Spare damit Zeit und
-        vermeide Fehler durch das Vergessen von Daten oder durch einfache Tippfehler.
+        Erstelle und verwalte Stammdatenblätter, nutze sie in deinen Dokumenten und spare Zeit bei
+        wiederkehrenden Eingaben. So vermeidest du unnötige Tippfehler.
       </p>
 
       <section className="master-data-usage-section" aria-label="Über Stammdaten">
@@ -120,10 +124,7 @@ function MasterDataOverview({ onSelectItem }) {
           ))}
         </div>
         <section className="document-status-note" aria-label="Hinweis zum Schutz deiner Stammdaten">
-          <p>
-            Bitte achte auf deine Stammdatenblätter, denn sie enthalten deine Daten. Achte darauf,
-            sie nicht an Dritte weiterzugeben.
-          </p>
+          <p>Stammdatenblätter enthalten deine Daten. Gib sie daher nicht an Dritte weiter.</p>
         </section>
       </section>
 
@@ -146,6 +147,25 @@ function MasterDataOverview({ onSelectItem }) {
             </section>
           ))}
         </div>
+      </section>
+
+      <section className="master-data-info-content" aria-labelledby="master-data-info-title">
+        <h2 id="master-data-info-title">Stammdaten für Rechnungen und Geschäftsdokumente</h2>
+        <p>
+          Viele Angaben werden in Rechnungen, Angeboten und anderen Geschäftsdokumenten immer wieder
+          benötigt. Dazu gehören zum Beispiel Unternehmensdaten, Kundendaten, Anschriften,
+          Ansprechpartner sowie wiederkehrende Leistungen oder Artikel.
+        </p>
+        <p>
+          Mit den Stammdatenblättern von Belege24 kannst du diese Angaben vorbereiten und später in
+          passenden Dokumenten erneut verwenden. So müssen häufig benötigte Informationen nicht bei
+          jedem neuen Beleg vollständig neu eingegeben werden.
+        </p>
+        <p>
+          Die Stammdaten eignen sich sowohl für eigene Unternehmensdaten als auch für Kunden,
+          Lieferanten und andere Geschäftspartner sowie für regelmäßig verwendete Leistungen und
+          Artikel.
+        </p>
       </section>
     </>
   );
