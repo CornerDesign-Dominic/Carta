@@ -1211,6 +1211,16 @@ h1 {
   line-height: 1.35;
 }
 
+.document-workflow-visual {
+  position: sticky;
+  top: 24px;
+  width: min(100%, 320px);
+}
+
+.document-workflow-visual .document-usage-mini-header strong {
+  color: var(--color-text);
+}
+
 .document-usage-mini-header {
   display: flex;
   justify-content: space-between;
@@ -1258,49 +1268,35 @@ h1 {
   color: var(--muted);
 }
 
-.document-usage-mini-line.is-highlighted {
-  border: 1px solid rgba(53, 107, 102, 0.34);
-  border-radius: 3px;
-  background: rgba(223, 236, 232, 0.62);
-  color: var(--accent-deep);
+.document-workflow-visual-modes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 14px 0;
+  padding: 9px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.document-workflow-visual-marked {
-  border: 1px solid rgba(203, 155, 67, 0.38);
+.document-workflow-visual-modes span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 6px;
   border-radius: 3px;
-  background: rgba(248, 228, 173, 0.42);
-  color: #6f551d;
+  color: var(--color-muted);
+  font-weight: 650;
 }
 
-.document-workflow-visual-editable {
-  width: fit-content;
-  padding: 2px 4px;
-  border: 1px dashed color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
-  border-radius: 3px;
+.document-workflow-visual-modes .is-editing {
   background: var(--color-accent-surface);
   color: var(--color-primary);
 }
 
-.document-workflow-visual-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 18px;
-  padding-top: 10px;
-  border-top: 1px solid var(--color-border);
-}
-
-.document-workflow-visual-actions span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 21px;
-  padding: 3px 5px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-surface);
-  color: var(--color-muted);
-  font-weight: 650;
+.document-workflow-visual-modes .is-checking {
+  background: color-mix(in srgb, #e2b84f 22%, var(--color-card));
+  color: color-mix(in srgb, #8a6514 82%, var(--color-text));
 }
 
 .document-actions-help {
@@ -5574,12 +5570,6 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   color: #34312c;
   font-size: 11pt;
   line-height: 1.35;
-}
-
-.document-workflow-visual {
-  position: sticky;
-  top: 24px;
-  width: min(100%, 320px);
 }
 
 .invoice-payment-terms input {

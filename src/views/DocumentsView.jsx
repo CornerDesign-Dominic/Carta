@@ -48,27 +48,25 @@ function DocumentWorkflowVisual() {
     <div className="document-usage-mini document-workflow-visual" aria-hidden="true">
       <div className="document-usage-mini-header">
         <strong>Belege24</strong>
-        <span>Vorschau</span>
+        <span>Beispielbeleg</span>
       </div>
       <div className="document-usage-mini-address">
-        <span className="document-workflow-visual-editable">Empfänger</span>
-        <span className="document-workflow-visual-marked">Musterkunde GmbH</span>
+        <span>Musterkunde GmbH</span>
         <span>Musterstraße 12 · 12345 Musterstadt</span>
       </div>
       <div className="document-usage-mini-title">
         Rechnung
       </div>
-      <div className="document-usage-mini-fields">
-        <span className="document-usage-mini-line is-highlighted">Rechnungsnummer · RE-2026-014</span>
-        <span className="document-usage-mini-line document-workflow-visual-marked">Datum · bitte prüfen</span>
-        <span className="document-usage-mini-line is-highlighted">Position · Beratungsleistung</span>
-        <span className="document-usage-mini-line">Gesamtbetrag · 1.856,40 €</span>
+      <div className="document-workflow-visual-modes">
+        <span className="is-editing">Bearbeiten</span>
+        <span>Vorschau</span>
+        <span className="is-checking">Prüfen</span>
       </div>
-      <div className="document-workflow-visual-actions">
-        <span>Stammdaten</span>
-        <span>PDF laden</span>
-        <span>PDF erstellen</span>
-        <span>Drucken</span>
+      <div className="document-usage-mini-fields">
+        <span className="document-usage-mini-line">Rechnungsnummer · RE-2026-014</span>
+        <span className="document-usage-mini-line">Datum · 08.08.2026</span>
+        <span className="document-usage-mini-line">Position · Beratungsleistung</span>
+        <span className="document-usage-mini-line">Gesamtbetrag · 1.856,40 €</span>
       </div>
     </div>
   );
