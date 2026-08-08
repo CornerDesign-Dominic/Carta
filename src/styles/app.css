@@ -12426,7 +12426,18 @@ h2,
 
 :root[data-theme="dark"] .document-usage-mini,
 :root[data-theme="dark"] .tools-usage-mini {
+  border-color: var(--color-border);
+  background: var(--color-card);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+:root[data-theme="dark"] .document-usage-mini-header,
+:root[data-theme="dark"] .document-usage-mini-line {
+  border-color: var(--color-border);
+}
+
+:root[data-theme="dark"] .document-usage-mini-line.is-optional {
+  background: var(--color-surface);
 }
 
 :root[data-theme="dark"] .visual-toolbar,

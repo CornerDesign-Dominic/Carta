@@ -61,10 +61,19 @@ function DocumentUsageMiniVisual({ type }) {
 
       {type === 'edit' && (
         <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line is-highlighted">Rechnungsnummer</span>
-          <span className="document-usage-mini-line is-highlighted">Datum</span>
-          <span className="document-usage-mini-line">Leistung</span>
-          <span className="document-usage-mini-line is-highlighted">Gesamtbetrag</span>
+          <span className="document-usage-mini-line is-highlighted">Bearbeitbare Felder</span>
+          <span className="document-usage-mini-line is-highlighted">Eingaben anpassen</span>
+          <span className="document-usage-mini-line">Vorschau ohne Hilfen</span>
+          <span className="document-usage-mini-line">Ausgabe kontrollieren</span>
+        </div>
+      )}
+
+      {type === 'masterData' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line is-highlighted">Eigene Daten</span>
+          <span className="document-usage-mini-line">Partnerdaten</span>
+          <span className="document-usage-mini-line">Leistungen &amp; Artikel</span>
+          <span className="document-usage-mini-line is-highlighted">Daten übernehmen</span>
         </div>
       )}
 
@@ -99,6 +108,15 @@ function DocumentUsageMiniVisual({ type }) {
           <span className="document-usage-mini-line">Gesamtbetrag</span>
         </div>
       )}
+
+      {type === 'reuse' && (
+        <div className="document-usage-mini-fields">
+          <span className="document-usage-mini-line is-highlighted">Belege24-PDF laden</span>
+          <span className="document-usage-mini-line">Daten wiederherstellen</span>
+          <span className="document-usage-mini-line">Angaben weiterbearbeiten</span>
+          <span className="document-usage-mini-line is-highlighted">Neues Dokument</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -106,28 +124,40 @@ function DocumentUsageMiniVisual({ type }) {
 function DocumentOverview() {
   const usageSections = [
     {
-      title: 'Direkt im Dokument',
+      title: 'Bearbeiten und Vorschau',
       text:
-        'Einfach loslegen. Klicke auf „Bearbeiten“, um zu sehen, welche Angaben im Dokument angepasst werden können.',
+        'Im Bearbeiten-Modus werden veränderbare Felder und Eingabemöglichkeiten sichtbar. In der Vorschau kannst du das fertige Dokument ohne Bearbeitungshilfen kontrollieren und prüfen, wie es später ausgegeben wird.',
       visual: 'edit',
     },
     {
-      title: 'Optionale Felder',
+      title: 'Stammdaten verwenden',
       text:
-        'Optionale Felder sind mit einem Augen-Symbol gekennzeichnet. Sie können ausgeblendet und bei Bedarf wieder eingeblendet werden.',
+        'Vorbereitete eigene Daten, Partnerdaten sowie Leistungen und Artikel kannst du in passenden Dokumenten übernehmen und dort weiter anpassen. Häufig benötigte Angaben müssen dadurch nicht jedes Mal neu eingegeben werden.',
+      visual: 'masterData',
+    },
+    {
+      title: 'Daten prüfen',
+      text:
+        'Der Daten-Prüfer macht Beispieldaten und noch zu kontrollierende Angaben im Dokument sichtbar. Prüfe das Dokument vor der Ausgabe trotzdem vollständig auf Inhalt, Tippfehler und fehlende Angaben.',
+      visual: 'check',
+    },
+    {
+      title: 'Dokumente wiederverwenden',
+      text:
+        'Erstellte Belege24-Dokumente kannst du später wieder als PDF laden. Die enthaltenen Dokumentdaten werden wiederhergestellt, lassen sich weiterbearbeiten und können als Grundlage für ein neues Dokument dienen.',
+      visual: 'reuse',
+    },
+    {
+      title: 'Optionale Inhalte',
+      text:
+        'Je nach Dokument kannst du optionale Felder ein- oder ausblenden und die Inhalte so an den jeweiligen Anwendungsfall anpassen.',
       visual: 'optional',
     },
     {
-      title: 'Dokument erstellen',
+      title: 'PDF erstellen und drucken',
       text:
-        'Wenn die Vorschau passt, kannst du das Dokument über „PDF erstellen“ oder „Drucken“ ausgeben. Es wird so erstellt, wie es in der Vorschau zu sehen ist.',
+        'Nach der Kontrolle kannst du das fertige Dokument als PDF erstellen oder direkt drucken. Die Ausgabe orientiert sich an der zuvor geprüften Vorschau.',
       visual: 'output',
-    },
-    {
-      title: 'Hinweis zur Prüfung',
-      text:
-        'Beispieldaten können mit dem Daten-Prüfer erkannt und hervorgehoben werden. Vor dem Erstellen sollten diese Daten angepasst sowie Tippfehler und unvollständige Angaben geprüft werden.',
-      visual: 'check',
     },
   ];
 
@@ -135,9 +165,8 @@ function DocumentOverview() {
     <>
       <h1 id="document-title">Erstelle dein Dokument</h1>
       <p className="intro document-intro">
-        Mit unseren interaktiven Online-Dokumenten erstellst du dein
-        Geschäfts-Dokument einfach und schnell direkt im Browser. So
-        funktioniert es:
+        Erstelle Geschäftsdokumente direkt im Browser und nutze Funktionen, die dich beim
+        Bearbeiten, Prüfen und Wiederverwenden unterstützen.
       </p>
 
       <section className="document-usage-section" aria-label="Anleitung zur Nutzung der Generatoren">
