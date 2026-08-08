@@ -1215,6 +1215,10 @@ h1 {
   position: sticky;
   top: 24px;
   width: min(100%, 320px);
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
+  background: var(--color-card);
+  box-shadow: var(--card-shadow);
+  color: var(--color-text);
 }
 
 .document-workflow-visual .document-usage-mini-header strong {
@@ -12830,6 +12834,12 @@ h2,
 :root[data-theme="dark"] .master-data-mini {
   border-color: color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
   background: color-mix(in srgb, var(--color-surface) 94%, var(--color-text));
+}
+
+:root[data-theme="dark"] .document-workflow-visual {
+  border-color: color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 94%, var(--color-text));
+  box-shadow: var(--card-shadow);
 }
 
 .master-data-selection-grid {
