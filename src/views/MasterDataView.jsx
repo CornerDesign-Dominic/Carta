@@ -64,12 +64,10 @@ function MasterDataOverview({ onSelectItem }) {
     {
       title: 'Deine Daten bleiben bei dir.',
       text: 'Wir haben uns für diese Art der Stammdatenverwaltung entschieden, um garantieren zu können, dass deine Daten nur von dir verarbeitet werden.',
-      visual: 'local',
     },
     {
       title: 'Wie funktionieren die Stammdaten?',
       text: 'Wir bieten dir für unsere Belege drei Arten von Stammdaten an: ein Stammdatenblatt für deine eigenen Daten, ein Stammdatenblatt für deine Partner und Lieferadressen sowie eine Sammlung für Leistungen und Artikel. Für jede der drei Kategorien wird ein PDF-Dokument generiert. Die darin enthaltenen Daten sind als JSON-Datei in die PDF eingebettet. So werden sie später direkt aus der PDF in die Belege24-Dokumente übertragen. Die Stammdatenblätter können jederzeit hochgeladen und angepasst werden.',
-      visual: 'document',
     },
   ];
   const selectionSections = [
@@ -118,7 +116,6 @@ function MasterDataOverview({ onSelectItem }) {
                 <h2>{section.title}</h2>
                 <p>{section.text}</p>
               </div>
-              <MasterDataMiniVisual type={section.visual} />
             </section>
           ))}
         </div>
