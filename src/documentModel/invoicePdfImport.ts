@@ -111,30 +111,30 @@ export async function importGoodsInvoicePdf(
   const readResult = await readBelege24DocumentFromPdf(pdfBytes);
 
   if (readResult.status === 'not-found') {
-    return { status: 'not-found', message: 'Diese PDF enthÃ¤lt keine Belege24-Daten.' };
+    return { status: 'not-found', message: 'Diese PDF enthält keine Belege24-Daten.' };
   }
   if (readResult.status === 'unsupported') {
-    return { status: 'unsupported', message: 'Die Format- oder Schema-Version dieser Belege24-PDF wird nicht unterstÃ¼tzt.' };
+    return { status: 'unsupported', message: 'Die Format- oder Schema-Version dieser Belege24-PDF wird nicht unterstützt.' };
   }
   if (readResult.status === 'unreadable-pdf') {
     return { status: 'unreadable-pdf', message: 'Die PDF konnte nicht gelesen werden.' };
   }
   if (readResult.status === 'invalid-json' || readResult.status === 'invalid-document') {
-    return { status: 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungÃ¼ltig oder beschÃ¤digt.' };
+    return { status: 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungültig oder beschädigt.' };
   }
 
   const restored = restoreGoodsInvoiceState(readResult.document);
   if (restored.status === 'wrong-document-type') {
-    return { status: 'wrong-document-type', message: 'Die PDF enthÃ¤lt keinen Belege24-Datensatz fÃ¼r eine Warenrechnung.' };
+    return { status: 'wrong-document-type', message: 'Die PDF enthält keinen Belege24-Datensatz für eine Warenrechnung.' };
   }
   if (restored.status === 'wrong-invoice-variant') {
     return { status: 'wrong-invoice-variant', message: 'Diese Belege24-PDF ist keine Warenrechnung.' };
   }
   if (restored.status === 'unsupported') {
-    return { status: 'unsupported', message: 'Die Format- oder Schema-Version dieser Belege24-PDF wird nicht unterstÃ¼tzt.' };
+    return { status: 'unsupported', message: 'Die Format- oder Schema-Version dieser Belege24-PDF wird nicht unterstützt.' };
   }
   if (restored.status === 'incomplete-data' || restored.status === 'invalid-field-values') {
-    return { status: 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungÃ¼ltig oder beschÃ¤digt.' };
+    return { status: 'invalid-data', message: 'Die eingebetteten Belege24-Daten sind ungültig oder beschädigt.' };
   }
 
   return { status: 'valid', state: restored.state, message: 'PDF erfolgreich geladen.' };

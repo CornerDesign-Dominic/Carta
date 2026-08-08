@@ -58,21 +58,21 @@ const textInvoiceClosing =
 const tradeInvoiceTextDefaults = {
   progressInvoice: {
     intro:
-      'fuer das unten genannte Projekt stellen wir Ihnen den vereinbarten Abschlag entsprechend dem aktuellen Leistungsstand in Rechnung:',
+      'für das unten genannte Projekt stellen wir Ihnen den vereinbarten Abschlag entsprechend dem aktuellen Leistungsstand in Rechnung:',
     closing:
-      'Dieser Abschlag bezieht sich auf den angegebenen Abrechnungsabschnitt und stellt keine abschliessende Abrechnung des Gesamtauftrags dar.',
+      'Dieser Abschlag bezieht sich auf den angegebenen Abrechnungsabschnitt und stellt keine abschließende Abrechnung des Gesamtauftrags dar.',
   },
   partialInvoice: {
     intro:
-      'die unten aufgefuehrte, abgegrenzte Teilleistung wurde fertiggestellt. Diese Teilleistung rechnen wir hiermit endgueltig ab:',
+      'die unten aufgeführte, abgegrenzte Teilleistung wurde fertiggestellt. Diese Teilleistung rechnen wir hiermit endgültig ab:',
     closing:
-      'Diese Teilrechnung betrifft ausschliesslich die beschriebene abgeschlossene Teilleistung. Weitere Leistungen bleiben davon unberuehrt.',
+      'Diese Teilrechnung betrifft ausschließlich die beschriebene abgeschlossene Teilleistung. Weitere Leistungen bleiben davon unberührt.',
   },
   finalInvoice: {
     intro:
-      'vielen Dank fuer Ihren Auftrag. Fuer unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
+      'vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:',
     closing:
-      'Bereits vereinnahmte Abschlagszahlungen wurden in der Schlussrechnung beruecksichtigt. Bitte begleichen Sie den verbleibenden Restbetrag.',
+      'Bereits vereinnahmte Abschlagszahlungen wurden in der Schlussrechnung berücksichtigt. Bitte begleichen Sie den verbleibenden Restbetrag.',
   },
 };
 
@@ -112,7 +112,7 @@ const initialInvoiceLabels = {
   previousPaymentStatus: 'Status',
   serviceTotal: 'Gesamtbetrag der Leistungen',
   serviceTax: 'enthaltene Umsatzsteuer',
-  deductedPayments: 'beruecksichtigte Abschlagszahlungen',
+  deductedPayments: 'berücksichtigte Abschlagszahlungen',
   deductedPaymentTax: 'darin enthaltene Umsatzsteuer',
   remainingNet: 'verbleibender Nettobetrag',
   remainingTax: 'verbleibende Umsatzsteuer',
@@ -248,7 +248,7 @@ const defaultInvoiceData = {
     attention: 'z. Hd. Warenannahme',
     name: 'Logistik',
     address: {
-      street: 'Lieferstrasse',
+      street: 'Lieferstraße',
       houseNumber: '3',
       postalCode: '20097',
       city: 'Hamburg',
@@ -1206,7 +1206,7 @@ export function PreviousPaymentsTable({
         </tbody>
       </table>
       <button className="offer-add-position" type="button" onClick={onAddPayment}>
-        + Abschlagsrechnung hinzufuegen
+        + Abschlagsrechnung hinzufügen
       </button>
       <p className="invoice-previous-payments-note">
         Nur als vereinnahmt markierte Abschlagsrechnungen werden vom Restbetrag abgezogen.
@@ -2168,7 +2168,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
         <section className="invoice-address-row">
           <div className="invoice-address-stack">
             <RecipientBlock
-              ariaPrefix="Empfaenger"
+              ariaPrefix="Empfänger"
               dataCheckFields={{ ...dataCheckState.recipient, senderLine: dataCheckState.sender.senderLine }}
               hiddenFields={getHiddenFields('recipient', invoiceRecipientOptionalFields)}
               recipient={recipient}

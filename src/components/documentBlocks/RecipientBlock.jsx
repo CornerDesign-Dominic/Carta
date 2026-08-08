@@ -1,7 +1,7 @@
 import { EyeIcon, FieldActions } from './FieldActions.jsx';
 
 export default function RecipientBlock({
-  ariaPrefix = 'Empfaenger',
+  ariaPrefix = 'Empfänger',
   attentionToggleLabel = 'Zusatz / zu Haenden',
   dataCheckFields = {},
   hiddenFields = [],
@@ -25,7 +25,7 @@ export default function RecipientBlock({
       {showSenderLine && (
         <input
           className={`invoice-sender-line${dataCheckFields.senderLine ? ' document-data-check-marker' : ''}`}
-          aria-label="Absenderzeile ueber Empfaengeradresse"
+          aria-label="Absenderzeile über Empfängeradresse"
           value={senderLine}
           onChange={(event) => onSenderLineChange(event.target.value)}
         />
@@ -90,7 +90,7 @@ export default function RecipientBlock({
         </div>
       )}
       <input
-        aria-label={`${ariaPrefix} Strasse und Hausnummer`}
+        aria-label={`${ariaPrefix} Straße und Hausnummer`}
         className={dataCheckFields.street ? 'document-data-check-marker' : undefined}
         value={recipient.street}
         onChange={(event) => onRecipientChange('street', event.target.value)}

@@ -91,7 +91,7 @@ export default function ReceiptDocumentForm({
             <h3>Absender / Aussteller</h3>
             <div className="invoice-panel-grid">
               <ReceiptPanelInput autoComplete="organization" className="invoice-panel-field-wide" label="Firma" name="receipt-sender-company" placeholder={defaults.sender.companyName} value={sender.companyName} onChange={(value) => updateSenderAddress('company', value)} />
-              <ReceiptPanelInput label="Strasse" name="receipt-sender-street" placeholder={defaults.sender.address.street} value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
+              <ReceiptPanelInput label="Straße" name="receipt-sender-street" placeholder={defaults.sender.address.street} value={senderAddress.street} onChange={(value) => updateSenderAddress('street', value)} />
               <ReceiptPanelInput label="Hausnummer" name="receipt-sender-house" placeholder={defaults.sender.address.houseNumber} value={senderAddress.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
               <ReceiptPanelInput label="PLZ" name="receipt-sender-postal" placeholder={defaults.sender.address.postalCode} value={senderAddress.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
               <ReceiptPanelInput label="Stadt" name="receipt-sender-city" placeholder={defaults.sender.address.city} value={senderAddress.city} onChange={(value) => updateSenderAddress('city', value)} />

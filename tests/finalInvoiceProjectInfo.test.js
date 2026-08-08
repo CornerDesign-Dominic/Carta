@@ -66,7 +66,7 @@ describe('final invoice project information', () => {
   it('uses the regular preamble instead of the former final-invoice introduction', () => {
     const intro = createTradeInvoiceTextBlocks('finalInvoice').find((block) => block.id === 'intro');
 
-    expect(intro?.value).toBe('vielen Dank fuer Ihren Auftrag. Fuer unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:');
+    expect(intro?.value).toBe('vielen Dank für Ihren Auftrag. Für unsere Leistungen stellen wir Ihnen wie folgt in Rechnung:');
     expect(intro?.value).not.toContain('nach Fertigstellung');
   });
 

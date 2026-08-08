@@ -79,14 +79,14 @@ const receiptRecipientOptionalFields = [
 
 const receiptHeaderFields = [
   { field: 'company', label: 'Firma' },
-  { field: 'streetLine', label: 'Strasse und Hausnummer' },
+  { field: 'streetLine', label: 'Straße und Hausnummer' },
   { field: 'cityLine', label: 'PLZ und Stadt' },
 ];
 
 const receiptFooterColumns = [
   [
     { field: 'companyName', label: 'Firma' },
-    { field: 'companyStreet', label: 'Strasse und Hausnummer' },
+    { field: 'companyStreet', label: 'Straße und Hausnummer' },
     { field: 'companyCity', label: 'PLZ und Stadt' },
     { field: 'companyExtra', label: 'Zusatzzeile Firma' },
   ],
@@ -106,12 +106,12 @@ const defaultReceiptData = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
     },
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     contact: {
       email: 'kontakt@belege24.com',
       phone: '+49 30 123456',
@@ -123,7 +123,7 @@ const defaultReceiptData = {
     attention: 'z. Hd. Frau Beispiel',
     name: 'Buchhaltung',
     address: {
-      street: 'Kundenstrasse',
+      street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
       city: 'Hamburg',
@@ -154,7 +154,7 @@ const defaultReceiptData = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -648,10 +648,10 @@ function ReceiptHeaderAddress({
     },
     {
       field: 'streetLine',
-      label: 'Strasse und Hausnummer',
+      label: 'Straße und Hausnummer',
       value: sender.streetLine,
       onChange: (value) => onSenderChange('address', splitStreetLine(value)),
-      ariaLabel: 'Aussteller Strasse und Hausnummer',
+      ariaLabel: 'Aussteller Straße und Hausnummer',
     },
     {
       field: 'cityLine',

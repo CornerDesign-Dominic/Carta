@@ -72,7 +72,7 @@ const selfReceiptRecipientOptionalFields = [
 const selfReceiptFooterColumns = [
   [
     { field: 'companyName', label: 'Firma' },
-    { field: 'companyStreet', label: 'Strasse und Hausnummer' },
+    { field: 'companyStreet', label: 'Straße und Hausnummer' },
     { field: 'companyCity', label: 'PLZ und Stadt' },
     { field: 'companyExtra', label: 'Zusatzzeile Firma' },
   ],
@@ -116,12 +116,12 @@ const defaultSelfReceiptData = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
     },
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     contact: {
       email: 'kontakt@belege24.com',
       phone: '+49 30 123456',
@@ -159,7 +159,7 @@ const defaultSelfReceiptData = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',

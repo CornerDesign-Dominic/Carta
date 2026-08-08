@@ -3,9 +3,9 @@ import { MoveDownIcon, MoveUpIcon } from './documentBlocks/FieldActions.jsx';
 const deliveryNoteFormDefaults = {
   sender: {
     companyName: 'Belege24 Muster GmbH',
-    returnAddress: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    returnAddress: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     address: {
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -22,7 +22,7 @@ const deliveryNoteFormDefaults = {
     attention: 'z. Hd. Frau Beispiel',
     name: 'Wareneingang',
     address: {
-      street: 'Kundenstrasse',
+      street: 'Kundenstraße',
       houseNumber: '8',
       postalCode: '20095',
       city: 'Hamburg',
@@ -51,7 +51,7 @@ const deliveryNoteFormDefaults = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -317,7 +317,7 @@ export default function DeliveryNoteDocumentForm({
               <h3>Absender</h3>
               <div className="invoice-panel-grid">
                 <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Firmenname" name="sender-company" value={sender.companyName} onChange={(value) => updateSenderAddress('company', value)} />
-                <DeliveryNotePanelInput label="Strasse" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
+                <DeliveryNotePanelInput label="Straße" name="sender-street" value={sender.address.street} onChange={(value) => updateSenderAddress('street', value)} />
                 <DeliveryNotePanelInput label="Hausnummer" name="sender-house-code" value={sender.address.houseNumber} onChange={(value) => updateSenderAddress('houseNumber', value)} />
                 <DeliveryNotePanelInput label="PLZ" name="sender-postal-code" value={sender.address.postalCode} onChange={(value) => updateSenderAddress('postalCode', value)} />
                 <DeliveryNotePanelInput label="Stadt" name="sender-city" value={sender.address.city} onChange={(value) => updateSenderAddress('city', value)} />
@@ -331,7 +331,7 @@ export default function DeliveryNoteDocumentForm({
                 <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Firmenname" name="recipient-company" value={recipient.companyName} onChange={(value) => updateRecipient('company', value)} />
                 <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Zusatz / zu Händen" name="recipient-attention" value={recipient.attention} onChange={(value) => updateRecipient('attention', value)} />
                 <DeliveryNotePanelInput className="invoice-panel-field-wide" label="Name / Abteilung" name="recipient-name" value={recipient.name} onChange={(value) => updateRecipient('name', value)} />
-                <DeliveryNotePanelInput label="Strasse" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
+                <DeliveryNotePanelInput label="Straße" name="recipient-street" value={recipient.address.street} onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })} />
                 <DeliveryNotePanelInput label="Hausnummer" name="recipient-house-code" value={recipient.address.houseNumber} onChange={(value) => updateRecipient('address', { ...recipient.address, houseNumber: value })} />
                 <DeliveryNotePanelInput label="PLZ" name="recipient-postal-code" value={recipient.address.postalCode} onChange={(value) => updateRecipient('address', { ...recipient.address, postalCode: value })} />
                 <DeliveryNotePanelInput label="Stadt" name="recipient-city" value={recipient.address.city} onChange={(value) => updateRecipient('address', { ...recipient.address, city: value })} />
@@ -414,7 +414,7 @@ export default function DeliveryNoteDocumentForm({
                   title: 'Firmendaten/Adresse',
                   fields: [
                     ['companyName', 'Firma'],
-                    ['companyStreetName', 'Strasse'],
+                    ['companyStreetName', 'Straße'],
                     ['companyHouseNumber', 'Hausnummer'],
                     ['companyPostalCode', 'PLZ'],
                     ['companyCityName', 'Stadt'],

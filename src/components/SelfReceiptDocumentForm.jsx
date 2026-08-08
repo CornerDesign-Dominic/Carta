@@ -74,7 +74,7 @@ const defaultPosition = {
 const selfReceiptFormDefaults = {
   sender: {
     company: 'Belege24 Muster GmbH',
-    senderLine: 'Belege24 Muster GmbH - Musterstrasse 12 - 10115 Berlin',
+    senderLine: 'Belege24 Muster GmbH - Musterstraße 12 - 10115 Berlin',
     email: 'kontakt@belege24.com',
     phone: '+49 30 123456',
     fax: '+49 30 123457',
@@ -92,7 +92,7 @@ const selfReceiptFormDefaults = {
   footer: {
     company: {
       companyName: 'Belege24 Muster GmbH',
-      street: 'Musterstrasse',
+      street: 'Musterstraße',
       houseNumber: '12',
       postalCode: '10115',
       city: 'Berlin',
@@ -120,7 +120,7 @@ const selfReceiptFormDefaults = {
 
 const defaultSenderAddress = {
   company: selfReceiptFormDefaults.sender.company,
-  street: 'Musterstrasse',
+  street: 'Musterstraße',
   houseNumber: '12',
   postalCode: '10115',
   city: 'Berlin',
@@ -329,7 +329,7 @@ export default function SelfReceiptDocumentForm({
                   onChange={(value) => updateSenderAddress('company', value)}
                 />
                 <SelfReceiptPanelInput
-                  label="Strasse"
+                  label="Straße"
                   name="sender-street"
                   value={senderAddress.street}
                   onChange={(value) => updateSenderAddress('street', value)}
@@ -386,7 +386,7 @@ export default function SelfReceiptDocumentForm({
                   onChange={(value) => updateRecipient('name', value)}
                 />
                 <SelfReceiptPanelInput
-                  label="Strasse"
+                  label="Straße"
                   name="recipient-street"
                   value={recipientAddress.street}
                   onChange={(value) => updateRecipient('address', { ...recipient.address, street: value })}
@@ -584,7 +584,7 @@ export default function SelfReceiptDocumentForm({
                   title: 'Firmendaten/Adresse',
                   fields: [
                     ['companyName', 'Firma'],
-                    ['companyStreetName', 'Strasse'],
+                    ['companyStreetName', 'Straße'],
                     ['companyHouseNumber', 'Hausnummer'],
                     ['companyPostalCode', 'PLZ'],
                     ['companyCityName', 'Stadt'],
