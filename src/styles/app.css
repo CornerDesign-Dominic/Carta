@@ -9655,8 +9655,18 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   padding-top: 4px;
 }
 
+.tools-usage-row-text-only {
+  grid-template-columns: 1fr;
+}
+
 .tools-usage-copy {
+  box-sizing: border-box;
+  min-width: 0;
   max-width: 560px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card);
 }
 
 .tools-usage-copy h2,

@@ -60,7 +60,6 @@ function ToolOverview() {
       title: 'Ergebnisse dokumentieren',
       text:
         'Einige Werkzeuge übernehmen deine Berechnung zusätzlich in ein übersichtliches Dokument. Dieses kannst du direkt drucken oder als PDF speichern und so deine Ergebnisse dauerhaft festhalten.',
-      visual: 'document',
     },
     {
       title: 'Direkt im Browser',
@@ -82,12 +81,15 @@ function ToolOverview() {
       <section className="tools-usage-section" aria-label="Hinweise zur Nutzung der Werkzeuge">
         <div className="tools-usage-grid" aria-label="Hinweise zur Nutzung der Werkzeuge">
           {usageSections.map((section) => (
-            <section className="tools-usage-row" key={section.title}>
+            <section
+              className={`tools-usage-row${section.visual ? '' : ' tools-usage-row-text-only'}`}
+              key={section.title}
+            >
               <div className="tools-usage-copy">
                 <h3>{section.title}</h3>
                 <p>{section.text}</p>
               </div>
-              <ToolUsageMiniVisual type={section.visual} />
+              {section.visual && <ToolUsageMiniVisual type={section.visual} />}
             </section>
           ))}
         </div>
