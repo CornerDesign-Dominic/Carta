@@ -13,7 +13,16 @@ import SelfReceiptExpenseTable from './documentBlocks/SelfReceiptExpenseTable.js
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
-import { createDocumentDataCheckState, getDocumentModeHint } from '../utils/documentDataCheck.js';
+import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
+  createDocumentDataCheckState,
+  createMasterDataOrigin,
+  getDataCheckClassName,
+  getDocumentModeHint,
+  markChangedViewOrigins,
+  mergeDataCheckStateWithOrigins,
+} from '../utils/documentDataCheck.js';
 import { mapSelfReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
 import { applyOwnDataToSelfReceipt, hasSelfReceiptOwnData, removeOwnDataFromSelfReceipt } from './masterDataPanel/mappings/ownDataToSelfReceipt.js';
 import { mapOwnDataToInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
@@ -398,6 +407,40 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
 }
 
 const defaultSelfReceiptViewData = createSelfReceiptViewData(defaultSelfReceiptData);
+const selfReceiptOwnDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'street'],
+  ['sender', 'cityLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+  ['footerLines', 'bankExtra'],
+];
+const selfReceiptPartnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+];
+const shortSelfReceiptOwnDataOriginViewPaths = [
+  ['shortSelfReceipt', 'ownAddress', 'company'],
+  ['shortSelfReceipt', 'ownAddress', 'street'],
+  ['shortSelfReceipt', 'ownAddress', 'cityLine'],
+];
 const defaultSelfReceiptPositionForCheck = {
   description: 'Besprechung mit Projektpartnern inkl. Verpflegung',
   netAmount: '0',
@@ -588,6 +631,7 @@ export default function SelfReceiptDocumentEditor({
   const positionTextareaRefs = useRef({});
   const dateInputRefs = useRef({});
   const [selfReceiptData, setSelfReceiptData] = useState(defaultSelfReceiptData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
   const [shortSelfReceipt, setShortSelfReceipt] = useState(createShortSelfReceiptData);
   const selfReceiptDataRef = useRef(selfReceiptData);
@@ -599,35 +643,65 @@ export default function SelfReceiptDocumentEditor({
   const selfReceiptMasterDataAdapter = useMemo(() => ({
     partnerRoleLabel: 'Zahlungsempfänger / Lieferant',
     applyOwnData(record) {
-      setSelfReceiptData((current) => applyOwnDataToSelfReceipt(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setSelfReceiptData((current) => {
+        const next = applyOwnDataToSelfReceipt(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createSelfReceiptViewData(current), createSelfReceiptViewData(next), origin, selfReceiptOwnDataOriginViewPaths),
+        );
+        return next;
+      });
       const sender = mapOwnDataToInvoice(record).sender;
-      setShortSelfReceipt((current) => ({
-        ...current,
-        ownAddress: {
-          company: sender.companyName,
-          street: joinLine(sender.address.street, sender.address.houseNumber),
-          cityLine: joinLine(sender.address.postalCode, sender.address.city),
-        },
-      }));
+      setShortSelfReceipt((current) => {
+        const next = {
+          ...current,
+          ownAddress: {
+            company: sender.companyName,
+            street: joinLine(sender.address.street, sender.address.houseNumber),
+            cityLine: joinLine(sender.address.postalCode, sender.address.city),
+          },
+        };
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(
+            origins,
+            { shortSelfReceipt: { ownAddress: current.ownAddress } },
+            { shortSelfReceipt: { ownAddress: next.ownAddress } },
+            origin,
+            shortSelfReceiptOwnDataOriginViewPaths,
+          ),
+        );
+        return next;
+      });
     },
     hasOwnDocumentData() {
       return hasSelfReceiptOwnData(selfReceiptDataRef.current);
     },
     removeOwnData() {
       setSelfReceiptData((current) => removeOwnDataFromSelfReceipt(current));
+      setMasterDataFieldOrigins((origins) =>
+        clearMasterDataOriginsForPaths(origins, [...selfReceiptOwnDataOriginViewPaths, ...shortSelfReceiptOwnDataOriginViewPaths]),
+      );
       setShortSelfReceipt((current) => ({
         ...current,
         ownAddress: { company: '', street: '', cityLine: '' },
       }));
     },
     applyPartner(record) {
-      setSelfReceiptData((current) => applyPartnerToSelfReceipt(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setSelfReceiptData((current) => {
+        const next = applyPartnerToSelfReceipt(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createSelfReceiptViewData(current), createSelfReceiptViewData(next), origin, selfReceiptPartnerOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasRecipientData() {
       return hasSelfReceiptPaymentRecipientData(selfReceiptDataRef.current);
     },
     removePartner() {
       setSelfReceiptData((current) => removePartnerFromSelfReceipt(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, selfReceiptPartnerOriginViewPaths));
     },
   }), []);
   const initialGeneratorStateRef = useRef(null);
@@ -693,7 +767,7 @@ export default function SelfReceiptDocumentEditor({
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const dataCheckState = useMemo(
-    () => createDocumentDataCheckState({
+    () => mergeDataCheckStateWithOrigins(createDocumentDataCheckState({
       defaultPosition: defaultSelfReceiptPositionForCheck,
       defaultViewData: defaultSelfReceiptViewData,
       details,
@@ -713,8 +787,8 @@ export default function SelfReceiptDocumentEditor({
       visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', selfReceiptFooterColumns[1]).filter(
         ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
       ),
-    }),
-    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+    }), masterDataFieldOrigins, isDataCheckMode),
+    [details, fieldConfig, footerLines, isDataCheckMode, masterDataFieldOrigins, positions, recipient, sender],
   );
   const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
@@ -741,10 +815,14 @@ export default function SelfReceiptDocumentEditor({
   function selectSelfReceiptVariant(variant) {
     const nextVariant = variant === 'short' ? 'short' : 'standard';
     setSelfReceiptVariant(nextVariant);
+    setMasterDataFieldOrigins({});
     onSelfReceiptVariantChange?.(nextVariant);
   }
 
   function updateShortOwnAddress(field, value) {
+    setMasterDataFieldOrigins((origins) =>
+      clearMasterDataOriginAtPath(origins, ['shortSelfReceipt', 'ownAddress', field]),
+    );
     setShortSelfReceipt((current) => ({
       ...current,
       ownAddress: { ...current.ownAddress, [field]: value },
@@ -802,6 +880,19 @@ export default function SelfReceiptDocumentEditor({
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['sender', 'street'],
+        ['sender', 'cityLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setSelfReceiptData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -822,6 +913,10 @@ export default function SelfReceiptDocumentEditor({
   }
 
   function updateRecipient(field, value) {
+    const originPaths = field === 'address'
+      ? [['recipient', 'street'], ['recipient', 'cityLine']]
+      : [['recipient', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setSelfReceiptData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -836,6 +931,7 @@ export default function SelfReceiptDocumentEditor({
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setSelfReceiptData((current) => {
       if (field in current.details) {
         return { ...current, details: { ...current.details, [field]: value } };
@@ -853,6 +949,10 @@ export default function SelfReceiptDocumentEditor({
   }
 
   function updateFooterLine(field, value) {
+    const originPaths = typeof value === 'object' && value !== null
+      ? Object.keys(value).map((entryField) => ['footerLines', entryField])
+      : [['footerLines', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setSelfReceiptData((current) => {
       const normalizedValue = typeof value === 'object' && value !== null ? value : { [field]: value };
       const streetParts = Object.prototype.hasOwnProperty.call(normalizedValue, 'companyStreet')
@@ -902,12 +1002,14 @@ export default function SelfReceiptDocumentEditor({
   }
 
   function updatePosition(id, field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', id, field]));
     setPositions((current) =>
       current.map((position) => (position.id === id ? { ...position, [field]: value } : position)),
     );
   }
 
   function removePosition(id) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', id]));
     setPositions((current) => (current.length === 1 ? current : current.filter((position) => position.id !== id)));
   }
 
@@ -940,6 +1042,7 @@ export default function SelfReceiptDocumentEditor({
       setIsFormPanelOpen(false);
       setIsExportRenderActive(false);
       setIsExporting(false);
+      setMasterDataFieldOrigins({});
       initialGeneratorStateRef.current = null;
       return;
     }
@@ -961,6 +1064,7 @@ export default function SelfReceiptDocumentEditor({
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStateRef.current = null;
   }
 
@@ -1029,6 +1133,7 @@ export default function SelfReceiptDocumentEditor({
     setPositions(restored.positions);
     setFieldConfig(restored.fieldConfig);
     setShortSelfReceipt(restored.shortSelfReceipt ?? createShortSelfReceiptData());
+    setMasterDataFieldOrigins({});
     setHighlightFields(false);
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
@@ -1120,7 +1225,7 @@ export default function SelfReceiptDocumentEditor({
           ref={(element) => {
             detailTextareaRefs.current[definition.field] = element;
           }}
-          className={dataCheckState.details[definition.field] ? 'document-data-check-marker' : undefined}
+          className={getDataCheckClassName(dataCheckState.details[definition.field])}
           aria-label={definition.ariaLabel}
           rows={1}
           wrap="soft"
@@ -1193,6 +1298,7 @@ export default function SelfReceiptDocumentEditor({
           data={shortSelfReceipt}
           editable={highlightFields}
           isDataCheckMode={isDataCheckMode}
+          ownAddressDataCheckFields={dataCheckState.shortSelfReceipt?.ownAddress}
           onChange={updateShortSelfReceipt}
           onOwnAddressChange={updateShortOwnAddress}
           onToggleAddressField={toggleShortAddressField}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
 import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
+import { getDataCheckClassName } from '../utils/documentDataCheck.js';
 
 const addressFields = [
   { field: 'company', label: 'Firma' },
@@ -67,6 +68,7 @@ function resizeTextarea(textarea) {
 export default function ShortSelfReceiptDocument({
   data,
   editable,
+  ownAddressDataCheckFields = {},
   isDataCheckMode,
   onChange,
   onOwnAddressChange,
@@ -138,6 +140,7 @@ export default function ShortSelfReceiptDocument({
           {!hiddenAddressFields.includes('company') && (
             <div className="receipt-header-row editable-group">
               <input
+                className={getDataCheckClassName(ownAddressDataCheckFields.company)}
                 aria-label="Eigene Firma"
                 value={ownAddress.company}
                 onChange={(event) => onOwnAddressChange('company', event.target.value)}
@@ -148,6 +151,7 @@ export default function ShortSelfReceiptDocument({
           {!hiddenAddressFields.includes('streetLine') && (
             <div className="receipt-header-row">
               <input
+                className={getDataCheckClassName(ownAddressDataCheckFields.street)}
                 aria-label="Eigene Straße und Hausnummer"
                 value={ownAddress.street}
                 onChange={(event) => onOwnAddressChange('street', event.target.value)}
@@ -158,6 +162,7 @@ export default function ShortSelfReceiptDocument({
           {!hiddenAddressFields.includes('cityLine') && (
             <div className="receipt-header-row">
               <input
+                className={getDataCheckClassName(ownAddressDataCheckFields.cityLine)}
                 aria-label="Eigene PLZ und Stadt"
                 value={ownAddress.cityLine}
                 onChange={(event) => onOwnAddressChange('cityLine', event.target.value)}

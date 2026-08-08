@@ -1,4 +1,5 @@
 import { FieldActions, HiddenFieldActions } from './FieldActions.jsx';
+import { getDataCheckClassName } from '../../utils/documentDataCheck.js';
 
 export default function SenderBlock({
   contactFields,
@@ -17,7 +18,7 @@ export default function SenderBlock({
     <header className="invoice-document-header">
       <div className="editable-group">
         <input
-          className={dataCheckFields.company ? 'document-data-check-marker' : undefined}
+          className={getDataCheckClassName(dataCheckFields.company)}
           aria-label="Absender Firmenname"
           value={sender.company}
           onChange={(event) => onSenderChange('company', event.target.value)}
@@ -35,7 +36,7 @@ export default function SenderBlock({
                 onChange={(event) => onLabelChange(labelField, event.target.value)}
               />
               <input
-                className={dataCheckFields[field] ? 'document-data-check-marker' : undefined}
+                className={getDataCheckClassName(dataCheckFields[field])}
                 aria-label={label}
                 value={sender[field]}
                 onChange={(event) => onSenderChange(field, event.target.value)}

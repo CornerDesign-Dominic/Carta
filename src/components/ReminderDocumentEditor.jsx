@@ -11,8 +11,14 @@ import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import ReminderDocumentForm from './ReminderDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
   createDocumentDataCheckState,
+  createMasterDataOrigin,
+  getDataCheckClassName,
   getDocumentModeHint,
+  markChangedViewOrigins,
+  mergeDataCheckStateWithOrigins,
   usesExampleValue,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
@@ -271,6 +277,33 @@ function calculateOverdueDays(dueDate) {
 }
 
 const defaultReminderViewData = createReminderViewData(defaultReminderData);
+const ownDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
+const partnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+  ['details', 'customerNumber'],
+];
 const defaultOpenItemForCheck = {
   invoiceNumber: 'RE-2026-001',
   externalNumber: 'EXT-4711',
@@ -507,6 +540,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [reminderData, setReminderData] = useState(defaultReminderData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [reminderVariant, setReminderVariant] = useState(DEFAULT_REMINDER_VARIANT);
   const [textBlocks, setTextBlocks] = useState(defaultReminderTextBlocks);
   const [openItems, setOpenItems] = useState([createOpenItem()]);
@@ -515,22 +549,38 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   reminderDataRef.current = reminderData;
   const reminderMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
-      setReminderData((current) => applyOwnDataToReminder(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setReminderData((current) => {
+        const next = applyOwnDataToReminder(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createReminderViewData(current), createReminderViewData(next), origin, ownDataOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasOwnDocumentData() {
       return hasReminderOwnData(reminderDataRef.current);
     },
     removeOwnData() {
       setReminderData((current) => removeOwnDataFromReminder(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, ownDataOriginViewPaths));
     },
     applyPartner(record) {
-      setReminderData((current) => applyPartnerToReminder(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setReminderData((current) => {
+        const next = applyPartnerToReminder(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createReminderViewData(current), createReminderViewData(next), origin, partnerOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasRecipientData() {
       return hasReminderRecipientData(reminderDataRef.current);
     },
     removePartner() {
       setReminderData((current) => removePartnerFromReminder(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
   }), []);
   const initialGeneratorStateRef = useRef(null);
@@ -612,7 +662,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
       return { ...state, charges: {}, openItems: {} };
     }
 
-    return {
+    return mergeDataCheckStateWithOrigins({
       ...state,
       charges: {
         interest: usesExampleValue(charges.interest, defaultReminderCharges.interest),
@@ -630,8 +680,8 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
           },
         ]),
       ),
-    };
-  }, [charges, details, fieldConfig, footerLines, isDataCheckMode, openItems, recipient, sender]);
+    }, masterDataFieldOrigins, isDataCheckMode);
+  }, [charges, details, fieldConfig, footerLines, isDataCheckMode, masterDataFieldOrigins, openItems, recipient, sender]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
@@ -671,6 +721,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
     const nextConfig = REMINDER_VARIANTS[nextVariant];
 
     setReminderVariant(nextVariant);
+    setMasterDataFieldOrigins({});
     setLabels((current) => ({
       ...current,
       title: current.title === currentConfig.title || current.title === 'Mahnung'
@@ -691,6 +742,17 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setReminderData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -717,6 +779,10 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateRecipient(field, value) {
+    const originPaths = field === 'address'
+      ? [['recipient', 'street'], ['recipient', 'cityLine']]
+      : [['recipient', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setReminderData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -737,6 +803,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setReminderData((current) => ({
       ...current,
       details: { ...current.details, [field]: value },
@@ -744,6 +811,10 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateFooterLine(field, value) {
+    const originPaths = value && typeof value === 'object'
+      ? Object.keys(value).map((entryField) => ['footerLines', entryField])
+      : [['footerLines', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setReminderData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -910,6 +981,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStateRef.current = null;
   }
 
@@ -980,6 +1052,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
     setIsFormPanelOpen(false);
     setIsExportRenderActive(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStateRef.current = structuredClone(restored);
     window.alert(importResult.message);
   }
@@ -1238,11 +1311,11 @@ function ReminderSummary({ charges, dataCheckFields = {}, labels, totals, update
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Zinsen" value={labels.interest} onChange={(event) => updateLabel('interest', event.target.value)} />
-        <input className={`reminder-summary-value${dataCheckFields.interest ? ' document-data-check-marker' : ''}`} aria-label="Zinsen" inputMode="decimal" type="text" value={charges.interest} onChange={(event) => updateCharge('interest', event.target.value)} />
+        <input className={getDataCheckClassName(dataCheckFields.interest, 'reminder-summary-value')} aria-label="Zinsen" inputMode="decimal" type="text" value={charges.interest} onChange={(event) => updateCharge('interest', event.target.value)} />
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Mahngebühr" value={labels.reminderFee} onChange={(event) => updateLabel('reminderFee', event.target.value)} />
-        <input className={`reminder-summary-value${dataCheckFields.reminderFee ? ' document-data-check-marker' : ''}`} aria-label="Mahngebühr" inputMode="decimal" type="text" value={charges.reminderFee} onChange={(event) => updateCharge('reminderFee', event.target.value)} />
+        <input className={getDataCheckClassName(dataCheckFields.reminderFee, 'reminder-summary-value')} aria-label="Mahngebühr" inputMode="decimal" type="text" value={charges.reminderFee} onChange={(event) => updateCharge('reminderFee', event.target.value)} />
       </div>
       <div>
         <input className="document-label-input" aria-label="Beschriftung Gesamt zu zahlender Betrag" value={labels.grandTotal} onChange={(event) => updateLabel('grandTotal', event.target.value)} />

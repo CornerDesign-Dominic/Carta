@@ -12,8 +12,14 @@ import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import CreditNoteDocumentForm from './CreditNoteDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
   createDocumentDataCheckState,
+  createMasterDataOrigin,
   getDocumentModeHint,
+  markChangedViewOrigins,
+  markPositionOrigins,
+  mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { mapCreditNoteToDocument } from '../documentModel/creditNoteMapping.js';
@@ -484,6 +490,33 @@ function createCreditNotePosition() {
 }
 
 const defaultCreditNoteViewData = createOfferViewData(defaultOfferData);
+const ownDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
+const partnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+];
+const creditNotePositionOriginFields = ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'];
 const defaultCreditNotePositionForCheck = {
   description: 'Leistung beschreiben',
   unitPrice: '0',
@@ -849,6 +882,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [offerData, setOfferData] = useState(defaultOfferData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [creditNoteVariant, setCreditNoteVariant] = useState('creditNote');
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState([createCreditNotePosition()]);
@@ -859,7 +893,14 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   smallBusinessRef.current = isSmallBusiness;
   const creditNoteMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
-      setOfferData((current) => applyOwnDataToInvoice(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setOfferData((current) => {
+        const next = applyOwnDataToInvoice(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createOfferViewData(current), createOfferViewData(next), origin, ownDataOriginViewPaths),
+        );
+        return next;
+      });
       setIsSmallBusiness(record?.settings?.isSmallBusiness === true);
     },
     hasOwnDocumentData() {
@@ -867,10 +908,18 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     },
     removeOwnData() {
       setOfferData((current) => removeOwnDataFromInvoice(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, ownDataOriginViewPaths));
       setIsSmallBusiness(false);
     },
     applyPartner(record) {
-      setOfferData((current) => applyPartnerToCreditNote(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setOfferData((current) => {
+        const next = applyPartnerToCreditNote(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createOfferViewData(current), createOfferViewData(next), origin, partnerOriginViewPaths),
+        );
+        return next;
+      });
       const partnerBank = record?.bank ?? {};
       setTextBlockSets((current) => ({
         ...current,
@@ -892,6 +941,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     },
     removePartner() {
       setOfferData((current) => removePartnerFromCreditNote(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
     canAddCatalogItem(record) {
       return isCatalogItemSupportedForCreditNote(record);
@@ -900,6 +950,13 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
       const newPositions = mapCatalogItemsToCreditNotePositions(records);
       if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
       setPositions((current) => [...current, ...newPositions]);
+      setMasterDataFieldOrigins((origins) =>
+        newPositions.reduce(
+          (currentOrigins, position, index) =>
+            markPositionOrigins(currentOrigins, [position], createMasterDataOrigin(records[index], 'catalogItem'), creditNotePositionOriginFields),
+          origins,
+        ),
+      );
       return { ok: true, count: newPositions.length };
     },
   }), []);
@@ -986,27 +1043,31 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   );
   const dataCheckState = useMemo(
     () =>
-      createDocumentDataCheckState({
-        defaultPosition: defaultCreditNotePositionForCheck,
-        defaultViewData: defaultCreditNoteViewData,
-        details,
-        footerLines,
-        isActive: isDataCheckMode,
-        positions,
-        recipient,
-        recipientHiddenFields: fieldConfig.recipient.hidden,
-        sender,
-        visibleContactFields: getOrderedDefinitions('contact', offerContactFields).filter(
-          ({ field }) => !fieldConfig.contact.hidden.includes(field),
-        ),
-        visibleDetailFields: getOrderedDefinitions('details', offerMetaFields).filter(
-          ({ field }) => !fieldConfig.details.hidden.includes(field),
-        ),
-        visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
-          ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
-        ),
-      }),
-    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+      mergeDataCheckStateWithOrigins(
+        createDocumentDataCheckState({
+          defaultPosition: defaultCreditNotePositionForCheck,
+          defaultViewData: defaultCreditNoteViewData,
+          details,
+          footerLines,
+          isActive: isDataCheckMode,
+          positions,
+          recipient,
+          recipientHiddenFields: fieldConfig.recipient.hidden,
+          sender,
+          visibleContactFields: getOrderedDefinitions('contact', offerContactFields).filter(
+            ({ field }) => !fieldConfig.contact.hidden.includes(field),
+          ),
+          visibleDetailFields: getOrderedDefinitions('details', offerMetaFields).filter(
+            ({ field }) => !fieldConfig.details.hidden.includes(field),
+          ),
+          visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', offerFooterColumns[1]).filter(
+            ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+          ),
+        }),
+        masterDataFieldOrigins,
+        isDataCheckMode,
+      ),
+    [details, fieldConfig, footerLines, isDataCheckMode, masterDataFieldOrigins, positions, recipient, sender],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -1061,6 +1122,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
 
     const nextConfig = creditNoteVariantConfig[nextVariant];
     setCreditNoteVariant(nextVariant);
+    setMasterDataFieldOrigins({});
     setLabels((current) => ({
       ...current,
       title: creditNoteVariantTitles.includes(current.title) ? nextConfig.title : current.title,
@@ -1077,6 +1139,17 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setOfferData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -1119,6 +1192,11 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   }
 
   function updateRecipient(field, value) {
+    setMasterDataFieldOrigins((origins) =>
+      field === 'address'
+        ? clearMasterDataOriginsForPaths(origins, [['recipient', 'street'], ['recipient', 'cityLine']])
+        : clearMasterDataOriginAtPath(origins, ['recipient', field === 'company' ? 'company' : field]),
+    );
     setOfferData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -1169,6 +1247,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setOfferData((current) => {
       if (['internalReference', 'externalReference', 'customerReference'].includes(field)) {
         return { ...current, references: { ...current.references, [field]: value } };
@@ -1179,6 +1258,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   }
 
   function updateFooterLine(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['footerLines', field]));
     setOfferData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -1225,6 +1305,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   }
 
   function updatePosition(positionId, field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId, field]));
     setPositions((current) =>
       current.map((position) =>
         position.id === positionId ? { ...position, [field]: value } : position,
@@ -1324,6 +1405,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     setPositions((current) =>
       current.length === 1 ? current : current.filter((position) => position.id !== positionId),
     );
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId]));
   }
 
   function updateTextBlock(blockId, patch) {
@@ -1369,6 +1451,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStatesRef.current = {};
   }
 
@@ -1478,6 +1561,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
     setIsFormPanelOpen(false);
     setIsExportRenderActive(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStatesRef.current[restored.creditNoteVariant] = structuredClone(restored);
     window.alert(importResult.message);
   }

@@ -1,4 +1,5 @@
 import { FieldActions, HiddenFieldActions } from './FieldActions.jsx';
+import { getDataCheckClassName } from '../../utils/documentDataCheck.js';
 
 export default function FooterBlock({
   configurableColumnIndex = 1,
@@ -25,7 +26,7 @@ export default function FooterBlock({
             {visibleColumn.map(({ field, label }, index) => (
               <div className={isConfigurable ? 'invoice-config-row' : undefined} key={field}>
                 <input
-                  className={dataCheckFields[field] ? 'document-data-check-marker' : undefined}
+                  className={getDataCheckClassName(dataCheckFields[field])}
                   aria-label={label}
                   value={formatFooterLine(field, footerLines[field] ?? '')}
                   onChange={(event) => onFooterLineChange(field, parseFooterLine(field, event.target.value))}

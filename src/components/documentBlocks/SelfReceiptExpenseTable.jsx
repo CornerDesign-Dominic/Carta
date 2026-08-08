@@ -1,4 +1,5 @@
 import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
+import { getDataCheckClassName } from '../../utils/documentDataCheck.js';
 
 export default function SelfReceiptExpenseTable({
   calculatePosition,
@@ -81,7 +82,7 @@ export default function SelfReceiptExpenseTable({
                     textareaRefs.current[position.id] = element;
                   }}
                   aria-label={`Beschreibung Position ${index + 1}`}
-                  className={dataCheckPositions[position.id]?.description ? 'document-data-check-marker' : undefined}
+                  className={getDataCheckClassName(dataCheckPositions[position.id]?.description)}
                   rows={1}
                   wrap="soft"
                   value={position.description}
@@ -94,7 +95,7 @@ export default function SelfReceiptExpenseTable({
               <td>
                 <input
                   aria-label={`Nettobetrag Position ${index + 1}`}
-                  className={dataCheckPositions[position.id]?.netAmount ? 'document-data-check-marker' : undefined}
+                  className={getDataCheckClassName(dataCheckPositions[position.id]?.netAmount)}
                   inputMode="decimal"
                   type="text"
                   value={position.netAmount}
@@ -105,7 +106,7 @@ export default function SelfReceiptExpenseTable({
                 <span className="invoice-tax-rate-cell">
                   <input
                     aria-label={`Umsatzsteuer Position ${index + 1}`}
-                    className={dataCheckPositions[position.id]?.taxRate ? 'document-data-check-marker' : undefined}
+                    className={getDataCheckClassName(dataCheckPositions[position.id]?.taxRate)}
                     inputMode="decimal"
                     type="text"
                     value={position.taxRate}

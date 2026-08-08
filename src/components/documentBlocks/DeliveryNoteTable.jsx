@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { MoveDownIcon, MoveUpIcon } from './FieldActions.jsx';
+import { getDataCheckClassName } from '../../utils/documentDataCheck.js';
 
 function resizeTextarea(textarea) {
   if (!textarea) {
@@ -84,7 +85,7 @@ export default function DeliveryNoteTable({
             </td>
             <td>
               <input
-                className={dataCheckPositions[position.id]?.quantity ? 'document-data-check-marker' : undefined}
+                className={getDataCheckClassName(dataCheckPositions[position.id]?.quantity)}
                 aria-label={`Menge Position ${index + 1}`}
                 inputMode="decimal"
                 type="text"
@@ -94,7 +95,7 @@ export default function DeliveryNoteTable({
             </td>
             <td>
               <input
-                className={dataCheckPositions[position.id]?.unit ? 'document-data-check-marker' : undefined}
+                className={getDataCheckClassName(dataCheckPositions[position.id]?.unit)}
                 aria-label={`Einheit Position ${index + 1}`}
                 value={position.unit}
                 onChange={(event) => onPositionChange(position.id, 'unit', event.target.value)}
@@ -105,7 +106,7 @@ export default function DeliveryNoteTable({
                 ref={(element) => {
                   textareaRefs.current[`description-${position.id}`] = element;
                 }}
-                className={`invoice-position-description delivery-note-position-description${dataCheckPositions[position.id]?.description ? ' document-data-check-marker' : ''}`}
+                className={getDataCheckClassName(dataCheckPositions[position.id]?.description, 'invoice-position-description delivery-note-position-description')}
                 aria-label={`Beschreibung Position ${index + 1}`}
                 rows={1}
                 value={position.description}

@@ -3,7 +3,15 @@ import A5LandscapePage from './documentBlocks/A5LandscapePage.jsx';
 import DocumentToolbar from './documentBlocks/DocumentToolbar.jsx';
 import { FieldActions, HiddenFieldActions } from './documentBlocks/FieldActions.jsx';
 import ReceiptDocumentForm from './ReceiptDocumentForm.jsx';
-import { getDocumentModeHint } from '../utils/documentDataCheck.js';
+import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
+  createMasterDataOrigin,
+  getDataCheckClassName,
+  getDocumentModeHint,
+  markChangedViewOrigins,
+  mergeDataCheckStateWithOrigins,
+} from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
@@ -412,6 +420,25 @@ function createViewData(data) {
 }
 
 const defaultReceiptViewData = createViewData(defaultReceiptData);
+const receiptOwnDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'streetLine'],
+  ['sender', 'cityLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxId'],
+  ['footerLines', 'representation'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
 
 function usesReceiptExampleValue(value, defaultValue) {
   const current = String(value ?? '').trim();
@@ -669,7 +696,7 @@ function ReceiptHeaderAddress({
         .map(({ ariaLabel, className = '', field, label, onChange, value }) => (
           <div className={`receipt-header-row${className ? ` ${className}` : ''}`} key={field}>
             <input
-              className={dataCheckFields[field] ? 'document-data-check-marker' : undefined}
+              className={getDataCheckClassName(dataCheckFields[field])}
               aria-label={ariaLabel}
               value={value}
               onChange={(event) => onChange(event.target.value)}
@@ -699,7 +726,7 @@ function ReceiptLineField({ dataCheck = false, label, onLabelChange, value, onCh
         onChange={(event) => onLabelChange(event.target.value)}
       />
       <input
-        className={['receipt-line-value', valueClassName, dataCheck ? 'document-data-check-marker' : ''].filter(Boolean).join(' ')}
+        className={getDataCheckClassName(dataCheck, ['receipt-line-value', valueClassName].filter(Boolean).join(' '))}
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -715,6 +742,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
   const [labels, setLabels] = useState(initialReceiptLabels);
   const [receiptData, setReceiptData] = useState(emptyReceiptData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [amountCalculationSource, setAmountCalculationSource] = useState('netAmount');
   const [textBlocks, setTextBlocks] = useState(defaultReceiptTextBlocks);
   const [fieldConfig, setFieldConfig] = useState({
@@ -728,13 +756,21 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
   receiptDataRef.current = receiptData;
   const receiptMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
-      setReceiptData((current) => applyOwnDataToReceipt(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setReceiptData((current) => {
+        const next = applyOwnDataToReceipt(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createViewData(current), createViewData(next), origin, receiptOwnDataOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasOwnDocumentData() {
       return hasReceiptOwnData(receiptDataRef.current);
     },
     removeOwnData() {
       setReceiptData((current) => removeOwnDataFromReceipt(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, receiptOwnDataOriginViewPaths));
     },
   }), []);
   const initialGeneratorStateRef = useRef(null);
@@ -761,7 +797,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
       return { amount: {}, details: {}, sender: {} };
     }
 
-    return {
+    return mergeDataCheckStateWithOrigins({
       amount: {
         netAmount: usesReceiptExampleValue(amount.netAmount, defaultReceiptViewData.amount.netAmount),
         taxRate: usesReceiptExampleValue(amount.taxRate, defaultReceiptViewData.amount.taxRate),
@@ -786,8 +822,8 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
         company: usesReceiptExampleValue(sender.company, defaultReceiptViewData.sender.company),
         streetLine: usesReceiptExampleValue(sender.streetLine, defaultReceiptViewData.sender.streetLine),
       },
-    };
-  }, [amount, details, isDataCheckMode, sender]);
+    }, masterDataFieldOrigins, isDataCheckMode);
+  }, [amount, details, isDataCheckMode, masterDataFieldOrigins, sender]);
   const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
   function updateLabel(field, value) {
@@ -811,6 +847,19 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['sender', 'streetLine'],
+        ['sender', 'cityLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setReceiptData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -988,6 +1037,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateFooterLine(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['footerLines', field]));
     setReceiptData((current) => {
       const footer = {
         company: { ...current.footer.company },
@@ -1095,6 +1145,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
     setIsExporting(false);
+    setMasterDataFieldOrigins({});
     initialGeneratorStateRef.current = null;
   }
 
@@ -1139,6 +1190,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
     setAmountCalculationSource(restored.amountCalculationSource);
     setTextBlocks(restored.textBlocks);
     setFieldConfig(restored.fieldConfig);
+    setMasterDataFieldOrigins({});
     setHighlightFields(false);
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
@@ -1218,7 +1270,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
               <label>
                 <span className="document-label-input receipt-fixed-amount-label">{labels.netAmount}</span>
                 <input
-                  className={dataCheckState.amount.netAmount ? 'document-data-check-marker' : undefined}
+                  className={getDataCheckClassName(dataCheckState.amount.netAmount)}
                   aria-label={labels.netAmount}
                   value={amount.netAmount}
                   onChange={(event) => updateAmount('netAmount', event.target.value)}
@@ -1231,7 +1283,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
               <label className="receipt-tax-line">
                 <span className="document-label-input receipt-fixed-amount-label">{labels.taxRate}</span>
                 <select
-                  className={dataCheckState.amount.taxRate ? 'document-data-check-marker' : undefined}
+                  className={getDataCheckClassName(dataCheckState.amount.taxRate)}
                   aria-label={labels.taxRate}
                   value={amount.taxRate}
                   onChange={(event) => updateAmount('taxRate', event.target.value)}
@@ -1259,7 +1311,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
               <label className="is-emphasized">
                 <span className="document-label-input receipt-fixed-amount-label">{labels.grossAmount}</span>
                 <input
-                  className={dataCheckState.amount.grossAmount ? 'document-data-check-marker' : undefined}
+                  className={getDataCheckClassName(dataCheckState.amount.grossAmount)}
                   aria-label={labels.grossAmount}
                   value={amount.grossAmount}
                   onChange={(event) => updateAmount('grossAmount', event.target.value)}
@@ -1311,14 +1363,14 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
             />
             <span className="receipt-place-date-fields">
               <input
-                className={`receipt-line-value receipt-place-input${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}
+                className={getDataCheckClassName(dataCheckState.details.placeDate, 'receipt-line-value receipt-place-input')}
                 aria-label="Ort"
                 value={details.place}
                 onChange={(event) => updateDetail('place', event.target.value)}
               />
-              <span className={`receipt-date-field${dataCheckState.details.placeDate ? ' document-data-check-marker' : ''}`}>
+              <span className={getDataCheckClassName(dataCheckState.details.placeDate, 'receipt-date-field')}>
                 <input
-                  className={`receipt-line-value receipt-date-display-input${dataCheckState.details.receiptDate ? ' document-data-check-marker' : ''}`}
+                  className={getDataCheckClassName(dataCheckState.details.receiptDate, 'receipt-line-value receipt-date-display-input')}
                   aria-hidden="true"
                   readOnly
                   tabIndex="-1"
@@ -1369,7 +1421,7 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
               onChange={(event) => updateLabel('receiverSignature', event.target.value)}
             />
             <textarea
-              className={dataCheckState.details.receiverSignature ? 'document-data-check-marker' : undefined}
+              className={getDataCheckClassName(dataCheckState.details.receiverSignature)}
               aria-label={labels.receiverSignature}
               value={details.receiverSignature}
               onChange={(event) => updateDetail('receiverSignature', event.target.value)}

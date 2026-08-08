@@ -12,6 +12,14 @@ import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import OfferDocumentForm from './OfferDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
+import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
+  createMasterDataOrigin,
+  markChangedViewOrigins,
+  markPositionOrigins,
+  mergeDataCheckStateWithOrigins,
+} from '../utils/documentDataCheck.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapOfferToDocument } from '../documentModel/additionalDocumentModel.js';
 import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
@@ -386,6 +394,34 @@ function createOfferPosition() {
 }
 
 const defaultOfferViewData = createOfferViewData(defaultOfferData);
+const ownDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
+const partnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+  ['details', 'customerNumber'],
+];
+const offerPositionOriginFields = ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'];
 const defaultOfferPositionForCheck = {
   description: 'Leistung beschreiben',
   unitPrice: '0',
@@ -564,28 +600,45 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [offerData, setOfferData] = useState(defaultOfferData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [textBlocks, setTextBlocks] = useState(defaultOfferTextBlocks);
   const [positions, setPositions] = useState([createOfferPosition()]);
   const offerDataRef = useRef(offerData);
   offerDataRef.current = offerData;
   const offerMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
-      setOfferData((current) => applyOwnDataToInvoice(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setOfferData((current) => {
+        const next = applyOwnDataToInvoice(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createOfferViewData(current), createOfferViewData(next), origin, ownDataOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasOwnDocumentData() {
       return hasInvoiceOwnData(offerDataRef.current);
     },
     removeOwnData() {
       setOfferData((current) => removeOwnDataFromInvoice(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, ownDataOriginViewPaths));
     },
     applyPartner(record) {
-      setOfferData((current) => applyPartnerToInvoice(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setOfferData((current) => {
+        const next = applyPartnerToInvoice(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createOfferViewData(current), createOfferViewData(next), origin, partnerOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasRecipientData() {
       return hasInvoiceRecipientData(offerDataRef.current);
     },
     removePartner() {
       setOfferData((current) => removePartnerFromInvoice(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
     canAddCatalogItem(record) {
       return isCatalogItemSupportedForOffer(record);
@@ -594,6 +647,13 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
       const newPositions = mapCatalogItemsToOfferPositions(records);
       if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
       setPositions((current) => [...current, ...newPositions]);
+      setMasterDataFieldOrigins((origins) =>
+        newPositions.reduce(
+          (currentOrigins, position, index) =>
+            markPositionOrigins(currentOrigins, [position], createMasterDataOrigin(records[index], 'catalogItem'), offerPositionOriginFields),
+          origins,
+        ),
+      );
       return { ok: true, count: newPositions.length };
     },
   }), []);
@@ -735,19 +795,19 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
       footerChecks[field] = usesOfferExampleValue(footerLines[field], defaultOfferViewData.footerLines[field]);
     });
 
-    return {
+    return mergeDataCheckStateWithOrigins({
       details: detailChecks,
       footerLines: footerChecks,
       positions: positionChecks,
       recipient: recipientChecks,
       sender: senderChecks,
       textBlocks: {},
-    };
-  }, [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender, textBlocks]);
+    }, masterDataFieldOrigins, isDataCheckMode);
+  }, [details, fieldConfig, footerLines, isDataCheckMode, masterDataFieldOrigins, positions, recipient, sender, textBlocks]);
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const viewModeHint = isDataCheckMode
-    ? 'Ansichtsmodus: Beispieldaten hervorheben & bearbeiten'
+    ? 'Ansichtsmodus: Beispieldaten hervorheben & bearbeiten. Grün: Aus Stammdaten übernommen – bitte bei Bedarf prüfen.'
     : highlightFields
       ? 'Ansichtsmodus: Felder hervorheben & bearbeiten'
       : 'Ansichtsmodus: Vorschau & Bearbeiten';
@@ -779,6 +839,17 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setOfferData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -821,6 +892,11 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateRecipient(field, value) {
+    setMasterDataFieldOrigins((origins) =>
+      field === 'address'
+        ? clearMasterDataOriginsForPaths(origins, [['recipient', 'street'], ['recipient', 'cityLine']])
+        : clearMasterDataOriginAtPath(origins, ['recipient', field === 'company' ? 'company' : field]),
+    );
     setOfferData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -871,6 +947,7 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setOfferData((current) => {
       if (['internalNumber', 'externalNumber', 'customerNumber'].includes(field)) {
         return { ...current, references: { ...current.references, [field]: value } };
@@ -881,6 +958,7 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updateFooterLine(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['footerLines', field]));
     setOfferData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -927,6 +1005,7 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   }
 
   function updatePosition(positionId, field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId, field]));
     setPositions((current) =>
       current.map((position) =>
         position.id === positionId ? { ...position, [field]: value } : position,
@@ -1026,6 +1105,7 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
     setPositions((current) =>
       current.length === 1 ? current : current.filter((position) => position.id !== positionId),
     );
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId]));
   }
 
   function updateTextBlock(blockId, patch) {
@@ -1059,6 +1139,7 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStateRef.current = null;
   }
 
@@ -1128,6 +1209,7 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
     setPositions(restored.positions);
     setTextBlocks(restored.textBlocks);
     setFieldConfig(restored.fieldConfig);
+    setMasterDataFieldOrigins({});
     setHighlightFields(false);
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);

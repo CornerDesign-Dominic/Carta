@@ -1,4 +1,5 @@
 import { EyeIcon, FieldActions } from './FieldActions.jsx';
+import { getDataCheckClassName } from '../../utils/documentDataCheck.js';
 
 export default function RecipientBlock({
   ariaPrefix = 'Empfänger',
@@ -24,7 +25,7 @@ export default function RecipientBlock({
     <div className="invoice-recipient-fields">
       {showSenderLine && (
         <input
-          className={`invoice-sender-line${dataCheckFields.senderLine ? ' document-data-check-marker' : ''}`}
+          className={getDataCheckClassName(dataCheckFields.senderLine, 'invoice-sender-line')}
           aria-label="Absenderzeile über Empfängeradresse"
           value={senderLine}
           onChange={(event) => onSenderLineChange(event.target.value)}
@@ -32,7 +33,7 @@ export default function RecipientBlock({
       )}
       <input
         aria-label={`${ariaPrefix} Firma`}
-        className={dataCheckFields.company ? 'document-data-check-marker' : undefined}
+        className={getDataCheckClassName(dataCheckFields.company)}
         value={recipient.company}
         onChange={(event) => onRecipientChange('company', event.target.value)}
       />
@@ -54,7 +55,7 @@ export default function RecipientBlock({
       {!onToggleField && (
         <input
           aria-label={`${ariaPrefix} Zusatz oder z. Hd.`}
-          className={dataCheckFields.attention ? 'document-data-check-marker' : undefined}
+          className={getDataCheckClassName(dataCheckFields.attention)}
           value={recipient.attention}
           onChange={(event) => onRecipientChange('attention', event.target.value)}
         />
@@ -63,7 +64,7 @@ export default function RecipientBlock({
         <div className="invoice-config-row invoice-recipient-config-row">
           <input
             aria-label={`${ariaPrefix} Zusatz oder z. Hd.`}
-            className={dataCheckFields.attention ? 'document-data-check-marker' : undefined}
+            className={getDataCheckClassName(dataCheckFields.attention)}
             value={recipient.attention}
             onChange={(event) => onRecipientChange('attention', event.target.value)}
           />
@@ -73,7 +74,7 @@ export default function RecipientBlock({
       {!onToggleField && (
         <input
           aria-label={`${ariaPrefix} Ansprechpartner oder Abteilung`}
-          className={dataCheckFields.name ? 'document-data-check-marker' : undefined}
+          className={getDataCheckClassName(dataCheckFields.name)}
           value={recipient.name}
           onChange={(event) => onRecipientChange('name', event.target.value)}
         />
@@ -82,7 +83,7 @@ export default function RecipientBlock({
         <div className="invoice-config-row invoice-recipient-config-row">
           <input
             aria-label={`${ariaPrefix} Ansprechpartner oder Abteilung`}
-            className={dataCheckFields.name ? 'document-data-check-marker' : undefined}
+            className={getDataCheckClassName(dataCheckFields.name)}
             value={recipient.name}
             onChange={(event) => onRecipientChange('name', event.target.value)}
           />
@@ -91,13 +92,13 @@ export default function RecipientBlock({
       )}
       <input
         aria-label={`${ariaPrefix} Straße und Hausnummer`}
-        className={dataCheckFields.street ? 'document-data-check-marker' : undefined}
+        className={getDataCheckClassName(dataCheckFields.street)}
         value={recipient.street}
         onChange={(event) => onRecipientChange('street', event.target.value)}
       />
       <input
         aria-label={`${ariaPrefix} PLZ und Stadt`}
-        className={dataCheckFields.cityLine ? 'document-data-check-marker' : undefined}
+        className={getDataCheckClassName(dataCheckFields.cityLine)}
         value={recipient.cityLine}
         onChange={(event) => onRecipientChange('cityLine', event.target.value)}
       />

@@ -2133,6 +2133,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   box-shadow: inset 0 0 0 1px rgba(201, 124, 36, 0.16);
 }
 
+.offer-sheet.is-data-check-mode input.document-master-data-origin-marker,
+.offer-sheet.is-data-check-mode textarea.document-master-data-origin-marker,
+.offer-sheet.is-data-check-mode select.document-master-data-origin-marker,
+.receipt-sheet.is-data-check-mode input.document-master-data-origin-marker,
+.receipt-sheet.is-data-check-mode textarea.document-master-data-origin-marker,
+.receipt-sheet.is-data-check-mode select.document-master-data-origin-marker {
+  border-color: rgba(55, 143, 92, 0.5);
+  background: rgba(89, 196, 128, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(55, 143, 92, 0.18);
+}
+
+.offer-sheet.is-data-check-mode .document-master-data-origin-marker,
+.receipt-sheet.is-data-check-mode .document-master-data-origin-marker {
+  border-color: rgba(55, 143, 92, 0.5);
+}
+
 .offer-sheet.is-data-check-mode .invoice-date-field.document-data-check-marker .invoice-date-display,
 .receipt-sheet.is-data-check-mode .invoice-date-field.document-data-check-marker .invoice-date-display {
   border-radius: 3px;
@@ -2140,10 +2156,21 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   box-shadow: inset 0 0 0 1px rgba(201, 124, 36, 0.16);
 }
 
+.offer-sheet.is-data-check-mode .invoice-date-field.document-master-data-origin-marker .invoice-date-display,
+.receipt-sheet.is-data-check-mode .invoice-date-field.document-master-data-origin-marker .invoice-date-display {
+  border-radius: 3px;
+  background: rgba(89, 196, 128, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(55, 143, 92, 0.18);
+}
+
 .offer-sheet.is-export-mode .document-data-check-marker,
+.offer-sheet.is-export-mode .document-master-data-origin-marker,
 .offer-sheet.is-export-mode .invoice-date-field.document-data-check-marker .invoice-date-display,
+.offer-sheet.is-export-mode .invoice-date-field.document-master-data-origin-marker .invoice-date-display,
 .receipt-sheet.is-export-mode .document-data-check-marker,
-.receipt-sheet.is-export-mode .invoice-date-field.document-data-check-marker .invoice-date-display {
+.receipt-sheet.is-export-mode .document-master-data-origin-marker,
+.receipt-sheet.is-export-mode .invoice-date-field.document-data-check-marker .invoice-date-display,
+.receipt-sheet.is-export-mode .invoice-date-field.document-master-data-origin-marker .invoice-date-display {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
@@ -9612,7 +9639,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   grid-template-columns: minmax(0, 1fr) minmax(150px, 210px);
   align-items: center;
   gap: 26px;
-  padding: 24px 0;
+  padding: 22px 0;
   border-top: 1px solid rgba(216, 208, 196, 0.82);
 }
 
@@ -9699,29 +9726,6 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   color: var(--accent-deep);
 }
 
-.tools-usage-mini-line.is-code {
-  border: 1px solid rgba(216, 208, 196, 0.9);
-  border-radius: 3px;
-  background: rgba(246, 242, 235, 0.72);
-  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
-  color: var(--accent-deep);
-}
-
-.tools-usage-mini-line.is-marked {
-  border: 1px solid rgba(203, 155, 67, 0.38);
-  border-radius: 3px;
-  background: rgba(248, 228, 173, 0.42);
-  color: #6f551d;
-}
-
-.tools-usage-mini-line.is-result {
-  border: 1px solid rgba(53, 107, 102, 0.28);
-  border-radius: 3px;
-  background: rgba(223, 236, 232, 0.5);
-  color: var(--accent-deep);
-  font-weight: 700;
-}
-
 .tools-usage-mini-actions {
   display: flex;
   gap: 6px;
@@ -9738,6 +9742,29 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   background: var(--accent);
   color: #fff;
   font-weight: 700;
+}
+
+.tools-overview-info {
+  max-width: 720px;
+  margin-top: 38px;
+}
+
+.tools-overview-info h2 {
+  margin: 0 0 10px;
+  color: var(--color-text);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  line-height: 1.4;
+}
+
+.tools-overview-info p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.tools-overview-info p + p {
+  margin-top: 18px;
 }
 
 .tools-overview-grid {

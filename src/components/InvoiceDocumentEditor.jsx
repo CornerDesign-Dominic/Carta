@@ -13,8 +13,14 @@ import TotalsBox from './documentBlocks/TotalsBox.jsx';
 import InvoiceDocumentForm from './InvoiceDocumentForm.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
   createDocumentDataCheckState,
+  createMasterDataOrigin,
   getDocumentModeHint,
+  markChangedViewOrigins,
+  markPositionOrigins,
+  mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
@@ -428,6 +434,34 @@ function createTextInvoicePosition() {
 }
 
 const defaultInvoiceViewData = createInvoiceViewData(defaultInvoiceData);
+const ownDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
+const partnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+  ['details', 'customerNumber'],
+];
+const invoicePositionOriginFields = ['articleNumber', 'description', 'unitPrice', 'quantity', 'unit', 'taxRate'];
 const defaultInvoicePositionForCheck = {
   articleNumber: '',
   description: 'Leistung beschreiben',
@@ -1305,6 +1339,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [invoiceData, setInvoiceData] = useState(defaultInvoiceData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [isSmallBusinessInvoice, setIsSmallBusinessInvoice] = useState(() =>
     typeof initialSmallBusiness === 'boolean' ? initialSmallBusiness : readStoredSmallBusinessMode(),
   );
@@ -1318,7 +1353,20 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   invoiceVariantRef.current = normalizedInvoiceVariant;
   const invoiceMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
-      setInvoiceData((current) => applyOwnDataToInvoice(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setInvoiceData((current) => {
+        const next = applyOwnDataToInvoice(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(
+            origins,
+            createInvoiceViewData(current),
+            createInvoiceViewData(next),
+            origin,
+            ownDataOriginViewPaths,
+          ),
+        );
+        return next;
+      });
       const nextSmallBusinessMode = getOwnDataSmallBusinessMode(record);
       setIsSmallBusinessInvoice(nextSmallBusinessMode);
       onSmallBusinessChangeRef.current?.(nextSmallBusinessMode);
@@ -1328,17 +1376,32 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     },
     removeOwnData() {
       setInvoiceData((current) => removeOwnDataFromInvoice(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, ownDataOriginViewPaths));
       setIsSmallBusinessInvoice(false);
       onSmallBusinessChangeRef.current?.(false);
     },
     applyPartner(record) {
-      setInvoiceData((current) => applyPartnerToInvoice(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setInvoiceData((current) => {
+        const next = applyPartnerToInvoice(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(
+            origins,
+            createInvoiceViewData(current),
+            createInvoiceViewData(next),
+            origin,
+            partnerOriginViewPaths,
+          ),
+        );
+        return next;
+      });
     },
     hasRecipientData() {
       return hasInvoiceRecipientData(invoiceDataRef.current);
     },
     removePartner() {
       setInvoiceData((current) => removePartnerFromInvoice(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
     canAddCatalogItem(record) {
       return isCatalogItemSupportedForInvoiceVariant(record, invoiceVariantRef.current);
@@ -1347,6 +1410,18 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       const newPositions = mapCatalogItemsToInvoicePositions(records, invoiceVariantRef.current);
       if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
       setPositions((current) => [...current, ...newPositions]);
+      setMasterDataFieldOrigins((origins) =>
+        newPositions.reduce(
+          (currentOrigins, position, index) =>
+            markPositionOrigins(
+              currentOrigins,
+              [position],
+              createMasterDataOrigin(records[index], 'catalogItem'),
+              invoicePositionOriginFields,
+            ),
+          origins,
+        ),
+      );
       return { ok: true, count: newPositions.length };
     },
   }), []);
@@ -1421,6 +1496,10 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   }, [normalizedInvoiceVariant]);
 
   useEffect(() => {
+    setMasterDataFieldOrigins({});
+  }, [normalizedInvoiceVariant]);
+
+  useEffect(() => {
     resizeTextarea(titleTextareaRef.current);
 
     textBlocks.forEach((block) => {
@@ -1476,45 +1555,49 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   );
   const dataCheckState = useMemo(
     () =>
-      createDocumentDataCheckState({
-        defaultPosition: isTextInvoice
-          ? { ...defaultInvoicePositionForCheck, ...textInvoicePositionDefaults }
-          : defaultInvoicePositionForCheck,
-        defaultViewData: defaultInvoiceViewData,
-        deliveryAddress,
-        deliveryAddressHiddenFields: fieldConfig.deliveryAddress.hidden,
-        details,
-        footerLines,
-        isActive: isDataCheckMode,
-        positions,
-        positionFields: isTextInvoice
-          ? ['description', 'unitPrice', 'unit', ...(isSmallBusinessInvoice ? [] : ['taxRate'])]
-          : isGoodsInvoice
-          ? [
-              'articleNumber',
-              'description',
-              'unitPrice',
-              'quantity',
-              'unit',
-              ...(isSmallBusinessInvoice ? [] : ['taxRate']),
-            ]
-          : isSmallBusinessInvoice
-          ? ['description', 'unitPrice', 'quantity', 'unit']
-          : ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'],
-        recipient,
-        recipientHiddenFields: fieldConfig.recipient.hidden,
-        sender,
-        visibleContactFields: getOrderedDefinitions('contact', invoiceContactFields).filter(
-          ({ field }) => !fieldConfig.contact.hidden.includes(field),
-        ),
-        visibleDetailFields: getOrderedDefinitions('details', invoiceMetaFields).filter(
-          ({ field }) => !fieldConfig.details.hidden.includes(field),
-        ),
-        visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', invoiceFooterColumns[1]).filter(
-          ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
-        ),
-      }),
-    [deliveryAddress, details, fieldConfig, footerLines, isDataCheckMode, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, positions, recipient, sender],
+      mergeDataCheckStateWithOrigins(
+        createDocumentDataCheckState({
+          defaultPosition: isTextInvoice
+            ? { ...defaultInvoicePositionForCheck, ...textInvoicePositionDefaults }
+            : defaultInvoicePositionForCheck,
+          defaultViewData: defaultInvoiceViewData,
+          deliveryAddress,
+          deliveryAddressHiddenFields: fieldConfig.deliveryAddress.hidden,
+          details,
+          footerLines,
+          isActive: isDataCheckMode,
+          positions,
+          positionFields: isTextInvoice
+            ? ['description', 'unitPrice', 'unit', ...(isSmallBusinessInvoice ? [] : ['taxRate'])]
+            : isGoodsInvoice
+            ? [
+                'articleNumber',
+                'description',
+                'unitPrice',
+                'quantity',
+                'unit',
+                ...(isSmallBusinessInvoice ? [] : ['taxRate']),
+              ]
+            : isSmallBusinessInvoice
+            ? ['description', 'unitPrice', 'quantity', 'unit']
+            : ['description', 'unitPrice', 'quantity', 'unit', 'taxRate'],
+          recipient,
+          recipientHiddenFields: fieldConfig.recipient.hidden,
+          sender,
+          visibleContactFields: getOrderedDefinitions('contact', invoiceContactFields).filter(
+            ({ field }) => !fieldConfig.contact.hidden.includes(field),
+          ),
+          visibleDetailFields: getOrderedDefinitions('details', invoiceMetaFields).filter(
+            ({ field }) => !fieldConfig.details.hidden.includes(field),
+          ),
+          visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', invoiceFooterColumns[1]).filter(
+            ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+          ),
+        }),
+        masterDataFieldOrigins,
+        isDataCheckMode,
+      ),
+    [deliveryAddress, details, fieldConfig, footerLines, isDataCheckMode, isGoodsInvoice, isSmallBusinessInvoice, isTextInvoice, masterDataFieldOrigins, positions, recipient, sender],
   );
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
@@ -1547,6 +1630,17 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setInvoiceData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -1567,6 +1661,14 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   }
 
   function updateRecipient(field, value) {
+    setMasterDataFieldOrigins((origins) =>
+      field === 'address'
+        ? clearMasterDataOriginsForPaths(origins, [['recipient', 'street'], ['recipient', 'cityLine']])
+        : clearMasterDataOriginAtPath(
+            origins,
+            ['recipient', field === 'company' ? 'company' : field],
+          ),
+    );
     setInvoiceData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -1601,6 +1703,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setInvoiceData((current) => {
       if (['internalNumber', 'externalNumber', 'customerNumber'].includes(field)) {
         return { ...current, references: { ...current.references, [field]: value } };
@@ -1660,6 +1763,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   }
 
   function updateFooterLine(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['footerLines', field]));
     setInvoiceData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -1704,6 +1808,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
   }
 
   function updatePosition(positionId, field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId, field]));
     setPositions((current) =>
       current.map((position) => (position.id === positionId ? { ...position, [field]: value } : position)),
     );
@@ -1771,6 +1876,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
 
   function removePosition(positionId) {
     setPositions((current) => (current.length === 1 ? current : current.filter((position) => position.id !== positionId)));
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId]));
   }
 
   function movePosition(positionId, direction) {
@@ -1915,6 +2021,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     delete initialGeneratorStatesRef.current[normalizedInvoiceVariant];
   }
 
@@ -2009,6 +2116,7 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
     setActiveTextBlocks(restored.textBlocks, normalizedInvoiceVariant);
     setSmallBusinessMode(restored.isSmallBusinessInvoice, { persist: false });
     setFieldConfig(restored.fieldConfig);
+    setMasterDataFieldOrigins({});
     setHighlightFields(false);
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);

@@ -11,8 +11,14 @@ import TextBlock from './documentBlocks/TextBlock.jsx';
 import TextBlockControls from './documentBlocks/TextBlockControls.jsx';
 import { paginateMeasuredItems, takeMeasuredText } from './documentExport/MeasuredPaginator.jsx';
 import {
+  clearMasterDataOriginAtPath,
+  clearMasterDataOriginsForPaths,
   createDocumentDataCheckState,
+  createMasterDataOrigin,
   getDocumentModeHint,
+  markChangedViewOrigins,
+  markPositionOrigins,
+  mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
@@ -414,6 +420,33 @@ function createDeliveryNotePosition() {
 }
 
 const defaultDeliveryNoteViewData = createDeliveryNoteViewData(defaultDeliveryNoteData);
+const ownDataOriginViewPaths = [
+  ['sender', 'company'],
+  ['sender', 'senderLine'],
+  ['sender', 'email'],
+  ['sender', 'phone'],
+  ['sender', 'fax'],
+  ['sender', 'website'],
+  ['footerLines', 'companyName'],
+  ['footerLines', 'companyStreet'],
+  ['footerLines', 'companyCity'],
+  ['footerLines', 'companyExtra'],
+  ['footerLines', 'vatId'],
+  ['footerLines', 'taxNumber'],
+  ['footerLines', 'commercialRegister'],
+  ['footerLines', 'managingDirector'],
+  ['footerLines', 'bankName'],
+  ['footerLines', 'iban'],
+  ['footerLines', 'bic'],
+];
+const partnerOriginViewPaths = [
+  ['recipient', 'company'],
+  ['recipient', 'attention'],
+  ['recipient', 'name'],
+  ['recipient', 'street'],
+  ['recipient', 'cityLine'],
+];
+const deliveryNotePositionOriginFields = ['quantity', 'unit', 'description'];
 const defaultDeliveryNotePositionForCheck = {
   quantity: '1',
   unit: 'Stk.',
@@ -525,35 +558,60 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   const textBlockRefs = useRef({});
   const dateInputRefs = useRef({});
   const [deliveryNoteData, setDeliveryNoteData] = useState(defaultDeliveryNoteData);
+  const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
   const [textBlocks, setTextBlocks] = useState(defaultDeliveryNoteTextBlocks);
   const [positions, setPositions] = useState([createDeliveryNotePosition()]);
   const deliveryNoteDataRef = useRef(deliveryNoteData);
   deliveryNoteDataRef.current = deliveryNoteData;
   const deliveryNoteMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
-      setDeliveryNoteData((current) => applyOwnDataToInvoice(current, record));
+      const origin = createMasterDataOrigin(record, 'ownData');
+      setDeliveryNoteData((current) => {
+        const next = applyOwnDataToInvoice(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createDeliveryNoteViewData(current), createDeliveryNoteViewData(next), origin, ownDataOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasOwnDocumentData() {
       return hasInvoiceOwnData(deliveryNoteDataRef.current);
     },
     removeOwnData() {
       setDeliveryNoteData((current) => removeOwnDataFromInvoice(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, ownDataOriginViewPaths));
     },
     applyPartner(record) {
-      setDeliveryNoteData((current) => applyPartnerToDeliveryNote(current, record));
+      const origin = createMasterDataOrigin(record, 'partner');
+      setDeliveryNoteData((current) => {
+        const next = applyPartnerToDeliveryNote(current, record);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createDeliveryNoteViewData(current), createDeliveryNoteViewData(next), origin, partnerOriginViewPaths),
+        );
+        return next;
+      });
     },
     hasRecipientData() {
       return hasDeliveryNoteRecipientData(deliveryNoteDataRef.current);
     },
     removePartner() {
       setDeliveryNoteData((current) => removePartnerFromDeliveryNote(current));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
     canManageDeliveryAddresses: true,
     applyDeliveryAddress(address) {
-      setDeliveryNoteData((current) => applyDeliveryAddressToDeliveryNote(current, address));
+      const origin = createMasterDataOrigin(address, 'partnerDeliveryAddress');
+      setDeliveryNoteData((current) => {
+        const next = applyDeliveryAddressToDeliveryNote(current, address);
+        setMasterDataFieldOrigins((origins) =>
+          markChangedViewOrigins(origins, createDeliveryNoteViewData(current), createDeliveryNoteViewData(next), origin, partnerOriginViewPaths),
+        );
+        return next;
+      });
     },
     removeDeliveryAddress(partner) {
       setDeliveryNoteData((current) => removeDeliveryAddressFromDeliveryNote(current, partner));
+      setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, partnerOriginViewPaths));
     },
     canAddCatalogItem(record) {
       return isCatalogItemSupportedForDeliveryNote(record);
@@ -562,6 +620,13 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
       const newPositions = mapCatalogItemsToDeliveryNotePositions(records);
       if (newPositions === null || !newPositions.length) return { ok: false, count: 0 };
       setPositions((current) => [...current, ...newPositions]);
+      setMasterDataFieldOrigins((origins) =>
+        newPositions.reduce(
+          (currentOrigins, position, index) =>
+            markPositionOrigins(currentOrigins, [position], createMasterDataOrigin(records[index], 'catalogItem'), deliveryNotePositionOriginFields),
+          origins,
+        ),
+      );
       return { ok: true, count: newPositions.length };
     },
   }), []);
@@ -597,28 +662,32 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   );
   const dataCheckState = useMemo(
     () =>
-      createDocumentDataCheckState({
-        defaultPosition: defaultDeliveryNotePositionForCheck,
-        defaultViewData: defaultDeliveryNoteViewData,
-        details,
-        footerLines,
-        isActive: isDataCheckMode,
-        positions,
-        positionFields: ['quantity', 'unit', 'description'],
-        recipient,
-        recipientHiddenFields: fieldConfig.recipient.hidden,
-        sender,
-        visibleContactFields: getOrderedDefinitions('contact', deliveryNoteContactFields).filter(
-          ({ field }) => !fieldConfig.contact.hidden.includes(field),
-        ),
-        visibleDetailFields: getOrderedDefinitions('details', deliveryNoteMetaFields).filter(
-          ({ field }) => !fieldConfig.details.hidden.includes(field),
-        ),
-        visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', deliveryNoteFooterColumns[1]).filter(
-          ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
-        ),
-      }),
-    [details, fieldConfig, footerLines, isDataCheckMode, positions, recipient, sender],
+      mergeDataCheckStateWithOrigins(
+        createDocumentDataCheckState({
+          defaultPosition: defaultDeliveryNotePositionForCheck,
+          defaultViewData: defaultDeliveryNoteViewData,
+          details,
+          footerLines,
+          isActive: isDataCheckMode,
+          positions,
+          positionFields: ['quantity', 'unit', 'description'],
+          recipient,
+          recipientHiddenFields: fieldConfig.recipient.hidden,
+          sender,
+          visibleContactFields: getOrderedDefinitions('contact', deliveryNoteContactFields).filter(
+            ({ field }) => !fieldConfig.contact.hidden.includes(field),
+          ),
+          visibleDetailFields: getOrderedDefinitions('details', deliveryNoteMetaFields).filter(
+            ({ field }) => !fieldConfig.details.hidden.includes(field),
+          ),
+          visibleFooterMiddleFields: getOrderedDefinitions('footerMiddle', deliveryNoteFooterColumns[1]).filter(
+            ({ field }) => !fieldConfig.footerMiddle.hidden.includes(field),
+          ),
+        }),
+        masterDataFieldOrigins,
+        isDataCheckMode,
+      ),
+    [details, fieldConfig, footerLines, isDataCheckMode, masterDataFieldOrigins, positions, recipient, sender],
   );
   const viewModeHint = getDocumentModeHint({ isDataCheckMode, isEditable: highlightFields });
 
@@ -649,6 +718,17 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   }
 
   function updateSender(field, value) {
+    const originPathsByField = {
+      company: [['sender', 'company'], ['footerLines', 'companyName']],
+      senderLine: [['sender', 'senderLine']],
+      address: [
+        ['sender', 'senderLine'],
+        ['footerLines', 'companyStreet'],
+        ['footerLines', 'companyCity'],
+      ],
+    };
+    const originPaths = originPathsByField[field] ?? [['sender', field]];
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginsForPaths(origins, originPaths));
     setDeliveryNoteData((current) => {
       if (field === 'company') {
         const nextSender = { ...current.sender, companyName: value };
@@ -685,6 +765,11 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   }
 
   function updateRecipient(field, value) {
+    setMasterDataFieldOrigins((origins) =>
+      field === 'address'
+        ? clearMasterDataOriginsForPaths(origins, [['recipient', 'street'], ['recipient', 'cityLine']])
+        : clearMasterDataOriginAtPath(origins, ['recipient', field === 'company' ? 'company' : field]),
+    );
     setDeliveryNoteData((current) => {
       if (field === 'company') {
         return { ...current, recipient: { ...current.recipient, companyName: value } };
@@ -735,6 +820,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   }
 
   function updateDetail(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['details', field]));
     setDeliveryNoteData((current) => {
       if (['internalReference', 'externalReference', 'customerReference'].includes(field)) {
         return { ...current, references: { ...current.references, [field]: value } };
@@ -745,6 +831,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   }
 
   function updateFooterLine(field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['footerLines', field]));
     setDeliveryNoteData((current) => {
       const patch = value && typeof value === 'object' ? value : { [field]: value };
       const footer = {
@@ -791,6 +878,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
   }
 
   function updatePosition(positionId, field, value) {
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId, field]));
     setPositions((current) =>
       current.map((position) => (position.id === positionId ? { ...position, [field]: value } : position)),
     );
@@ -821,6 +909,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
     setPositions((current) =>
       current.length === 1 ? current : current.filter((position) => position.id !== positionId),
     );
+    setMasterDataFieldOrigins((origins) => clearMasterDataOriginAtPath(origins, ['positions', positionId]));
   }
 
   function updateTextBlock(blockId, patch) {
@@ -918,6 +1007,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
     setIsExportRenderActive(false);
     setIsExporting(false);
     setPrintPages([{ items: [], pageNumber: 1, used: 0 }]);
+    setMasterDataFieldOrigins({});
     initialGeneratorStateRef.current = null;
   }
 
@@ -965,6 +1055,7 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
     setPositions(restored.positions);
     setTextBlocks(restored.textBlocks);
     setFieldConfig(restored.fieldConfig);
+    setMasterDataFieldOrigins({});
     setHighlightFields(false);
     setIsDataCheckMode(false);
     setIsFormPanelOpen(false);
