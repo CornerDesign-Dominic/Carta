@@ -43,80 +43,33 @@ export function getDocumentSessionResetKey(documentId) {
   return documentId;
 }
 
-function DocumentUsageMiniVisual({ type }) {
+function DocumentWorkflowVisual() {
   return (
-    <div className={`document-usage-mini document-usage-mini-${type}`} aria-hidden="true">
+    <div className="document-usage-mini document-workflow-visual" aria-hidden="true">
       <div className="document-usage-mini-header">
         <strong>Belege24</strong>
         <span>Vorschau</span>
       </div>
       <div className="document-usage-mini-address">
-        <span>Max Mustermann GmbH</span>
-        <span>Musterstraße 12</span>
-        <span>12345 Musterstadt</span>
+        <span className="document-workflow-visual-editable">Empfänger</span>
+        <span className="document-workflow-visual-marked">Musterkunde GmbH</span>
+        <span>Musterstraße 12 · 12345 Musterstadt</span>
       </div>
       <div className="document-usage-mini-title">
         Rechnung
       </div>
-
-      {type === 'edit' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line is-highlighted">Bearbeitbare Felder</span>
-          <span className="document-usage-mini-line is-highlighted">Eingaben anpassen</span>
-          <span className="document-usage-mini-line">Vorschau ohne Hilfen</span>
-          <span className="document-usage-mini-line">Ausgabe kontrollieren</span>
-        </div>
-      )}
-
-      {type === 'masterData' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line is-highlighted">Eigene Daten</span>
-          <span className="document-usage-mini-line">Partnerdaten</span>
-          <span className="document-usage-mini-line">Leistungen &amp; Artikel</span>
-          <span className="document-usage-mini-line is-highlighted">Daten übernehmen</span>
-        </div>
-      )}
-
-      {type === 'optional' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line">Empfänger</span>
-          <span className="document-usage-mini-line is-optional">
-            <span className="document-usage-mini-eye" />
-            z. H. Ansprechpartner
-          </span>
-          <span className="document-usage-mini-line is-muted">ausblendbare Zeile</span>
-          <span className="document-usage-mini-line">Summe</span>
-        </div>
-      )}
-
-      {type === 'output' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line">Vorschau geprüft</span>
-          <span className="document-usage-mini-line">Layout bereit</span>
-          <div className="document-usage-mini-actions">
-            <span>PDF</span>
-            <span>Drucken</span>
-          </div>
-        </div>
-      )}
-
-      {type === 'check' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line is-marked">Max Mustermann</span>
-          <span className="document-usage-mini-line">Rechnungsposition</span>
-          <span className="document-usage-mini-line is-marked">Musterstraße 12</span>
-          <span className="document-usage-mini-line">Gesamtbetrag</span>
-        </div>
-      )}
-
-      {type === 'reuse' && (
-        <div className="document-usage-mini-fields">
-          <span className="document-usage-mini-line is-highlighted">Belege24-PDF laden</span>
-          <span className="document-usage-mini-line">Daten wiederherstellen</span>
-          <span className="document-usage-mini-line">Angaben weiterbearbeiten</span>
-          <span className="document-usage-mini-line is-highlighted">Neues Dokument</span>
-        </div>
-      )}
+      <div className="document-usage-mini-fields">
+        <span className="document-usage-mini-line is-highlighted">Rechnungsnummer · RE-2026-014</span>
+        <span className="document-usage-mini-line document-workflow-visual-marked">Datum · bitte prüfen</span>
+        <span className="document-usage-mini-line is-highlighted">Position · Beratungsleistung</span>
+        <span className="document-usage-mini-line">Gesamtbetrag · 1.856,40 €</span>
+      </div>
+      <div className="document-workflow-visual-actions">
+        <span>Stammdaten</span>
+        <span>PDF laden</span>
+        <span>PDF erstellen</span>
+        <span>Drucken</span>
+      </div>
     </div>
   );
 }
@@ -124,40 +77,29 @@ function DocumentUsageMiniVisual({ type }) {
 function DocumentOverview() {
   const usageSections = [
     {
-      title: 'Bearbeiten und Vorschau',
+      title: 'Bearbeiten',
       text:
-        'Im Bearbeiten-Modus werden veränderbare Felder und Eingabemöglichkeiten sichtbar. In der Vorschau kannst du das fertige Dokument ohne Bearbeitungshilfen kontrollieren und prüfen, wie es später ausgegeben wird.',
-      visual: 'edit',
+        'Im Bearbeiten-Modus werden veränderbare Bereiche sichtbar. Optionale Inhalte kannst du bei Bedarf ein- oder ausblenden.',
     },
     {
       title: 'Stammdaten verwenden',
       text:
-        'Vorbereitete eigene Daten, Partnerdaten sowie Leistungen und Artikel kannst du in passenden Dokumenten übernehmen und dort weiter anpassen. Häufig benötigte Angaben müssen dadurch nicht jedes Mal neu eingegeben werden.',
-      visual: 'masterData',
+        'Übernimm eigene Daten, Partner sowie Leistungen und Artikel. Alle übernommenen Angaben bleiben im Dokument anpassbar.',
     },
     {
-      title: 'Daten prüfen',
+      title: 'Prüfen',
       text:
-        'Der Daten-Prüfer macht Beispieldaten und noch zu kontrollierende Angaben im Dokument sichtbar. Prüfe das Dokument vor der Ausgabe trotzdem vollständig auf Inhalt, Tippfehler und fehlende Angaben.',
-      visual: 'check',
+        'Der Daten-Prüfer hebt Beispieldaten und noch zu kontrollierende Angaben hervor. Prüfe das Dokument vor der Ausgabe trotzdem vollständig.',
     },
     {
-      title: 'Dokumente wiederverwenden',
+      title: 'Wiederverwenden',
       text:
-        'Erstellte Belege24-Dokumente kannst du später wieder als PDF laden. Die enthaltenen Dokumentdaten werden wiederhergestellt, lassen sich weiterbearbeiten und können als Grundlage für ein neues Dokument dienen.',
-      visual: 'reuse',
+        'Lade bereits erstellte Belege24-Dokumente erneut, um sie weiterzubearbeiten oder als Grundlage für ein neues Dokument zu verwenden.',
     },
     {
-      title: 'Optionale Inhalte',
+      title: 'Ausgeben',
       text:
-        'Je nach Dokument kannst du optionale Felder ein- oder ausblenden und die Inhalte so an den jeweiligen Anwendungsfall anpassen.',
-      visual: 'optional',
-    },
-    {
-      title: 'PDF erstellen und drucken',
-      text:
-        'Nach der Kontrolle kannst du das fertige Dokument als PDF erstellen oder direkt drucken. Die Ausgabe orientiert sich an der zuvor geprüften Vorschau.',
-      visual: 'output',
+        'Nach der Kontrolle kannst du das Dokument als PDF erstellen oder direkt drucken. Die Ausgabe orientiert sich an der Vorschau.',
     },
   ];
 
@@ -170,16 +112,19 @@ function DocumentOverview() {
       </p>
 
       <section className="document-usage-section" aria-label="Anleitung zur Nutzung der Generatoren">
-        <div className="document-usage-grid" aria-label="Hinweise zur Nutzung der Generatoren">
-          {usageSections.map((section) => (
-            <section className="document-usage-row" key={section.title}>
-              <div className="document-usage-copy">
-                <h3>{section.title}</h3>
-                <p>{section.text}</p>
-              </div>
-              <DocumentUsageMiniVisual type={section.visual} />
-            </section>
-          ))}
+        <div className="document-workflow-layout">
+          <ol className="document-workflow-list" aria-label="Funktionen der Dokumentgeneratoren">
+            {usageSections.map((section, index) => (
+              <li className="document-workflow-step" key={section.title}>
+                <span className="document-workflow-marker" aria-hidden="true">{index + 1}</span>
+                <div className="document-usage-copy">
+                  <h3>{section.title}</h3>
+                  <p>{section.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <DocumentWorkflowVisual />
         </div>
       </section>
 

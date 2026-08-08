@@ -1100,30 +1100,52 @@ h1 {
   line-height: 1.62;
 }
 
-.document-usage-grid {
-  box-sizing: border-box;
+.document-workflow-layout {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  width: calc(100% + 20px);
-  max-width: calc(900px + 20px);
-  margin: -2px -10px -14px;
-  padding: 2px 10px 14px;
-  overflow: visible;
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.85fr);
+  align-items: start;
+  gap: clamp(34px, 5vw, 58px);
 }
 
-.document-usage-row {
+.document-workflow-list {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, 210px);
+  margin: 0;
+  padding: 2px 0 0;
+  list-style: none;
+}
+
+.document-workflow-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 14px;
+  padding: 0 0 25px;
+}
+
+.document-workflow-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  left: 14px;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.document-workflow-marker {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
   align-items: center;
-  gap: 26px;
-  padding: 24px 0;
-  border-top: 1px solid rgba(216, 208, 196, 0.82);
-}
-
-.document-usage-row:first-child {
-  border-top: 0;
-  padding-top: 4px;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+  border-radius: 50%;
+  background: var(--color-card);
+  color: var(--color-primary);
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .document-usage-copy {
@@ -1213,65 +1235,42 @@ h1 {
   color: var(--accent-deep);
 }
 
-.document-usage-mini-line.is-optional {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px dashed rgba(53, 107, 102, 0.32);
-  border-radius: 3px;
-  background: rgba(255, 253, 249, 0.85);
-}
-
-.document-usage-mini-line.is-muted {
-  color: rgba(101, 103, 96, 0.62);
-  text-decoration: line-through;
-}
-
-.document-usage-mini-line.is-marked {
+.document-workflow-visual-marked {
   border: 1px solid rgba(203, 155, 67, 0.38);
   border-radius: 3px;
   background: rgba(248, 228, 173, 0.42);
   color: #6f551d;
 }
 
-.document-usage-mini-eye {
-  position: relative;
-  display: block;
-  flex: 0 0 auto;
-  width: 12px;
-  height: 8px;
-  border: 1.3px solid currentColor;
-  border-radius: 999px / 720px;
-  color: var(--accent-deep);
+.document-workflow-visual-editable {
+  width: fit-content;
+  padding: 2px 4px;
+  border: 1px dashed color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
+  border-radius: 3px;
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
 }
 
-.document-usage-mini-eye::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 4px;
-  width: 3px;
-  height: 3px;
-  border-radius: 999px;
-  background: currentColor;
-}
-
-.document-usage-mini-actions {
-  display: flex;
+.document-workflow-visual-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
-  margin-top: 6px;
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
 }
 
-.document-usage-mini-actions span {
+.document-workflow-visual-actions span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 19px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
+  min-height: 21px;
+  padding: 3px 5px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-weight: 650;
 }
 
 .document-actions-help {
@@ -5547,6 +5546,12 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   line-height: 1.35;
 }
 
+.document-workflow-visual {
+  position: sticky;
+  top: 24px;
+  width: min(100%, 320px);
+}
+
 .invoice-payment-terms input {
   box-sizing: border-box;
   min-width: 0;
@@ -8814,7 +8819,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   .feature-grid,
   .foundation-section,
   .foundation-facts,
-  .document-usage-grid,
+  .document-workflow-layout,
   .document-actions-list,
   .document-overview-grid,
   .form-grid,
@@ -8825,15 +8830,14 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
     grid-template-columns: 1fr;
   }
 
-  .document-usage-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 22px 0;
+  .document-workflow-layout {
+    gap: 24px;
   }
 
-  .document-usage-mini {
-    justify-self: start;
-    width: min(72vw, 178px);
+  .document-workflow-visual {
+    position: static;
+    justify-self: center;
+    width: min(100%, 280px);
   }
 
   .field-wide {
@@ -11953,7 +11957,6 @@ body,
 .foundation-section,
 .document-sidebar,
 .tools-sidebar,
-.document-usage-row,
 .tools-usage-row,
 .document-status-note,
 .tools-calculator-panel,
@@ -12088,7 +12091,6 @@ h2,
 .foundation-section,
 .document-sidebar,
 .tools-sidebar,
-.document-usage-row,
 .tools-usage-row,
 .document-status-note,
 .tools-calculator-panel,
@@ -12107,7 +12109,6 @@ h2,
   box-shadow: var(--card-shadow);
 }
 
-.document-usage-row,
 .tools-usage-row {
   border-color: var(--color-border);
   box-shadow: none;
@@ -12434,10 +12435,6 @@ h2,
 :root[data-theme="dark"] .document-usage-mini-header,
 :root[data-theme="dark"] .document-usage-mini-line {
   border-color: var(--color-border);
-}
-
-:root[data-theme="dark"] .document-usage-mini-line.is-optional {
-  background: var(--color-surface);
 }
 
 :root[data-theme="dark"] .visual-toolbar,
