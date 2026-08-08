@@ -12838,7 +12838,10 @@ h2,
 
 .master-data-selection-button {
   display: inline-flex;
-  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: min(100%, 240px);
   margin-top: 16px;
   text-decoration: none;
 }

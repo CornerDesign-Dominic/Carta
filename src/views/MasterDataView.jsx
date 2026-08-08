@@ -119,7 +119,7 @@ function MasterDataOverview({ onSelectItem }) {
             </section>
           ))}
         </div>
-        <section className="master-data-status-note" aria-label="Hinweis zum Schutz deiner Stammdaten">
+        <section className="document-status-note" aria-label="Hinweis zum Schutz deiner Stammdaten">
           <p>
             Bitte achte auf deine Stammdatenblätter, denn sie enthalten deine Daten. Achte darauf,
             sie nicht an Dritte weiterzugeben.
@@ -127,8 +127,7 @@ function MasterDataOverview({ onSelectItem }) {
         </section>
       </section>
 
-      <section className="master-data-selection" aria-labelledby="master-data-selection-title">
-        <h2 id="master-data-selection-title">Wähle dein Stammdatenblatt</h2>
+      <section className="master-data-selection" aria-label="Stammdatenblätter">
         <div className="master-data-selection-grid">
           {selectionSections.map((section) => (
             <section className="master-data-selection-row" key={section.item.id}>
@@ -136,7 +135,7 @@ function MasterDataOverview({ onSelectItem }) {
                 <h3>{section.title}</h3>
                 <p>{section.text}</p>
                 <a
-                  className="partner-button master-data-selection-button"
+                  className="partner-button is-primary master-data-selection-button"
                   href={section.item.path}
                   onClick={(event) => handleCardClick(event, section.item)}
                 >
