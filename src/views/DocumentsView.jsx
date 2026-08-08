@@ -111,6 +111,15 @@ function DocumentOverview() {
         Bearbeiten, Prüfen und Wiederverwenden unterstützen.
       </p>
 
+      <section className="document-overview-content document-overview-benefit" aria-labelledby="document-overview-benefit-title">
+        <h2 id="document-overview-benefit-title">Geschäftsdokumente einfach erstellen und weiterverwenden</h2>
+        <p>
+          Mit den Belege24 Generatoren erstellst du Rechnungen, Angebote, Mahnungen und weitere
+          Geschäftsdokumente direkt im Browser. Die Dokumente lassen sich bearbeiten, prüfen, mit
+          Stammdaten befüllen und später erneut laden und weiterverwenden.
+        </p>
+      </section>
+
       <section className="document-usage-section" aria-label="Anleitung zur Nutzung der Generatoren">
         <div className="document-workflow-layout">
           <ol className="document-workflow-list" aria-label="Funktionen der Dokumentgeneratoren">
@@ -126,6 +135,26 @@ function DocumentOverview() {
           </ol>
           <DocumentWorkflowVisual />
         </div>
+      </section>
+
+      <section className="document-overview-content document-overview-info" aria-labelledby="document-overview-info-title">
+        <h2 id="document-overview-info-title">Online-Dokumente für den Geschäftsalltag</h2>
+        <p>
+          Mit Belege24 kannst du verschiedene Geschäftsdokumente wie Rechnungen, Angebote,
+          Lieferscheine, Mahnungen, Gutschriften und Geschäftsbriefe direkt online erstellen. Die
+          Generatoren unterstützen dich dabei, wiederkehrende Angaben strukturiert zu erfassen und
+          deine Dokumente vor der Ausgabe zu kontrollieren.
+        </p>
+        <p>
+          Vorbereitete Stammdaten für Unternehmen, Kunden, Lieferanten sowie Leistungen und Artikel
+          können in passenden Dokumenten übernommen werden. Dadurch lassen sich häufig benötigte
+          Angaben schneller einfügen und anschließend individuell anpassen.
+        </p>
+        <p>
+          Erstellte Belege24-Dokumente können außerdem später erneut geladen und weiterbearbeitet
+          werden. So kannst du vorhandene Dokumente als Grundlage für neue Belege verwenden, ohne
+          alle Angaben erneut eingeben zu müssen.
+        </p>
       </section>
 
       <div className="document-overview-divider" aria-hidden="true" />
