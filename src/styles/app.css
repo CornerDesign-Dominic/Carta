@@ -12680,12 +12680,12 @@ h2,
 
 .master-data-usage-row {
   display: block;
-  padding: 24px 0;
+  padding: 15px 0;
 }
 
 .master-data-usage-row:first-child {
   border-top: 0;
-  padding-top: 4px;
+  padding-top: 2px;
 }
 
 .master-data-usage-copy {
@@ -12870,7 +12870,7 @@ h2,
 }
 
 .master-data-info-content p {
-  margin: 0 0 16px;
+  margin: 0 0 22px;
   color: var(--color-muted);
   font-size: 0.94rem;
   line-height: 1.65;
