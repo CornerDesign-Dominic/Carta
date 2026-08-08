@@ -5585,7 +5585,6 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
-  opacity: 1;
   transform: none;
 }
 
