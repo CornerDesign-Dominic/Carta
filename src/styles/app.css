@@ -1218,6 +1218,7 @@ h1 {
 .document-workflow-visual {
   position: sticky;
   top: 24px;
+  align-self: center;
   width: min(100%, 320px);
   border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
   background: var(--color-card);
@@ -1305,6 +1306,18 @@ h1 {
 .document-workflow-visual-modes .is-checking {
   background: color-mix(in srgb, #e2b84f 22%, var(--color-card));
   color: color-mix(in srgb, #8a6514 82%, var(--color-text));
+}
+
+.document-workflow-visual-footer {
+  position: absolute;
+  right: 14px;
+  bottom: 15px;
+  left: 14px;
+  padding-top: 7px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-size: 0.5rem;
+  text-align: center;
 }
 
 .document-actions-help {

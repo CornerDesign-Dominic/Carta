@@ -52,7 +52,8 @@ function DocumentWorkflowVisual() {
       </div>
       <div className="document-usage-mini-address">
         <span>Musterkunde GmbH</span>
-        <span>Musterstraße 12 · 12345 Musterstadt</span>
+        <span>Musterstraße 12</span>
+        <span>12345 Musterstadt</span>
       </div>
       <div className="document-usage-mini-title">
         Rechnung
@@ -67,6 +68,9 @@ function DocumentWorkflowVisual() {
         <span className="document-usage-mini-line">Datum · 08.08.2026</span>
         <span className="document-usage-mini-line">Position · Beratungsleistung</span>
         <span className="document-usage-mini-line">Gesamtbetrag · 1.856,40 €</span>
+      </div>
+      <div className="document-workflow-visual-footer">
+        Musterfirma GmbH · kontakt@musterfirma.de
       </div>
     </div>
   );
