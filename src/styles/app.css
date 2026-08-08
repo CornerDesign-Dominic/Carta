@@ -105,7 +105,7 @@ output {
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
-  font-size: clamp(1.32rem, 1.8vw, 1.62rem);
+  font-size: clamp(1.65rem, 2.25vw, 2.025rem);
   font-weight: 650;
   letter-spacing: 0;
   line-height: 1;
@@ -9634,39 +9634,30 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-  width: calc(100% + 20px);
-  max-width: calc(900px + 20px);
-  margin: -2px -10px -14px;
-  padding: 2px 10px 14px;
-  overflow: visible;
+  width: 100%;
+  max-width: 900px;
+  margin: 0;
+  padding: 0 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card);
 }
 
 .tools-usage-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, 210px);
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: 26px;
   padding: 22px 0;
   border-top: 1px solid rgba(216, 208, 196, 0.82);
 }
 
 .tools-usage-row:first-child {
   border-top: 0;
-  padding-top: 4px;
-}
-
-.tools-usage-row-text-only {
-  grid-template-columns: 1fr;
 }
 
 .tools-usage-copy {
-  box-sizing: border-box;
   min-width: 0;
   max-width: 560px;
-  padding: 16px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-card);
 }
 
 .tools-usage-copy h2,
@@ -9682,83 +9673,6 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   color: var(--muted);
   font-size: 0.94rem;
   line-height: 1.62;
-}
-
-.tools-usage-mini {
-  justify-self: end;
-  width: min(100%, 190px);
-  aspect-ratio: 210 / 297;
-  padding: 15px 14px;
-  border: 1px solid rgba(214, 207, 195, 0.9);
-  border-radius: 3px;
-  background: #fffdf9;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  color: var(--ink);
-  font-size: 0.58rem;
-  line-height: 1.35;
-}
-
-.tools-usage-mini-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(216, 208, 196, 0.9);
-}
-
-.tools-usage-mini-header strong {
-  color: var(--accent-deep);
-  font-size: 0.68rem;
-  letter-spacing: 0.02em;
-}
-
-.tools-usage-mini-header span {
-  color: var(--muted);
-}
-
-.tools-usage-mini-title {
-  margin: 22px 0 12px;
-  color: var(--ink);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.tools-usage-mini-fields {
-  display: grid;
-  gap: 6px;
-}
-
-.tools-usage-mini-line {
-  display: block;
-  min-height: 15px;
-  padding: 3px 4px;
-  border-bottom: 1px solid rgba(216, 208, 196, 0.72);
-  color: var(--muted);
-}
-
-.tools-usage-mini-line.is-highlighted {
-  border: 1px solid rgba(53, 107, 102, 0.34);
-  border-radius: 3px;
-  background: rgba(223, 236, 232, 0.62);
-  color: var(--accent-deep);
-}
-
-.tools-usage-mini-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 6px;
-}
-
-.tools-usage-mini-actions span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 19px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
 }
 
 .tools-overview-info {
@@ -11934,11 +11848,6 @@ body.tool-document-print-mode .tool-document-date-picker {
     padding: 22px 0;
   }
 
-  .tools-usage-mini {
-    justify-self: start;
-    width: min(72vw, 178px);
-  }
-
   .knowledge-sidebar-nav {
     display: grid;
     overflow-x: visible;
@@ -12511,8 +12420,7 @@ h2,
   color: var(--color-primary-hover);
 }
 
-:root[data-theme="dark"] .document-usage-mini,
-:root[data-theme="dark"] .tools-usage-mini {
+:root[data-theme="dark"] .document-usage-mini {
   border-color: var(--color-border);
   background: var(--color-card);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);

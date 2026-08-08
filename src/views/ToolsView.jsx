@@ -11,50 +11,12 @@ import WorkingTimeCalculator from '../components/tools/working-time/WorkingTimeC
 import ToolsSidebar from '../components/tools/ToolsSidebar.jsx';
 import { findToolItem } from '../data/tools.js';
 
-function ToolUsageMiniVisual({ type }) {
-  const linesByType = {
-    task: ['Zinsen', 'Umsatzsteuer', 'Arbeitszeit', 'Kostenvergleich'],
-    document: ['Berechnung im Dokument', 'Werte nachvollziehbar festhalten'],
-    browser: ['Direkt online nutzen', 'Ohne zusätzliche Software', 'Ergebnis weiterverwenden'],
-  };
-
-  return (
-    <div className={`tools-usage-mini tools-usage-mini-${type}`} aria-hidden="true">
-      <div className="tools-usage-mini-header">
-        <strong>Belege24</strong>
-        <span>Werkzeug</span>
-      </div>
-      <div className="tools-usage-mini-title">
-        {type === 'document' ? 'Nachweis' : 'Online-Tool'}
-      </div>
-
-      <div className="tools-usage-mini-fields">
-        {linesByType[type].map((line, index) => (
-          <span
-            className={index === 0 ? 'tools-usage-mini-line is-highlighted' : 'tools-usage-mini-line'}
-            key={line}
-          >
-            {line}
-          </span>
-        ))}
-        {type === 'document' && (
-          <div className="tools-usage-mini-actions">
-            <span>PDF</span>
-            <span>Drucken</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function ToolOverview() {
   const usageSections = [
     {
       title: 'Für unterschiedliche Aufgaben',
       text:
         'Die Werkzeuge unterstützen dich bei verschiedenen Berechnungen, Vergleichen und kaufmännischen Fragestellungen. Eingaben und Ergebnisse sind jeweils auf den entsprechenden Anwendungsfall abgestimmt.',
-      visual: 'task',
     },
     {
       title: 'Ergebnisse dokumentieren',
@@ -65,7 +27,6 @@ function ToolOverview() {
       title: 'Direkt im Browser',
       text:
         'Die Werkzeuge können direkt online und ohne zusätzliche Software genutzt werden. So lassen sich Berechnungen schnell durchführen und Ergebnisse unmittelbar weiterverwenden.',
-      visual: 'browser',
     },
   ];
 
@@ -81,15 +42,11 @@ function ToolOverview() {
       <section className="tools-usage-section" aria-label="Hinweise zur Nutzung der Werkzeuge">
         <div className="tools-usage-grid" aria-label="Hinweise zur Nutzung der Werkzeuge">
           {usageSections.map((section) => (
-            <section
-              className={`tools-usage-row${section.visual ? '' : ' tools-usage-row-text-only'}`}
-              key={section.title}
-            >
+            <section className="tools-usage-row" key={section.title}>
               <div className="tools-usage-copy">
                 <h3>{section.title}</h3>
                 <p>{section.text}</p>
               </div>
-              {section.visual && <ToolUsageMiniVisual type={section.visual} />}
             </section>
           ))}
         </div>
