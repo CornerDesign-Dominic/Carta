@@ -1,13 +1,13 @@
 export function getDocumentModeHint({ isDataCheckMode, isEditable }) {
   if (isDataCheckMode) {
-    return 'Ansichtsmodus: Beispieldaten hervorheben & bearbeiten. Grün: Aus Stammdaten übernommen – bitte bei Bedarf prüfen.';
+    return 'Prüfmodus: Gelb = Beispieldaten, Grün = aus Stammdaten übernommen, ohne Hervorhebung = bearbeitet.';
   }
 
   if (isEditable) {
-    return 'Ansichtsmodus: Felder hervorheben & bearbeiten';
+    return 'Bearbeitungsmodus: Bearbeitbare Felder sind hervorgehoben.';
   }
 
-  return 'Ansichtsmodus: Vorschau & Bearbeiten';
+  return 'Vorschaumodus: Dokument wie in Druck und PDF, bearbeitbare Felder bleiben verfügbar.';
 }
 
 export function getDataCheckClassName(value, baseClassName = '') {

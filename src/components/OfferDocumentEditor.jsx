@@ -807,10 +807,10 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
   const [printPages, setPrintPages] = useState([{ items: [], pageNumber: 1, used: 0 }]);
   const [isExportRenderActive, setIsExportRenderActive] = useState(false);
   const viewModeHint = isDataCheckMode
-    ? 'Ansichtsmodus: Beispieldaten hervorheben & bearbeiten. Grün: Aus Stammdaten übernommen – bitte bei Bedarf prüfen.'
+    ? 'Prüfmodus: Gelb = Beispieldaten, Grün = aus Stammdaten übernommen, ohne Hervorhebung = bearbeitet.'
     : highlightFields
-      ? 'Ansichtsmodus: Felder hervorheben & bearbeiten'
-      : 'Ansichtsmodus: Vorschau & Bearbeiten';
+      ? 'Bearbeitungsmodus: Bearbeitbare Felder sind hervorgehoben.'
+      : 'Vorschaumodus: Dokument wie in Druck und PDF, bearbeitbare Felder bleiben verfügbar.';
 
   async function refreshPrintPages() {
     setIsExportRenderActive(true);
