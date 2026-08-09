@@ -15,7 +15,7 @@ export default function ToolToolbar({
     <div className="tool-document-toolbar" aria-label={ariaLabel}>
       <div className="tool-document-toolbar-group">
         <button
-          className={`document-toolbar-edit-button${isEditable ? ' is-active' : ''}`}
+          className={`document-toolbar-edit-button${isEditable ? '' : ' is-active'}`}
           type="button"
           title="Bearbeitbare Felder im Dokument anzeigen"
           aria-label="Bearbeitbare Felder im Dokument anzeigen"
