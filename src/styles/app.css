@@ -1744,10 +1744,10 @@ h1 {
   max-width: 100%;
   overflow-x: auto;
   padding: var(--document-toolbar-space);
-  border: 1px solid rgba(201, 196, 186, 0.66);
+  border: 1px solid rgba(169, 163, 152, 0.72);
   border-radius: 6px;
-  background: rgba(248, 248, 245, 0.92);
-  box-shadow: 0 10px 26px rgba(36, 35, 31, 0.035);
+  background: rgba(248, 248, 245, 0.96);
+  box-shadow: 0 6px 16px rgba(36, 35, 31, 0.045);
 }
 
 .visual-toolbar-group {
@@ -9996,10 +9996,10 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   max-width: 100%;
   overflow-x: auto;
   padding: var(--document-toolbar-space);
-  border: 1px solid rgba(201, 196, 186, 0.66);
+  border: 1px solid rgba(169, 163, 152, 0.72);
   border-radius: 6px;
-  background: rgba(248, 248, 245, 0.92);
-  box-shadow: 0 10px 26px rgba(36, 35, 31, 0.035);
+  background: rgba(248, 248, 245, 0.96);
+  box-shadow: 0 6px 16px rgba(36, 35, 31, 0.045);
 }
 
 .tool-document-toolbar-group {
@@ -12442,6 +12442,12 @@ h2,
   background: var(--color-control-surface);
   border-color: var(--color-border);
   box-shadow: none;
+}
+
+:root[data-theme="dark"] .visual-toolbar,
+:root[data-theme="dark"] .tool-document-toolbar {
+  background: color-mix(in srgb, var(--color-control-surface) 92%, var(--color-accent-surface));
+  border-color: color-mix(in srgb, var(--color-border) 88%, var(--color-primary));
 }
 
 :root[data-theme="dark"] .document-mode-hint {

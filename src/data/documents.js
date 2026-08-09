@@ -324,7 +324,20 @@ const allDocumentSections = [
   },
 ];
 
-export const documentSections = allDocumentSections;
+const documentSectionOrder = [
+  'invoices',
+  'credit-notes',
+  'receipts',
+  'self-receipts',
+  'offers',
+  'delivery-notes',
+  'reminders',
+  'business-letters',
+];
+
+export const documentSections = documentSectionOrder.map((sectionId) => (
+  allDocumentSections.find((section) => section.id === sectionId)
+));
 
 export function findDocumentItem(activeId) {
   if (activeId === 'overview') {
