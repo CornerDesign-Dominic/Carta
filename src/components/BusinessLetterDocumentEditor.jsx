@@ -14,15 +14,15 @@ import {
   createDocumentDataCheckState,
   createMasterDataOrigin,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { mapBusinessLetterToDocument } from '../documentModel/additionalDocumentModel.js';
-import { applyOwnDataToBusinessLetter, hasBusinessLetterOwnData, removeOwnDataFromBusinessLetter } from './masterDataPanel/mappings/ownDataToBusinessLetter.js';
+import { applyOwnDataToBusinessLetter, removeOwnDataFromBusinessLetter } from './masterDataPanel/mappings/ownDataToBusinessLetter.js';
 import {
   applyPartnerToBusinessLetter,
-  hasBusinessLetterRecipientData,
   removePartnerFromBusinessLetter,
 } from './masterDataPanel/mappings/partnerToBusinessLetter.js';
 
@@ -291,7 +291,11 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
       });
     },
     hasOwnDocumentData() {
-      return hasBusinessLetterOwnData(letterDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createViewData(letterDataRef.current),
+        defaultBusinessLetterViewData,
+        ownDataOriginViewPaths,
+      );
     },
     removeOwnData() {
       setLetterData((current) => removeOwnDataFromBusinessLetter(current));
@@ -308,7 +312,11 @@ export default function BusinessLetterDocumentEditor({ onMasterDataAdapterChange
       });
     },
     hasRecipientData() {
-      return hasBusinessLetterRecipientData(letterDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createViewData(letterDataRef.current),
+        defaultBusinessLetterViewData,
+        partnerOriginViewPaths,
+      );
     },
     removePartner() {
       setLetterData((current) => removePartnerFromBusinessLetter(current));

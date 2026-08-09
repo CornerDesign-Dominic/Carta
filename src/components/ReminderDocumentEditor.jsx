@@ -17,6 +17,7 @@ import {
   createMasterDataOrigin,
   getDataCheckClassName,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   mergeDataCheckStateWithOrigins,
   usesExampleValue,
@@ -24,10 +25,9 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapReminderToDocument } from '../documentModel/reminderMapping.js';
-import { applyOwnDataToReminder, hasReminderOwnData, removeOwnDataFromReminder } from './masterDataPanel/mappings/ownDataToReminder.js';
+import { applyOwnDataToReminder, removeOwnDataFromReminder } from './masterDataPanel/mappings/ownDataToReminder.js';
 import {
   applyPartnerToReminder,
-  hasReminderRecipientData,
   removePartnerFromReminder,
 } from './masterDataPanel/mappings/partnerToReminder.js';
 import {
@@ -559,7 +559,11 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
       });
     },
     hasOwnDocumentData() {
-      return hasReminderOwnData(reminderDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createReminderViewData(reminderDataRef.current),
+        defaultReminderViewData,
+        ownDataOriginViewPaths,
+      );
     },
     removeOwnData() {
       setReminderData((current) => removeOwnDataFromReminder(current));
@@ -576,7 +580,11 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
       });
     },
     hasRecipientData() {
-      return hasReminderRecipientData(reminderDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createReminderViewData(reminderDataRef.current),
+        defaultReminderViewData,
+        partnerOriginViewPaths,
+      );
     },
     removePartner() {
       setReminderData((current) => removePartnerFromReminder(current));

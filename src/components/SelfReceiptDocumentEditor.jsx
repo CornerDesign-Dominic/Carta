@@ -20,15 +20,15 @@ import {
   createMasterDataOrigin,
   getDataCheckClassName,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
 import { mapSelfReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
-import { applyOwnDataToSelfReceipt, hasSelfReceiptOwnData, removeOwnDataFromSelfReceipt } from './masterDataPanel/mappings/ownDataToSelfReceipt.js';
+import { applyOwnDataToSelfReceipt, removeOwnDataFromSelfReceipt } from './masterDataPanel/mappings/ownDataToSelfReceipt.js';
 import { mapOwnDataToInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
 import {
   applyPartnerToSelfReceipt,
-  hasSelfReceiptPaymentRecipientData,
   removePartnerFromSelfReceipt,
 } from './masterDataPanel/mappings/partnerToSelfReceipt.js';
 
@@ -407,6 +407,9 @@ function createSelfReceiptViewData({ sender, recipient, details, references, exp
 }
 
 const defaultSelfReceiptViewData = createSelfReceiptViewData(defaultSelfReceiptData);
+const defaultShortSelfReceiptOriginViewData = {
+  shortSelfReceipt: { ownAddress: createShortSelfReceiptData().ownAddress },
+};
 const selfReceiptOwnDataOriginViewPaths = [
   ['sender', 'company'],
   ['sender', 'senderLine'],
@@ -635,7 +638,9 @@ export default function SelfReceiptDocumentEditor({
   const [positions, setPositions] = useState([createSelfReceiptPosition()]);
   const [shortSelfReceipt, setShortSelfReceipt] = useState(createShortSelfReceiptData);
   const selfReceiptDataRef = useRef(selfReceiptData);
+  const shortSelfReceiptRef = useRef(shortSelfReceipt);
   selfReceiptDataRef.current = selfReceiptData;
+  shortSelfReceiptRef.current = shortSelfReceipt;
 
   useEffect(() => {
     setSelfReceiptVariant(initialSelfReceiptVariant === 'short' ? 'short' : 'standard');
@@ -674,7 +679,15 @@ export default function SelfReceiptDocumentEditor({
       });
     },
     hasOwnDocumentData() {
-      return hasSelfReceiptOwnData(selfReceiptDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createSelfReceiptViewData(selfReceiptDataRef.current),
+        defaultSelfReceiptViewData,
+        selfReceiptOwnDataOriginViewPaths,
+      ) || hasNonExampleValuesAtPaths(
+        { shortSelfReceipt: { ownAddress: shortSelfReceiptRef.current.ownAddress } },
+        defaultShortSelfReceiptOriginViewData,
+        shortSelfReceiptOwnDataOriginViewPaths,
+      );
     },
     removeOwnData() {
       setSelfReceiptData((current) => removeOwnDataFromSelfReceipt(current));
@@ -697,7 +710,11 @@ export default function SelfReceiptDocumentEditor({
       });
     },
     hasRecipientData() {
-      return hasSelfReceiptPaymentRecipientData(selfReceiptDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createSelfReceiptViewData(selfReceiptDataRef.current),
+        defaultSelfReceiptViewData,
+        selfReceiptPartnerOriginViewPaths,
+      );
     },
     removePartner() {
       setSelfReceiptData((current) => removePartnerFromSelfReceipt(current));

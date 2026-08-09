@@ -9,6 +9,7 @@ import {
   createMasterDataOrigin,
   getDataCheckClassName,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
@@ -17,7 +18,6 @@ import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapReceiptToDocument } from '../documentModel/additionalDocumentModel.js';
 import {
   applyOwnDataToReceipt,
-  hasReceiptOwnData,
   removeOwnDataFromReceipt,
 } from './masterDataPanel/mappings/ownDataToReceipt.js';
 
@@ -766,7 +766,11 @@ export default function ReceiptDocumentEditor({ onMasterDataAdapterChange }) {
       });
     },
     hasOwnDocumentData() {
-      return hasReceiptOwnData(receiptDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createViewData(receiptDataRef.current),
+        defaultReceiptViewData,
+        receiptOwnDataOriginViewPaths,
+      );
     },
     removeOwnData() {
       setReceiptData((current) => removeOwnDataFromReceipt(current));

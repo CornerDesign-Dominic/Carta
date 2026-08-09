@@ -16,14 +16,15 @@ import {
   clearMasterDataOriginAtPath,
   clearMasterDataOriginsForPaths,
   createMasterDataOrigin,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   markPositionOrigins,
   mergeDataCheckStateWithOrigins,
 } from '../utils/documentDataCheck.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapOfferToDocument } from '../documentModel/additionalDocumentModel.js';
-import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
-import { applyPartnerToInvoice, hasInvoiceRecipientData, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
+import { applyOwnDataToInvoice, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import { applyPartnerToInvoice, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
 import { isCatalogItemSupportedForOffer, mapCatalogItemsToOfferPositions } from './masterDataPanel/mappings/catalogItemsToOffer.js';
 
 const initialOfferLabels = {
@@ -617,7 +618,11 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
       });
     },
     hasOwnDocumentData() {
-      return hasInvoiceOwnData(offerDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createOfferViewData(offerDataRef.current),
+        defaultOfferViewData,
+        ownDataOriginViewPaths,
+      );
     },
     removeOwnData() {
       setOfferData((current) => removeOwnDataFromInvoice(current));
@@ -634,7 +639,11 @@ export default function OfferDocumentEditor({ onMasterDataAdapterChange }) {
       });
     },
     hasRecipientData() {
-      return hasInvoiceRecipientData(offerDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createOfferViewData(offerDataRef.current),
+        defaultOfferViewData,
+        partnerOriginViewPaths,
+      );
     },
     removePartner() {
       setOfferData((current) => removePartnerFromInvoice(current));

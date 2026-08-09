@@ -131,6 +131,20 @@ function isMeaningfulValue(value) {
   return String(value ?? '').trim() !== '';
 }
 
+function getValueAtPath(source, path) {
+  return path.reduce((current, part) => current?.[part], source);
+}
+
+export function hasNonExampleValuesAtPaths(currentView, defaultView, paths) {
+  return paths.some((path) => {
+    const currentValue = getValueAtPath(currentView, path);
+    const defaultValue = getValueAtPath(defaultView, path);
+
+    return isMeaningfulValue(currentValue)
+      && String(currentValue).trim() !== String(defaultValue ?? '').trim();
+  });
+}
+
 export function markChangedViewOrigins(origins, beforeView, afterView, origin, fieldPaths) {
   let next = origins;
 

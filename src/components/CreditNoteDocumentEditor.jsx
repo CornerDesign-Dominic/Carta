@@ -17,6 +17,7 @@ import {
   createDocumentDataCheckState,
   createMasterDataOrigin,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   markPositionOrigins,
   mergeDataCheckStateWithOrigins,
@@ -24,10 +25,9 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { mapCreditNoteToDocument } from '../documentModel/creditNoteMapping.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
-import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import { applyOwnDataToInvoice, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
 import {
   applyPartnerToCreditNote,
-  hasCreditNoteRecipientData,
   removePartnerFromCreditNote,
 } from './masterDataPanel/mappings/partnerToCreditNote.js';
 import {
@@ -904,7 +904,11 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
       setIsSmallBusiness(record?.settings?.isSmallBusiness === true);
     },
     hasOwnDocumentData() {
-      return hasInvoiceOwnData(offerDataRef.current) || smallBusinessRef.current;
+      return hasNonExampleValuesAtPaths(
+        createOfferViewData(offerDataRef.current),
+        defaultCreditNoteViewData,
+        ownDataOriginViewPaths,
+      ) || smallBusinessRef.current;
     },
     removeOwnData() {
       setOfferData((current) => removeOwnDataFromInvoice(current));
@@ -937,7 +941,11 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
       }));
     },
     hasRecipientData() {
-      return hasCreditNoteRecipientData(offerDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createOfferViewData(offerDataRef.current),
+        defaultCreditNoteViewData,
+        partnerOriginViewPaths,
+      );
     },
     removePartner() {
       setOfferData((current) => removePartnerFromCreditNote(current));

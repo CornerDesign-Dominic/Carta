@@ -18,6 +18,7 @@ import {
   createDocumentDataCheckState,
   createMasterDataOrigin,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   markPositionOrigins,
   mergeDataCheckStateWithOrigins,
@@ -26,8 +27,8 @@ import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { resizeTextarea } from '../utils/resizeTextarea.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapFinalInvoiceToDocument, mapGoodsInvoiceToDocument, mapPartialInvoiceToDocument, mapProgressInvoiceToDocument, mapStandardInvoiceToDocument, mapTextInvoiceToDocument } from '../documentModel/invoiceMapping.js';
-import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
-import { applyPartnerToInvoice, hasInvoiceRecipientData, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
+import { applyOwnDataToInvoice, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import { applyPartnerToInvoice, removePartnerFromInvoice } from './masterDataPanel/mappings/partnerToInvoice.js';
 import { isCatalogItemSupportedForInvoiceVariant, mapCatalogItemsToInvoicePositions } from './masterDataPanel/mappings/catalogItemsToInvoice.js';
 
 const smallBusinessStorageKey = 'carta.invoice.smallBusinessMode';
@@ -1372,7 +1373,11 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       onSmallBusinessChangeRef.current?.(nextSmallBusinessMode);
     },
     hasOwnDocumentData() {
-      return hasInvoiceOwnData(invoiceDataRef.current) || smallBusinessModeRef.current;
+      return hasNonExampleValuesAtPaths(
+        createInvoiceViewData(invoiceDataRef.current),
+        defaultInvoiceViewData,
+        ownDataOriginViewPaths,
+      ) || smallBusinessModeRef.current;
     },
     removeOwnData() {
       setInvoiceData((current) => removeOwnDataFromInvoice(current));
@@ -1397,7 +1402,11 @@ export default function InvoiceDocumentEditor({ initialSmallBusiness, invoiceVar
       });
     },
     hasRecipientData() {
-      return hasInvoiceRecipientData(invoiceDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createInvoiceViewData(invoiceDataRef.current),
+        defaultInvoiceViewData,
+        partnerOriginViewPaths,
+      );
     },
     removePartner() {
       setInvoiceData((current) => removePartnerFromInvoice(current));

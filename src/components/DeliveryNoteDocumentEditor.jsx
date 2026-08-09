@@ -16,6 +16,7 @@ import {
   createDocumentDataCheckState,
   createMasterDataOrigin,
   getDocumentModeHint,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   markPositionOrigins,
   mergeDataCheckStateWithOrigins,
@@ -23,11 +24,10 @@ import {
 import { requestPdfDownload } from '../utils/requestPdfDownload.js';
 import { SHOW_DOCUMENT_FORM_PANEL } from '../config/documentFeatures.js';
 import { mapDeliveryNoteToDocument } from '../documentModel/additionalDocumentModel.js';
-import { applyOwnDataToInvoice, hasInvoiceOwnData, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
+import { applyOwnDataToInvoice, removeOwnDataFromInvoice } from './masterDataPanel/mappings/ownDataToInvoice.js';
 import {
   applyDeliveryAddressToDeliveryNote,
   applyPartnerToDeliveryNote,
-  hasDeliveryNoteRecipientData,
   removeDeliveryAddressFromDeliveryNote,
   removePartnerFromDeliveryNote,
 } from './masterDataPanel/mappings/partnerToDeliveryNote.js';
@@ -575,7 +575,11 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
       });
     },
     hasOwnDocumentData() {
-      return hasInvoiceOwnData(deliveryNoteDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createDeliveryNoteViewData(deliveryNoteDataRef.current),
+        defaultDeliveryNoteViewData,
+        ownDataOriginViewPaths,
+      );
     },
     removeOwnData() {
       setDeliveryNoteData((current) => removeOwnDataFromInvoice(current));
@@ -592,7 +596,11 @@ export default function DeliveryNoteDocumentEditor({ onMasterDataAdapterChange }
       });
     },
     hasRecipientData() {
-      return hasDeliveryNoteRecipientData(deliveryNoteDataRef.current);
+      return hasNonExampleValuesAtPaths(
+        createDeliveryNoteViewData(deliveryNoteDataRef.current),
+        defaultDeliveryNoteViewData,
+        partnerOriginViewPaths,
+      );
     },
     removePartner() {
       setDeliveryNoteData((current) => removePartnerFromDeliveryNote(current));

@@ -4,12 +4,30 @@ import {
   clearMasterDataOriginsForPaths,
   createMasterDataOrigin,
   getDataCheckClassName,
+  hasNonExampleValuesAtPaths,
   markChangedViewOrigins,
   markPositionOrigins,
   mergeDataCheckStateWithOrigins,
 } from '../src/utils/documentDataCheck.js';
 
 describe('document data-check master-data origins', () => {
+  it('treats empty and unchanged example values as replaceable defaults', () => {
+    const defaultView = {
+      sender: {
+        company: 'Belege24 Muster GmbH',
+        email: 'kontakt@belege24.de',
+      },
+    };
+    const paths = [['sender', 'company'], ['sender', 'email']];
+
+    expect(hasNonExampleValuesAtPaths({
+      sender: { company: '', email: 'kontakt@belege24.de' },
+    }, defaultView, paths)).toBe(false);
+    expect(hasNonExampleValuesAtPaths({
+      sender: { company: 'Belege24 Muster GmbH', email: 'eigene@firma.de' },
+    }, defaultView, paths)).toBe(true);
+  });
+
   it('marks only changed non-empty fields as master-data origins', () => {
     const origin = createMasterDataOrigin({ id: 'own-1' }, 'ownData');
     const next = markChangedViewOrigins(
