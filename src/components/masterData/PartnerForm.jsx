@@ -20,7 +20,7 @@ function FormArea({ title, hint, internal = false, children }) {
 }
 
 function SectionTitle({ title, helpText }) {
-  return <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+  return <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
     <span aria-hidden="true" style={{ flex: '0 0 18px', height: '1px', background: 'var(--color-border)' }} />
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', flex: '0 0 auto' }}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</span>
     <span aria-hidden="true" style={{ flex: '1 1 auto', height: '1px', background: 'var(--color-border)' }} />
