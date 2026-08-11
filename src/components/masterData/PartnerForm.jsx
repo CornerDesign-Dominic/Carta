@@ -14,7 +14,7 @@ function TextareaField({ label, helpText, ...props }) {
 
 function FormArea({ title, hint, internal = false, children }) {
   return <section className={internal ? 'partner-master-form-area is-internal' : 'partner-master-form-area'} style={internal ? { border: '1px solid var(--color-border)' } : undefined}>
-    <div className="partner-master-form-area-heading"><h3>{title}</h3><p>{hint}</p></div>
+    <div className="partner-master-form-area-heading"><h3 style={{ color: 'var(--color-text)' }}>{title}</h3><p style={{ color: 'var(--color-text)' }}>{hint}</p></div>
     <div className="partner-master-form-area-content">{children}</div>
   </section>;
 }
