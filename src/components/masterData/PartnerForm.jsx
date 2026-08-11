@@ -28,7 +28,7 @@ function SectionTitle({ title, helpText }) {
 }
 
 function FormSection({ title, helpText, collapsible = false, isOpen = true, onToggle, children }) {
-  return <section className="partner-master-form-section">{collapsible ? <h4><button className="partner-master-section-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}<span>{isOpen ? 'Ausblenden' : 'Anzeigen'}</span></button></h4> : <SectionTitle title={title} helpText={helpText} />}{(!collapsible || isOpen) && children}</section>;
+  return <section className="partner-master-form-section" style={{ borderTop: 0, paddingTop: '4px' }}>{collapsible ? <h4><button className="partner-master-section-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}<span>{isOpen ? 'Ausblenden' : 'Anzeigen'}</span></button></h4> : <SectionTitle title={title} helpText={helpText} />}{(!collapsible || isOpen) && children}</section>;
 }
 
 function DeliveryAddressFields({ address, idPrefix, onChange }) {
