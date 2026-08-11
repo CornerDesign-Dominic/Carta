@@ -5,7 +5,7 @@ function Field({ inputRef, label, helpText, className = '', ...props }) {
 }
 
 function FormArea({ title, hint, internal = false, children }) {
-  return <section className={internal ? 'own-data-form-area is-internal' : 'own-data-form-area'}><div className="own-data-form-area-heading"><h3>{title}</h3><p>{hint}</p></div><div className="own-data-form-area-content">{children}</div></section>;
+  return <section className={internal ? 'own-data-form-area is-internal' : 'own-data-form-area'} style={internal ? { border: '1px solid var(--color-border)' } : undefined}><div className="own-data-form-area-heading"><h3>{title}</h3><p>{hint}</p></div><div className="own-data-form-area-content">{children}</div></section>;
 }
 
 function FormSection({ title, children }) { return <section className="own-data-form-section"><h4>{title}</h4>{children}</section>; }
