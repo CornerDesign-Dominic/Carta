@@ -86,7 +86,8 @@ function FormSection({ id, title, helpText, children }) {
 }
 
 function FormArea({ id, title, hint, className = '', children }) {
-  return <section className={`catalog-item-form-area ${className}`.trim()} aria-labelledby={`${id}-title`}>
+  const isInternal = className.split(/\s+/).includes('is-internal');
+  return <section className={`catalog-item-form-area ${className}`.trim()} style={isInternal ? { border: '1px solid var(--color-border)' } : undefined} aria-labelledby={`${id}-title`}>
     <div className="catalog-item-form-area-heading"><h3 id={`${id}-title`}>{title}</h3><p>{hint}</p></div>
     {children}
   </section>;
