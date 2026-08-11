@@ -19,8 +19,16 @@ function FormArea({ title, hint, internal = false, children }) {
   </section>;
 }
 
+function SectionTitle({ title, helpText }) {
+  return <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <span aria-hidden="true" style={{ flex: '0 0 18px', height: '1px', background: 'var(--color-border)' }} />
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', flex: '0 0 auto' }}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</span>
+    <span aria-hidden="true" style={{ flex: '1 1 auto', height: '1px', background: 'var(--color-border)' }} />
+  </h4>;
+}
+
 function FormSection({ title, helpText, collapsible = false, isOpen = true, onToggle, children }) {
-  return <section className="partner-master-form-section"><h4>{collapsible ? <button className="partner-master-section-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}<span>{isOpen ? 'Ausblenden' : 'Anzeigen'}</span></button> : <>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}</>}</h4>{(!collapsible || isOpen) && children}</section>;
+  return <section className="partner-master-form-section">{collapsible ? <h4><button className="partner-master-section-toggle" type="button" aria-expanded={isOpen} onClick={onToggle}>{title}{helpText && <FieldHelpTooltip label={title}>{helpText}</FieldHelpTooltip>}<span>{isOpen ? 'Ausblenden' : 'Anzeigen'}</span></button></h4> : <SectionTitle title={title} helpText={helpText} />}{(!collapsible || isOpen) && children}</section>;
 }
 
 function DeliveryAddressFields({ address, idPrefix, onChange }) {
