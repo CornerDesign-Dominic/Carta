@@ -4,6 +4,9 @@ import KnowledgeGlossaryPanel from '../components/knowledge/KnowledgeGlossaryPan
 import KnowledgeLanding from '../components/knowledge/KnowledgeLanding.jsx';
 import KnowledgeSidebar from '../components/knowledge/KnowledgeSidebar.jsx';
 
+// Das Glossar ist technisch vorbereitet, wird aber erst mit einem späteren Release veröffentlicht.
+const isKnowledgeGlossaryEnabled = false;
+
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
   const [activeGlossaryId, setActiveGlossaryId] = useState(null);
   const documentIdByToolLink = {
@@ -56,12 +59,15 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
             slug={activeSlug}
             onSelectRelated={handleSelectSlug}
             onOpenTool={handleOpenTool}
+            enableGlossary={isKnowledgeGlossaryEnabled}
             onSelectGlossaryTerm={setActiveGlossaryId}
           />
         )}
       </section>
 
-      {activeSlug && <KnowledgeGlossaryPanel activeGlossaryId={activeGlossaryId} />}
+      {isKnowledgeGlossaryEnabled && activeSlug && (
+        <KnowledgeGlossaryPanel activeGlossaryId={activeGlossaryId} />
+      )}
     </main>
   );
 }

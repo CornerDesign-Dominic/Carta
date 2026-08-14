@@ -2,7 +2,7 @@ import { findKnowledgePage } from '../../data/knowledgePages.js';
 import KnowledgeFaqCard from './KnowledgeFaqCard.jsx';
 import GlossaryTerm from './GlossaryTerm.jsx';
 
-function renderArticleText(content, onSelectGlossaryTerm) {
+function renderArticleText(content, enableGlossary, onSelectGlossaryTerm) {
   if (typeof content === 'string') {
     return content;
   }
@@ -17,6 +17,10 @@ function renderArticleText(content, onSelectGlossaryTerm) {
     }
 
     if (part?.type === 'glossary') {
+      if (!enableGlossary) {
+        return part.text;
+      }
+
       return (
         <GlossaryTerm id={part.id} key={`${part.id}-${index}`} onSelect={onSelectGlossaryTerm}>
           {part.text}
@@ -57,7 +61,13 @@ function formatGermanDate(dateValue) {
   }).format(date);
 }
 
-export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool, onSelectGlossaryTerm }) {
+export default function KnowledgeArticle({
+  slug,
+  onSelectRelated,
+  onOpenTool,
+  enableGlossary = true,
+  onSelectGlossaryTerm,
+}) {
   const article = findKnowledgePage(slug);
 
   if (!article) {
@@ -112,7 +122,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool, on
             <h2>{section.heading}</h2>
             {section.paragraphs?.map((paragraph) => (
               <p key={typeof paragraph === 'string' ? paragraph : JSON.stringify(paragraph)}>
-                {renderArticleText(paragraph, onSelectGlossaryTerm)}
+                {renderArticleText(paragraph, enableGlossary, onSelectGlossaryTerm)}
               </p>
             ))}
             {section.subsections?.length > 0 && (
@@ -122,7 +132,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool, on
                     <h3>{subsection.heading}</h3>
                     {subsection.paragraphs?.map((paragraph) => (
                       <p key={typeof paragraph === 'string' ? paragraph : JSON.stringify(paragraph)}>
-                        {renderArticleText(paragraph, onSelectGlossaryTerm)}
+                        {renderArticleText(paragraph, enableGlossary, onSelectGlossaryTerm)}
                       </p>
                     ))}
                   </div>
@@ -133,7 +143,7 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool, on
               <ul>
                 {section.list.map((item) => (
                   <li key={typeof item === 'string' ? item : JSON.stringify(item)}>
-                    {renderArticleText(item, onSelectGlossaryTerm)}
+                    {renderArticleText(item, enableGlossary, onSelectGlossaryTerm)}
                   </li>
                 ))}
               </ul>
