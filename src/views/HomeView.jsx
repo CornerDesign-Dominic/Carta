@@ -1,10 +1,9 @@
 const documentItems = [
-  { title: 'Rechnungen', text: 'Saubere Rechnungen mit Positionen, Summen und PDF-Ausgabe.', documentId: 'write-invoice' },
-  { title: 'Angebote', text: 'Professionelle Angebote für Kunden und Projekte erstellen.', documentId: 'write-offer' },
-  { title: 'Mahnungen', text: 'Mahnungen und Zahlungserinnerungen strukturiert vorbereiten.', documentId: 'write-reminder' },
-  { title: 'Gutschriften', text: 'Korrekturen und Rückerstattungen nachvollziehbar dokumentieren.', documentId: 'write-credit-note' },
-  { title: 'Geschäftsbriefe', text: 'Professionelle Schreiben direkt im Browser vorbereiten.', documentId: 'write-business-letter' },
-  { title: 'Quittungen', text: 'Zahlungen schnell bestätigen und als Beleg speichern.', documentId: 'write-receipt' },
+  { title: 'Quittung', text: 'Zahlungen schnell bestätigen und als Beleg speichern.', documentId: 'write-receipt' },
+  { title: 'Eigenbeleg', text: 'Ausgaben ohne Fremdbeleg nachvollziehbar dokumentieren.', documentId: 'write-self-receipt' },
+  { title: 'Rechnung', text: 'Saubere Rechnungen mit Positionen, Summen und PDF-Ausgabe.', documentId: 'write-invoice' },
+  { title: 'Mahnung', text: 'Mahnungen und Zahlungserinnerungen strukturiert vorbereiten.', documentId: 'write-reminder' },
+  { title: 'Gutschrift', text: 'Korrekturen und Rückerstattungen nachvollziehbar dokumentieren.', documentId: 'write-credit-note' },
 ];
 
 const toolItems = [
