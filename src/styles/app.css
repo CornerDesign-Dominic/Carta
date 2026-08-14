@@ -1884,10 +1884,10 @@ h1 {
 /* Keep both self-receipt variants balanced regardless of their label length. */
 .self-receipt-variant-controls {
   display: grid;
-  gap: 14px;
+  gap: 32px;
   width: 100%;
   max-width: 100%;
-  margin: 0 0 14px;
+  margin: 0;
 }
 
 .self-receipt-variant-choice-bar {
