@@ -35,6 +35,10 @@ const whyItems = [
     title: 'Datensparsam gedacht',
     text: 'Wo Daten nicht benötigt werden, sollen sie auch nicht gesammelt werden.',
   },
+  {
+    title: 'Direkt nutzbar',
+    text: 'Viele Inhalte und Funktionen sollen ohne Anmeldung und ohne lange Vorbereitung direkt genutzt werden können.',
+  },
 ];
 
 export default function HomeView({ onNavigate }) {
