@@ -1281,18 +1281,21 @@ export default function SelfReceiptDocumentEditor({
         />
       )}
 
-      <div className="document-choice-bar self-receipt-variant-choice-bar" aria-label="Eigenbelegvariante auswählen">
-        {selfReceiptVariants.map((variant) => (
-          <button
-            className={selfReceiptVariant === variant.id ? 'is-active' : undefined}
-            type="button"
-            aria-pressed={selfReceiptVariant === variant.id}
-            key={variant.id}
-            onClick={() => selectSelfReceiptVariant(variant.id)}
-          >
-            {variant.label}
-          </button>
-        ))}
+      <div className="self-receipt-variant-controls">
+        <div className="document-choice-bar self-receipt-variant-choice-bar" aria-label="Eigenbelegvariante auswählen">
+          {selfReceiptVariants.map((variant) => (
+            <button
+              className={selfReceiptVariant === variant.id ? 'is-active' : undefined}
+              type="button"
+              aria-pressed={selfReceiptVariant === variant.id}
+              key={variant.id}
+              onClick={() => selectSelfReceiptVariant(variant.id)}
+            >
+              {variant.label}
+            </button>
+          ))}
+        </div>
+        <div className="self-receipt-variant-controls-divider" aria-hidden="true" />
       </div>
 
       <DocumentToolbar
