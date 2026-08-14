@@ -6497,9 +6497,16 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   text-align: right;
 }
 
-.offer-summary.reminder-document-summary,
-.invoice-print-summary.reminder-print-summary {
-  width: min(100%, 360px);
+.reminder-document-summary > div > .document-label-input {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+.invoice-print-summary.reminder-print-summary div > span {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .invoice-panel-note {
