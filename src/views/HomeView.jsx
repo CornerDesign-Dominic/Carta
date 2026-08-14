@@ -15,6 +15,29 @@ const toolItems = [
   { title: 'Kostenvergleich', text: 'Varianten nach Kosten und Wirtschaftlichkeit vergleichen.', toolId: 'kostenvergleichsrechner' },
 ];
 
+const whyItems = [
+  {
+    title: 'Einfach verständlich',
+    text: 'Klare Sprache, nachvollziehbare Abläufe und so wenig Fachchinesisch wie möglich.',
+  },
+  {
+    title: 'Für jeden nutzbar',
+    text: 'Belege24 soll auch funktionieren, wenn Buchhaltung und kaufmännische Themen nicht zum eigenen Alltag gehören.',
+  },
+  {
+    title: 'Praktisch und alltagsnah',
+    text: 'Keine Theorie um der Theorie willen. Werkzeuge, Dokumente und Wissen sollen bei konkreten Aufgaben weiterhelfen.',
+  },
+  {
+    title: 'Schnell zum Ergebnis',
+    text: 'Keine langen Einrichtungsprozesse. Öffnen, ausfüllen, berechnen oder nachlesen.',
+  },
+  {
+    title: 'Datensparsam gedacht',
+    text: 'Wo Daten nicht benötigt werden, sollen sie auch nicht gesammelt werden.',
+  },
+];
+
 export default function HomeView({ onNavigate }) {
   return (
     <main className="paper-page home-page">
@@ -111,6 +134,37 @@ export default function HomeView({ onNavigate }) {
               <span>{item.title}</span>
               <p>{item.text}</p>
             </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="home-why-section" aria-labelledby="home-why-title">
+        <div className="home-why-intro">
+          <h2 id="home-why-title">Warum Belege24?</h2>
+          <div>
+            <p>
+              Belege24 soll Dinge einfacher machen, die im geschäftlichen Alltag oft unnötig
+              kompliziert sind. Deshalb setzen wir auf verständliche Funktionen, klare Abläufe
+              und Werkzeuge, die ohne lange Einarbeitung direkt genutzt werden können.
+            </p>
+            <p>
+              Egal ob Rechnung, Mahnung, Berechnung oder eine kurze Erklärung zu einem
+              Fachbegriff: Du sollst schnell finden, was du brauchst – und danach wissen, wie es
+              weitergeht.
+            </p>
+            <p>
+              Dabei wollen wir bewusst unkompliziert bleiben: ohne unnötige Datensammlung, ohne
+              versteckte Hürden und ohne Funktionen, die mehr erklären müssen als sie helfen.
+            </p>
+          </div>
+        </div>
+
+        <div className="home-why-grid">
+          {whyItems.map((item) => (
+            <article className="home-why-card" key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
           ))}
         </div>
       </section>
