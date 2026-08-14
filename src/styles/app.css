@@ -6497,6 +6497,11 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   text-align: right;
 }
 
+.offer-summary.reminder-document-summary,
+.invoice-print-summary.reminder-print-summary {
+  width: min(100%, 360px);
+}
+
 .invoice-panel-note {
   align-self: end;
   margin: 0;

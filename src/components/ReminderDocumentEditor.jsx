@@ -1703,7 +1703,7 @@ function ReminderPrintOpenItemsTable({ className = '', labels, openItemRows }) {
 
 function ReminderPrintSummary({ className = '', labels, totals }) {
   return (
-    <aside className={`invoice-print-summary${className ? ` ${className}` : ''}`} aria-label="Mahnungssummen">
+    <aside className={`invoice-print-summary reminder-print-summary${className ? ` ${className}` : ''}`} aria-label="Mahnungssummen">
       <div>
         <span>{labels.sumInvoices}</span>
         <strong>{formatCurrency(totals.invoiceSum)}</strong>
