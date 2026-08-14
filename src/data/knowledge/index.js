@@ -9,6 +9,7 @@ import businessplan from './pages/businessplan.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
+export { findGlossaryEntry, glossaryEntries } from './glossary.js';
 
 export const knowledgePages = {
   'rechnung': rechnung,

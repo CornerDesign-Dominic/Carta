@@ -9133,6 +9133,99 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   min-height: 620px;
 }
 
+.knowledge-glossary-panel {
+  display: grid;
+  gap: 16px;
+  width: min(100%, var(--right-panel-width));
+  margin: 24px auto 0;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-card);
+  box-shadow: var(--card-shadow);
+  color: var(--color-text);
+}
+
+.knowledge-glossary-panel-header {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.knowledge-glossary-panel h2,
+.knowledge-glossary-panel h3,
+.knowledge-glossary-panel p {
+  margin: 0;
+}
+
+.knowledge-glossary-panel h2 {
+  font-size: 1.08rem;
+  font-weight: 760;
+  letter-spacing: -0.01em;
+  line-height: 1.32;
+}
+
+.knowledge-glossary-panel-kicker,
+.knowledge-glossary-section h3 {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 720;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.knowledge-glossary-panel-kicker {
+  margin-bottom: 6px !important;
+}
+
+.knowledge-glossary-panel-content {
+  display: grid;
+  gap: 16px;
+}
+
+.knowledge-glossary-section {
+  display: grid;
+  gap: 5px;
+}
+
+.knowledge-glossary-section p {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  line-height: 1.56;
+}
+
+.knowledge-glossary-placeholder {
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.glossary-term {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.glossary-term:hover {
+  border-bottom-style: solid;
+  color: var(--color-primary-hover);
+}
+
+.glossary-term:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
 .knowledge-intro {
   max-width: 760px;
   margin: 0 0 30px;
@@ -14375,7 +14468,8 @@ h2,
      occupy the flexible outer tracks and therefore cannot move or shrink it. */
   .documents-layout,
   .tools-layout,
-  .master-data-layout {
+  .master-data-layout,
+  .knowledge-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--main-content-width) minmax(0, 1fr);
     align-items: start;
@@ -14387,6 +14481,7 @@ h2,
   }
 
   .documents-layout .document-sidebar,
+  .knowledge-layout .knowledge-sidebar,
   .tools-sidebar,
   .master-data-sidebar {
     grid-column: 1;
@@ -14406,6 +14501,19 @@ h2,
   }
 
   .documents-layout.has-master-data-panel .master-data-panel {
+    grid-column: 3;
+    justify-self: start;
+    width: var(--right-panel-width);
+    margin: 0 0 0 var(--layout-column-gap);
+    position: sticky;
+    top: var(--layout-sticky-top);
+    align-self: start;
+    max-height: calc(100vh - var(--layout-sticky-top) - var(--layout-sticky-bottom-gap));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .knowledge-layout .knowledge-glossary-panel {
     grid-column: 3;
     justify-self: start;
     width: var(--right-panel-width);

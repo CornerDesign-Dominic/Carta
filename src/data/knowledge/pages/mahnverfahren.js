@@ -17,7 +17,11 @@ const mahnverfahren = {
       heading: "Was ist eine Mahnung?",
       paragraphs: [
         "Eine Mahnung ist die klare Aufforderung, eine offene Rechnung zu bezahlen. Sie sollte nachvollziehbar zeigen, um welche Rechnung es geht, welcher Betrag offen ist und bis wann gezahlt werden soll.",
-        "Sie hilft dabei, den Zahlungsverzug zu dokumentieren und die nächsten Schritte vorzubereiten. Gleichzeitig sollte sie sachlich bleiben, damit eine spätere Klärung nicht unnötig erschwert wird.",
+        [
+          'Sie hilft dabei, den ',
+          { type: 'glossary', id: 'zahlungsverzug', text: 'Zahlungsverzug' },
+          ' zu dokumentieren und die nächsten Schritte vorzubereiten. Gleichzeitig sollte sie sachlich bleiben, damit eine spätere Klärung nicht unnötig erschwert wird.',
+        ],
       ],
     },
 
@@ -36,7 +40,11 @@ const mahnverfahren = {
     {
       heading: "1. Mahnung",
       paragraphs: [
-        "Die erste Mahnung fordert den offenen Betrag erstmals ausdrücklich ein. Sie nennt Rechnung, Betrag und Fälligkeit und setzt eine neue klare Zahlungsfrist.",
+        [
+          'Die erste Mahnung fordert den offenen Betrag erstmals ausdrücklich ein. Sie nennt Rechnung, Betrag und ',
+          { type: 'glossary', id: 'faelligkeit', text: 'Fälligkeit' },
+          ' und setzt eine neue klare Zahlungsfrist.',
+        ],
       ],
     },
     {
@@ -110,11 +118,21 @@ const mahnverfahren = {
       {
   heading: "Das gerichtliche Mahnverfahren",
   paragraphs: [
-    "Das gerichtliche Mahnverfahren ist ein formeller Weg, um eine offene Geldforderung geltend zu machen. Der Gläubiger beantragt dafür beim zuständigen Mahngericht den Erlass eines Mahnbescheids. Der Antrag kann in vielen Fällen online über das zentrale Mahnportal der Justiz gestellt werden.",
+    [
+      'Das ',
+      { type: 'glossary', id: 'gerichtliches-mahnverfahren', text: 'gerichtliche Mahnverfahren' },
+      ' ist ein formeller Weg, um eine offene Geldforderung geltend zu machen. Der Gläubiger beantragt dafür beim zuständigen Mahngericht den Erlass eines ',
+      { type: 'glossary', id: 'mahnbescheid', text: 'Mahnbescheids' },
+      '. Der Antrag kann in vielen Fällen online über das zentrale Mahnportal der Justiz gestellt werden.',
+    ],
     "Nach dem Antrag prüft das Gericht nicht, ob die Forderung inhaltlich berechtigt ist. Es prüft vor allem die formalen Angaben. Wird der Mahnbescheid erlassen, stellt das Gericht ihn dem Schuldner offiziell zu.",
     "Ab der Zustellung hat der Schuldner in der Regel zwei Wochen Zeit. Er kann die Forderung bezahlen, vollständig widersprechen oder nur einem Teil der Forderung widersprechen. Eine Begründung muss er für den Widerspruch nicht angeben.",
     "Legt der Schuldner Widerspruch ein, wird das Mahnverfahren zunächst gestoppt. Auf Antrag kann die Sache dann in ein normales gerichtliches Verfahren übergehen. Dort wird geprüft, ob die Forderung tatsächlich besteht.",
-    "Reagiert der Schuldner nicht und zahlt auch nicht, kann der Gläubiger nach Ablauf der Frist den Vollstreckungsbescheid beantragen. Auch dagegen kann der Schuldner innerhalb von zwei Wochen Einspruch einlegen.",
+    [
+      'Reagiert der Schuldner nicht und zahlt auch nicht, kann der Gläubiger nach Ablauf der Frist den ',
+      { type: 'glossary', id: 'vollstreckungsbescheid', text: 'Vollstreckungsbescheid' },
+      ' beantragen. Auch dagegen kann der Schuldner innerhalb von zwei Wochen Einspruch einlegen.',
+    ],
     "Bleibt auch gegen den Vollstreckungsbescheid kein Einspruch, erhält der Gläubiger einen vollstreckbaren Titel. Damit können weitere Schritte wie die Zwangsvollstreckung eingeleitet werden.",
   ],
 },

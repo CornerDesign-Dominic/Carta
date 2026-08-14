@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react';
 import KnowledgeArticle from '../components/knowledge/KnowledgeArticle.jsx';
+import KnowledgeGlossaryPanel from '../components/knowledge/KnowledgeGlossaryPanel.jsx';
 import KnowledgeLanding from '../components/knowledge/KnowledgeLanding.jsx';
 import KnowledgeSidebar from '../components/knowledge/KnowledgeSidebar.jsx';
 
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
+  const [activeGlossaryId, setActiveGlossaryId] = useState(null);
   const documentIdByToolLink = {
     '/dokumente/rechnung/standard': 'write-invoice',
     '/dokumente/rechnung': 'write-invoice',
@@ -34,6 +37,10 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
     onNavigate({ view: 'documents' });
   }
 
+  useEffect(() => {
+    setActiveGlossaryId(null);
+  }, [activeSlug]);
+
   return (
     <main className="documents-layout knowledge-layout">
       <KnowledgeSidebar
@@ -49,9 +56,12 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
             slug={activeSlug}
             onSelectRelated={handleSelectSlug}
             onOpenTool={handleOpenTool}
+            onSelectGlossaryTerm={setActiveGlossaryId}
           />
         )}
       </section>
+
+      {activeSlug && <KnowledgeGlossaryPanel activeGlossaryId={activeGlossaryId} />}
     </main>
   );
 }

@@ -26,7 +26,10 @@ const rechnung = {
           "Rechnungsdatum",
           "Rechnungsnummer",
           "Menge und Art der gelieferten Ware oder Art und Umfang der Leistung",
-          "Leistungsdatum oder Zeitraum",           
+          [
+            { type: 'glossary', id: 'leistungsdatum', text: 'Leistungsdatum' },
+            ' oder Zeitraum',
+          ],
           "Rechnungsbetrag aufgeschlüsselt nach Netto-Betrag, Umsatzsteuer und Brutto-Betrag",     
         ],
       },

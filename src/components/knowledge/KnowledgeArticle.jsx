@@ -1,5 +1,32 @@
 import { findKnowledgePage } from '../../data/knowledgePages.js';
 import KnowledgeFaqCard from './KnowledgeFaqCard.jsx';
+import GlossaryTerm from './GlossaryTerm.jsx';
+
+function renderArticleText(content, onSelectGlossaryTerm) {
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  if (!Array.isArray(content)) {
+    return null;
+  }
+
+  return content.map((part, index) => {
+    if (typeof part === 'string') {
+      return part;
+    }
+
+    if (part?.type === 'glossary') {
+      return (
+        <GlossaryTerm id={part.id} key={`${part.id}-${index}`} onSelect={onSelectGlossaryTerm}>
+          {part.text}
+        </GlossaryTerm>
+      );
+    }
+
+    return part?.text ?? null;
+  });
+}
 
 function MissingArticle() {
   return (
@@ -30,7 +57,7 @@ function formatGermanDate(dateValue) {
   }).format(date);
 }
 
-export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) {
+export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool, onSelectGlossaryTerm }) {
   const article = findKnowledgePage(slug);
 
   if (!article) {
@@ -84,7 +111,9 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
           <section className="knowledge-article-section" key={section.heading}>
             <h2>{section.heading}</h2>
             {section.paragraphs?.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+              <p key={typeof paragraph === 'string' ? paragraph : JSON.stringify(paragraph)}>
+                {renderArticleText(paragraph, onSelectGlossaryTerm)}
+              </p>
             ))}
             {section.subsections?.length > 0 && (
               <div className="knowledge-article-subsections">
@@ -92,7 +121,9 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
                   <div className="knowledge-article-subsection" key={subsection.heading}>
                     <h3>{subsection.heading}</h3>
                     {subsection.paragraphs?.map((paragraph) => (
-                      <p key={paragraph}>{paragraph}</p>
+                      <p key={typeof paragraph === 'string' ? paragraph : JSON.stringify(paragraph)}>
+                        {renderArticleText(paragraph, onSelectGlossaryTerm)}
+                      </p>
                     ))}
                   </div>
                 ))}
@@ -101,7 +132,9 @@ export default function KnowledgeArticle({ slug, onSelectRelated, onOpenTool }) 
             {section.list?.length > 0 && (
               <ul>
                 {section.list.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={typeof item === 'string' ? item : JSON.stringify(item)}>
+                    {renderArticleText(item, onSelectGlossaryTerm)}
+                  </li>
                 ))}
               </ul>
             )}
