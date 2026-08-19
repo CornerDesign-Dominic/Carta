@@ -146,18 +146,16 @@ export default function HomeView({ onNavigate }) {
           <h2 id="home-why-title">Warum Belege24?</h2>
           <div>
             <p>
-              Belege24 soll Dinge einfacher machen, die im geschäftlichen Alltag oft unnötig
-              kompliziert sind. Deshalb setzen wir auf verständliche Funktionen, klare Abläufe
-              und Werkzeuge, die ohne lange Einarbeitung direkt genutzt werden können.
+              Belege24 soll dir den geschäftlichen Alltag leichter machen – besonders dann, wenn ein Dokument, eine Berechnung oder eine Information schnell gebraucht wird. Statt lange nach Vorlagen und passenden Formulierungen zu suchen, findest du hier praktische Hilfe an einem Ort.
             </p>
             <p>
-              Egal ob Rechnung, Mahnung, Berechnung oder eine kurze Erklärung zu einem
-              Fachbegriff: Du sollst schnell finden, was du brauchst – und danach wissen, wie es
-              weitergeht.
+              Du kannst Rechnungen, Mahnungen, Quittungen und weitere Dokumente direkt im Browser vorbereiten. Ergänzend stehen Rechner und verständliche Erklärungen für typische kaufmännische Fragen bereit. So kommst du zügig von der Aufgabe zu einem brauchbaren Ergebnis.
             </p>
             <p>
-              Dabei wollen wir bewusst unkompliziert bleiben: ohne unnötige Datensammlung, ohne
-              versteckte Hürden und ohne Funktionen, die mehr erklären müssen als sie helfen.
+              Dabei legen wir Wert auf klare Sprache und nachvollziehbare Abläufe. Belege24 soll auch dann gut nutzbar sein, wenn Buchhaltung oder kaufmännische Themen nicht zu deinem täglichen Arbeitsgebiet gehören.
+            </p>
+            <p>
+              Wir halten die Nutzung bewusst einfach: ohne Anmeldung, ohne lange Einrichtung und ohne unnötige Datensammlung. Du öffnest, was du brauchst, arbeitest damit weiter und behältst die Kontrolle über deine Daten.
             </p>
           </div>
         </div>
