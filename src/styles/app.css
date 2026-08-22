@@ -2896,11 +2896,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   margin: 4px 0 18px;
 }
 
+.own-data-document-preview .partner-document-page-header strong {
+  color: #232320;
+  font-weight: 800;
+}
+
 .own-data-document-preview .partner-document-page-header span {
-  color: var(--color-text);
+  color: #232320;
   font-size: inherit;
   font-weight: 800;
   letter-spacing: inherit;
+}
+
+.own-data-document-preview .partner-document-page-meta {
+  color: #3f3e39;
+  font-weight: 600;
+  padding-bottom: 36px;
 }
 
 .own-data-document-preview .partner-document-section h3 {

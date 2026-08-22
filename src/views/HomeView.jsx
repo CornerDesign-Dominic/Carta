@@ -146,16 +146,16 @@ export default function HomeView({ onNavigate }) {
           <h2 id="home-why-title">Warum Belege24?</h2>
           <div>
             <p>
-              Belege24 soll dir den geschäftlichen Alltag leichter machen – besonders dann, wenn ein Dokument, eine Berechnung oder eine Information schnell gebraucht wird. Statt lange nach Vorlagen und passenden Formulierungen zu suchen, findest du hier praktische Hilfe an einem Ort.
+              Wir haben Belege24 gebaut, weil wir den Ärger kennen: Viele Lösungen sind teuer, unnötig kompliziert oder passen am Ende nicht zu dem, was man wirklich braucht.
             </p>
             <p>
-              Du kannst Rechnungen, Mahnungen, Quittungen und weitere Dokumente direkt im Browser vorbereiten. Ergänzend stehen Rechner und verständliche Erklärungen für typische kaufmännische Fragen bereit. So kommst du zügig von der Aufgabe zu einem brauchbaren Ergebnis.
+              Deshalb wollen wir praktische Werkzeuge anbieten, die für viele unterschiedliche Situationen funktionieren – ohne dass man sich erst lange einarbeiten oder an ein starres System anpassen muss.
             </p>
             <p>
-              Dabei legen wir Wert auf klare Sprache und nachvollziehbare Abläufe. Belege24 soll auch dann gut nutzbar sein, wenn Buchhaltung oder kaufmännische Themen nicht zu deinem täglichen Arbeitsgebiet gehören.
+              Ob Rechnung, Mahnung, Berechnung oder eine kurze Erklärung: Du sollst hier finden, was du gerade brauchst, und es einfach direkt nutzen können.
             </p>
             <p>
-              Wir halten die Nutzung bewusst einfach: ohne Anmeldung, ohne lange Einrichtung und ohne unnötige Datensammlung. Du öffnest, was du brauchst, arbeitest damit weiter und behältst die Kontrolle über deine Daten.
+              Belege24 ist nicht fertig gedacht. Wir arbeiten laufend daran, Funktionen, Inhalte und Abläufe besser zu machen – orientiert an dem, was im Alltag tatsächlich weiterhilft.
             </p>
           </div>
         </div>
