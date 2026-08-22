@@ -21,8 +21,8 @@ function PartnerDocumentBlock({ partner }) {
   </article>;
 }
 
-function DocumentHeader({ dateLabel, partnerCount, showTitle = false }) {
-  return <div className="partner-document-page-heading"><header className="partner-document-page-header"><strong>Belege24</strong><span>Partner- und Empfängerstammdaten</span></header><div className="partner-document-page-meta"><span>Anzahl Partner: {partnerCount}</span><span>Erstellungsdatum: {dateLabel}</span></div>{showTitle && <h1 className="partner-document-title">Partner- und Empfängerstammdaten</h1>}</div>;
+function DocumentHeader({ dateLabel }) {
+  return <div className="partner-document-page-heading"><header className="partner-document-page-header"><strong>Partner- und Empfängerstammdaten</strong><span>Belege24</span></header><div className="partner-document-page-meta"><span>Erstellungsdatum: {dateLabel}</span></div></div>;
 }
 
 export default function PartnerMasterDataDocument({ partners, pagesRef, toolbar }) {
@@ -53,9 +53,9 @@ export default function PartnerMasterDataDocument({ partners, pagesRef, toolbar 
   return <section className="partner-document-preview partner-master-document-preview" aria-labelledby="partner-document-preview-title">
     <div className="partner-document-preview-heading"><h2 id="partner-document-preview-title">Dokumentvorschau</h2></div>
     {toolbar}
-    <div className="partner-document-measurements" aria-hidden="true"><article className="partner-document-page" ref={measurementPageRef}><div ref={measurementHeaderRef}><DocumentHeader dateLabel={dateLabel} partnerCount={partners.length} showTitle /></div>{partners.map((partner, index) => <div className="partner-document-measure-block" ref={(node) => { blockRefs.current[index] = node; }} key={partner.id}><PartnerDocumentBlock partner={partner} /></div>)}</article></div>
+    <div className="partner-document-measurements" aria-hidden="true"><article className="partner-document-page" ref={measurementPageRef}><div ref={measurementHeaderRef}><DocumentHeader dateLabel={dateLabel} /></div>{partners.map((partner, index) => <div className="partner-document-measure-block" ref={(node) => { blockRefs.current[index] = node; }} key={partner.id}><PartnerDocumentBlock partner={partner} /></div>)}</article></div>
     <div className="partner-document-pages" ref={pagesRef}>
-      {partners.length ? pages.map((pagePartners, index) => <article className="partner-document-page" aria-label={`Partner-Stammdatenblatt ${index + 1}`} key={`page-${pagePartners.map((partner) => partner.id).join('-')}`}><DocumentHeader dateLabel={dateLabel} partnerCount={partners.length} showTitle={index === 0} />{pagePartners.map((partner) => <PartnerDocumentBlock partner={partner} key={partner.id} />)}{pages.length > 1 && <footer className="partner-document-page-footer">Seite {index + 1} von {pages.length}</footer>}</article>) : <article className="partner-document-page" aria-label="Leeres Stammdatenblatt"><DocumentHeader dateLabel={dateLabel} partnerCount={0} showTitle /><p className="partner-document-empty">Noch keine Daten übernommen oder Stammdaten geladen.</p></article>}
+      {partners.length ? pages.map((pagePartners, index) => <article className="partner-document-page" aria-label={`Partner-Stammdatenblatt ${index + 1}`} key={`page-${pagePartners.map((partner) => partner.id).join('-')}`}><DocumentHeader dateLabel={dateLabel} />{pagePartners.map((partner) => <PartnerDocumentBlock partner={partner} key={partner.id} />)}{pages.length > 1 && <footer className="partner-document-page-footer">Seite {index + 1} von {pages.length}</footer>}</article>) : <article className="partner-document-page" aria-label="Leeres Stammdatenblatt"><DocumentHeader dateLabel={dateLabel} /><p className="partner-document-empty">Noch keine Daten übernommen oder Stammdaten geladen.</p></article>}
     </div>
   </section>;
 }

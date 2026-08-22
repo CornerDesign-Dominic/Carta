@@ -2896,19 +2896,22 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   margin: 4px 0 18px;
 }
 
-.own-data-document-preview .partner-document-page-header strong {
+.own-data-document-preview .partner-document-page-header strong,
+.partner-master-document-preview .partner-document-page-header strong {
   color: #232320;
   font-weight: 800;
 }
 
-.own-data-document-preview .partner-document-page-header span {
+.own-data-document-preview .partner-document-page-header span,
+.partner-master-document-preview .partner-document-page-header span {
   color: #232320;
   font-size: inherit;
   font-weight: 800;
   letter-spacing: inherit;
 }
 
-.own-data-document-preview .partner-document-page-meta {
+.own-data-document-preview .partner-document-page-meta,
+.partner-master-document-preview .partner-document-page-meta {
   color: #3f3e39;
   font-weight: 600;
   padding-bottom: 36px;
