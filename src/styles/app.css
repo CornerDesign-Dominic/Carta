@@ -2897,13 +2897,15 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .own-data-document-preview .partner-document-page-header strong,
-.partner-master-document-preview .partner-document-page-header strong {
+.partner-master-document-preview .partner-document-page-header strong,
+.catalog-item-document-preview .partner-document-page-header strong {
   color: #232320;
   font-weight: 800;
 }
 
 .own-data-document-preview .partner-document-page-header span,
-.partner-master-document-preview .partner-document-page-header span {
+.partner-master-document-preview .partner-document-page-header span,
+.catalog-item-document-preview .partner-document-page-header span {
   color: #232320;
   font-size: inherit;
   font-weight: 800;
@@ -2911,7 +2913,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
 }
 
 .own-data-document-preview .partner-document-page-meta,
-.partner-master-document-preview .partner-document-page-meta {
+.partner-master-document-preview .partner-document-page-meta,
+.catalog-item-document-preview .partner-document-page-meta {
   color: #3f3e39;
   font-weight: 600;
   padding-bottom: 36px;
