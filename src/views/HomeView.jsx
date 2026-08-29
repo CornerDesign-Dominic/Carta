@@ -16,28 +16,20 @@ const toolItems = [
 
 const whyItems = [
   {
-    title: 'Einfach verständlich',
-    text: 'Klare Sprache, nachvollziehbare Abläufe und so wenig Fachchinesisch wie möglich.',
-  },
-  {
     title: 'Für jeden nutzbar',
-    text: 'Belege24 soll auch funktionieren, wenn Buchhaltung und kaufmännische Themen nicht zum eigenen Alltag gehören.',
+    text: 'Belege24 ist vielseitig einsetzbar und bietet zahlreiche Anwendungsmöglichkeiten für unterschiedliche geschäftliche Anforderungen.',
   },
   {
     title: 'Praktisch und alltagsnah',
-    text: 'Keine Theorie um der Theorie willen. Werkzeuge, Dokumente und Wissen sollen bei konkreten Aufgaben weiterhelfen.',
+    text: 'Werkzeuge, Dokumente und Wissen orientieren sich an konkreten Aufgaben aus dem geschäftlichen Alltag – verständlich und direkt anwendbar.',
   },
   {
     title: 'Schnell zum Ergebnis',
     text: 'Keine langen Einrichtungsprozesse. Öffnen, ausfüllen, berechnen oder nachlesen.',
   },
   {
-    title: 'Datensparsam gedacht',
-    text: 'Wo Daten nicht benötigt werden, sollen sie auch nicht gesammelt werden.',
-  },
-  {
-    title: 'Direkt nutzbar',
-    text: 'Viele Inhalte und Funktionen sollen ohne Anmeldung und ohne lange Vorbereitung direkt genutzt werden können.',
+    title: 'Einmal vorbereiten, öfter nutzen',
+    text: 'Wer Belege24 regelmäßig nutzt, kann wiederkehrende Aufgaben mit Vorlagen und vorbereiteten Daten deutlich einfacher machen.',
   },
 ];
 
@@ -155,7 +147,7 @@ export default function HomeView({ onNavigate }) {
               Ob Rechnung, Mahnung, Berechnung oder eine kurze Erklärung: Du sollst hier finden, was du gerade brauchst, und es einfach direkt nutzen können.
             </p>
             <p>
-              Belege24 ist nicht fertig gedacht. Wir arbeiten laufend daran, Funktionen, Inhalte und Abläufe besser zu machen – orientiert an dem, was im Alltag tatsächlich weiterhilft.
+              Belege24 ist nicht fertig gedacht. Wir arbeiten laufend daran, Funktionen, Inhalte und Abläufe besser zu machen – orientiert an dem, was im Alltag weiterhilft.
             </p>
           </div>
         </div>
