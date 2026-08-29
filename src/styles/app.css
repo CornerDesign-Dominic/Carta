@@ -1518,15 +1518,13 @@ h1 {
 
 .invoice-variant-groups {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(24px, 4vw, 44px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(26px, 4vw, 36px);
   max-width: 860px;
 }
 
 .invoice-variant-group {
   min-width: 0;
-  padding: 4px 0 4px 18px;
-  border-left: 2px solid color-mix(in srgb, var(--color-primary) 34%, var(--color-border));
 }
 
 .invoice-variant-group h3 {
@@ -1541,7 +1539,8 @@ h1 {
   display: grid;
   gap: 8px;
   margin: 0;
-  padding: 0;
+  padding: 2px 0 2px 18px;
+  border-left: 2px solid color-mix(in srgb, var(--color-primary) 34%, var(--color-border));
   list-style: none;
 }
 
@@ -1585,12 +1584,6 @@ h1 {
   color: var(--color-primary);
   font-weight: 680;
   text-underline-offset: 3px;
-}
-
-@media (max-width: 760px) {
-  .invoice-variant-groups {
-    grid-template-columns: 1fr;
-  }
 }
 
 .document-status-note {
