@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 're
 import CookieConsentBanner from './components/CookieConsentBanner.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
+import SeoMeta from './components/SeoMeta.jsx';
 import { syncAnalyticsConsent } from './utils/analytics.js';
 import {
   createDefaultConsent,
@@ -408,6 +409,7 @@ export default function App() {
 
   return (
     <div className="site-shell">
+      <SeoMeta />
       <ScrollToTop />
       <Header
         currentView={currentView}
