@@ -84,6 +84,14 @@ function pathForNavigation(item) {
   }
 
   if (item.view === 'documents') {
+    if (item.documentId === 'invoice-overview') {
+      return '/dokumente/rechnung';
+    }
+
+    if (item.documentId === 'credit-note-overview') {
+      return '/dokumente/gutschrift';
+    }
+
     if (item.documentId === 'write-invoice') {
       if (item.invoiceVariant === 'text') {
         return '/dokumente/rechnung/text';
