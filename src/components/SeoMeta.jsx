@@ -27,6 +27,25 @@ function upsertCanonical(url) {
   element.setAttribute('href', url);
 }
 
+function updateRobotsMeta(content) {
+  const elements = [...document.head.querySelectorAll('meta[name="robots"]')];
+
+  if (!content) {
+    elements.forEach((element) => element.remove());
+    return;
+  }
+
+  const [element = document.createElement('meta'), ...duplicates] = elements;
+  element.setAttribute('name', 'robots');
+  element.setAttribute('content', content);
+
+  if (!element.parentNode) {
+    document.head.appendChild(element);
+  }
+
+  duplicates.forEach((duplicate) => duplicate.remove());
+}
+
 export default function SeoMeta() {
   const { pathname } = useLocation();
 
@@ -39,6 +58,7 @@ export default function SeoMeta() {
       content: meta.description,
     });
     upsertCanonical(meta.canonicalUrl);
+    updateRobotsMeta(meta.robots);
     upsertMeta('meta[property="og:title"]', {
       property: 'og:title',
       content: meta.openGraph.title,

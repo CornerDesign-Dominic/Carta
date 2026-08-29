@@ -141,6 +141,7 @@ function withDefaults(seo, pathname) {
   return {
     title,
     description,
+    robots: seo.robots ?? null,
     canonicalUrl: canonicalUrl(canonicalPath),
     openGraph: {
       title,
@@ -200,6 +201,7 @@ export function getSeoMeta(pathname) {
       title: 'Seite nicht gefunden | Belege24',
       description: 'Die angeforderte Seite wurde nicht gefunden.',
       canonicalPath: normalizedPath,
+      robots: 'noindex, follow',
     };
 
   return withDefaults(seo, normalizedPath);
