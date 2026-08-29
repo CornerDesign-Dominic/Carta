@@ -219,6 +219,11 @@ export default function DocumentsView({
   }, [initialInvoiceSmallBusiness]);
 
   function handleSelectDocument(documentId) {
+    if (documentId === 'invoice-overview') {
+      onNavigate?.({ view: 'documents', path: '/dokumente/rechnung' });
+      return;
+    }
+
     setActiveDocumentId(documentId);
     if (documentId === 'write-invoice') {
       setActiveInvoiceVariant('standard');

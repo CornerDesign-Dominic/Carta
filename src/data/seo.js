@@ -49,10 +49,9 @@ const staticSeo = {
 
 const invoiceVariantSeo = {
   '/dokumente/rechnung': {
-    title: 'Rechnung kostenlos online erstellen | Belege24',
+    title: 'Rechnungsarten kostenlos online erstellen | Belege24',
     description:
-      'Erstelle eine Rechnung kostenlos online mit Positionen, Steuerangaben, PDF und Druck direkt im Browser.',
-    canonicalPath: '/dokumente/rechnung/standard',
+      'Wähle die passende Rechnungsart und erstelle Standard-, Text-, Waren-, Abschlags-, Teil- oder Schlussrechnungen direkt im Browser.',
   },
   '/dokumente/rechnung/standard': {
     title: 'Rechnung kostenlos online erstellen | Belege24',

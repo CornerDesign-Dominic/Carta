@@ -4,6 +4,7 @@ import CookieConsentBanner from './components/CookieConsentBanner.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import SeoMeta from './components/SeoMeta.jsx';
+import StructuredData from './components/StructuredData.jsx';
 import { syncAnalyticsConsent } from './utils/analytics.js';
 import {
   createDefaultConsent,
@@ -14,6 +15,7 @@ import {
 import DocumentsView from './views/DocumentsView.jsx';
 import BaseInterestRateTableView from './views/BaseInterestRateTableView.jsx';
 import HomeView from './views/HomeView.jsx';
+import InvoiceLandingView from './views/InvoiceLandingView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
@@ -410,6 +412,7 @@ export default function App() {
   return (
     <div className="site-shell">
       <SeoMeta />
+      <StructuredData />
       <ScrollToTop />
       <Header
         currentView={currentView}
@@ -423,7 +426,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomeView onNavigate={handleNavigate} />} />
             <Route path="/dokumente" element={<DocumentsRoute />} />
-            <Route path="/dokumente/rechnung" element={<Navigate to="/dokumente/rechnung/standard" replace />} />
+            <Route path="/dokumente/rechnung" element={<InvoiceLandingView onNavigate={handleNavigate} />} />
             <Route path="/dokumente/rechnung/standard" element={<DocumentsRoute documentId="write-invoice" />} />
             <Route
               path="/dokumente/rechnung/kleinunternehmer"
