@@ -81,7 +81,7 @@ export default function CreditNoteLandingView({ onNavigate }) {
           <section className="invoice-master-data-note" aria-labelledby="credit-note-master-data-title">
             <h2 id="credit-note-master-data-title">Gutschriften häufiger erstellen?</h2>
             <p>
-              Wenn du regelmäßig Gutschriften erstellst, kannst du eigene Daten, Empfänger und Leistungen vorbereiten und bei Bedarf wiederverwenden.
+              Wenn du regelmäßig Gutschriften erstellst, kannst du eigene Unternehmensdaten, Empfänger und Leistungen vorbereiten und bei Bedarf wiederverwenden.
             </p>
             <Link to="/stammdaten">Zu den Stammdaten</Link>
           </section>
