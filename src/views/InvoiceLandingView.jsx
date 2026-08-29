@@ -81,6 +81,14 @@ export default function InvoiceLandingView({ onNavigate }) {
               Hinweise zu Pflichtangaben, Rechnungsnummern und Aufbewahrung findest du im Wissensbereich unter <Link to="/wissen/rechnung">Rechnung einfach erklärt</Link>.
             </p>
           </section>
+
+          <section className="invoice-master-data-note" aria-labelledby="invoice-master-data-title">
+            <h2 id="invoice-master-data-title">Rechnungen häufiger erstellen?</h2>
+            <p>
+              Wenn du regelmäßig Rechnungen erstellst, kannst du eigene Daten, Empfänger und Leistungen vorbereiten und bei Bedarf wiederverwenden.
+            </p>
+            <Link to="/stammdaten">Zu den Stammdaten</Link>
+          </section>
         </section>
       </div>
     </main>

@@ -1586,6 +1586,41 @@ h1 {
   text-underline-offset: 3px;
 }
 
+.invoice-master-data-note {
+  max-width: 760px;
+  margin-top: 28px;
+  padding: 18px 20px;
+  border-left: 2px solid color-mix(in srgb, var(--color-primary) 34%, var(--color-border));
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--color-accent-surface) 42%, transparent);
+}
+
+.invoice-master-data-note h2 {
+  margin: 0 0 7px;
+  color: var(--color-text);
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.invoice-master-data-note p {
+  max-width: 680px;
+  margin: 0 0 10px;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.invoice-master-data-note a {
+  color: var(--color-primary);
+  font-size: 0.9rem;
+  font-weight: 680;
+  text-underline-offset: 3px;
+}
+
+.invoice-master-data-note a:hover {
+  color: var(--color-primary-hover);
+}
+
 .credit-note-landing-intro {
   max-width: 760px;
 }
