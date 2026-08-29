@@ -53,6 +53,23 @@ function getDocumentBreadcrumbs(pathname) {
     return breadcrumbs;
   }
 
+  if (pathname === '/dokumente/gutschrift') {
+    return [
+      HOME_BREADCRUMB,
+      DOCUMENTS_BREADCRUMB,
+      { name: 'Gutschriften', path: '/dokumente/gutschrift' },
+    ];
+  }
+
+  if (pathname.startsWith('/dokumente/gutschrift/')) {
+    return [
+      HOME_BREADCRUMB,
+      DOCUMENTS_BREADCRUMB,
+      { name: 'Gutschriften', path: '/dokumente/gutschrift' },
+      { name: seoTitleLabel(pathname), path: pathname },
+    ];
+  }
+
   const document = documentSections
     .flatMap((section) => section.children ?? [])
     .find((item) => item.path === pathname);

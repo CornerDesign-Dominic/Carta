@@ -37,6 +37,16 @@ import {
 } from '../documentModel/reminderVariants.js';
 
 const reminderVariants = REMINDER_VARIANT_IDS.map((id) => REMINDER_VARIANTS[id]);
+const reminderVariantGroups = [
+  {
+    title: 'Frühe Zahlungsaufforderung',
+    variantIds: ['paymentReminder', 'firstReminder'],
+  },
+  {
+    title: 'Weitere Eskalationsstufen',
+    variantIds: ['secondReminder', 'finalReminder'],
+  },
+];
 
 const initialReminderLabels = {
   title: REMINDER_VARIANTS[DEFAULT_REMINDER_VARIANT].title,
@@ -505,17 +515,29 @@ function createReminderPrintItems({ openItems, textBlocks }) {
 
 function ReminderVariantControls({ activeVariant, onSelect }) {
   return (
-    <div className="document-choice-bar reminder-variant-choice-bar" aria-label="Mahnungsart auswählen">
-      {reminderVariants.map((variant) => (
-        <button
-          className={activeVariant === variant.id ? 'is-active' : undefined}
-          type="button"
-          aria-pressed={activeVariant === variant.id}
-          key={variant.id}
-          onClick={() => onSelect(variant.id)}
-        >
-          {variant.label}
-        </button>
+    <div className="reminder-variant-groups" aria-label="Mahnungsart auswählen">
+      {reminderVariantGroups.map((group) => (
+        <section className="reminder-variant-group" key={group.title}>
+          <h3>{group.title}</h3>
+          <ul>
+            {group.variantIds.map((variantId) => {
+              const variant = reminderVariants.find((item) => item.id === variantId);
+
+              return (
+                <li key={variant.id}>
+                  <button
+                    className={activeVariant === variant.id ? 'is-active' : undefined}
+                    type="button"
+                    aria-pressed={activeVariant === variant.id}
+                    onClick={() => onSelect(variant.id)}
+                  >
+                    {variant.label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
       ))}
     </div>
   );

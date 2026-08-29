@@ -11,9 +11,22 @@ describe('SEO indexing directives', () => {
     '/dokumente',
     '/dokumente/rechnung',
     '/dokumente/rechnung/standard',
+    '/dokumente/gutschrift',
+    '/dokumente/gutschrift/standard',
+    '/dokumente/gutschrift/stornorechnung',
+    '/dokumente/gutschrift/rechnungskorrektur',
     '/tools',
     '/wissen',
   ])('keeps the public route %s indexable', (pathname) => {
     expect(getSeoMeta(pathname).robots).toBeNull();
+  });
+
+  it.each([
+    '/dokumente/gutschrift',
+    '/dokumente/gutschrift/standard',
+    '/dokumente/gutschrift/stornorechnung',
+    '/dokumente/gutschrift/rechnungskorrektur',
+  ])('uses a self-referencing canonical for %s', (pathname) => {
+    expect(getSeoMeta(pathname).canonicalUrl).toBe(`https://belege24.com${pathname}`);
   });
 });

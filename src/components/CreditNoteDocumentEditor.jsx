@@ -863,12 +863,22 @@ function CreditNoteReferenceBlock({
   );
 }
 
-export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) {
+export default function CreditNoteDocumentEditor({ initialCreditNoteVariant = 'creditNote', onCreditNoteVariantChange, onMasterDataAdapterChange }) {
+  const normalizedInitialCreditNoteVariant = creditNoteVariantIds.includes(initialCreditNoteVariant)
+    ? initialCreditNoteVariant
+    : 'creditNote';
+  const initialVariantConfig = creditNoteVariantConfig[normalizedInitialCreditNoteVariant];
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
-  const [labels, setLabels] = useState(initialCreditNoteLabels);
+  const [labels, setLabels] = useState(() => ({
+    ...initialCreditNoteLabels,
+    title: initialVariantConfig.title,
+    grandTotal: normalizedInitialCreditNoteVariant === 'creditNote'
+      ? 'Gutschriftsbetrag'
+      : initialVariantConfig.title === 'Stornorechnung' ? 'Stornobetrag' : 'Korrekturbetrag',
+  }));
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(offerContactFields),
     details: createFieldConfig(offerMetaFields),
@@ -883,7 +893,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   const dateInputRefs = useRef({});
   const [offerData, setOfferData] = useState(defaultOfferData);
   const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
-  const [creditNoteVariant, setCreditNoteVariant] = useState('creditNote');
+  const [creditNoteVariant, setCreditNoteVariant] = useState(normalizedInitialCreditNoteVariant);
   const [textBlockSets, setTextBlockSets] = useState(createInitialTextBlockSets);
   const [positions, setPositions] = useState([createCreditNotePosition()]);
   const [isSmallBusiness, setIsSmallBusiness] = useState(readSmallBusinessPreference);
@@ -891,6 +901,21 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
   const smallBusinessRef = useRef(isSmallBusiness);
   offerDataRef.current = offerData;
   smallBusinessRef.current = isSmallBusiness;
+
+  useEffect(() => {
+    const nextVariant = creditNoteVariantIds.includes(initialCreditNoteVariant)
+      ? initialCreditNoteVariant
+      : 'creditNote';
+    const nextConfig = creditNoteVariantConfig[nextVariant];
+    setCreditNoteVariant(nextVariant);
+    setLabels((current) => ({
+      ...current,
+      title: creditNoteVariantTitles.includes(current.title) ? nextConfig.title : current.title,
+      grandTotal: creditNoteGrandTotalLabels.includes(current.grandTotal)
+        ? (nextVariant === 'creditNote' ? 'Gutschriftsbetrag' : nextConfig.title === 'Stornorechnung' ? 'Stornobetrag' : 'Korrekturbetrag')
+        : current.grandTotal,
+    }));
+  }, [initialCreditNoteVariant]);
   const creditNoteMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
       const origin = createMasterDataOrigin(record, 'ownData');
@@ -1130,6 +1155,7 @@ export default function CreditNoteDocumentEditor({ onMasterDataAdapterChange }) 
 
     const nextConfig = creditNoteVariantConfig[nextVariant];
     setCreditNoteVariant(nextVariant);
+    onCreditNoteVariantChange?.(nextVariant);
     setMasterDataFieldOrigins({});
     setLabels((current) => ({
       ...current,

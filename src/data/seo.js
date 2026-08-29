@@ -91,6 +91,29 @@ const invoiceVariantSeo = {
   },
 };
 
+const creditNoteVariantSeo = {
+  '/dokumente/gutschrift': {
+    title: 'Gutschriften und Rechnungskorrekturen erstellen | Belege24',
+    description:
+      'Wähle die passende Variante und erstelle eine Gutschrift, Stornorechnung oder Rechnungskorrektur direkt im Browser.',
+  },
+  '/dokumente/gutschrift/standard': {
+    title: 'Gutschrift kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine Gutschrift mit Positionen, Steuerangaben, PDF und Druck direkt im Browser.',
+  },
+  '/dokumente/gutschrift/stornorechnung': {
+    title: 'Stornorechnung kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine Stornorechnung zur vollständigen Aufhebung einer Rechnung direkt im Browser.',
+  },
+  '/dokumente/gutschrift/rechnungskorrektur': {
+    title: 'Rechnungskorrektur kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine Rechnungskorrektur für fehlerhafte Angaben oder Beträge direkt im Browser.',
+  },
+};
+
 const documentPathSeo = Object.fromEntries(
   documentSections.flatMap((section) =>
     (section.children ?? [])
@@ -108,6 +131,7 @@ const documentPathSeo = Object.fromEntries(
 const documentSeo = {
   ...documentPathSeo,
   ...invoiceVariantSeo,
+  ...creditNoteVariantSeo,
   '/dokumente/eigenbeleg/a4': {
     title: 'Eigenbeleg A4 online erstellen | Belege24',
     description:

@@ -15,6 +15,7 @@ import {
 import DocumentsView from './views/DocumentsView.jsx';
 import BaseInterestRateTableView from './views/BaseInterestRateTableView.jsx';
 import HomeView from './views/HomeView.jsx';
+import CreditNoteLandingView from './views/CreditNoteLandingView.jsx';
 import InvoiceLandingView from './views/InvoiceLandingView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
@@ -50,6 +51,12 @@ const invoicePaths = new Set([
   '/dokumente/rechnung/abschlag',
   '/dokumente/rechnung/teilrechnung',
   '/dokumente/rechnung/schlussrechnung',
+]);
+const creditNotePaths = new Set([
+  '/dokumente/gutschrift',
+  '/dokumente/gutschrift/standard',
+  '/dokumente/gutschrift/stornorechnung',
+  '/dokumente/gutschrift/rechnungskorrektur',
 ]);
 const selfReceiptPaths = new Set([
   '/dokumente/eigenbeleg',
@@ -101,6 +108,18 @@ function pathForNavigation(item) {
       return '/dokumente/rechnung/standard';
     }
 
+    if (item.documentId === 'write-credit-note') {
+      if (item.creditNoteVariant === 'cancellationInvoice') {
+        return '/dokumente/gutschrift/stornorechnung';
+      }
+
+      if (item.creditNoteVariant === 'invoiceCorrection') {
+        return '/dokumente/gutschrift/rechnungskorrektur';
+      }
+
+      return '/dokumente/gutschrift/standard';
+    }
+
     if (item.documentId === 'write-self-receipt' && item.selfReceiptVariant === 'standard') {
       return '/dokumente/eigenbeleg/a4';
     }
@@ -144,6 +163,7 @@ function viewFromPath(pathname) {
     pathname === '/dokumente'
     || selfReceiptPaths.has(pathname)
     || invoicePaths.has(pathname)
+    || creditNotePaths.has(pathname)
     || generatorIdByPath.has(pathname)
   ) {
     return 'documents';
@@ -191,7 +211,7 @@ function readStoredTheme() {
   return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : null;
 }
 
-function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard', selfReceiptVariant = 'short' }) {
+function DocumentsRoute({ documentId = 'overview', creditNoteVariant = 'creditNote', invoiceVariant = 'standard', selfReceiptVariant = 'short' }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -205,6 +225,7 @@ function DocumentsRoute({ documentId = 'overview', invoiceVariant = 'standard', 
   return (
     <DocumentsView
       initialDocumentId={documentId}
+      initialCreditNoteVariant={creditNoteVariant}
       initialInvoiceSmallBusiness={location.state?.isSmallBusiness}
       initialInvoiceVariant={invoiceVariant}
       initialSelfReceiptVariant={selfReceiptVariant}
@@ -451,6 +472,16 @@ export default function App() {
             <Route
               path="/dokumente/rechnung/schlussrechnung"
               element={<DocumentsRoute documentId="write-invoice" invoiceVariant="finalInvoice" />}
+            />
+            <Route path="/dokumente/gutschrift" element={<CreditNoteLandingView onNavigate={handleNavigate} />} />
+            <Route path="/dokumente/gutschrift/standard" element={<DocumentsRoute documentId="write-credit-note" />} />
+            <Route
+              path="/dokumente/gutschrift/stornorechnung"
+              element={<DocumentsRoute documentId="write-credit-note" creditNoteVariant="cancellationInvoice" />}
+            />
+            <Route
+              path="/dokumente/gutschrift/rechnungskorrektur"
+              element={<DocumentsRoute documentId="write-credit-note" creditNoteVariant="invoiceCorrection" />}
             />
             <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="short" />} />
             <Route path="/dokumente/eigenbeleg/a4" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="standard" />} />

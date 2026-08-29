@@ -39,6 +39,18 @@ function pathForSelfReceiptVariant(variant) {
   return variant === 'standard' ? '/dokumente/eigenbeleg/a4' : '/dokumente/eigenbeleg';
 }
 
+function pathForCreditNoteVariant(variant) {
+  if (variant === 'cancellationInvoice') {
+    return '/dokumente/gutschrift/stornorechnung';
+  }
+
+  if (variant === 'invoiceCorrection') {
+    return '/dokumente/gutschrift/rechnungskorrektur';
+  }
+
+  return '/dokumente/gutschrift/standard';
+}
+
 export function getDocumentSessionResetKey(documentId) {
   return documentId;
 }
@@ -177,12 +189,14 @@ function DocumentOverview() {
 
 export default function DocumentsView({
   initialDocumentId = 'overview',
+  initialCreditNoteVariant = 'creditNote',
   initialInvoiceSmallBusiness,
   initialInvoiceVariant = 'standard',
   initialSelfReceiptVariant = 'short',
   onNavigate,
 }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
+  const [activeCreditNoteVariant, setActiveCreditNoteVariant] = useState(initialCreditNoteVariant);
   const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
   const [activeSelfReceiptVariant, setActiveSelfReceiptVariant] = useState(initialSelfReceiptVariant);
   const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
@@ -207,6 +221,10 @@ export default function DocumentsView({
   }, [initialDocumentId]);
 
   useEffect(() => {
+    setActiveCreditNoteVariant(initialCreditNoteVariant);
+  }, [initialCreditNoteVariant]);
+
+  useEffect(() => {
     setActiveInvoiceVariant(initialInvoiceVariant);
   }, [initialInvoiceVariant]);
 
@@ -224,9 +242,17 @@ export default function DocumentsView({
       return;
     }
 
+    if (documentId === 'credit-note-overview') {
+      onNavigate?.({ view: 'documents', path: '/dokumente/gutschrift' });
+      return;
+    }
+
     setActiveDocumentId(documentId);
     if (documentId === 'write-invoice') {
       setActiveInvoiceVariant('standard');
+    }
+    if (documentId === 'write-credit-note') {
+      setActiveCreditNoteVariant('creditNote');
     }
 
     onNavigate?.({ view: 'documents', documentId });
@@ -254,6 +280,16 @@ export default function DocumentsView({
       isSmallBusiness,
       path: pathForInvoiceVariant(activeInvoiceVariant),
     }, { preserveDocumentsView: true, replace: true });
+  }
+
+  function handleCreditNoteVariantChange(variant) {
+    setActiveCreditNoteVariant(variant);
+    onNavigate?.({
+      view: 'documents',
+      documentId: 'write-credit-note',
+      creditNoteVariant: variant,
+      path: pathForCreditNoteVariant(variant),
+    }, { preserveDocumentsView: true });
   }
 
   function handleSelfReceiptVariantChange(variant) {
@@ -292,7 +328,13 @@ export default function DocumentsView({
 
               {activeDocument.formType === 'deliveryNote' && <DeliveryNoteDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
               {activeDocument.formType === 'businessLetter' && <BusinessLetterDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
-              {activeDocument.formType === 'creditNote' && <CreditNoteDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'creditNote' && (
+                <CreditNoteDocumentEditor
+                  initialCreditNoteVariant={activeCreditNoteVariant}
+                  onCreditNoteVariantChange={handleCreditNoteVariantChange}
+                  onMasterDataAdapterChange={handleMasterDataAdapterChange}
+                />
+              )}
               {activeDocument.formType === 'invoice' && (
                 <InvoiceDocumentEditor
                   initialSmallBusiness={activeInvoiceSmallBusiness}
