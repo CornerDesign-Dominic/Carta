@@ -48,12 +48,17 @@ export default function DocumentSidebar({ activeId, activeParentId, onSelect }) 
           const target = item.children?.[0] ?? item;
           const isInvoiceSection = item.id === 'invoices';
           const isCreditNoteSection = item.id === 'credit-notes';
+          const isReminderSection = item.id === 'reminders';
           const targetId = isInvoiceSection
             ? 'invoice-overview'
-            : isCreditNoteSection ? 'credit-note-overview' : target.id;
+            : isCreditNoteSection
+              ? 'credit-note-overview'
+              : isReminderSection ? 'reminder-overview' : target.id;
           const targetPath = isInvoiceSection
             ? '/dokumente/rechnung'
-            : isCreditNoteSection ? '/dokumente/gutschrift' : (target.path ?? '/dokumente');
+            : isCreditNoteSection
+              ? '/dokumente/gutschrift'
+              : isReminderSection ? '/dokumente/mahnung' : (target.path ?? '/dokumente');
           const isActive = activeParentId === item.id || activeId === item.id;
 
           return (

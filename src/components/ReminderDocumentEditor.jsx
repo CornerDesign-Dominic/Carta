@@ -37,16 +37,6 @@ import {
 } from '../documentModel/reminderVariants.js';
 
 const reminderVariants = REMINDER_VARIANT_IDS.map((id) => REMINDER_VARIANTS[id]);
-const reminderVariantGroups = [
-  {
-    title: 'Frühe Zahlungsaufforderung',
-    variantIds: ['paymentReminder', 'firstReminder'],
-  },
-  {
-    title: 'Weitere Eskalationsstufen',
-    variantIds: ['secondReminder', 'finalReminder'],
-  },
-];
 
 const initialReminderLabels = {
   title: REMINDER_VARIANTS[DEFAULT_REMINDER_VARIANT].title,
@@ -515,40 +505,35 @@ function createReminderPrintItems({ openItems, textBlocks }) {
 
 function ReminderVariantControls({ activeVariant, onSelect }) {
   return (
-    <div className="reminder-variant-groups" aria-label="Mahnungsart auswählen">
-      {reminderVariantGroups.map((group) => (
-        <section className="reminder-variant-group" key={group.title}>
-          <h3>{group.title}</h3>
-          <ul>
-            {group.variantIds.map((variantId) => {
-              const variant = reminderVariants.find((item) => item.id === variantId);
-
-              return (
-                <li key={variant.id}>
-                  <button
-                    className={activeVariant === variant.id ? 'is-active' : undefined}
-                    type="button"
-                    aria-pressed={activeVariant === variant.id}
-                    onClick={() => onSelect(variant.id)}
-                  >
-                    {variant.label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+    <div className="document-choice-bar reminder-variant-choice-bar" aria-label="Mahnungsart auswählen">
+      {reminderVariants.map((variant) => (
+        <button
+          className={activeVariant === variant.id ? 'is-active' : undefined}
+          type="button"
+          aria-pressed={activeVariant === variant.id}
+          key={variant.id}
+          onClick={() => onSelect(variant.id)}
+        >
+          {variant.label}
+        </button>
       ))}
     </div>
   );
 }
 
-export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
+export default function ReminderDocumentEditor({ initialReminderVariant = DEFAULT_REMINDER_VARIANT, onMasterDataAdapterChange, onReminderVariantChange }) {
+  const normalizedInitialReminderVariant = REMINDER_VARIANT_IDS.includes(initialReminderVariant)
+    ? initialReminderVariant
+    : DEFAULT_REMINDER_VARIANT;
+  const initialReminderVariantConfig = REMINDER_VARIANTS[normalizedInitialReminderVariant];
   const [highlightFields, setHighlightFields] = useState(false);
   const [isDataCheckMode, setIsDataCheckMode] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isFormPanelOpen, setIsFormPanelOpen] = useState(false);
-  const [labels, setLabels] = useState(initialReminderLabels);
+  const [labels, setLabels] = useState(() => ({
+    ...initialReminderLabels,
+    title: initialReminderVariantConfig.title,
+  }));
   const [fieldConfig, setFieldConfig] = useState({
     contact: createFieldConfig(reminderContactFields),
     details: createFieldConfig(reminderMetaFields),
@@ -563,12 +548,36 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
   const dateInputRefs = useRef({});
   const [reminderData, setReminderData] = useState(defaultReminderData);
   const [masterDataFieldOrigins, setMasterDataFieldOrigins] = useState({});
-  const [reminderVariant, setReminderVariant] = useState(DEFAULT_REMINDER_VARIANT);
-  const [textBlocks, setTextBlocks] = useState(defaultReminderTextBlocks);
+  const [reminderVariant, setReminderVariant] = useState(normalizedInitialReminderVariant);
+  const [textBlocks, setTextBlocks] = useState(() => createReminderTextBlocks(normalizedInitialReminderVariant));
   const [openItems, setOpenItems] = useState([createOpenItem()]);
   const [charges, setCharges] = useState({ interest: '0', reminderFee: '5.00' });
   const reminderDataRef = useRef(reminderData);
   reminderDataRef.current = reminderData;
+  useEffect(() => {
+    const nextVariant = REMINDER_VARIANT_IDS.includes(initialReminderVariant)
+      ? initialReminderVariant
+      : DEFAULT_REMINDER_VARIANT;
+    const currentConfig = REMINDER_VARIANTS[reminderVariant] ?? REMINDER_VARIANTS[DEFAULT_REMINDER_VARIANT];
+    const nextConfig = REMINDER_VARIANTS[nextVariant];
+
+    setReminderVariant(nextVariant);
+    setLabels((current) => ({
+      ...current,
+      title: current.title === currentConfig.title || current.title === 'Mahnung'
+        ? nextConfig.title
+        : current.title,
+    }));
+    setTextBlocks((current) => current.map((block) => {
+      if (block.id === 'intro' && block.value === currentConfig.intro) {
+        return { ...block, value: nextConfig.intro };
+      }
+      if (block.id === 'closing' && block.value === currentConfig.closing) {
+        return { ...block, value: nextConfig.closing };
+      }
+      return block;
+    }));
+  }, [initialReminderVariant]);
   const reminderMasterDataAdapter = useMemo(() => ({
     applyOwnData(record) {
       const origin = createMasterDataOrigin(record, 'ownData');
@@ -751,6 +760,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
     const nextConfig = REMINDER_VARIANTS[nextVariant];
 
     setReminderVariant(nextVariant);
+    onReminderVariantChange?.(nextVariant);
     setMasterDataFieldOrigins({});
     setLabels((current) => ({
       ...current,
@@ -1071,6 +1081,7 @@ export default function ReminderDocumentEditor({ onMasterDataAdapterChange }) {
 
     const restored = importResult.state;
     setReminderVariant(restored.reminderVariant);
+    onReminderVariantChange?.(restored.reminderVariant);
     setLabels(restored.labels);
     setReminderData(restored.reminderData);
     setOpenItems(restored.openItems);

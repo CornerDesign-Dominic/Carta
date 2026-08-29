@@ -3952,62 +3952,8 @@ body.document-print-mode.receipt-print-mode .receipt-sheet .document-label-input
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.reminder-variant-groups {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(26px, 4vw, 36px);
-  width: 100%;
-  max-width: 860px;
-}
-
-.reminder-variant-group {
-  min-width: 0;
-}
-
-.reminder-variant-group h3 {
-  margin: 0 0 12px;
-  color: var(--ink-soft);
-  font-size: 0.98rem;
-  font-weight: 720;
-  line-height: 1.42;
-}
-
-.reminder-variant-group ul {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 2px 0 2px 18px;
-  border-left: 2px solid color-mix(in srgb, var(--color-primary) 34%, var(--color-border));
-  list-style: none;
-}
-
-.reminder-variant-group button {
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--color-primary);
-  font: inherit;
-  font-size: 0.94rem;
-  font-weight: 650;
-  line-height: 1.5;
-  text-align: left;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-.reminder-variant-group button:hover {
-  color: var(--color-primary-hover);
-  text-decoration-color: currentColor;
-}
-
-.reminder-variant-group button.is-active {
-  color: var(--color-primary);
-  font-weight: 760;
-  text-decoration-color: currentColor;
+.invoice-variant-controls .reminder-variant-choice-bar {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .business-letter-address-row {

@@ -70,6 +70,23 @@ function getDocumentBreadcrumbs(pathname) {
     ];
   }
 
+  if (pathname === '/dokumente/mahnung') {
+    return [
+      HOME_BREADCRUMB,
+      DOCUMENTS_BREADCRUMB,
+      { name: 'Mahnungen', path: '/dokumente/mahnung' },
+    ];
+  }
+
+  if (pathname.startsWith('/dokumente/mahnung/')) {
+    return [
+      HOME_BREADCRUMB,
+      DOCUMENTS_BREADCRUMB,
+      { name: 'Mahnungen', path: '/dokumente/mahnung' },
+      { name: seoTitleLabel(pathname), path: pathname },
+    ];
+  }
+
   const document = documentSections
     .flatMap((section) => section.children ?? [])
     .find((item) => item.path === pathname);

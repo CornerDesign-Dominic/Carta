@@ -114,6 +114,34 @@ const creditNoteVariantSeo = {
   },
 };
 
+const reminderVariantSeo = {
+  '/dokumente/mahnung': {
+    title: 'Zahlungserinnerungen und Mahnungen erstellen | Belege24',
+    description:
+      'Wähle die passende Mahnungsart und erstelle Zahlungserinnerungen sowie Mahnungen direkt im Browser.',
+  },
+  '/dokumente/mahnung/zahlungserinnerung': {
+    title: 'Zahlungserinnerung kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine freundliche Zahlungserinnerung mit offener Forderung, Zahlungsfrist, PDF und Druck.',
+  },
+  '/dokumente/mahnung/erste-mahnung': {
+    title: '1. Mahnung kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine erste Mahnung mit offenen Posten, Zahlungsfrist, PDF und Druck direkt im Browser.',
+  },
+  '/dokumente/mahnung/zweite-mahnung': {
+    title: '2. Mahnung kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine zweite Mahnung mit offenen Posten, neuer Zahlungsfrist, PDF und Druck.',
+  },
+  '/dokumente/mahnung/letzte-mahnung': {
+    title: 'Letzte Mahnung kostenlos online erstellen | Belege24',
+    description:
+      'Erstelle eine letzte Mahnung mit abschließender Zahlungsfrist, PDF und Druck direkt im Browser.',
+  },
+};
+
 const documentPathSeo = Object.fromEntries(
   documentSections.flatMap((section) =>
     (section.children ?? [])
@@ -132,6 +160,7 @@ const documentSeo = {
   ...documentPathSeo,
   ...invoiceVariantSeo,
   ...creditNoteVariantSeo,
+  ...reminderVariantSeo,
   '/dokumente/eigenbeleg/a4': {
     title: 'Eigenbeleg A4 online erstellen | Belege24',
     description:

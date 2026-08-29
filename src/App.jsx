@@ -17,6 +17,7 @@ import BaseInterestRateTableView from './views/BaseInterestRateTableView.jsx';
 import HomeView from './views/HomeView.jsx';
 import CreditNoteLandingView from './views/CreditNoteLandingView.jsx';
 import InvoiceLandingView from './views/InvoiceLandingView.jsx';
+import ReminderLandingView from './views/ReminderLandingView.jsx';
 import KnowledgeView from './views/KnowledgeView.jsx';
 import LegalPage from './views/LegalPage.jsx';
 import NotFoundView from './views/NotFoundView.jsx';
@@ -58,6 +59,13 @@ const creditNotePaths = new Set([
   '/dokumente/gutschrift/stornorechnung',
   '/dokumente/gutschrift/rechnungskorrektur',
 ]);
+const reminderPaths = new Set([
+  '/dokumente/mahnung',
+  '/dokumente/mahnung/zahlungserinnerung',
+  '/dokumente/mahnung/erste-mahnung',
+  '/dokumente/mahnung/zweite-mahnung',
+  '/dokumente/mahnung/letzte-mahnung',
+]);
 const selfReceiptPaths = new Set([
   '/dokumente/eigenbeleg',
   '/dokumente/eigenbeleg/a4',
@@ -90,6 +98,10 @@ function pathForNavigation(item) {
 
     if (item.documentId === 'credit-note-overview') {
       return '/dokumente/gutschrift';
+    }
+
+    if (item.documentId === 'reminder-overview') {
+      return '/dokumente/mahnung';
     }
 
     if (item.documentId === 'write-invoice') {
@@ -126,6 +138,19 @@ function pathForNavigation(item) {
       }
 
       return '/dokumente/gutschrift/standard';
+    }
+
+    if (item.documentId === 'write-reminder') {
+      if (item.reminderVariant === 'firstReminder') {
+        return '/dokumente/mahnung/erste-mahnung';
+      }
+      if (item.reminderVariant === 'secondReminder') {
+        return '/dokumente/mahnung/zweite-mahnung';
+      }
+      if (item.reminderVariant === 'finalReminder') {
+        return '/dokumente/mahnung/letzte-mahnung';
+      }
+      return '/dokumente/mahnung/zahlungserinnerung';
     }
 
     if (item.documentId === 'write-self-receipt' && item.selfReceiptVariant === 'standard') {
@@ -172,6 +197,7 @@ function viewFromPath(pathname) {
     || selfReceiptPaths.has(pathname)
     || invoicePaths.has(pathname)
     || creditNotePaths.has(pathname)
+    || reminderPaths.has(pathname)
     || generatorIdByPath.has(pathname)
   ) {
     return 'documents';
@@ -219,7 +245,7 @@ function readStoredTheme() {
   return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : null;
 }
 
-function DocumentsRoute({ documentId = 'overview', creditNoteVariant = 'creditNote', invoiceVariant = 'standard', selfReceiptVariant = 'short' }) {
+function DocumentsRoute({ documentId = 'overview', creditNoteVariant = 'creditNote', invoiceVariant = 'standard', reminderVariant = 'paymentReminder', selfReceiptVariant = 'short' }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -236,6 +262,7 @@ function DocumentsRoute({ documentId = 'overview', creditNoteVariant = 'creditNo
       initialCreditNoteVariant={creditNoteVariant}
       initialInvoiceSmallBusiness={location.state?.isSmallBusiness}
       initialInvoiceVariant={invoiceVariant}
+      initialReminderVariant={reminderVariant}
       initialSelfReceiptVariant={selfReceiptVariant}
       onNavigate={handleNavigate}
     />
@@ -490,6 +517,23 @@ export default function App() {
             <Route
               path="/dokumente/gutschrift/rechnungskorrektur"
               element={<DocumentsRoute documentId="write-credit-note" creditNoteVariant="invoiceCorrection" />}
+            />
+            <Route path="/dokumente/mahnung" element={<ReminderLandingView onNavigate={handleNavigate} />} />
+            <Route
+              path="/dokumente/mahnung/zahlungserinnerung"
+              element={<DocumentsRoute documentId="write-reminder" reminderVariant="paymentReminder" />}
+            />
+            <Route
+              path="/dokumente/mahnung/erste-mahnung"
+              element={<DocumentsRoute documentId="write-reminder" reminderVariant="firstReminder" />}
+            />
+            <Route
+              path="/dokumente/mahnung/zweite-mahnung"
+              element={<DocumentsRoute documentId="write-reminder" reminderVariant="secondReminder" />}
+            />
+            <Route
+              path="/dokumente/mahnung/letzte-mahnung"
+              element={<DocumentsRoute documentId="write-reminder" reminderVariant="finalReminder" />}
             />
             <Route path="/dokumente/eigenbeleg" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="short" />} />
             <Route path="/dokumente/eigenbeleg/a4" element={<DocumentsRoute documentId="write-self-receipt" selfReceiptVariant="standard" />} />

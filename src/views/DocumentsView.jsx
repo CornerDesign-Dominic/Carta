@@ -51,6 +51,19 @@ function pathForCreditNoteVariant(variant) {
   return '/dokumente/gutschrift/standard';
 }
 
+function pathForReminderVariant(variant) {
+  if (variant === 'firstReminder') {
+    return '/dokumente/mahnung/erste-mahnung';
+  }
+  if (variant === 'secondReminder') {
+    return '/dokumente/mahnung/zweite-mahnung';
+  }
+  if (variant === 'finalReminder') {
+    return '/dokumente/mahnung/letzte-mahnung';
+  }
+  return '/dokumente/mahnung/zahlungserinnerung';
+}
+
 export function getDocumentSessionResetKey(documentId) {
   return documentId;
 }
@@ -192,12 +205,14 @@ export default function DocumentsView({
   initialCreditNoteVariant = 'creditNote',
   initialInvoiceSmallBusiness,
   initialInvoiceVariant = 'standard',
+  initialReminderVariant = 'paymentReminder',
   initialSelfReceiptVariant = 'short',
   onNavigate,
 }) {
   const [activeDocumentId, setActiveDocumentId] = useState(initialDocumentId);
   const [activeCreditNoteVariant, setActiveCreditNoteVariant] = useState(initialCreditNoteVariant);
   const [activeInvoiceVariant, setActiveInvoiceVariant] = useState(initialInvoiceVariant);
+  const [activeReminderVariant, setActiveReminderVariant] = useState(initialReminderVariant);
   const [activeSelfReceiptVariant, setActiveSelfReceiptVariant] = useState(initialSelfReceiptVariant);
   const [activeInvoiceSmallBusiness, setActiveInvoiceSmallBusiness] = useState(initialInvoiceSmallBusiness);
   const [masterDataAdapter, setMasterDataAdapter] = useState(null);
@@ -229,6 +244,10 @@ export default function DocumentsView({
   }, [initialInvoiceVariant]);
 
   useEffect(() => {
+    setActiveReminderVariant(initialReminderVariant);
+  }, [initialReminderVariant]);
+
+  useEffect(() => {
     setActiveSelfReceiptVariant(initialSelfReceiptVariant);
   }, [initialSelfReceiptVariant]);
 
@@ -247,12 +266,20 @@ export default function DocumentsView({
       return;
     }
 
+    if (documentId === 'reminder-overview') {
+      onNavigate?.({ view: 'documents', path: '/dokumente/mahnung' });
+      return;
+    }
+
     setActiveDocumentId(documentId);
     if (documentId === 'write-invoice') {
       setActiveInvoiceVariant('standard');
     }
     if (documentId === 'write-credit-note') {
       setActiveCreditNoteVariant('creditNote');
+    }
+    if (documentId === 'write-reminder') {
+      setActiveReminderVariant('paymentReminder');
     }
 
     onNavigate?.({ view: 'documents', documentId });
@@ -289,6 +316,16 @@ export default function DocumentsView({
       documentId: 'write-credit-note',
       creditNoteVariant: variant,
       path: pathForCreditNoteVariant(variant),
+    }, { preserveDocumentsView: true });
+  }
+
+  function handleReminderVariantChange(variant) {
+    setActiveReminderVariant(variant);
+    onNavigate?.({
+      view: 'documents',
+      documentId: 'write-reminder',
+      reminderVariant: variant,
+      path: pathForReminderVariant(variant),
     }, { preserveDocumentsView: true });
   }
 
@@ -346,7 +383,13 @@ export default function DocumentsView({
               )}
               {activeDocument.formType === 'offer' && <OfferDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
               {activeDocument.formType === 'receipt' && <ReceiptDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
-              {activeDocument.formType === 'reminder' && <ReminderDocumentEditor onMasterDataAdapterChange={handleMasterDataAdapterChange} />}
+              {activeDocument.formType === 'reminder' && (
+                <ReminderDocumentEditor
+                  initialReminderVariant={activeReminderVariant}
+                  onMasterDataAdapterChange={handleMasterDataAdapterChange}
+                  onReminderVariantChange={handleReminderVariantChange}
+                />
+              )}
               {activeDocument.formType === 'selfReceipt' && (
                 <SelfReceiptDocumentEditor
                   initialSelfReceiptVariant={activeSelfReceiptVariant}
