@@ -25,6 +25,12 @@ export const glossaryEntries = [
     important: 'Ein selbst erstellter Eigenbeleg ersetzt die erforderliche Rechnung regelmäßig nicht.',
   },
   {
+    id: 'teillieferung',
+    term: 'Teillieferung',
+    definition: 'Bei einer Teillieferung wird nur ein Teil der bestellten Waren zu einem Zeitpunkt geliefert.',
+    explanation: 'Die restlichen Positionen folgen später. Eine eindeutige Zuordnung zur Bestellung hilft dabei, gelieferte und noch offene Mengen im Blick zu behalten.',
+  },
+  {
     id: 'leistungsdatum',
     term: 'Leistungsdatum',
     definition: 'Das Leistungsdatum zeigt, wann eine Leistung erbracht oder eine Ware geliefert wurde.',
