@@ -110,6 +110,7 @@ export default function KnowledgeArticle({
   const faqs = article.faqs ?? [];
   const sources = article.sources ?? [];
   const updatedAt = formatGermanDate(article.updatedAt);
+  const isToolCta = generator?.href?.startsWith('/tools/');
 
   return (
     <>
@@ -153,10 +154,10 @@ export default function KnowledgeArticle({
       </article>
 
       {generator && (
-        <section className="knowledge-cta-section" aria-label="Passender Generator">
+        <section className="knowledge-cta-section" aria-label={isToolCta ? 'Passendes Werkzeug' : 'Passender Generator'}>
           <div className="knowledge-cta-content">
             <p className="knowledge-cta-kicker">Direkt umsetzen</p>
-            <h2>Passenden Generator nutzen</h2>
+            <h2>{isToolCta ? 'Passendes Werkzeug nutzen' : 'Passenden Generator nutzen'}</h2>
             <p>
               {generator.text
                 ?? 'Nutze den passenden Belege24-Generator, um dein Dokument schnell und übersichtlich zu erstellen.'}

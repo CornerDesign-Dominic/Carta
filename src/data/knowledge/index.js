@@ -7,6 +7,7 @@ import quittung from './pages/quittung.js';
 import eigenbeleg from './pages/eigenbeleg.js';
 import mahnverfahren from './pages/mahnverfahren.js';
 import businessplan from './pages/businessplan.js';
+import umsatzsteuer from './pages/umsatzsteuer.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -21,6 +22,7 @@ export const knowledgePages = {
   'eigenbeleg': eigenbeleg,
   'mahnverfahren': mahnverfahren,
   'businessplan': businessplan,
+  'umsatzsteuer': umsatzsteuer,
 };
 
 export function findKnowledgePage(slug) {

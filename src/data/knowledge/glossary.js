@@ -25,6 +25,19 @@ export const glossaryEntries = [
     important: 'Ein selbst erstellter Eigenbeleg ersetzt die erforderliche Rechnung regelmäßig nicht.',
   },
   {
+    id: 'vorsteuer',
+    term: 'Vorsteuer',
+    definition: 'Vorsteuer ist die Umsatzsteuer, die ein Unternehmen für betriebliche Einkäufe bezahlt.',
+    explanation: 'Unter den gesetzlichen Voraussetzungen kann sie mit der eigenen Umsatzsteuer verrechnet werden. Dafür ist regelmäßig eine ordnungsgemäße Rechnung erforderlich.',
+    important: 'Vorsteuer darf nicht allein deshalb abgezogen werden, weil auf einem Beleg ein Steuerbetrag steht.',
+  },
+  {
+    id: 'umsatzsteuer-zahllast',
+    term: 'Umsatzsteuer-Zahllast',
+    definition: 'Die Umsatzsteuer-Zahllast ist vereinfacht der Betrag, der nach Verrechnung von Umsatzsteuer und abziehbarer Vorsteuer an das Finanzamt zu zahlen ist.',
+    explanation: 'Ist die abziehbare Vorsteuer höher als die Umsatzsteuer aus Verkäufen, kann sich stattdessen ein Vorsteuerüberschuss ergeben.',
+  },
+  {
     id: 'teillieferung',
     term: 'Teillieferung',
     definition: 'Bei einer Teillieferung wird nur ein Teil der bestellten Waren zu einem Zeitpunkt geliefert.',

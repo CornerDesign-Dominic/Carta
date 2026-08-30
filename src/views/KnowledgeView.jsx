@@ -37,6 +37,11 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
       return;
     }
 
+    if (toolLink?.startsWith('/tools/')) {
+      onNavigate({ view: 'tools', toolPath: toolLink });
+      return;
+    }
+
     onNavigate({ view: 'documents' });
   }
 

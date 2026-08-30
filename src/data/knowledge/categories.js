@@ -21,6 +21,14 @@ export const knowledgeCategories = [
     ],
   },
   {
+    id: 'bwl-rechnungswesen',
+    title: 'BWL & Rechnungswesen',
+    description: 'Grundlagen zu Steuern, Rechnungswesen und betriebswirtschaftlichen Zusammenhängen.',
+    pages: [
+      { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
+    ],
+  },
+  {
     id: 'gruendung',
     title: 'Gründung',
     description: 'Grundlagen für Selbstständige, Gründer und kleine Unternehmen.',
