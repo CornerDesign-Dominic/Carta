@@ -47,6 +47,7 @@ export const knowledgeCategories = [
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
       { slug: 'mahnverfahren', title: 'Mahnung' },
       { slug: 'zahlungserinnerung', title: 'Zahlungserinnerung' },
+      { slug: 'inkasso', title: 'Inkasso' },
       { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
       { slug: 'mahnbescheid', title: 'Mahnbescheid' },
       { slug: 'vollstreckungsbescheid', title: 'Vollstreckungsbescheid' },

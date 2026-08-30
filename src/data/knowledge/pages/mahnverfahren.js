@@ -197,6 +197,7 @@ const mahnverfahren = {
     "mahnwesen",
     "rechnung",
     "zahlungserinnerung",
+    "inkasso",
     "gerichtliches-mahnverfahren",
     "mahnbescheid",
   ],
