@@ -15,6 +15,7 @@ Kategorie: <Kategorie>
 Schwerpunkt:
 - optionaler Punkt
 - optionaler Punkt
+Review-Grund: -
 ```
 
 Mögliche Statuswerte:
@@ -31,7 +32,9 @@ Mögliche Statuswerte:
 3. Artikel vollständig technisch integrieren.
 4. Review-Checkliste abarbeiten.
 5. Status erst auf `fertig` setzen, wenn Inhalt, Verlinkungen und technische Prüfungen abgeschlossen sind.
-6. Keine weiteren offenen Artikel eigenständig mitbearbeiten, wenn der Auftrag nur einen bestimmten Artikel nennt.
+6. Kann eine fachliche, quellenbezogene oder technische Unsicherheit nicht zuverlässig geklärt werden, den Status auf `Review` setzen und unter `Review-Grund` konkret dokumentieren, was geprüft werden muss.
+7. Unsichere Inhalte nicht erfinden oder als gesichert darstellen.
+8. Keine weiteren offenen Artikel eigenständig mitbearbeiten, wenn der Auftrag nur einen bestimmten Artikel nennt.
 
 ## Offene Artikel
 
@@ -48,6 +51,18 @@ Schwerpunkt:
 - Berechnung mit praxisnahem Beispiel
 - Zusammenhang zwischen Bestellkosten und Lagerkosten zeigen
 - Voraussetzungen und Grenzen der Formel nennen
+Review-Grund: -
+-->
+
+## Review-Beispiel
+
+<!--
+### Beispielthema
+Status: Review
+Kategorie: Beispiel
+Schwerpunkt:
+- ...
+Review-Grund: Aktueller fachlicher Stand konnte nicht eindeutig über eine geeignete Primärquelle bestätigt werden.
 -->
 
 ## Erledigt
