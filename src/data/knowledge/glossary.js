@@ -348,6 +348,18 @@ export const glossaryEntries = [
     definition: 'Beim Neubeginn startet die Verjährungsfrist erneut.',
     explanation: 'Er kann unter den gesetzlichen Voraussetzungen etwa durch ein Anerkenntnis oder bestimmte Vollstreckungshandlungen ausgelöst werden. Das ist nicht dasselbe wie eine Hemmung der Verjährung.',
   },
+  {
+    id: 'kaufmann',
+    term: 'Kaufmann',
+    definition: 'Ein Kaufmann ist eine Person oder Gesellschaft, auf die die kaufmännischen Vorschriften des Handelsgesetzbuchs anwendbar sind.',
+    explanation: 'Wer ein Handelsgewerbe betreibt, ist grundsätzlich Kaufmann. Bei kleineren Gewerben kann eine freiwillige Eintragung ins Handelsregister zur Anwendung des Handelsrechts führen.',
+  },
+  {
+    id: 'handelsregister',
+    term: 'Handelsregister',
+    definition: 'Das Handelsregister ist ein öffentliches Register für kaufmännische Unternehmen und Gesellschaften.',
+    explanation: 'Es wird von den Registergerichten geführt. Je nach Rechtsform erfolgt die Eintragung insbesondere in Abteilung A oder Abteilung B; nicht jedes Einzelunternehmen ist eintragungspflichtig.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

@@ -167,6 +167,7 @@ export const knowledgeCategories = [
     topicsTitle: 'Rechtsformen im Überblick',
     pages: [
       { slug: 'rechtsformen', title: 'Rechtsformen' },
+      { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
     ],
     topicGroups: [
       {

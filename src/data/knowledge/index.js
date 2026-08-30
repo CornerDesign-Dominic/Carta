@@ -37,6 +37,7 @@ import steuerfreieUmsaetze from './pages/steuerfreie-umsaetze.js';
 import reverseCharge from './pages/reverse-charge.js';
 import innergemeinschaftlicheLieferung from './pages/innergemeinschaftliche-lieferung.js';
 import rechtsformen from './pages/rechtsformen.js';
+import einzelunternehmen from './pages/einzelunternehmen.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -81,6 +82,7 @@ export const knowledgePages = {
   'reverse-charge': reverseCharge,
   'innergemeinschaftliche-lieferung': innergemeinschaftlicheLieferung,
   'rechtsformen': rechtsformen,
+  'einzelunternehmen': einzelunternehmen,
 };
 
 export function findKnowledgePage(slug) {
