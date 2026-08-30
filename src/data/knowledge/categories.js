@@ -504,6 +504,7 @@ export const knowledgeCategories = [
       { slug: 'zuschlaege', title: 'Zuschläge' },
       { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
       { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
+      { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
     ],
     topicGroups: [
       {
@@ -515,6 +516,7 @@ export const knowledgeCategories = [
           { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
           { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
           { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
+          { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
           { slug: 'lohnsteuer', title: 'Lohnsteuer' },
         ],
       },
