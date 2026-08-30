@@ -502,6 +502,7 @@ export const knowledgeCategories = [
       { slug: 'sachbezug', title: 'Sachbezug' },
       { slug: 'ueberstunden', title: 'Überstunden' },
       { slug: 'zuschlaege', title: 'Zuschläge' },
+      { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
     ],
     topicGroups: [
       {
@@ -511,6 +512,7 @@ export const knowledgeCategories = [
           { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
           { slug: 'verguetungsarten', title: 'Vergütungsarten' },
           { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
+          { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
           { slug: 'lohnsteuer', title: 'Lohnsteuer' },
         ],
       },
