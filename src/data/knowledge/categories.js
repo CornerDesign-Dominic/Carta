@@ -168,6 +168,7 @@ export const knowledgeCategories = [
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
       { slug: 'wirtschaftlichkeit-rentabilitaet', title: 'Wirtschaftlichkeit & Rentabilität' },
+      { slug: 'plan-ist-vergleich', title: 'Plan-Ist-Vergleich' },
     ],
     topicGroups: [
       {
@@ -194,6 +195,7 @@ export const knowledgeCategories = [
         title: 'Steuerung und Kennzahlen',
         topics: [
           { slug: 'wirtschaftlichkeit-rentabilitaet', title: 'Wirtschaftlichkeit & Rentabilität' },
+          { slug: 'plan-ist-vergleich', title: 'Plan-Ist-Vergleich' },
           { slug: 'kennzahlen', title: 'Kennzahlen' },
         ],
       },

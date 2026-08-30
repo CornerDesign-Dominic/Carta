@@ -30,6 +30,24 @@ export const glossaryEntries = [
     explanation: 'Die Grundformel lautet Leistung geteilt durch Kosten. Aussagekräftig ist sie nur, wenn Leistung, Kosten und Zeitraum einheitlich abgegrenzt sind.',
   },
   {
+    id: 'planwert',
+    term: 'Planwert',
+    definition: 'Ein Planwert ist der für einen Zeitraum oder eine Maßnahme erwartete oder festgelegte Wert.',
+    explanation: 'Er dient als Vergleichsgröße für den späteren Istwert. Damit der Vergleich aussagekräftig ist, müssen Inhalt, Zeitraum und Datenbasis klar festgelegt sein.',
+  },
+  {
+    id: 'istwert',
+    term: 'Istwert',
+    definition: 'Ein Istwert zeigt den tatsächlich erreichten oder angefallenen Wert eines Zeitraums oder einer Maßnahme.',
+    explanation: 'Er wird im Plan-Ist-Vergleich dem Planwert gegenübergestellt. Datenstand und zeitliche Abgrenzung sollten dabei nachvollziehbar sein.',
+  },
+  {
+    id: 'abweichung',
+    term: 'Abweichung',
+    definition: 'Eine Abweichung ist der Unterschied zwischen einem Istwert und einem Plan- oder Sollwert.',
+    explanation: 'Sie kann als absoluter Betrag oder prozentual dargestellt werden. Ob sie günstig oder ungünstig ist, hängt von der Kennzahl und ihren Ursachen ab.',
+  },
+  {
     id: 'euer',
     term: 'Einnahmenüberschussrechnung (EÜR)',
     definition: 'Die Einnahmenüberschussrechnung ist eine steuerliche Gewinnermittlung, bei der Betriebseinnahmen und Betriebsausgaben gegenübergestellt werden.',

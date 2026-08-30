@@ -24,6 +24,7 @@ import deckungsbeitrag from './pages/deckungsbeitrag.js';
 import bab from './pages/bab.js';
 import zuschlagskalkulation from './pages/zuschlagskalkulation.js';
 import wirtschaftlichkeitRentabilitaet from './pages/wirtschaftlichkeit-rentabilitaet.js';
+import planIstVergleich from './pages/plan-ist-vergleich.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -134,6 +135,7 @@ export const knowledgePages = {
   bab,
   zuschlagskalkulation,
   'wirtschaftlichkeit-rentabilitaet': wirtschaftlichkeitRentabilitaet,
+  'plan-ist-vergleich': planIstVergleich,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,
