@@ -82,6 +82,7 @@ import eigenfinanzierung from './pages/eigenfinanzierung.js';
 import fremdfinanzierung from './pages/fremdfinanzierung.js';
 import innenAussenfinanzierung from './pages/innen-aussenfinanzierung.js';
 import kontokorrentkredit from './pages/kontokorrentkredit.js';
+import lieferantenkredit from './pages/lieferantenkredit.js';
 import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kennzahlen from './pages/kennzahlen.js';
@@ -244,6 +245,7 @@ export const knowledgePages = {
   eigenfinanzierung,
   fremdfinanzierung,
   'innen-aussenfinanzierung': innenAussenfinanzierung,
+  lieferantenkredit,
   kontokorrentkredit,
   'statische-investitionsrechnung': statischeInvestitionsrechnung,
   'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
