@@ -493,6 +493,24 @@ export const glossaryEntries = [
     explanation: 'Ob und in welcher Höhe ein Entgelt beitragspflichtig ist, hängt unter anderem von Beschäftigung, Versicherungszweig und den gesetzlichen Regeln ab. Es ist nicht in jedem Fall identisch mit dem steuerpflichtigen Arbeitslohn.',
   },
   {
+    id: 'beitragsbemessungsgrenze',
+    term: 'Beitragsbemessungsgrenze',
+    definition: 'Die Beitragsbemessungsgrenze ist die Obergrenze des Einkommens, das bei der Berechnung eines Sozialversicherungsbeitrags berücksichtigt wird.',
+    explanation: 'Sie unterscheidet sich je nach Versicherungszweig und kann jährlich angepasst werden. Einkommen oberhalb der maßgeblichen Grenze erhöht den Beitrag in diesem Zweig grundsätzlich nicht weiter.',
+  },
+  {
+    id: 'versicherungspflichtgrenze',
+    term: 'Versicherungspflichtgrenze',
+    definition: 'Die Versicherungspflichtgrenze ist eine Einkommensgrenze im Recht der gesetzlichen Krankenversicherung.',
+    explanation: 'Bei Arbeitnehmern kann sie für die Frage wichtig sein, ob gesetzliche Krankenversicherungspflicht besteht. Sie wird meist Jahresarbeitsentgeltgrenze genannt und ist nicht mit der Beitragsbemessungsgrenze gleichzusetzen.',
+  },
+  {
+    id: 'zusatzbeitrag',
+    term: 'Zusatzbeitrag',
+    definition: 'Der Zusatzbeitrag ist ein kassenindividueller Bestandteil des Beitrags zur gesetzlichen Krankenversicherung.',
+    explanation: 'Seine Höhe legt die jeweilige Krankenkasse fest. Er kommt zum allgemeinen Beitragssatz hinzu und kann sich ändern.',
+  },
+  {
     id: 'arbeitsentgelt',
     term: 'Arbeitsentgelt',
     definition: 'Arbeitsentgelt sind laufende oder einmalige Einnahmen aus einer Beschäftigung, unabhängig davon, ob ein Rechtsanspruch darauf besteht.',

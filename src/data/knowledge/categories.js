@@ -217,6 +217,7 @@ export const knowledgeCategories = [
       { slug: 'personal-lohn', title: 'Personal & Lohn' },
       { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
       { slug: 'verguetungsarten', title: 'Vergütungsarten' },
+      { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
     ],
     topicGroups: [
       {

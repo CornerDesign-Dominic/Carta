@@ -49,6 +49,7 @@ import ek from './pages/ek.js';
 import personalLohn from './pages/personal-lohn.js';
 import lohnabrechnung from './pages/lohnabrechnung.js';
 import verguetungsarten from './pages/verguetungsarten.js';
+import sozialversicherungsbeitraege from './pages/sozialversicherungsbeitraege.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -105,6 +106,7 @@ export const knowledgePages = {
   'personal-lohn': personalLohn,
   'lohnabrechnung': lohnabrechnung,
   'verguetungsarten': verguetungsarten,
+  'sozialversicherungsbeitraege': sozialversicherungsbeitraege,
 };
 
 export function findKnowledgePage(slug) {
