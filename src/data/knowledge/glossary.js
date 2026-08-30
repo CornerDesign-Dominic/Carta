@@ -87,6 +87,12 @@ export const glossaryEntries = [
     example: 'Bei 1.000 Euro Kapital und 4 % p. a. entstehen bei einfacher Verzinsung nach einem Jahr 40 Euro Zinsen.',
   },
   {
+    id: 'zinseszins',
+    term: 'Zinseszins',
+    definition: 'Zinseszins entsteht, wenn bereits gutgeschriebene Zinsen dem Kapital zugerechnet und in späteren Zeiträumen mitverzinst werden.',
+    explanation: 'Dadurch wächst die Berechnungsgrundlage mit jeder Verzinsung. Wie stark sich das auswirkt, hängt vor allem von Zinssatz, Laufzeit und Verzinsungsintervall ab.',
+  },
+  {
     id: 'mahnkosten',
     term: 'Mahnkosten',
     definition: 'Mahnkosten sind zusätzliche Kosten, die durch eine Mahnung wegen einer verspäteten Zahlung entstehen können.',

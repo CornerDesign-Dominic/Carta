@@ -70,7 +70,9 @@ const zinsen = {
         paragraphs: [
           'Bei einfachen Zinsen wird der Zinsbetrag immer nur aus dem ursprünglichen Kapital berechnet. Zinsen von früheren Zeiträumen werden nicht erneut verzinst.',
           [
-            'Beim Zinseszins werden bereits entstandene Zinsen dem Kapital zugerechnet und künftig mitverzinst. Für Berechnungen mit regelmäßigem Zinseszins nutze den ',
+            'Beim Zinseszins werden bereits entstandene Zinsen dem Kapital zugerechnet und künftig mitverzinst. Mehr dazu findest du in der Wissensseite ',
+            { type: 'link', href: '/wissen/zinseszins', text: 'Zinseszins' },
+            '. Für praktische Berechnungen mit regelmäßigem Zinseszins nutze den ',
             { type: 'link', href: '/tools/zinseszins', text: 'Zinseszinsrechner' },
             '.',
           ],
@@ -137,6 +139,7 @@ const zinsen = {
     },
   ],
   related: [
+    'zinseszins',
     'verzugszinsen',
     'faelligkeit',
   ],

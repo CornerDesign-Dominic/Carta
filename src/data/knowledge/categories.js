@@ -28,6 +28,7 @@ export const knowledgeCategories = [
     description: 'Grundlagen zu Steuern, Rechnungswesen und betriebswirtschaftlichen Zusammenhängen.',
     pages: [
       { slug: 'zinsen', title: 'Zinsen' },
+      { slug: 'zinseszins', title: 'Zinseszins' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
     ],
   },
