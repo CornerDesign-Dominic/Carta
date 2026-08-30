@@ -4,11 +4,27 @@ Dieses Dokument ist der verbindliche Arbeitsstandard für neue und überarbeitet
 
 ## 1. Ziel
 
-Wissensseiten sollen fachlich sauber, praktisch, verständlich und suchmaschinenfreundlich sein. Sie dienen als Nachschlagewerk für Selbstständige, kleine Unternehmen, Gründer, Vereine, Azubis, Schüler und Studierende.
+Wissensseiten sollen fachlich sauber, praktisch, verständlich und suchmaschinenfreundlich sein. Sie dienen als Nachschlagewerk für Lernende, Lehrende, Fachwirte, kaufmännische Mitarbeiter, Selbstständige und Unternehmer.
 
-Belege24 ist kein Blog. Artikel sollen nicht künstlich verlängert, nicht werblich formuliert und nicht mit unnötigen Wiederholungen gefüllt werden.
+Belege24 ist kein wissenschaftliches Nachschlagewerk und kein Blog. Die Artikel sollen keine Essays oder Hausarbeiten sein und nicht auf die Spezialtiefe von Rechtsanwälten, Steuerberatern oder anderen Fachspezialisten zielen.
 
-## 2. Arbeitsweise vor dem Schreiben
+Grundsatz für den Umfang:
+
+> So kurz wie möglich, so lang wie nötig.
+
+Es gibt keine Zielwortzahl. Alle wesentlichen Punkte müssen abgedeckt sein, ohne den Artikel künstlich zu verlängern. Einfache Themen dürfen deutlich kürzer sein als komplexe Themen.
+
+## 2. Fachliche Tiefe
+
+Regelfall ist ein praxisnahes Fachniveau.
+
+- verständlich für Einsteiger und Lernende
+- fachlich ausreichend für Ausbildung, Fachwirt, kaufmännische Praxis und Unternehmensalltag
+- keine unnötige wissenschaftliche oder juristische Spezialtiefe
+- Sonderfälle nur aufnehmen, wenn sie häufig vorkommen oder das grundlegende Verständnis wesentlich verändern
+- bei Recht und Steuern erklären und einordnen, nicht sämtliche Spezialkonstellationen ausdifferenzieren
+
+## 3. Arbeitsweise vor dem Schreiben
 
 Vor jedem neuen Artikel:
 
@@ -21,9 +37,9 @@ Vor jedem neuen Artikel:
 
 Als Stilreferenz dienen insbesondere bereits manuell abgestimmte und aktuelle Seiten. Neue automatisch erzeugte Seiten dürfen nicht allein deshalb als Stilvorlage dienen, weil sie zuletzt hinzugefügt wurden.
 
-## 3. Inhaltlicher Anspruch
+## 4. Inhaltlicher Anspruch
 
-Jeder Artikel behandelt ein klar abgegrenztes Hauptthema. Er soll beantworten:
+Jeder Artikel behandelt ein klar abgegrenztes Hauptthema. Er soll je nach Thema beantworten:
 
 - Was ist das?
 - Wozu dient es?
@@ -35,43 +51,67 @@ Jeder Artikel behandelt ein klar abgegrenztes Hauptthema. Er soll beantworten:
 
 Nicht jeder Punkt braucht einen eigenen Abschnitt. Die Struktur wird dem Thema angepasst.
 
-## 4. Schreibstil
+Praxisbezug ist erwünscht, soll aber kompakt bleiben. Lieber wenige typische Fälle sauber erklären als jede denkbare Variante aufführen.
+
+## 5. Schreibstil
 
 - klare, natürliche deutsche Sprache
-- professionell, sachlich und verständlich
-- Du-Ansprache, sofern bestehende Seiten dies ebenfalls verwenden
+- professionell, sachlich und modern
+- keine unnötigen Fremdwörter
+- keine Umgangssprache
+- keine Werbesprache
+- keine Content-Marketing-Phrasen wie „In diesem Artikel erfährst du …“
+- direkt ins Thema einsteigen
+- neutraler Fachtext als Grundform
+- Du-Ansprache nur dort, wo sie natürlich und hilfreich ist, etwa bei konkreten Handlungsanweisungen oder Praxisbezug
 - kurze bis mittlere Absätze
 - Fachbegriffe nur dort, wo sie fachlich sinnvoll sind
 - Fachbegriffe bei Bedarf direkt erklären oder mit dem Glossar verknüpfen
 - keine unnötige Fachsprache
 - keine Phrasen, Fülltexte oder künstlichen Übergänge
-- keine werbliche Übertreibung
 - keine pauschalen oder rechtlich absoluten Aussagen, wenn Ausnahmen möglich sind
 - keine Wiederholung derselben Aussage in Intro, Haupttext, Key Points und FAQ
 
-## 5. Typischer Aufbau
+## 6. Aufbau
 
-Die konkrete Struktur ist themenabhängig. Häufig sinnvoll sind:
+Der Beginn und der Abschluss sind wiedererkennbar. Der Hauptteil bleibt themenabhängig.
 
-1. kurze Einleitung
-2. Definition oder Grundprinzip
-3. praktische Funktionsweise / Anwendung
-4. relevante Bestandteile, Regeln oder Berechnung
-5. Beispiel, Tabelle oder Formel, wenn dies das Verständnis verbessert
-6. Abgrenzung zu verwandten Begriffen
-7. typische Fehler oder Besonderheiten
-8. Key Points
-9. FAQ
-10. verwandte Seiten / Tools / Generatoren
-11. Quellen und ggf. Disclaimer
+### Beginn
 
-Nicht jeder Artikel benötigt Formel-, Beispiel- oder Vergleichskarten. Solche Elemente nur einsetzen, wenn sie einen konkreten Mehrwert liefern.
+1. Titel
+2. kurze Einleitung
 
-## 6. Einleitung
+### Hauptteil
+
+Der Hauptteil wird frei nach dem Thema aufgebaut. Mögliche Bausteine sind:
+
+- Definition oder Grundprinzip
+- praktische Anwendung
+- Bestandteile oder Abläufe
+- Regeln und Voraussetzungen
+- Berechnungen
+- Abgrenzungen
+- Beispiele
+- typische Fehler oder Hinweise
+
+Diese Bausteine sind keine Pflichtliste.
+
+### Abschluss
+
+Je nach Thema:
+
+- Key Points / kompakte Zusammenfassung
+- FAQ mit echten Zusatzfragen
+- passende interne Verlinkungen
+- passende Tools oder Generatoren
+- Quellen
+- ggf. Disclaimer
+
+## 7. Einleitung
 
 `article.intro` soll in wenigen Sätzen erklären, was das Thema ist und warum es relevant ist. Keine lange Definition, keine SEO-Floskeln und keine Vorwegnahme des gesamten Artikels.
 
-## 7. Überschriften
+## 8. Überschriften
 
 - H1 entspricht dem Hauptthema.
 - H2/H3 sollen echte Nutzerfragen oder fachliche Teilaspekte abbilden.
@@ -79,21 +119,30 @@ Nicht jeder Artikel benötigt Formel-, Beispiel- oder Vergleichskarten. Solche E
 - keine künstlich aufgeblähte Gliederung
 - Überschriften möglichst konkret formulieren
 
-## 8. Beispiele, Tabellen und Formeln
+## 9. Beispiele, Tabellen und Formeln
 
-Beispiele sollen realistisch, rechnerisch korrekt und einfach nachvollziehbar sein.
+Beispiele sind keine Pflicht, bei zahlenlastigen Themen wie Rechnungswesen, Controlling, Finanzierung oder Kalkulation aber ausdrücklich erwünscht, wenn sie das Verständnis verbessern.
 
-Bei Berechnungen:
+Regeln:
 
-- Formel eindeutig benennen
+- Beispiele kompakt halten
+- realistische und einfache Zahlen verwenden
 - Rechenweg nachvollziehbar darstellen
+- Formel eindeutig benennen
 - Einheiten korrekt verwenden
 - Ergebnis kurz einordnen
-- Grenzen und Voraussetzungen nennen, wenn die Formel nur unter bestimmten Annahmen gilt
+- Voraussetzungen und Grenzen nennen, wenn eine Formel oder ein Modell nur unter bestimmten Annahmen gilt
+- vorhandene Formel- und Beispielkarten bevorzugen
+- Tabellen nur einsetzen, wenn sie Informationen übersichtlicher machen als Fließtext
+- keine unnötig großen Tabellen oder langen Fallstudien
 
-Tabellen nur verwenden, wenn sie Informationen übersichtlicher machen als Fließtext.
+## 10. Typische Fehler und Hinweise
 
-## 9. Glossar
+Abschnitte wie „Typische Fehler“, „Darauf solltest du achten“ oder ähnliche Warnhinweise sind optional.
+
+Nur verwenden, wenn echte und häufige Stolperfallen bestehen. In der Regel reichen wenige relevante Punkte. Keine künstlichen Warnlisten erzeugen.
+
+## 11. Glossar
 
 Nicht jedes Fachwort erhält einen Glossareintrag. Ein Glossarbegriff ist sinnvoll, wenn ein durchschnittlicher Nutzer den Begriff möglicherweise nicht sicher versteht und die Erklärung auch auf mehreren Seiten hilfreich sein kann.
 
@@ -106,20 +155,24 @@ Vor dem Anlegen eines neuen Glossarbegriffs:
 
 Glossarverknüpfungen nicht inflationär einsetzen.
 
-## 10. Interne Verlinkung
+## 12. Interne Verlinkung
 
 Interne Links sollen Nutzern beim Verständnis oder bei der nächsten Handlung helfen.
 
-Geeignet sind insbesondere:
+### Wissensseiten
 
-- übergeordnete oder vertiefende Wissensseiten
-- direkte Abgrenzungen
-- passende Rechner und Werkzeuge
-- passende Dokumentgeneratoren
+- nur verlinken, wenn der fachliche Zusammenhang sehr deutlich ist
+- direkte Zusammenhänge, Abgrenzungen und sinnvolle Vertiefungen bevorzugen
+- als Richtwert maximal etwa 5 interne Wissenslinks pro Artikel
+- keine Links nur zur Erhöhung der Linkdichte oder aus reinem SEO-Grund
 
-Nur existierende, aktive und fachlich passende Ziele verlinken. Keine Linklisten ohne erkennbaren Nutzen erzeugen.
+### Tools und Generatoren
 
-## 11. SEO
+Passende Belege24-Tools und Dokumentgeneratoren sollen möglichst verlinkt werden, aber nur bei eindeutiger direkter Passung. Bei nur losem Zusammenhang wird nicht verlinkt.
+
+Nur existierende, aktive und fachlich passende Ziele verwenden.
+
+## 13. SEO
 
 Jede Seite pflegt mindestens:
 
@@ -131,30 +184,49 @@ Jede Seite pflegt mindestens:
 
 Regeln:
 
-- Hauptsuchintention klar treffen
+- Suchintention des Hauptbegriffs klar treffen
 - Hauptbegriff natürlich im Titel, Intro und passenden Zwischenüberschriften verwenden
-- keine Keyword-Wiederholungen erzwingen
-- `seo.title` prägnant und suchnah formulieren
-- `seo.description` konkret den Informationsnutzen nennen
+- typische Suchfragen nur dort als Zwischenüberschrift oder FAQ aufgreifen, wo sie inhaltlich sinnvoll sind
+- sinnvolle Synonyme natürlich verwenden
+- Meta Title und Description individuell schreiben
+- keine erzwungenen Keywords
+- kein Keyword-Stuffing
+- keine zusätzlichen Abschnitte nur für Suchmaschinen
 - keine Clickbait-Formulierungen
 - Canonical-Pfad muss dem tatsächlichen Wissenspfad entsprechen
 
 SEO darf nie zu Lasten der Lesbarkeit oder fachlichen Genauigkeit gehen.
 
-## 12. FAQ
+## 14. FAQ
 
-FAQs nur aufnehmen, wenn reale Zusatzfragen bestehen. Sie dürfen nicht bloß Haupttext wiederholen.
+Am Ende eines Artikels sollen in der Regel 2 bis 5 echte Nutzerfragen stehen, wenn das Thema solche Fragen sinnvoll hergibt.
 
 - eine konkrete Frage pro FAQ
-- kurze, eigenständig verständliche Antwort
-- keine künstlichen Fragen nur zur Textverlängerung
+- kurze, direkte und eigenständig verständliche Antwort
+- keine künstlichen Fragen nur fürs SEO
+- keine bloße Wiederholung des Haupttexts
+- Fragen dürfen Aspekte aufgreifen, die im Haupttext nur angerissen wurden
 - bei geeigneten Fragen interne Links nutzen
 
-## 13. Recht, Steuern und zeitabhängige Inhalte
+Wenn keine sinnvollen Zusatzfragen bestehen, darf der FAQ-Bereich entfallen.
+
+## 15. Praxisbezug
+
+Theorie soll dort, wo es sinnvoll ist, kurz in die Praxis übersetzt werden.
+
+- typische Unternehmenssituationen nennen, wenn sie das Verständnis verbessern
+- bei abstrakten BWL-Themen eine praktische Einordnung vorsehen
+- keine langen Fallstudien
+- keine umfangreichen Listen aller denkbaren Fälle
+- nur gängige und relevante Varianten aufnehmen
+- bei rechtlichen Themen typische Anwendungssituationen erklären, nicht sämtliche Spezialfälle
+
+## 16. Recht, Steuern und zeitabhängige Inhalte
 
 Bei rechtlichen, steuerlichen, gesetzlichen, behördlichen oder sonst zeitabhängigen Aussagen:
 
-- aktuelle Primär- oder hochwertige Fachquellen bevorzugen
+- aktuellen Stand prüfen
+- Primärquellen bevorzugen
 - Gültigkeitsstand kontrollieren
 - Paragraphen und Rechtsgrundlagen nur nennen, wenn sie korrekt und relevant sind
 - keine individuelle Rechts- oder Steuerberatung simulieren
@@ -163,7 +235,35 @@ Bei rechtlichen, steuerlichen, gesetzlichen, behördlichen oder sonst zeitabhän
 
 Veraltete Werte, Fristen, Grenzbeträge, Zinssätze oder Gesetzesstände dürfen nicht ungeprüft übernommen werden.
 
-## 14. Datenstruktur und technische Integration
+Formulierungen sollen möglichst robust gegen unnötig schnelle Veralterung sein. Konkrete aktuelle Werte werden trotzdem genannt, wenn sie für das Verständnis erforderlich sind.
+
+## 17. Quellen
+
+Quellen müssen die konkreten Aussagen stützen.
+
+Bei Recht, Steuern, Gesetzen, Fristen, Grenzwerten, Zinssätzen, Behördenangaben und offiziellen Definitionen sind Quellen verpflichtend.
+
+Bei stabilen allgemeinen BWL-Grundlagen sind Quellen nur dann erforderlich, wenn sie für die Aussage einen echten Mehrwert bieten.
+
+Bevorzugte Reihenfolge:
+
+1. Gesetz oder Verordnung
+2. amtliche Stellen und Behörden
+3. IHK, Bundesbank, Destatis, EU-Institutionen oder vergleichbare öffentliche bzw. institutionelle Primärquellen
+4. etablierte Fachquellen nur, wenn keine geeignete Primärquelle verfügbar ist
+
+Private Unternehmensseiten sollen nicht als Standardquelle verwendet werden, wenn eine geeignete Primärquelle vorhanden ist.
+
+Quellen am Ende kompakt aufführen. Keine wissenschaftliche Zitierweise erforderlich. Keine Quellen nur zur Dekoration aufnehmen.
+
+## 18. Aktualität und Pflege
+
+- `updatedAt` bei inhaltlichen Änderungen aktualisieren
+- `reviewedAt` aktualisieren, wenn eine fachliche Prüfung erfolgt ist
+- keine Jahreszahl in Titel oder SEO-Titel, sofern sie nicht fachlich oder für die Suchintention wirklich sinnvoll ist
+- veränderliche Angaben vor Veröffentlichung prüfen
+
+## 19. Datenstruktur und technische Integration
 
 Bestehende Datenstrukturen und Komponenten wiederverwenden. Vor einer neuen Sonderlösung prüfen, ob bereits geeignete Strukturen für folgende Inhalte bestehen:
 
@@ -183,25 +283,12 @@ Neue Wissensseiten müssen korrekt in die bestehende Seitenregistrierung, Katego
 
 Keine neue Komponente oder Datenstruktur nur für einen einzelnen Artikel anlegen, sofern dies nicht fachlich oder technisch erforderlich ist.
 
-## 15. Quellen
-
-Quellen müssen die konkreten Aussagen stützen. Bei stabilen allgemeinen BWL-Grundlagen sind Quellen nur dann nötig, wenn sie einen echten Mehrwert bieten; bei Recht, Steuern, Gesetzen, offiziellen Definitionen und veränderlichen Angaben sind sie besonders wichtig.
-
-Bevorzugte Reihenfolge:
-
-1. Gesetz / Verordnung / amtliche Stelle
-2. Kammern, Behörden, Bundesbank, EU-Institutionen oder vergleichbare Primärquellen
-3. etablierte Fachquellen
-4. sonstige seriöse Sekundärquellen
-
-Keine Quellen nur zur Dekoration aufnehmen.
-
-## 16. Qualitätsgrenzen
+## 20. Qualitätsgrenzen und Review-Status
 
 Ein Artikel ist nicht fertig, wenn:
 
 - zentrale Begriffe ungeklärt bleiben
-- Aussagen widersprüchlich sind
+- Aussagen widersprüchlich oder fachlich unsicher sind
 - Beispiele rechnerisch fehlerhaft sind
 - andere Belege24-Seiten unnötig dupliziert werden
 - Links auf nicht vorhandene Seiten zeigen
@@ -211,7 +298,26 @@ Ein Artikel ist nicht fertig, wenn:
 - rechtlich oder zeitlich sensible Aussagen nicht geprüft wurden
 - Build oder relevante Tests fehlschlagen
 
-## 17. Verhältnis zu themenspezifischen Vorgaben
+Wenn Codex eine fachliche, rechtliche, quellenbezogene oder technische Unsicherheit nicht zuverlässig auflösen kann, darf keine Aussage erfunden oder als sicher dargestellt werden. Der Artikel wird stattdessen auf `Review` gesetzt und der konkrete Grund wird in `ARTICLE_QUEUE.md` dokumentiert.
+
+## 21. Abschlussprüfung
+
+Vor dem Status `fertig` sind mindestens zu prüfen:
+
+1. fachliche Aussagen
+2. interne Links
+3. Glossarbegriffe
+4. Quellen
+5. SEO-Felder
+6. Kategorie / Hub / Registrierung
+7. Sitemap, sofern relevant
+8. Build
+9. relevante Tests
+10. offensichtliche Darstellungs- oder Syntaxprobleme
+
+Erst danach darf der Queue-Status auf `fertig` gesetzt werden.
+
+## 22. Verhältnis zu themenspezifischen Vorgaben
 
 Die allgemeine Arbeitsweise steht in diesem Leitfaden. Zusätzliche Vorgaben pro Artikel gehören in `ARTICLE_QUEUE.md`.
 
@@ -219,10 +325,12 @@ Ein Eintrag kann zum Beispiel lauten:
 
 ```md
 ### Optimale Bestellmenge
+Status: offen
+Kategorie: Beschaffung & Materialwirtschaft
 Schwerpunkt:
 - klassische Andler-Formel erklären
-- Berechnung mit Beispiel
-- Zusammenhang zwischen Bestell- und Lagerkosten
+- Berechnung mit kompaktem Beispiel
+- Zusammenhang zwischen Bestellkosten und Lagerkosten
 - Voraussetzungen und Grenzen darstellen
 ```
 
