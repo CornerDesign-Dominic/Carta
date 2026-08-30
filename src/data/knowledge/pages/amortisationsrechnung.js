@@ -103,9 +103,9 @@ const amortisationsrechnung = {
         paragraphs: [
           'Die statische Amortisationsrechnung berücksichtigt Rückflüsse nach dem Amortisationszeitpunkt nicht. Sie kann daher Vorteile einer langlebigen Investition mit hohen späteren Überschüssen unterschätzen.',
           [
-            'Außerdem behandelt sie Rückflüsse verschiedener Jahre gleich. Den Zeitwert des Geldes sowie die tatsächlichen Zahlungszeitpunkte berücksichtigt sie nicht. Für diese Fragen bietet die ',
-            { type: 'link', href: '/wissen/dynamische-investitionsrechnung', text: 'dynamische Investitionsrechnung' },
-            ' passendere Verfahren. Eine eigene Seite zur dynamischen Amortisation wird erst verlinkt, sobald sie verfügbar ist.',
+            'Außerdem behandelt sie Rückflüsse verschiedener Jahre gleich. Den Zeitwert des Geldes sowie die tatsächlichen Zahlungszeitpunkte berücksichtigt sie nicht. Die ',
+            { type: 'link', href: '/wissen/dynamische-amortisationsrechnung', text: 'dynamische Amortisationsrechnung' },
+            ' bezieht diese Unterschiede über abgezinste Rückflüsse ein.',
           ],
         ],
       },
@@ -163,6 +163,7 @@ const amortisationsrechnung = {
     'rentabilitaetsvergleichsrechnung',
     'gewinnvergleichsrechnung',
     'dynamische-investitionsrechnung',
+    'dynamische-amortisationsrechnung',
   ],
   sources: [],
   updatedAt: '2026-08-30',
