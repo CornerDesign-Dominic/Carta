@@ -58,6 +58,7 @@ import sachbezug from './pages/sachbezug.js';
 import ueberstunden from './pages/ueberstunden.js';
 import zuschlaege from './pages/zuschlaege.js';
 import mindestlohn from './pages/mindestlohn.js';
+import ausbildungsverguetung from './pages/ausbildungsverguetung.js';
 import einmalzahlungen from './pages/einmalzahlungen.js';
 import entgeltfortzahlung from './pages/entgeltfortzahlung.js';
 import urlaubsentgeltUrlaubsgeld from './pages/urlaubsentgelt-urlaubsgeld.js';
@@ -136,6 +137,7 @@ export const knowledgePages = {
   ueberstunden,
   zuschlaege,
   mindestlohn,
+  ausbildungsverguetung,
   einmalzahlungen,
   entgeltfortzahlung,
   'urlaubsentgelt-urlaubsgeld': urlaubsentgeltUrlaubsgeld,

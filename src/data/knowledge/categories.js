@@ -507,6 +507,7 @@ export const knowledgeCategories = [
       { slug: 'ueberstunden', title: 'Überstunden' },
       { slug: 'zuschlaege', title: 'Zuschläge' },
       { slug: 'mindestlohn', title: 'Mindestlohn' },
+      { slug: 'ausbildungsverguetung', title: 'Ausbildungsvergütung' },
       { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
       { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
       { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
@@ -517,6 +518,7 @@ export const knowledgeCategories = [
         title: 'Lohn & Abrechnung',
         topics: [
           { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
+          { slug: 'ausbildungsverguetung', title: 'Ausbildungsvergütung' },
           { slug: 'verguetungsarten', title: 'Vergütungsarten' },
           { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
           { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
