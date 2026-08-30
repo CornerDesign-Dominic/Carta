@@ -427,6 +427,42 @@ export const glossaryEntries = [
     explanation: 'Sie führt und vertritt die KG grundsätzlich über ihre Geschäftsführer. Die GmbH und die KG bleiben dabei rechtlich getrennte Gesellschaften.',
   },
   {
+    id: 'grundkapital',
+    term: 'Grundkapital',
+    definition: 'Das Grundkapital ist das in der Satzung festgelegte Kapital einer Aktiengesellschaft.',
+    explanation: 'Es ist in Aktien aufgeteilt und bildet die festgelegte Kapitalstruktur der AG ab. Grundkapital ist nicht mit dem aktuellen Börsenwert, Gewinn oder frei verfügbarer Liquidität gleichzusetzen.',
+  },
+  {
+    id: 'aktie',
+    term: 'Aktie',
+    definition: 'Eine Aktie verkörpert einen Anteil am Grundkapital einer Aktiengesellschaft.',
+    explanation: 'Mit Aktien sind gesetzlich und satzungsmäßig bestimmte Rechte verbunden, etwa die Teilnahme an der Hauptversammlung und grundsätzlich eine Beteiligung am Bilanzgewinn. Eine Aktie muss nicht an einer Börse gehandelt werden.',
+  },
+  {
+    id: 'aktionaer',
+    term: 'Aktionär',
+    definition: 'Ein Aktionär ist eine Person oder Gesellschaft, die Aktien einer Aktiengesellschaft hält.',
+    explanation: 'Aktionäre sind Anteilseigner der AG. Sie nehmen ihre grundlegenden Rechte vor allem in der Hauptversammlung wahr, führen aber nicht automatisch die laufenden Geschäfte.',
+  },
+  {
+    id: 'vorstand',
+    term: 'Vorstand',
+    definition: 'Der Vorstand leitet eine Aktiengesellschaft unter eigener Verantwortung und vertritt sie grundsätzlich nach außen.',
+    explanation: 'Er ist von den Aktionären und dem Aufsichtsrat zu unterscheiden. Wie mehrere Vorstandsmitglieder die AG vertreten, richtet sich nach Gesetz, Satzung und Handelsregister.',
+  },
+  {
+    id: 'aufsichtsrat',
+    term: 'Aufsichtsrat',
+    definition: 'Der Aufsichtsrat überwacht die Geschäftsführung einer Aktiengesellschaft und bestellt den Vorstand.',
+    explanation: 'Er führt nicht das laufende Geschäft. Seine Zusammensetzung und Aufgaben richten sich nach Aktienrecht sowie bei bestimmten Unternehmen zusätzlich nach den Regeln der Mitbestimmung.',
+  },
+  {
+    id: 'hauptversammlung',
+    term: 'Hauptversammlung',
+    definition: 'Die Hauptversammlung ist das Organ, in dem die Aktionäre einer Aktiengesellschaft ihre Beschlüsse fassen.',
+    explanation: 'Sie entscheidet über die ihr gesetzlich oder durch die Satzung zugewiesenen Angelegenheiten. Die operative Leitung der AG bleibt Aufgabe des Vorstands.',
+  },
+  {
     id: 'komplementaer',
     term: 'Komplementär',
     definition: 'Ein Komplementär ist der persönlich haftende Gesellschafter einer Kommanditgesellschaft.',

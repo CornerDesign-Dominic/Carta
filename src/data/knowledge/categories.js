@@ -174,6 +174,7 @@ export const knowledgeCategories = [
       { slug: 'ohg', title: 'OHG' },
       { slug: 'kg', title: 'KG' },
       { slug: 'gmbh-und-co-kg', title: 'GmbH & Co. KG' },
+      { slug: 'ag', title: 'AG' },
     ],
     topicGroups: [
       {

@@ -44,6 +44,7 @@ import ug from './pages/ug.js';
 import ohg from './pages/ohg.js';
 import kg from './pages/kg.js';
 import gmbhUndCoKg from './pages/gmbh-und-co-kg.js';
+import ag from './pages/ag.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -95,6 +96,7 @@ export const knowledgePages = {
   'ohg': ohg,
   'kg': kg,
   'gmbh-und-co-kg': gmbhUndCoKg,
+  'ag': ag,
 };
 
 export function findKnowledgePage(slug) {
