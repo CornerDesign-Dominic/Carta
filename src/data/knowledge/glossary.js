@@ -624,6 +624,12 @@ export const glossaryEntries = [
     definition: 'Die Haftsumme ist der im Handelsregister eingetragene Betrag, bis zu dem ein Kommanditist gegenüber Gläubigern grundsätzlich haftet.',
     explanation: 'Sie ist nicht automatisch mit der vereinbarten Einlage identisch. In welchem Umfang die Haftung ausgeschlossen ist oder wieder auflebt, hängt insbesondere von der Leistung oder Rückzahlung der Einlage ab.',
   },
+  {
+    id: 'ueberstunden',
+    term: 'Überstunden',
+    definition: 'Überstunden sind Arbeitsstunden, die über die individuell vereinbarte regelmäßige Arbeitszeit hinausgehen.',
+    explanation: 'Ob sie angeordnet, vergütet oder durch Freizeit ausgeglichen werden, richtet sich insbesondere nach Arbeitsvertrag, Tarifvertrag, Betriebsvereinbarung und dem konkreten Einsatz.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

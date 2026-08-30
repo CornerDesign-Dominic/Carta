@@ -500,6 +500,7 @@ export const knowledgeCategories = [
       { slug: 'minijob', title: 'Minijob' },
       { slug: 'kurzfristige-beschaeftigung', title: 'Kurzfristige Beschäftigung' },
       { slug: 'sachbezug', title: 'Sachbezug' },
+      { slug: 'ueberstunden', title: 'Überstunden' },
     ],
     topicGroups: [
       {
