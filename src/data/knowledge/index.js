@@ -93,6 +93,7 @@ import kapitalwertmethode from './pages/kapitalwertmethode.js';
 import annuitaetenmethode from './pages/annuitaetenmethode.js';
 import internerZinsfuss from './pages/interner-zinsfuss.js';
 import dynamischeAmortisationsrechnung from './pages/dynamische-amortisationsrechnung.js';
+import leverageEffekt from './pages/leverage-effekt.js';
 import kennzahlen from './pages/kennzahlen.js';
 import roi from './pages/roi.js';
 import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
@@ -278,6 +279,7 @@ export const knowledgePages = {
   annuitaetenmethode,
   'interner-zinsfuss': internerZinsfuss,
   'dynamische-amortisationsrechnung': dynamischeAmortisationsrechnung,
+  'leverage-effekt': leverageEffekt,
   kennzahlen,
   roi,
   eigenkapitalrentabilitaet,

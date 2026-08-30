@@ -148,6 +148,7 @@ const verschuldungsgrad = {
     'eigenkapitalquote',
     'fremdkapitalquote',
     'zinsdeckungsgrad',
+    'leverage-effekt',
   ],
   sources: [],
   updatedAt: '2026-08-30',

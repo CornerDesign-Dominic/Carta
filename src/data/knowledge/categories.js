@@ -236,6 +236,13 @@ export const knowledgeCategories = [
         ],
       },
       {
+        id: 'finanzierungsstruktur-risiko',
+        title: 'Finanzierungsstruktur & Risiko',
+        topics: [
+          { slug: 'leverage-effekt', title: 'Leverage-Effekt' },
+        ],
+      },
+      {
         id: 'kurzfristige-finanzierung',
         title: 'Kurzfristige Finanzierung',
         topics: [

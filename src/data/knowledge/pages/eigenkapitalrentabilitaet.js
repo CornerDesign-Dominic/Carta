@@ -140,6 +140,7 @@ const eigenkapitalrentabilitaet = {
   related: [
     'eigenkapital-fremdkapital',
     'gesamtkapitalrentabilitaet',
+    'leverage-effekt',
     'roi',
   ],
   sources: [],
