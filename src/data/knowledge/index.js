@@ -127,10 +127,38 @@ import beschaffungsmarktforschung from './pages/beschaffungsmarktforschung.js';
 import bedarfsermittlung from './pages/bedarfsermittlung.js';
 import methodenBedarfsermittlung from './pages/methoden-bedarfsermittlung.js';
 import mrpErpDisposition from './pages/mrp-erp-disposition.js';
+import bedarfsprognoseForecasting from './pages/bedarfsprognose-forecasting.js';
 import bezugskalkulation from './pages/bezugskalkulation.js';
 import bestellkosten from './pages/bestellkosten.js';
 import bestellverfahren from './pages/bestellverfahren.js';
+import bestellpunktverfahren from './pages/bestellpunktverfahren.js';
+import bestellrhythmusverfahren from './pages/bestellrhythmusverfahren.js';
+import sicherheitsbestandMeldebestandServicegrad from './pages/sicherheitsbestand-meldebestand-servicegrad.js';
+import losgroessenverfahren from './pages/losgroessenverfahren.js';
 import optimaleBestellmenge from './pages/optimale-bestellmenge.js';
+import justInTimeSequence from './pages/just-in-time-sequence.js';
+import kanbanSteuerung from './pages/kanban-steuerung.js';
+import milkRun from './pages/milk-run.js';
+import crossDocking from './pages/cross-docking.js';
+import konsignationslagerVmi from './pages/konsignationslager-vmi.js';
+import bullwhipEffekt from './pages/bullwhip-effekt.js';
+import supplyChainRisikenResilienz from './pages/supply-chain-risiken-resilienz.js';
+import lieferperformance from './pages/lieferperformance.js';
+import grundlagenLogistik from './pages/grundlagen-logistik.js';
+import beschaffungslogistik from './pages/beschaffungslogistik.js';
+import produktionslogistik from './pages/produktionslogistik.js';
+import distributionslogistik from './pages/distributionslogistik.js';
+import lagerlogistik from './pages/lagerlogistik.js';
+import transportlogistik from './pages/transportlogistik.js';
+import verkehrstraeger from './pages/verkehrstraeger.js';
+import stueckgutTeilladungKomplettladung from './pages/stueckgut-teilladung-komplettladung.js';
+import tourenplanung from './pages/tourenplanung.js';
+import frachtkosten from './pages/frachtkosten.js';
+import incotermsGefahruebergang from './pages/incoterms-gefahruebergang.js';
+import lieferZahlungsbedingungen from './pages/liefer-zahlungsbedingungen.js';
+import adspVbglCmr from './pages/adsp-vbgl-cmr.js';
+import entsorgungslogistik from './pages/entsorgungslogistik.js';
+import speditionFrachtfuehrer from './pages/spedition-frachtfuehrer.js';
 import beschaffungsarten from './pages/beschaffungsarten.js';
 import beschaffungsprinzipien from './pages/beschaffungsprinzipien.js';
 import sourcingStrategien from './pages/sourcing-strategien.js';
@@ -297,8 +325,8 @@ export const knowledgePages = {
   fremdfinanzierung,
   finanzierungsstruktur,
   finanzierungsrisiken,
-  'darlehen-kreditarten': darlehenKreditarten,
   liquiditaetsplanung,
+  'darlehen-kreditarten': darlehenKreditarten,
   'investitionen-investitionsarten': investitionenInvestitionsarten,
   leasing,
   'innen-aussenfinanzierung': innenAussenfinanzierung,
@@ -342,10 +370,38 @@ export const knowledgePages = {
   bedarfsermittlung,
   'methoden-bedarfsermittlung': methodenBedarfsermittlung,
   'mrp-erp-disposition': mrpErpDisposition,
+  'bedarfsprognose-forecasting': bedarfsprognoseForecasting,
   bezugskalkulation,
   bestellkosten,
   bestellverfahren,
+  bestellpunktverfahren,
+  bestellrhythmusverfahren,
+  'sicherheitsbestand-meldebestand-servicegrad': sicherheitsbestandMeldebestandServicegrad,
+  losgroessenverfahren,
   'optimale-bestellmenge': optimaleBestellmenge,
+  'just-in-time-sequence': justInTimeSequence,
+  'kanban-steuerung': kanbanSteuerung,
+  'milk-run': milkRun,
+  'cross-docking': crossDocking,
+  'konsignationslager-vmi': konsignationslagerVmi,
+  'bullwhip-effekt': bullwhipEffekt,
+  'supply-chain-risiken-resilienz': supplyChainRisikenResilienz,
+  'liefertermintreue-servicegrad': lieferperformance,
+  'grundlagen-logistik': grundlagenLogistik,
+  beschaffungslogistik,
+  produktionslogistik,
+  distributionslogistik,
+  lagerlogistik,
+  transportlogistik,
+  verkehrstraeger,
+  'stueckgut-teilladung-komplettladung': stueckgutTeilladungKomplettladung,
+  tourenplanung,
+  frachtkosten,
+  'incoterms-gefahruebergang': incotermsGefahruebergang,
+  'liefer-zahlungsbedingungen': lieferZahlungsbedingungen,
+  'adsp-vbgl-cmr': adspVbglCmr,
+  entsorgungslogistik,
+  'spedition-frachtfuehrer': speditionFrachtfuehrer,
   beschaffungsarten,
   beschaffungsprinzipien,
   'sourcing-strategien': sourcingStrategien,

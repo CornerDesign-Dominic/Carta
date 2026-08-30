@@ -87,6 +87,13 @@ const optimaleBestellmenge = {
             ' erklärt den Aufwand je Beschaffungsvorgang.',
           ],
           'Bestellverfahren bestimmen zusätzlich, wann eine Bestellung ausgelöst wird. Lagerkosten und Bestellverfahren sind weiterführende Vertiefungsthemen; sie beeinflussen, ob die rechnerische Bestellmenge im konkreten Prozess auch umsetzbar ist.',
+          [
+            'Das ',
+            { type: 'link', href: '/wissen/bestellpunktverfahren', text: 'Bestellpunktverfahren' },
+            ' und das ',
+            { type: 'link', href: '/wissen/bestellrhythmusverfahren', text: 'Bestellrhythmusverfahren' },
+            ' regeln den Auslösezeitpunkt und die Bestandsprüfung. Sie ergänzen die Bestellmenge, ersetzen die Andler-Formel aber nicht durch dieselbe Entscheidung.',
+          ],
         ],
       },
       {
@@ -139,9 +146,9 @@ const optimaleBestellmenge = {
   ],
   related: [
     'bestellkosten',
-    'bedarfsermittlung',
-    'beschaffungsarten',
-    'einkauf-verkauf',
+    'losgroessenverfahren',
+    'bestellpunktverfahren',
+    'bestellrhythmusverfahren',
   ],
   sources: [],
   updatedAt: '2026-08-30',

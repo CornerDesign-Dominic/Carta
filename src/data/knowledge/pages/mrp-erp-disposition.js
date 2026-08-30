@@ -47,7 +47,11 @@ const mrpErpDisposition = {
             { type: 'glossary', id: 'stueckliste', text: 'Stücklisten' },
             ' verknüpft. Daraus kann das System ableiten, welche Komponenten und Mengen für ein Produkt benötigt werden.',
           ],
-          'Danach berücksichtigt das System verfügbare Bestände, Reservierungen, offene Bestellungen, geplante Fertigungsaufträge, Wiederbeschaffungszeiten und Sicherheitsbestände. Bei verbrauchsgesteuerter Disposition können zusätzlich vergangene Entnahmen, Forecasts oder Bestandsgrenzen als Auslöser dienen.',
+          [
+            'Danach berücksichtigt das System verfügbare Bestände, Reservierungen, offene Bestellungen, geplante Fertigungsaufträge, Wiederbeschaffungszeiten und Sicherheitsbestände. Bei verbrauchsgesteuerter Disposition können zusätzlich vergangene Entnahmen, ',
+            { type: 'link', href: '/wissen/bedarfsprognose-forecasting', text: 'Forecasts' },
+            ' oder Bestandsgrenzen als Auslöser dienen.',
+          ],
           'Das Ergebnis hängt nicht allein vom Programm ab. Stücklisten, Artikelstammdaten, Lieferzeiten, Losgrößen, Bestände und Zugänge müssen zur tatsächlichen Situation passen.',
         ],
         formulaCards: [

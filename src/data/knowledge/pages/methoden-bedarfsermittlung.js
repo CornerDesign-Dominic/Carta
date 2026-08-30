@@ -118,7 +118,8 @@ const methodenBedarfsermittlung = {
           'Stochastische Verfahren passen eher zu regelmäßigem, unabhängigen Bedarf mit ausreichender Datenhistorie. Ihre Genauigkeit hängt davon ab, ob der bisherige Verbrauch die Zukunft noch angemessen beschreibt.',
           'Heuristische Verfahren können bei neuen, seltenen oder schwer messbaren Bedarfen eine pragmatische Ergänzung sein. Sie sollten nicht den Eindruck mathematischer Genauigkeit erzeugen und mit zunehmender Datenbasis überprüft werden.',
           [
-            'Forecasting und ',
+            { type: 'link', href: '/wissen/bedarfsprognose-forecasting', text: 'Forecasting' },
+            ' und ',
             { type: 'link', href: '/wissen/mrp-erp-disposition', text: 'MRP, ERP & systembasierte Disposition' },
             ' können solche Verfahren unterstützen: Prognosen verdichten Daten zu erwarteten Mengen, während Systeme Plan-, Bestands- und Zugangsdatensätze verarbeiten. Die Qualität der Ergebnisse bleibt von den zugrunde liegenden Daten und Regeln abhängig.',
           ],

@@ -33,6 +33,7 @@ import { findKnowledgePage } from './data/knowledgePages.js';
 
 const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE !== 'false';
 const legacyKnowledgeRedirects = {
+  lieferperformance: '/wissen/liefertermintreue-servicegrad',
   'liquiditaet-1-grades': '/wissen/liquiditaetsgrade',
   'liquiditaet-2-grades': '/wissen/liquiditaetsgrade',
   'liquiditaet-3-grades': '/wissen/liquiditaetsgrade',

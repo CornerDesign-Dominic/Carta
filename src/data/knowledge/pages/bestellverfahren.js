@@ -42,6 +42,11 @@ const bestellverfahren = {
             { type: 'glossary', id: 'hoechstbestand', text: 'Höchstbestand' },
             ' begrenzt den angestrebten Lagerbestand nach einer Auffüllung. Er kann helfen, Lagerplatz, Kapitalbindung oder Verderb im Blick zu behalten.',
           ],
+          [
+            'Die Zusammenhänge zwischen Sicherheitsbestand, Meldebestand, Wiederbeschaffungszeit und Servicegrad erklärt die Vertiefungsseite ',
+            { type: 'link', href: '/wissen/sicherheitsbestand-meldebestand-servicegrad', text: 'Sicherheitsbestand, Meldebestand & Servicegrad' },
+            '.',
+          ],
         ],
         formulaCards: [
           {
@@ -158,7 +163,10 @@ const bestellverfahren = {
             { type: 'link', href: '/wissen/optimale-bestellmenge', text: 'optimale Bestellmenge' },
             ' kann bei gleichmäßigem Bedarf eine rechnerische Orientierung für die Bestellgröße geben.',
           ],
-          'Kanban ist ein weiterführender Ansatz zur verbrauchs- und signalgesteuerten Nachschubsteuerung. Unabhängig vom verwendeten Verfahren sind aktuelle Bestandsdaten, realistische Lieferzeiten und eine regelmäßige Überprüfung der Parameter entscheidend.',
+          [
+            { type: 'link', href: '/wissen/kanban-steuerung', text: 'Kanban' },
+            ' ist ein weiterführender Ansatz zur verbrauchs- und signalgesteuerten Nachschubsteuerung. Unabhängig vom verwendeten Verfahren sind aktuelle Bestandsdaten, realistische Lieferzeiten und eine regelmäßige Überprüfung der Parameter entscheidend.',
+          ],
         ],
       },
       {
