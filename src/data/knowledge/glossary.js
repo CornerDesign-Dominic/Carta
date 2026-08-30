@@ -6,6 +6,25 @@
  */
 export const glossaryEntries = [
   {
+    id: 'fremdbeleg',
+    term: 'Fremdbeleg',
+    definition: 'Ein Fremdbeleg wird von einer anderen Person oder einem anderen Unternehmen für einen Geschäftsvorfall ausgestellt.',
+    explanation: 'Typische Fremdbelege sind Rechnungen, Quittungen, Kassenbons oder Gebührenbescheide. Sie stammen im Unterschied zum Eigenbeleg nicht aus dem eigenen Unternehmen.',
+  },
+  {
+    id: 'betriebsausgabe',
+    term: 'Betriebsausgabe',
+    definition: 'Eine Betriebsausgabe ist eine Aufwendung, die durch den Betrieb veranlasst ist.',
+    explanation: 'Der betriebliche Zusammenhang muss nachvollziehbar sein. Private Ausgaben werden nicht allein durch ihre Erfassung in der Buchhaltung zu Betriebsausgaben.',
+  },
+  {
+    id: 'vorsteuerabzug',
+    term: 'Vorsteuerabzug',
+    definition: 'Beim Vorsteuerabzug kann ein Unternehmer die ihm berechnete Umsatzsteuer unter den gesetzlichen Voraussetzungen von seiner eigenen Umsatzsteuerschuld abziehen.',
+    explanation: 'Für Lieferungen und Leistungen eines anderen Unternehmers ist dafür grundsätzlich eine ordnungsgemäße Rechnung erforderlich.',
+    important: 'Ein selbst erstellter Eigenbeleg ersetzt die erforderliche Rechnung regelmäßig nicht.',
+  },
+  {
     id: 'leistungsdatum',
     term: 'Leistungsdatum',
     definition: 'Das Leistungsdatum zeigt, wann eine Leistung erbracht oder eine Ware geliefert wurde.',

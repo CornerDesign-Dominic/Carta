@@ -4,6 +4,7 @@ import angebot from './pages/angebot.js';
 import lieferschein from './pages/lieferschein.js';
 import gutschrift from './pages/gutschrift.js';
 import quittung from './pages/quittung.js';
+import eigenbeleg from './pages/eigenbeleg.js';
 import mahnverfahren from './pages/mahnverfahren.js';
 import businessplan from './pages/businessplan.js';
 
@@ -17,6 +18,7 @@ export const knowledgePages = {
   'lieferschein': lieferschein,
   'gutschrift': gutschrift,
   'quittung': quittung,
+  'eigenbeleg': eigenbeleg,
   'mahnverfahren': mahnverfahren,
   'businessplan': businessplan,
 };
