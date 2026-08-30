@@ -27,6 +27,7 @@ import kirchensteuer from './pages/kirchensteuer.js';
 import vorsteuer from './pages/vorsteuer.js';
 import kleinunternehmerregelung from './pages/kleinunternehmerregelung.js';
 import steuerfreieUmsaetze from './pages/steuerfreie-umsaetze.js';
+import reverseCharge from './pages/reverse-charge.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -61,6 +62,7 @@ export const knowledgePages = {
   'vorsteuer': vorsteuer,
   'kleinunternehmerregelung': kleinunternehmerregelung,
   'steuerfreie-umsaetze': steuerfreieUmsaetze,
+  'reverse-charge': reverseCharge,
 };
 
 export function findKnowledgePage(slug) {

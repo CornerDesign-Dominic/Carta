@@ -95,6 +95,7 @@ export const knowledgeCategories = [
       { slug: 'vorsteuer', title: 'Vorsteuer' },
       { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
       { slug: 'steuerfreie-umsaetze', title: 'Steuerfreie Umsätze' },
+      { slug: 'reverse-charge', title: 'Reverse Charge' },
     ],
     topicGroups: [
       {
@@ -130,6 +131,7 @@ export const knowledgeCategories = [
           { slug: 'vorsteuer', title: 'Vorsteuer' },
           { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
           { slug: 'steuerfreie-umsaetze', title: 'Steuerfreie Umsätze' },
+          { slug: 'reverse-charge', title: 'Reverse Charge' },
         ],
       },
     ],

@@ -56,6 +56,18 @@ export const glossaryEntries = [
     explanation: 'Das unterscheidet sich von einer Steuerbefreiung: Bei einem steuerfreien Umsatz ist der Umsatz grundsätzlich steuerbar, die Steuer wird aber nicht erhoben.',
   },
   {
+    id: 'reverse-charge',
+    term: 'Reverse Charge',
+    definition: 'Reverse Charge bedeutet, dass in gesetzlich bestimmten Umsatzsteuerfällen der Leistungsempfänger die Umsatzsteuer schuldet.',
+    explanation: 'Das Verfahren wird auch Umkehr der Steuerschuldnerschaft genannt. Es gilt nicht automatisch bei jedem Geschäft zwischen Unternehmen.',
+  },
+  {
+    id: 'leistungsempfaenger',
+    term: 'Leistungsempfänger',
+    definition: 'Der Leistungsempfänger ist die Person oder das Unternehmen, die oder das eine Lieferung oder sonstige Leistung erhält.',
+    explanation: 'Im Reverse-Charge-Verfahren kann der Leistungsempfänger unter den gesetzlichen Voraussetzungen die Umsatzsteuer schulden.',
+  },
+  {
     id: 'umsatzsteuer-zahllast',
     term: 'Umsatzsteuer-Zahllast',
     definition: 'Die Umsatzsteuer-Zahllast ist vereinfacht der Betrag, der nach Verrechnung von Umsatzsteuer und abziehbarer Vorsteuer an das Finanzamt zu zahlen ist.',

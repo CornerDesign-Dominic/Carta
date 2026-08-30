@@ -139,6 +139,7 @@ const umsatzsteuer = {
     'vorsteuer',
     'kleinunternehmerregelung',
     'steuerfreie-umsaetze',
+    'reverse-charge',
   ],
   sources: [
     {
