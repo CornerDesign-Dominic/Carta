@@ -47,6 +47,7 @@ import gmbhUndCoKg from './pages/gmbh-und-co-kg.js';
 import ag from './pages/ag.js';
 import ek from './pages/ek.js';
 import personalLohn from './pages/personal-lohn.js';
+import lohnabrechnung from './pages/lohnabrechnung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -101,6 +102,7 @@ export const knowledgePages = {
   'ag': ag,
   'ek': ek,
   'personal-lohn': personalLohn,
+  'lohnabrechnung': lohnabrechnung,
 };
 
 export function findKnowledgePage(slug) {

@@ -215,6 +215,7 @@ export const knowledgeCategories = [
     topicsTitle: 'Themen rund um Personal & Lohn',
     pages: [
       { slug: 'personal-lohn', title: 'Personal & Lohn' },
+      { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
     ],
     topicGroups: [
       {

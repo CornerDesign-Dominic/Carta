@@ -469,6 +469,30 @@ export const glossaryEntries = [
     explanation: 'Sie entscheidet über die ihr gesetzlich oder durch die Satzung zugewiesenen Angelegenheiten. Die operative Leitung der AG bleibt Aufgabe des Vorstands.',
   },
   {
+    id: 'bruttoentgelt',
+    term: 'Bruttoentgelt',
+    definition: 'Das Bruttoentgelt ist die Vergütung eines Beschäftigten vor dessen persönlichen Abzügen.',
+    explanation: 'Welche Bestandteile dazugehören und welche Abzüge folgen, richtet sich nach Arbeitsvertrag, Abrechnungszeitraum und den jeweiligen steuer- und sozialversicherungsrechtlichen Regeln. Bruttoentgelt ist nicht mit den gesamten Arbeitgeberkosten gleichzusetzen.',
+  },
+  {
+    id: 'nettoentgelt',
+    term: 'Nettoentgelt',
+    definition: 'Das Nettoentgelt ist der Betrag, der nach Abzügen und möglichen Hinzurechnungen zur Auszahlung kommt.',
+    explanation: 'Er hängt unter anderem von den abgerechneten Vergütungsbestandteilen, Lohnsteuer, Sozialversicherungsbeiträgen, Erstattungen und individuellen Merkmalen ab.',
+  },
+  {
+    id: 'steuerpflichtiger-arbeitslohn',
+    term: 'Steuerpflichtiger Arbeitslohn',
+    definition: 'Steuerpflichtiger Arbeitslohn ist der Teil der Vergütung, der nach den Regeln des Lohnsteuerabzugs steuerlich zu berücksichtigen ist.',
+    explanation: 'Er kann sich vom gesamten Bruttoentgelt unterscheiden. Ob ein bestimmter Vorteil, Zuschlag oder eine Erstattung steuerpflichtig ist, hängt von den gesetzlichen Voraussetzungen ab.',
+  },
+  {
+    id: 'sozialversicherungspflichtiges-entgelt',
+    term: 'Sozialversicherungspflichtiges Entgelt',
+    definition: 'Sozialversicherungspflichtiges Entgelt ist die Vergütung, die für die Berechnung von Sozialversicherungsbeiträgen maßgeblich sein kann.',
+    explanation: 'Ob und in welcher Höhe ein Entgelt beitragspflichtig ist, hängt unter anderem von Beschäftigung, Versicherungszweig und den gesetzlichen Regeln ab. Es ist nicht in jedem Fall identisch mit dem steuerpflichtigen Arbeitslohn.',
+  },
+  {
     id: 'komplementaer',
     term: 'Komplementär',
     definition: 'Ein Komplementär ist der persönlich haftende Gesellschafter einer Kommanditgesellschaft.',
