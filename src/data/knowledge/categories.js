@@ -104,6 +104,7 @@ export const knowledgeCategories = [
       { slug: 'inventur-inventar', title: 'Inventur und Inventar' },
       { slug: 'jahresabschluss', title: 'Jahresabschluss' },
       { slug: 'ruecklagen', title: 'Rücklagen' },
+      { slug: 'rechnungsabgrenzung', title: 'Rechnungsabgrenzung' },
     ],
     topicGroups: [
       {
@@ -127,6 +128,7 @@ export const knowledgeCategories = [
           { slug: 'bilanz', title: 'Bilanz' },
           { slug: 'guv', title: 'Gewinn- und Verlustrechnung (GuV)' },
           { slug: 'ruecklagen', title: 'Rücklagen' },
+          { slug: 'rechnungsabgrenzung', title: 'Rechnungsabgrenzung' },
           { slug: 'anlagenbuchhaltung', title: 'Anlagenbuchhaltung' },
           { slug: 'jahresabschluss', title: 'Jahresabschluss' },
           { slug: 'inventur-inventar', title: 'Inventur und Inventar' },

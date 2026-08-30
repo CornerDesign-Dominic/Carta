@@ -300,6 +300,24 @@ export const glossaryEntries = [
     explanation: 'Sie verhindert, dass Vorauszahlungen oder vorab vereinnahmte Beträge den Erfolg des falschen Geschäftsjahrs verändern.',
   },
   {
+    id: 'arap',
+    term: 'Aktiver Rechnungsabgrenzungsposten (ARAP)',
+    definition: 'Ein ARAP entsteht, wenn vor dem Bilanzstichtag gezahlt wurde, der zugehörige Aufwand aber eine Zeit nach diesem Stichtag betrifft.',
+    explanation: 'Der Betrag steht zunächst auf der Aktivseite der Bilanz und wird in der folgenden Periode als Aufwand aufgelöst.',
+  },
+  {
+    id: 'prap',
+    term: 'Passiver Rechnungsabgrenzungsposten (PRAP)',
+    definition: 'Ein PRAP entsteht, wenn vor dem Bilanzstichtag Geld eingegangen ist, der zugehörige Ertrag aber eine Zeit nach diesem Stichtag betrifft.',
+    explanation: 'Der Betrag steht zunächst auf der Passivseite der Bilanz und wird in der folgenden Periode als Ertrag aufgelöst.',
+  },
+  {
+    id: 'periode',
+    term: 'Periode',
+    definition: 'Eine Periode ist ein abgegrenzter Zeitraum der Rechnungslegung, zum Beispiel ein Geschäftsjahr oder ein Monat.',
+    explanation: 'Aufwendungen und Erträge werden der Periode zugeordnet, in der sie wirtschaftlich verursacht sind. Das wird als periodengerechte Abgrenzung bezeichnet.',
+  },
+  {
     id: 'guv',
     term: 'Gewinn- und Verlustrechnung (GuV)',
     definition: 'Die Gewinn- und Verlustrechnung stellt Aufwendungen und Erträge eines Zeitraums gegenüber.',

@@ -84,6 +84,7 @@ import guv from './pages/guv.js';
 import inventurInventar from './pages/inventur-inventar.js';
 import jahresabschluss from './pages/jahresabschluss.js';
 import ruecklagen from './pages/ruecklagen.js';
+import rechnungsabgrenzung from './pages/rechnungsabgrenzung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -175,6 +176,7 @@ export const knowledgePages = {
   'inventur-inventar': inventurInventar,
   jahresabschluss,
   ruecklagen,
+  rechnungsabgrenzung,
 };
 
 export function findKnowledgePage(slug) {
