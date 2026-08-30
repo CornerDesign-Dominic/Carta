@@ -131,7 +131,7 @@ const gerichtlichesMahnverfahren = {
     { question: 'Wann kann ich einen Vollstreckungsbescheid beantragen?', answer: 'Wenn der Schuldner nicht fristgerecht reagiert, kannst du unter den gesetzlichen Voraussetzungen einen Vollstreckungsbescheid beantragen.' },
     { question: 'Hemmt ein Mahnbescheid die Verjährung?', answer: 'Die Zustellung eines Mahnbescheids kann die Verjährung unter gesetzlichen Voraussetzungen hemmen. Bei knappen Fristen solltest du die Voraussetzungen besonders sorgfältig prüfen.' },
   ],
-  related: ['mahnwesen', 'mahnverfahren', 'faelligkeit', 'verzugszinsen', 'mahnbescheid'],
+  related: ['mahnwesen', 'mahnverfahren', 'faelligkeit', 'verzugszinsen', 'mahnbescheid', 'vollstreckungsbescheid'],
   sources: [
     { label: '§ 688 ZPO – Zulässigkeit des Mahnverfahrens', url: 'https://www.gesetze-im-internet.de/zpo/__688.html' },
     { label: '§ 690 ZPO – Antrag auf Erlass eines Mahnbescheids', url: 'https://www.gesetze-im-internet.de/zpo/__690.html' },

@@ -48,6 +48,7 @@ export const knowledgeCategories = [
       { slug: 'mahnverfahren', title: 'Mahnverfahren' },
       { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
       { slug: 'mahnbescheid', title: 'Mahnbescheid' },
+      { slug: 'vollstreckungsbescheid', title: 'Vollstreckungsbescheid' },
     ],
     topicGroups: [
       {
@@ -65,6 +66,7 @@ export const knowledgeCategories = [
           { slug: 'mahnverfahren', title: 'Mahnverfahren' },
           { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
           { slug: 'mahnbescheid', title: 'Mahnbescheid' },
+          { slug: 'vollstreckungsbescheid', title: 'Vollstreckungsbescheid' },
         ],
       },
     ],

@@ -21,6 +21,7 @@ import belege from './pages/belege.js';
 import mahnwesen from './pages/mahnwesen.js';
 import gerichtlichesMahnverfahren from './pages/gerichtliches-mahnverfahren.js';
 import mahnbescheid from './pages/mahnbescheid.js';
+import vollstreckungsbescheid from './pages/vollstreckungsbescheid.js';
 import koerperschaftsteuer from './pages/koerperschaftsteuer.js';
 import gewerbesteuer from './pages/gewerbesteuer.js';
 import kapitalertragsteuer from './pages/kapitalertragsteuer.js';
@@ -59,6 +60,7 @@ export const knowledgePages = {
   'mahnwesen': mahnwesen,
   'gerichtliches-mahnverfahren': gerichtlichesMahnverfahren,
   'mahnbescheid': mahnbescheid,
+  'vollstreckungsbescheid': vollstreckungsbescheid,
   'koerperschaftsteuer': koerperschaftsteuer,
   'gewerbesteuer': gewerbesteuer,
   'kapitalertragsteuer': kapitalertragsteuer,
