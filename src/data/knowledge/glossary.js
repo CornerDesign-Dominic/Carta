@@ -402,6 +402,18 @@ export const glossaryEntries = [
     definition: 'Die gesetzliche Rücklage ist ein Teil des Jahresüberschusses, den eine UG unter den gesetzlichen Voraussetzungen ansammeln muss.',
     explanation: 'Sie soll das Eigenkapital der Gesellschaft stärken. Ihre Bildung und Verwendung richten sich nach den besonderen Regeln für die Unternehmergesellschaft.',
   },
+  {
+    id: 'persoenliche-haftung',
+    term: 'Persönliche Haftung',
+    definition: 'Bei persönlicher Haftung kann eine Person für Verbindlichkeiten nicht nur mit Gesellschafts- oder Betriebsvermögen, sondern grundsätzlich auch mit ihrem eigenen Vermögen einstehen.',
+    explanation: 'Ob und in welchem Umfang sie besteht, richtet sich nach Rechtsform, Gesetz und konkretem Sachverhalt. Bei OHG-Gesellschaftern ist die persönliche Haftung ein zentraler Grundsatz.',
+  },
+  {
+    id: 'hra',
+    term: 'HRA',
+    definition: 'HRA ist die Abkürzung für eine Registernummer in Abteilung A des Handelsregisters.',
+    explanation: 'In Abteilung A werden insbesondere Einzelkaufleute, OHGs und KGs eingetragen. Kapitalgesellschaften wie GmbH und UG stehen dagegen grundsätzlich in Abteilung B (HRB).',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

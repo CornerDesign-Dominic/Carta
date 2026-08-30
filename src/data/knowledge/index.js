@@ -41,6 +41,7 @@ import einzelunternehmen from './pages/einzelunternehmen.js';
 import gbr from './pages/gbr.js';
 import gmbh from './pages/gmbh.js';
 import ug from './pages/ug.js';
+import ohg from './pages/ohg.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -89,6 +90,7 @@ export const knowledgePages = {
   'gbr': gbr,
   'gmbh': gmbh,
   'ug': ug,
+  'ohg': ohg,
 };
 
 export function findKnowledgePage(slug) {

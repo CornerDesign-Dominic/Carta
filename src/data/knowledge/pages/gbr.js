@@ -66,8 +66,8 @@ const gbr = {
       {
         heading: 'Unterschied zwischen GbR und OHG',
         paragraphs: [
-          'Die GbR ist für gemeinsame Zwecke gedacht, die kein Handelsgewerbe im Sinne des Handelsgesetzbuchs voraussetzen. Dagegen ist die OHG die Personengesellschaft für ein Handelsgewerbe unter gemeinschaftlicher Firma.',
-          'Wächst ein gemeinsames gewerbliches Unternehmen in eine kaufmännisch eingerichtete Struktur hinein, kann die OHG statt der GbR relevant werden. Die Einordnung hängt nicht allein von Umsatz oder Mitarbeiterzahl ab, sondern vom konkreten Geschäftsbetrieb.',
+          'Die GbR ist für gemeinsame Zwecke gedacht, die kein Handelsgewerbe im Sinne des Handelsgesetzbuchs voraussetzen. Dagegen ist die OHG typischerweise die Personengesellschaft für ein Handelsgewerbe unter gemeinschaftlicher Firma.',
+          'Wächst ein gemeinsames gewerbliches Unternehmen in eine kaufmännisch eingerichtete Struktur hinein, kann die OHG statt der GbR relevant werden. Auch kleingewerbliche, vermögensverwaltende oder freiberufliche Gesellschaften können sich unter gesetzlichen Voraussetzungen als OHG eintragen lassen. Die Einordnung hängt vom konkreten Geschäftsbetrieb ab.',
         ],
       },
       {
@@ -171,6 +171,7 @@ const gbr = {
     { label: '§ 720 BGB – Vertretung der Gesellschaft', url: 'https://www.gesetze-im-internet.de/bgb/__720.html' },
     { label: '§ 721 BGB – Persönliche Haftung der Gesellschafter', url: 'https://www.gesetze-im-internet.de/bgb/__721.html' },
     { label: '§ 105 HGB – Offene Handelsgesellschaft', url: 'https://www.gesetze-im-internet.de/hgb/__105.html' },
+    { label: '§ 107 HGB – OHG für weitere Gesellschaftszwecke', url: 'https://www.gesetze-im-internet.de/hgb/__107.html' },
     { label: '§ 14 GewO – Anzeige eines Gewerbes', url: 'https://www.gesetze-im-internet.de/gewo/__14.html' },
     { label: '§ 4 EStG – Gewinnermittlung und Betriebsausgaben', url: 'https://www.gesetze-im-internet.de/estg/__4.html' },
     { label: '§ 141 AO – Buchführungspflicht bestimmter Steuerpflichtiger', url: 'https://www.gesetze-im-internet.de/ao_1977/__141.html' },

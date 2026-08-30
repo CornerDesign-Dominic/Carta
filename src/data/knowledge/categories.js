@@ -171,6 +171,7 @@ export const knowledgeCategories = [
       { slug: 'gbr', title: 'GbR' },
       { slug: 'gmbh', title: 'GmbH' },
       { slug: 'ug', title: 'UG (haftungsbeschränkt)' },
+      { slug: 'ohg', title: 'OHG' },
     ],
     topicGroups: [
       {
