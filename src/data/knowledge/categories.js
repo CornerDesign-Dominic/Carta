@@ -144,6 +144,7 @@ export const knowledgeCategories = [
     topicsTitle: 'Themen in Kostenrechnung & Controlling',
     pages: [
       { slug: 'kostenrechnung-controlling', title: 'Kostenrechnung & Controlling' },
+      { slug: 'kostenarten-kostenstellen-kostentraeger', title: 'Kostenarten, Kostenstellen & Kostenträger' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
     ],
@@ -153,9 +154,7 @@ export const knowledgeCategories = [
         title: 'Kosten erfassen und zuordnen',
         topics: [
           { slug: 'fixe-variable-kosten', title: 'Fixe und variable Kosten' },
-          { slug: 'kostenarten', title: 'Kostenarten' },
-          { slug: 'kostenstellen', title: 'Kostenstellen' },
-          { slug: 'kostentraeger', title: 'Kostenträger' },
+          { slug: 'kostenarten-kostenstellen-kostentraeger', title: 'Kostenarten, Kostenstellen & Kostenträger' },
           { slug: 'bab', title: 'Betriebsabrechnungsbogen (BAB)' },
         ],
       },

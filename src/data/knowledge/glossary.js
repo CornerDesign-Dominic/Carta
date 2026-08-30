@@ -561,6 +561,36 @@ export const glossaryEntries = [
     explanation: 'Dazu können zum Beispiel Miete, Versicherungen oder feste Gehälter gehören. Ob eine Kostenart fix ist, hängt vom betrachteten Zeitraum und Geschäftsmodell ab.',
   },
   {
+    id: 'kostenart',
+    term: 'Kostenart',
+    definition: 'Eine Kostenart fasst gleichartige Kosten nach ihrer Art zusammen.',
+    explanation: 'Sie beantwortet die Frage, welche Kosten entstanden sind. Typische Kostenarten sind Material, Personal, Energie, Miete oder Abschreibungen.',
+  },
+  {
+    id: 'kostenstelle',
+    term: 'Kostenstelle',
+    definition: 'Eine Kostenstelle ist ein abgegrenzter Bereich, in dem Kosten entstehen.',
+    explanation: 'Sie beantwortet die Frage, wo Kosten anfallen. Das kann zum Beispiel Produktion, Verwaltung, Vertrieb, eine Filiale oder ein Projektbereich sein.',
+  },
+  {
+    id: 'kostentraeger',
+    term: 'Kostenträger',
+    definition: 'Ein Kostenträger ist die Leistung, für die Kosten ermittelt werden.',
+    explanation: 'Er beantwortet die Frage, wofür Kosten entstanden sind. Kostenträger können Produkte, Kundenaufträge, Projekte oder Dienstleistungen sein.',
+  },
+  {
+    id: 'einzelkosten',
+    term: 'Einzelkosten',
+    definition: 'Einzelkosten lassen sich einem Kostenträger direkt zurechnen.',
+    explanation: 'Dazu kann etwa Material gehören, das ausschließlich für einen bestimmten Auftrag verwendet wird. Ob eine direkte Zuordnung sinnvoll ist, hängt vom Aufwand und der Nachvollziehbarkeit ab.',
+  },
+  {
+    id: 'gemeinkosten',
+    term: 'Gemeinkosten',
+    definition: 'Gemeinkosten betreffen mehrere Kostenträger gemeinsam und lassen sich nicht unmittelbar einem einzelnen zuordnen.',
+    explanation: 'Sie werden zunächst einer Kostenstelle zugeordnet und anschließend mit nachvollziehbaren Schlüsseln oder Zuschlägen auf Kostenträger verteilt.',
+  },
+  {
     id: 'variable-kosten',
     term: 'Variable Kosten',
     definition: 'Variable Kosten verändern sich mit der produzierten, verkauften oder erbrachten Menge.',
