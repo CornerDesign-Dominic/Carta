@@ -514,6 +514,7 @@ export const knowledgeCategories = [
       { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
       { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
       { slug: 'krankengeld', title: 'Krankengeld' },
+      { slug: 'mutterschutz', title: 'Mutterschutz' },
       { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
     ],
     topicGroups: [
@@ -569,6 +570,7 @@ export const knowledgeCategories = [
           { slug: 'urlaubsanspruch', title: 'Urlaubsanspruch' },
           { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
           { slug: 'krankengeld', title: 'Krankengeld' },
+          { slug: 'mutterschutz', title: 'Mutterschutz' },
         ],
       },
       {

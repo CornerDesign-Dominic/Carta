@@ -65,6 +65,7 @@ import ausbildungsverguetung from './pages/ausbildungsverguetung.js';
 import einmalzahlungen from './pages/einmalzahlungen.js';
 import entgeltfortzahlung from './pages/entgeltfortzahlung.js';
 import krankengeld from './pages/krankengeld.js';
+import mutterschutz from './pages/mutterschutz.js';
 import urlaubsentgeltUrlaubsgeld from './pages/urlaubsentgelt-urlaubsgeld.js';
 import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
 import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
@@ -148,6 +149,7 @@ export const knowledgePages = {
   einmalzahlungen,
   entgeltfortzahlung,
   krankengeld,
+  mutterschutz,
   'urlaubsentgelt-urlaubsgeld': urlaubsentgeltUrlaubsgeld,
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
