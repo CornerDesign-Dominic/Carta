@@ -167,6 +167,7 @@ const breakEvenPoint = {
     },
   ],
   related: [
+    'kostenvergleichsrechnung',
     'businessplan',
   ],
   sources: [],

@@ -117,6 +117,12 @@ export const glossaryEntries = [
     explanation: 'Er trägt zunächst zur Deckung der Fixkosten bei. Erst wenn die Fixkosten gedeckt sind, kann ein positiver Gewinn entstehen.',
   },
   {
+    id: 'restwert',
+    term: 'Restwert',
+    definition: 'Der Restwert ist der erwartete Wert eines Wirtschaftsguts am Ende eines betrachteten Zeitraums.',
+    explanation: 'Beim Kostenvergleich kann er die Gesamtkosten verringern, weil der Gegenstand nach der Nutzung noch verkauft oder weiterverwendet werden kann.',
+  },
+  {
     id: 'mahnkosten',
     term: 'Mahnkosten',
     definition: 'Mahnkosten sind zusätzliche Kosten, die durch eine Mahnung wegen einer verspäteten Zahlung entstehen können.',

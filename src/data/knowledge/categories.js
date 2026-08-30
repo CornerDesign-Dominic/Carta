@@ -30,6 +30,7 @@ export const knowledgeCategories = [
       { slug: 'zinsen', title: 'Zinsen' },
       { slug: 'zinseszins', title: 'Zinseszins' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
+      { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
     ],
   },

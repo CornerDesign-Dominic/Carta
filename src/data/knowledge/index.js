@@ -13,6 +13,7 @@ import verzugszinsen from './pages/verzugszinsen.js';
 import zinsen from './pages/zinsen.js';
 import zinseszins from './pages/zinseszins.js';
 import breakEvenPoint from './pages/break-even-point.js';
+import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -33,6 +34,7 @@ export const knowledgePages = {
   'zinsen': zinsen,
   'zinseszins': zinseszins,
   'break-even-point': breakEvenPoint,
+  'kostenvergleichsrechnung': kostenvergleichsrechnung,
 };
 
 export function findKnowledgePage(slug) {
