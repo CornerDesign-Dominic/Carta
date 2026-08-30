@@ -174,6 +174,28 @@ export default function KnowledgeArticle({
                 ))}
               </div>
             )}
+            {section.matrixCards?.length > 0 && (
+              <div className="knowledge-matrix-card-list">
+                {section.matrixCards.map((matrix) => (
+                  <section className="knowledge-matrix-card" key={matrix.title} aria-label={matrix.title}>
+                    <p className="knowledge-matrix-card-kicker">Matrix</p>
+                    <h3>{matrix.title}</h3>
+                    <div className="knowledge-matrix-grid">
+                      {matrix.cells.map((cell) => (
+                        <section className="knowledge-matrix-cell" key={cell.code}>
+                          <header>
+                            <span aria-hidden="true">{cell.code}</span>
+                            <p>{cell.context}</p>
+                          </header>
+                          <h4>{cell.title}</h4>
+                          <p>{renderArticleText(cell.text, enableGlossary, onSelectGlossaryTerm)}</p>
+                        </section>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            )}
             {section.exampleCards?.length > 0 && (
               <div className="knowledge-example-card-list">
                 {section.exampleCards.map((example) => (

@@ -32,6 +32,11 @@ import { findToolItem, findToolItemByPath } from './data/tools.js';
 import { findKnowledgePage } from './data/knowledgePages.js';
 
 const isKnowledgeEnabled = import.meta.env.VITE_ENABLE_KNOWLEDGE !== 'false';
+const legacyKnowledgeRedirects = {
+  'liquiditaet-1-grades': '/wissen/liquiditaetsgrade',
+  'liquiditaet-2-grades': '/wissen/liquiditaetsgrade',
+  'liquiditaet-3-grades': '/wissen/liquiditaetsgrade',
+};
 const THEME_STORAGE_KEY = 'belege24-theme-v1';
 const generatorPathById = new Map(
   documentSections.flatMap((section) =>
@@ -340,6 +345,10 @@ function KnowledgeRoute() {
 
   if (!isKnowledgeEnabled) {
     return <NotFoundRoute />;
+  }
+
+  if (legacyKnowledgeRedirects[slug]) {
+    return <Navigate to={legacyKnowledgeRedirects[slug]} replace />;
   }
 
   function handleNavigate(item, options = {}) {

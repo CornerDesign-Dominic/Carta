@@ -25,6 +25,7 @@ import bab from './pages/bab.js';
 import zuschlagskalkulation from './pages/zuschlagskalkulation.js';
 import wirtschaftlichkeitRentabilitaet from './pages/wirtschaftlichkeit-rentabilitaet.js';
 import planIstVergleich from './pages/plan-ist-vergleich.js';
+import liquiditaetControlling from './pages/liquiditaet-controlling.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -81,8 +82,25 @@ import kennzahlen from './pages/kennzahlen.js';
 import roi from './pages/roi.js';
 import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
 import gesamtkapitalrentabilitaet from './pages/gesamtkapitalrentabilitaet.js';
+import umsatzrentabilitaet from './pages/umsatzrentabilitaet.js';
+import ebitEbitdaMarge from './pages/ebit-ebitda-marge.js';
+import wirtschaftlichkeit from './pages/wirtschaftlichkeit.js';
+import workingCapital from './pages/working-capital.js';
+import liquiditaetsgrade from './pages/liquiditaetsgrade.js';
+import cashflow from './pages/cashflow.js';
+import eigenkapitalquote from './pages/eigenkapitalquote.js';
+import fremdkapitalquote from './pages/fremdkapitalquote.js';
+import verschuldungsgrad from './pages/verschuldungsgrad.js';
+import anlagendeckungsgrad from './pages/anlagendeckungsgrad.js';
+import zinsdeckungsgrad from './pages/zinsdeckungsgrad.js';
 import einkaufVerkauf from './pages/einkauf-verkauf.js';
 import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
+import unternehmensziele from './pages/unternehmensziele.js';
+import visionMissionLeitbild from './pages/vision-mission-leitbild.js';
+import unternehmensstrategie from './pages/unternehmensstrategie.js';
+import swotAnalyse from './pages/swot-analyse.js';
+import zielsystemeSmartZiele from './pages/zielsysteme-smart-ziele.js';
+import aufbauorganisation from './pages/aufbauorganisation.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
 import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
@@ -92,16 +110,21 @@ import konten from './pages/konten.js';
 import kontenrahmenKontenplan from './pages/kontenrahmen-kontenplan.js';
 import bestandskonten from './pages/bestandskonten.js';
 import erfolgskonten from './pages/erfolgskonten.js';
+import eigenkapitalFremdkapital from './pages/eigenkapital-fremdkapital.js';
 import privatentnahmenPrivateinlagen from './pages/privatentnahmen-privateinlagen.js';
 import debitorenKreditoren from './pages/debitoren-kreditoren.js';
+import gobdBelegwesen from './pages/gobd-belegwesen.js';
 import euer from './pages/euer.js';
 import bilanz from './pages/bilanz.js';
+import anlageUmlaufvermoegen from './pages/anlage-umlaufvermoegen.js';
 import abschreibung from './pages/abschreibung.js';
 import guv from './pages/guv.js';
+import bwaSummenSaldenliste from './pages/bwa-summen-saldenliste.js';
 import bestandsveraenderung from './pages/bestandsveraenderung.js';
 import inventurInventar from './pages/inventur-inventar.js';
 import jahresabschluss from './pages/jahresabschluss.js';
 import ruecklagen from './pages/ruecklagen.js';
+import periodenabgrenzung from './pages/periodenabgrenzung.js';
 import rechnungsabgrenzung from './pages/rechnungsabgrenzung.js';
 import kassenbuch from './pages/kassenbuch.js';
 
@@ -136,6 +159,7 @@ export const knowledgePages = {
   zuschlagskalkulation,
   'wirtschaftlichkeit-rentabilitaet': wirtschaftlichkeitRentabilitaet,
   'plan-ist-vergleich': planIstVergleich,
+  'liquiditaet-controlling': liquiditaetControlling,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,
@@ -192,8 +216,25 @@ export const knowledgePages = {
   roi,
   eigenkapitalrentabilitaet,
   gesamtkapitalrentabilitaet,
+  umsatzrentabilitaet,
+  'ebit-ebitda-marge': ebitEbitdaMarge,
+  wirtschaftlichkeit,
+  'working-capital': workingCapital,
+  liquiditaetsgrade,
+  cashflow,
+  eigenkapitalquote,
+  fremdkapitalquote,
+  verschuldungsgrad,
+  anlagendeckungsgrad,
+  zinsdeckungsgrad,
   'einkauf-verkauf': einkaufVerkauf,
   unternehmensfuehrung,
+  unternehmensziele,
+  'vision-mission-leitbild': visionMissionLeitbild,
+  unternehmensstrategie,
+  'swot-analyse': swotAnalyse,
+  'zielsysteme-smart-ziele': zielsystemeSmartZiele,
+  aufbauorganisation,
   'marketing-vertrieb': marketingVertrieb,
   digitalisierung,
   geschaeftsvorfaelle,
@@ -203,16 +244,21 @@ export const knowledgePages = {
   'kontenrahmen-kontenplan': kontenrahmenKontenplan,
   bestandskonten,
   erfolgskonten,
+  'eigenkapital-fremdkapital': eigenkapitalFremdkapital,
   'privatentnahmen-privateinlagen': privatentnahmenPrivateinlagen,
   'debitoren-kreditoren': debitorenKreditoren,
+  'gobd-belegwesen': gobdBelegwesen,
   euer,
   bilanz,
+  'anlage-umlaufvermoegen': anlageUmlaufvermoegen,
   abschreibung,
   guv,
+  'bwa-summen-saldenliste': bwaSummenSaldenliste,
   bestandsveraenderung,
   'inventur-inventar': inventurInventar,
   jahresabschluss,
   ruecklagen,
+  periodenabgrenzung,
   rechnungsabgrenzung,
   kassenbuch,
 };

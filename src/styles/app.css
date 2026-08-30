@@ -9727,6 +9727,61 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   line-height: 1.58 !important;
 }
 
+.knowledge-matrix-card-list { margin-top: 4px; }
+
+.knowledge-matrix-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid rgba(79, 111, 104, 0.28);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-card) 76%, var(--color-accent-surface));
+}
+
+.knowledge-matrix-card-kicker {
+  color: var(--accent-deep) !important;
+  font-size: 0.7rem !important;
+  font-weight: 760;
+  letter-spacing: 0.06em;
+  line-height: 1.2 !important;
+  text-transform: uppercase;
+}
+
+.knowledge-matrix-card > h3 { margin: 0; color: var(--accent-deep); font-size: 1rem; }
+.knowledge-matrix-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+
+.knowledge-matrix-cell {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 13px;
+  border: 1px solid rgba(79, 111, 104, 0.2);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-card) 90%, var(--color-accent-surface));
+}
+
+.knowledge-matrix-cell header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.knowledge-matrix-cell header span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-deep);
+  color: var(--color-card);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+.knowledge-matrix-cell header p {
+  color: var(--accent-deep) !important;
+  font-size: 0.7rem !important;
+  font-weight: 760;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.knowledge-matrix-cell h4 { margin: 0; color: var(--accent-deep); font-size: 0.92rem; line-height: 1.35; }
+.knowledge-matrix-cell > p { font-size: 0.86rem !important; line-height: 1.5 !important; }
+
 .knowledge-example-card-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -12326,6 +12381,7 @@ body.tool-document-print-mode .tool-document-date-picker {
   .knowledge-highlight-grid,
   .knowledge-category-grid,
   .knowledge-formula-card-list,
+  .knowledge-matrix-grid,
   .knowledge-example-card-list,
   .tools-overview-grid,
   .tools-calculator-layout,
