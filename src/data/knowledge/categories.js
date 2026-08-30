@@ -93,6 +93,7 @@ export const knowledgeCategories = [
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
       { slug: 'kapitalertragsteuer', title: 'Kapitalertragsteuer' },
       { slug: 'vorsteuer', title: 'Vorsteuer' },
+      { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
     ],
     topicGroups: [
       {
@@ -126,6 +127,7 @@ export const knowledgeCategories = [
         title: 'Steuerliche Grundlagen',
         topics: [
           { slug: 'vorsteuer', title: 'Vorsteuer' },
+          { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
         ],
       },
     ],

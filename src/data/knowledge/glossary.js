@@ -32,6 +32,18 @@ export const glossaryEntries = [
     important: 'Vorsteuer darf nicht allein deshalb abgezogen werden, weil auf einem Beleg ein Steuerbetrag steht.',
   },
   {
+    id: 'kleinunternehmer',
+    term: 'Kleinunternehmer',
+    definition: 'Ein Kleinunternehmer ist ein Unternehmer, dessen Umsätze unter den Voraussetzungen des § 19 UStG von der Umsatzsteuer befreit sein können.',
+    explanation: 'Der Begriff beschreibt keine Rechtsform und ist nicht mit einem Kleingewerbe gleichzusetzen. Ob die Regelung gilt, richtet sich insbesondere nach den gesetzlichen Umsatzgrenzen.',
+  },
+  {
+    id: 'regelbesteuerung',
+    term: 'Regelbesteuerung',
+    definition: 'Bei der Regelbesteuerung berechnet ein Unternehmer für steuerpflichtige Umsätze Umsatzsteuer und kann unter den gesetzlichen Voraussetzungen Vorsteuer abziehen.',
+    explanation: 'Sie gilt grundsätzlich, wenn die Kleinunternehmerregelung nicht anwendbar ist oder auf sie wirksam verzichtet wurde.',
+  },
+  {
     id: 'umsatzsteuer-zahllast',
     term: 'Umsatzsteuer-Zahllast',
     definition: 'Die Umsatzsteuer-Zahllast ist vereinfacht der Betrag, der nach Verrechnung von Umsatzsteuer und abziehbarer Vorsteuer an das Finanzamt zu zahlen ist.',

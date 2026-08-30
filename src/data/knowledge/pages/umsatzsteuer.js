@@ -137,6 +137,7 @@ const umsatzsteuer = {
     'quittung',
     'eigenbeleg',
     'vorsteuer',
+    'kleinunternehmerregelung',
   ],
   sources: [
     {

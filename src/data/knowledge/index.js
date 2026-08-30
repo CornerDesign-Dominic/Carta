@@ -25,6 +25,7 @@ import kapitalertragsteuer from './pages/kapitalertragsteuer.js';
 import solidaritaetszuschlag from './pages/solidaritaetszuschlag.js';
 import kirchensteuer from './pages/kirchensteuer.js';
 import vorsteuer from './pages/vorsteuer.js';
+import kleinunternehmerregelung from './pages/kleinunternehmerregelung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -57,6 +58,7 @@ export const knowledgePages = {
   'solidaritaetszuschlag': solidaritaetszuschlag,
   'kirchensteuer': kirchensteuer,
   'vorsteuer': vorsteuer,
+  'kleinunternehmerregelung': kleinunternehmerregelung,
 };
 
 export function findKnowledgePage(slug) {
