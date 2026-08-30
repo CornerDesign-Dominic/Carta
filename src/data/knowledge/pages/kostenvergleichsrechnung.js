@@ -28,7 +28,9 @@ const kostenvergleichsrechnung = {
             { type: 'glossary', id: 'fixkosten', text: 'Fixkosten' },
             ' fallen im betrachteten Zeitraum unabhängig von der Nutzung an. ',
             { type: 'glossary', id: 'variable-kosten', text: 'Variable Kosten' },
-            ' verändern sich dagegen mit Menge oder Auslastung. Beide Kostenarten solltest du getrennt erfassen, damit die Annahmen nachvollziehbar bleiben.',
+            ' verändern sich dagegen mit Menge oder Auslastung. Wie sich beide Kostenarten unterscheiden, erklärt ',
+            { type: 'link', href: '/wissen/fixe-variable-kosten', text: 'Fixe und variable Kosten' },
+            '. Du solltest sie getrennt erfassen, damit die Annahmen nachvollziehbar bleiben.',
           ],
           [
             'Ein ',
@@ -43,9 +45,13 @@ const kostenvergleichsrechnung = {
           'Für einen vereinfachten praktischen Kostenvergleich addierst du die Anschaffungskosten und die laufenden Kosten über die Laufzeit. Einen erwarteten Restwert ziehst du am Ende ab. Entscheidend ist, dass für alle Varianten dieselbe Laufzeit und dieselben Annahmen gelten.',
           'Der Belege24-Rechner folgt diesem Ansatz und vergleicht mehrere Varianten nach Anschaffungskosten, laufenden Kosten, Laufzeit und Restwert. Er zeigt die Gesamtkosten sowie durchschnittliche Kosten pro Monat und Jahr.',
         ],
-        list: [
-          'Gesamtkosten = Anschaffungskosten + laufende Kosten über die Laufzeit − Restwert',
-          'Zusätzliche Kosten wie Wartung, Energie oder Personal gehören in die laufenden Kosten, sofern sie relevant sind',
+        formulaCards: [
+          {
+            label: 'Formel',
+            title: 'Vereinfachte Gesamtkosten',
+            formula: 'Gesamtkosten = Anschaffungskosten + (laufende Kosten × Laufzeit) − Restwert',
+            description: 'Wartung, Energie, Personal und weitere relevante Kosten kannst du in den laufenden Kosten berücksichtigen. Alle Werte müssen sich auf denselben Zeitraum beziehen.',
+          },
         ],
       },
       {
@@ -54,9 +60,14 @@ const kostenvergleichsrechnung = {
           'Maschine A kostet 8.000 Euro in der Anschaffung, verursacht 600 Euro laufende Kosten pro Monat und hat nach der Laufzeit einen Restwert von 1.000 Euro. Maschine B kostet 14.000 Euro, verursacht aber nur 350 Euro pro Monat und hat einen Restwert von 2.000 Euro.',
           'Nach einem Jahr liegen die vereinfachten Gesamtkosten bei Maschine A bei 14.200 Euro und bei Maschine B bei 16.200 Euro. Nach drei Jahren liegen sie bei A bei 28.600 Euro und bei B bei 24.600 Euro. Die günstigere Alternative kann sich also mit der Laufzeit ändern.',
         ],
-        list: [
-          'Maschine A nach drei Jahren: 8.000 Euro + (36 × 600 Euro) − 1.000 Euro = 28.600 Euro',
-          'Maschine B nach drei Jahren: 14.000 Euro + (36 × 350 Euro) − 2.000 Euro = 24.600 Euro',
+        exampleCards: [
+          {
+            title: 'Nach drei Jahren vergleichen',
+            paragraphs: [
+              'Maschine A: 8.000 Euro + (36 × 600 Euro) − 1.000 Euro = 28.600 Euro.',
+              'Maschine B: 14.000 Euro + (36 × 350 Euro) − 2.000 Euro = 24.600 Euro. Die zunächst teurere Maschine ist bei dieser Laufzeit rechnerisch günstiger.',
+            ],
+          },
         ],
       },
       {
@@ -83,8 +94,16 @@ const kostenvergleichsrechnung = {
       {
         heading: 'Abgrenzung zu anderen Verfahren',
         paragraphs: [
-          'Die Kostenvergleichsrechnung betrachtet vor allem die Kostenseite. Eine Gewinnvergleichsrechnung berücksichtigt zusätzlich Erlöse. Die Rentabilitätsrechnung setzt Gewinn ins Verhältnis zum eingesetzten Kapital. Die Amortisationsrechnung fragt, wann sich eine Investition rechnerisch zurückverdient hat.',
-          'Bei größeren oder langfristigen Investitionen kann außerdem eine Kapitalwertmethode sinnvoll sein, weil sie Zahlungszeitpunkte und den Zeitwert des Geldes berücksichtigt. Ein einfacher Kostenvergleich reicht nicht aus, wenn Erlöse, Risiken oder Zahlungsströme zwischen den Alternativen deutlich abweichen.',
+          [
+            'Die Kostenvergleichsrechnung betrachtet vor allem die Kostenseite. Eine Gewinnvergleichsrechnung berücksichtigt zusätzlich Erlöse. Die Rentabilitätsrechnung setzt Gewinn ins Verhältnis zum eingesetzten Kapital; die Grundlagen dazu erklärt ',
+            { type: 'link', href: '/wissen/wirtschaftlichkeit-rentabilitaet', text: 'Wirtschaftlichkeit & Rentabilität' },
+            '. Die Amortisationsrechnung fragt, wann sich eine Investition rechnerisch zurückverdient hat.',
+          ],
+          [
+            'Bei größeren oder langfristigen Investitionen kann außerdem eine Kapitalwertmethode sinnvoll sein, weil sie Zahlungszeitpunkte und den Zeitwert des Geldes berücksichtigt. Ein einfacher Kostenvergleich reicht nicht aus, wenn Erlöse, Risiken oder Zahlungsströme zwischen den Alternativen deutlich abweichen. Für die Auswahl von Finanzierungsformen und weiterführende Investitionsthemen siehe ',
+            { type: 'link', href: '/wissen/finanzierung-investition', text: 'Finanzierung & Investition' },
+            '.',
+          ],
         ],
       },
       {
@@ -159,7 +178,11 @@ const kostenvergleichsrechnung = {
     },
   ],
   related: [
+    'kostenrechnung-controlling',
+    'fixe-variable-kosten',
+    'wirtschaftlichkeit-rentabilitaet',
     'break-even-point',
+    'finanzierung-investition',
     'businessplan',
   ],
   sources: [],
