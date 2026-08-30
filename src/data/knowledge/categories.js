@@ -506,6 +506,7 @@ export const knowledgeCategories = [
       { slug: 'sachbezug', title: 'Sachbezug' },
       { slug: 'ueberstunden', title: 'Überstunden' },
       { slug: 'zuschlaege', title: 'Zuschläge' },
+      { slug: 'mindestlohn', title: 'Mindestlohn' },
       { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
       { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
       { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
@@ -551,6 +552,7 @@ export const knowledgeCategories = [
           { slug: 'stundenlohn', title: 'Stundenlohn', path: '/tools/stundenlohnrechner' },
           { slug: 'ueberstunden', title: 'Überstunden' },
           { slug: 'zuschlaege', title: 'Zuschläge' },
+          { slug: 'mindestlohn', title: 'Mindestlohn' },
         ],
       },
       {

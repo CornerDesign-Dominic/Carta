@@ -57,6 +57,7 @@ import kurzfristigeBeschaeftigung from './pages/kurzfristige-beschaeftigung.js';
 import sachbezug from './pages/sachbezug.js';
 import ueberstunden from './pages/ueberstunden.js';
 import zuschlaege from './pages/zuschlaege.js';
+import mindestlohn from './pages/mindestlohn.js';
 import einmalzahlungen from './pages/einmalzahlungen.js';
 import entgeltfortzahlung from './pages/entgeltfortzahlung.js';
 import urlaubsentgeltUrlaubsgeld from './pages/urlaubsentgelt-urlaubsgeld.js';
@@ -134,6 +135,7 @@ export const knowledgePages = {
   sachbezug,
   ueberstunden,
   zuschlaege,
+  mindestlohn,
   einmalzahlungen,
   entgeltfortzahlung,
   'urlaubsentgelt-urlaubsgeld': urlaubsentgeltUrlaubsgeld,
