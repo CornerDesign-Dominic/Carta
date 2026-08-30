@@ -31,7 +31,38 @@ export const knowledgeCategories = [
       { slug: 'zinseszins', title: 'Zinseszins' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
+    ],
+  },
+  {
+    id: 'steuern',
+    landingSlug: 'steuern',
+    title: 'Steuern',
+    description: 'Steuerarten und steuerliche Grundlagen für den geschäftlichen Alltag.',
+    pages: [
+      { slug: 'steuern', title: 'Steuern' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
+    ],
+    topicGroups: [
+      {
+        id: 'steuerarten',
+        title: 'Steuerarten',
+        topics: [
+          { slug: 'einkommensteuer', title: 'Einkommensteuer', description: 'Steuer auf das Einkommen natürlicher Personen.' },
+          { slug: 'lohnsteuer', title: 'Lohnsteuer', description: 'Erhebungsform der Einkommensteuer bei Arbeitslohn.' },
+          { slug: 'koerperschaftsteuer', title: 'Körperschaftsteuer', description: 'Steuer auf das Einkommen bestimmter juristischer Personen.' },
+          { slug: 'gewerbesteuer', title: 'Gewerbesteuer', description: 'Steuer auf den Gewerbeertrag eines Gewerbebetriebs.' },
+          { slug: 'umsatzsteuer', title: 'Umsatzsteuer', description: 'Steuer auf viele Lieferungen und Leistungen; die Wissensseite ist bereits verfügbar.' },
+          { slug: 'kapitalertragsteuer', title: 'Kapitalertragsteuer', description: 'Steuer auf bestimmte Erträge aus Kapitalvermögen.' },
+          { slug: 'solidaritaetszuschlag', title: 'Solidaritätszuschlag', description: 'Zuschlag zur Einkommensteuer und Körperschaftsteuer in gesetzlich bestimmten Fällen.' },
+          { slug: 'kirchensteuer', title: 'Kirchensteuer', description: 'Steuer für Mitglieder bestimmter Religionsgemeinschaften.' },
+        ],
+      },
+      {
+        id: 'steuerliche-grundlagen',
+        title: 'Steuerliche Grundlagen',
+        description: 'Hier können später eigenständige Grundlagen wie Vorsteuer, Kleinunternehmerregelung, Betriebsausgaben, Abschreibung, Vorauszahlungen und EÜR eingeordnet werden.',
+        topics: [],
+      },
     ],
   },
   {

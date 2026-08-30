@@ -2,7 +2,7 @@ import { defaultDisclaimer } from '../shared.js';
 
 const umsatzsteuer = {
   slug: 'umsatzsteuer',
-  category: 'BWL & Rechnungswesen',
+  category: 'Steuern',
   title: 'Umsatzsteuer',
   description: 'Umsatzsteuer einfach erklärt: Steuersätze, Netto und Brutto, Vorsteuer, Zahllast und wichtige Angaben auf Rechnungen.',
   seo: {
@@ -131,6 +131,7 @@ const umsatzsteuer = {
     },
   ],
   related: [
+    'steuern',
     'rechnung',
     'gutschrift',
     'quittung',

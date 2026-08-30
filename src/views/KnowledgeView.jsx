@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import KnowledgeArticle from '../components/knowledge/KnowledgeArticle.jsx';
+import KnowledgeCategoryLanding from '../components/knowledge/KnowledgeCategoryLanding.jsx';
 import KnowledgeGlossaryPanel from '../components/knowledge/KnowledgeGlossaryPanel.jsx';
 import KnowledgeLanding from '../components/knowledge/KnowledgeLanding.jsx';
 import KnowledgeSidebar from '../components/knowledge/KnowledgeSidebar.jsx';
+import { findKnowledgePage } from '../data/knowledgePages.js';
 
 // Das Glossar ist technisch vorbereitet, wird aber erst mit einem späteren Release veröffentlicht.
 const isKnowledgeGlossaryEnabled = false;
 
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
   const [activeGlossaryId, setActiveGlossaryId] = useState(null);
+  const activePage = activeSlug ? findKnowledgePage(activeSlug) : null;
   const documentIdByToolLink = {
     '/dokumente/rechnung/standard': 'write-invoice',
     '/dokumente/rechnung': 'write-invoice',
@@ -59,7 +62,10 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
 
       <section className="paper-page document-paper knowledge-paper" aria-labelledby="knowledge-title">
         {!activeSlug && <KnowledgeLanding onSelect={handleSelectSlug} />}
-        {activeSlug && (
+        {activePage?.type === 'category-landing' && (
+          <KnowledgeCategoryLanding slug={activeSlug} onSelectTopic={handleSelectSlug} />
+        )}
+        {activeSlug && activePage?.type !== 'category-landing' && (
           <KnowledgeArticle
             slug={activeSlug}
             onSelectRelated={handleSelectSlug}

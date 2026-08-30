@@ -14,6 +14,7 @@ import zinsen from './pages/zinsen.js';
 import zinseszins from './pages/zinseszins.js';
 import breakEvenPoint from './pages/break-even-point.js';
 import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
+import steuern from './pages/steuern.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -35,6 +36,7 @@ export const knowledgePages = {
   'zinseszins': zinseszins,
   'break-even-point': breakEvenPoint,
   'kostenvergleichsrechnung': kostenvergleichsrechnung,
+  'steuern': steuern,
 };
 
 export function findKnowledgePage(slug) {
