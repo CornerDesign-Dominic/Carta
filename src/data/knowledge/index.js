@@ -8,6 +8,7 @@ import eigenbeleg from './pages/eigenbeleg.js';
 import mahnverfahren from './pages/mahnverfahren.js';
 import businessplan from './pages/businessplan.js';
 import umsatzsteuer from './pages/umsatzsteuer.js';
+import faelligkeit from './pages/faelligkeit.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -23,6 +24,7 @@ export const knowledgePages = {
   'mahnverfahren': mahnverfahren,
   'businessplan': businessplan,
   'umsatzsteuer': umsatzsteuer,
+  'faelligkeit': faelligkeit,
 };
 
 export function findKnowledgePage(slug) {

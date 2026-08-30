@@ -17,6 +17,7 @@ export const knowledgeCategories = [
     title: 'Mahnwesen',
     description: 'Wissen zu Zahlungserinnerungen, Mahnstufen, Verzug und offenen Forderungen.',
     pages: [
+      { slug: 'faelligkeit', title: 'Fälligkeit' },
       { slug: 'mahnverfahren', title: 'Mahnverfahren' },
     ],
   },
