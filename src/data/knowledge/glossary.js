@@ -80,6 +80,13 @@ export const glossaryEntries = [
     important: 'Für eine Berechnung ist immer der Basiszinssatz des jeweiligen Zeitraums maßgeblich.',
   },
   {
+    id: 'zinssatz',
+    term: 'Zinssatz',
+    definition: 'Der Zinssatz gibt in Prozent an, wie hoch die Zinsen für einen bestimmten Zeitraum sind.',
+    explanation: 'Er bezieht sich häufig auf ein Jahr und wird dann mit „p. a.“ angegeben. Der tatsächliche Zinsbetrag hängt zusätzlich von Kapital und Laufzeit ab.',
+    example: 'Bei 1.000 Euro Kapital und 4 % p. a. entstehen bei einfacher Verzinsung nach einem Jahr 40 Euro Zinsen.',
+  },
+  {
     id: 'mahnkosten',
     term: 'Mahnkosten',
     definition: 'Mahnkosten sind zusätzliche Kosten, die durch eine Mahnung wegen einer verspäteten Zahlung entstehen können.',

@@ -10,6 +10,7 @@ import businessplan from './pages/businessplan.js';
 import umsatzsteuer from './pages/umsatzsteuer.js';
 import faelligkeit from './pages/faelligkeit.js';
 import verzugszinsen from './pages/verzugszinsen.js';
+import zinsen from './pages/zinsen.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -27,6 +28,7 @@ export const knowledgePages = {
   'umsatzsteuer': umsatzsteuer,
   'faelligkeit': faelligkeit,
   'verzugszinsen': verzugszinsen,
+  'zinsen': zinsen,
 };
 
 export function findKnowledgePage(slug) {

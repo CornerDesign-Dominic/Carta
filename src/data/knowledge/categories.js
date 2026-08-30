@@ -27,6 +27,7 @@ export const knowledgeCategories = [
     title: 'BWL & Rechnungswesen',
     description: 'Grundlagen zu Steuern, Rechnungswesen und betriebswirtschaftlichen Zusammenhängen.',
     pages: [
+      { slug: 'zinsen', title: 'Zinsen' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
     ],
   },
