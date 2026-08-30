@@ -90,6 +90,7 @@ import amortisationsrechnung from './pages/amortisationsrechnung.js';
 import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kapitalwertmethode from './pages/kapitalwertmethode.js';
+import annuitaetenmethode from './pages/annuitaetenmethode.js';
 import kennzahlen from './pages/kennzahlen.js';
 import roi from './pages/roi.js';
 import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
@@ -272,6 +273,7 @@ export const knowledgePages = {
   'statische-investitionsrechnung': statischeInvestitionsrechnung,
   'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
   kapitalwertmethode,
+  annuitaetenmethode,
   kennzahlen,
   roi,
   eigenkapitalrentabilitaet,

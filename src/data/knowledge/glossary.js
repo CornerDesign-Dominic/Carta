@@ -1527,6 +1527,18 @@ export const glossaryEntries = [
     explanation: 'Ein positiver Kapitalwert bedeutet bei den verwendeten Annahmen und dem Kalkulationszinssatz einen Überschuss über die geforderte Verzinsung.',
   },
   {
+  {
+    id: 'annuitaet',
+    term: 'Annuität',
+    definition: 'Eine Annuität ist ein gleichbleibender Betrag pro Periode, der einem Kapitalwert bei festem Zinssatz und fester Laufzeit entspricht.',
+    explanation: 'In der Investitionsrechnung dient sie als Vergleichsgröße. Sie ist nicht automatisch mit dem tatsächlichen Zahlungsüberschuss einer einzelnen Periode gleichzusetzen.',
+  },
+  {
+    id: 'annuitaetenfaktor',
+    term: 'Annuitätenfaktor',
+    definition: 'Der Annuitätenfaktor rechnet einen Kapitalwert bei festem Zinssatz und fester Laufzeit in einen gleichbleibenden Betrag pro Periode um.',
+    explanation: 'Er wird auch Kapitalwiedergewinnungsfaktor genannt. Seine Höhe hängt vom Kalkulationszinssatz und der Anzahl der Perioden ab.',
+  },
     id: 'break-even-point',
     term: 'Break-even-Point',
     definition: 'Der Break-even-Point ist die Gewinnschwelle, an der Erlöse und Gesamtkosten gleich hoch sind.',

@@ -124,7 +124,9 @@ const kapitalwertmethode = {
           [
             'Die Kapitalwertmethode gehört zur ',
             { type: 'link', href: '/wissen/dynamische-investitionsrechnung', text: 'dynamischen Investitionsrechnung' },
-            '. Weitere Verfahren wie die Annuitätenmethode werden dort ergänzt, sobald die jeweiligen Detailseiten verfügbar sind.',
+            '. Mit der ',
+            { type: 'link', href: '/wissen/annuitaetenmethode', text: 'Annuitätenmethode' },
+            ' kannst du den Kapitalwert in einen gleichbleibenden Jahresbetrag umrechnen.',
           ],
         ],
       },
