@@ -48,6 +48,7 @@ import ag from './pages/ag.js';
 import ek from './pages/ek.js';
 import personalLohn from './pages/personal-lohn.js';
 import lohnabrechnung from './pages/lohnabrechnung.js';
+import verguetungsarten from './pages/verguetungsarten.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -103,6 +104,7 @@ export const knowledgePages = {
   'ek': ek,
   'personal-lohn': personalLohn,
   'lohnabrechnung': lohnabrechnung,
+  'verguetungsarten': verguetungsarten,
 };
 
 export function findKnowledgePage(slug) {

@@ -493,6 +493,30 @@ export const glossaryEntries = [
     explanation: 'Ob und in welcher Höhe ein Entgelt beitragspflichtig ist, hängt unter anderem von Beschäftigung, Versicherungszweig und den gesetzlichen Regeln ab. Es ist nicht in jedem Fall identisch mit dem steuerpflichtigen Arbeitslohn.',
   },
   {
+    id: 'arbeitsentgelt',
+    term: 'Arbeitsentgelt',
+    definition: 'Arbeitsentgelt sind laufende oder einmalige Einnahmen aus einer Beschäftigung, unabhängig davon, ob ein Rechtsanspruch darauf besteht.',
+    explanation: 'Der Begriff ist besonders für die Sozialversicherung wichtig. Welche Bestandteile im konkreten Fall dazugehören, richtet sich nach den gesetzlichen Regeln und der tatsächlichen Ausgestaltung der Zahlung.',
+  },
+  {
+    id: 'akkordlohn',
+    term: 'Akkordlohn',
+    definition: 'Akkordlohn ist eine Vergütung, die ganz oder teilweise von einer messbaren Arbeitsleistung abhängt.',
+    explanation: 'Als Grundlage können zum Beispiel Stückzahlen oder andere klar erfassbare Arbeitsergebnisse dienen. Berechnungsregeln, Qualität und Arbeitszeit müssen nachvollziehbar vereinbart und dokumentiert sein.',
+  },
+  {
+    id: 'provision',
+    term: 'Provision',
+    definition: 'Eine Provision ist eine leistungs- oder umsatzbezogene Vergütung.',
+    explanation: 'Sie wird häufig zusätzlich zu einer festen Vergütung vereinbart. Wann sie entsteht und wie sie berechnet wird, richtet sich nach der jeweiligen vertraglichen Regelung.',
+  },
+  {
+    id: 'sonderzahlung',
+    term: 'Sonderzahlung',
+    definition: 'Eine Sonderzahlung ist eine Vergütung, die zusätzlich zur regelmäßigen Grundvergütung gezahlt wird.',
+    explanation: 'Dazu können zum Beispiel Urlaubs- oder Weihnachtsgeld, Prämien oder andere einmalige Zahlungen gehören. Die arbeits-, steuer- und sozialversicherungsrechtliche Behandlung hängt von Anlass und konkreter Ausgestaltung ab.',
+  },
+  {
     id: 'komplementaer',
     term: 'Komplementär',
     definition: 'Ein Komplementär ist der persönlich haftende Gesellschafter einer Kommanditgesellschaft.',

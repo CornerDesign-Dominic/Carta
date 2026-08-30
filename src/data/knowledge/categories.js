@@ -216,6 +216,7 @@ export const knowledgeCategories = [
     pages: [
       { slug: 'personal-lohn', title: 'Personal & Lohn' },
       { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
+      { slug: 'verguetungsarten', title: 'Vergütungsarten' },
     ],
     topicGroups: [
       {
@@ -223,6 +224,7 @@ export const knowledgeCategories = [
         title: 'Lohn & Abrechnung',
         topics: [
           { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
+          { slug: 'verguetungsarten', title: 'Vergütungsarten' },
           { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
           { slug: 'lohnsteuer', title: 'Lohnsteuer' },
         ],
