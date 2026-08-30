@@ -241,6 +241,7 @@ export const knowledgeCategories = [
         id: 'finanzierungsstruktur-risiko',
         title: 'Finanzierungsstruktur & Risiko',
         topics: [
+          { slug: 'finanzierungsstruktur', title: 'Finanzierungsstruktur' },
           { slug: 'leverage-effekt', title: 'Leverage-Effekt' },
         ],
       },

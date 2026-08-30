@@ -1080,6 +1080,18 @@ export const glossaryEntries = [
     explanation: 'Dazu zählen beispielsweise Bankdarlehen, Lieferantenverbindlichkeiten und andere Verpflichtungen. In der Bilanz wird Fremdkapital auf der Passivseite ausgewiesen.',
   },
   {
+    id: 'finanzierungsstruktur',
+    term: 'Finanzierungsstruktur',
+    definition: 'Die Finanzierungsstruktur beschreibt, wie ein Unternehmen seinen Kapitalbedarf durch Eigen- und Fremdkapital sowie unterschiedliche Laufzeiten deckt.',
+    explanation: 'Sie beeinflusst unter anderem Zins- und Tilgungslasten, Fälligkeiten, Liquidität und finanzielles Risiko. Ihre Beurteilung hängt vom Geschäftsmodell und den konkreten Zahlungsströmen ab.',
+  },
+  {
+    id: 'fristenkongruenz',
+    term: 'Fristenkongruenz',
+    definition: 'Fristenkongruenz bedeutet, dass die Laufzeit einer Finanzierung grundsätzlich zur Dauer der Kapitalbindung passen soll.',
+    explanation: 'Sie soll vermeiden, dass langfristig gebundene Mittel dauerhaft durch kurzfristig fälliges Kapital finanziert werden. Sie ist eine Planungsregel, keine starre Vorgabe für jeden Einzelfall.',
+  },
+  {
     id: 'darlehen',
     term: 'Darlehen',
     definition: 'Ein Darlehen ist Kapital, das einem Unternehmen von einem Darlehensgeber zur Verfügung gestellt wird und grundsätzlich zurückzuzahlen ist.',
