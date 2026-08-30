@@ -23,17 +23,17 @@ const quittung = {
       {
         heading: 'Welche Angaben sollte eine Quittung enthalten?',
         paragraphs: [
-          'Damit eine Quittung gültig ist, muss sie folgende Mindestangaben enthalten.',
+          'Damit eine Quittung als Zahlungsnachweis gut nachvollziehbar ist, sollte sie diese Angaben enthalten. Wird sie zugleich als Rechnung genutzt, können zusätzliche steuerliche Angaben erforderlich sein.',
         ],
         list: [
           'Quittung oder Empfangsbestätigung als Titel',
           'Name und Anschrift des Ausstellers',
           'Name des Zahlenden oder Empfaengers',          
           'Betrag in Zahl und Wort',
-          'Steuersatz (z.B. 19% oder 7%) und den Steuerbetrag (0% bei Kleinunternehmern)',
+          'bei ausgewiesener Umsatzsteuer: Steuersatz und Steuerbetrag',
           'Beschreibung der Art und Menge der gelieferten Ware oder Leistung',
           'Datum und Ort der Ausstellung',
-          'Empfangsbestätigung und Unterschrift des Zahlungsempfängers',
+          'Empfangsbestätigung; bei Papierquittungen stärkt die Unterschrift des Zahlungsempfängers die Nachweisbarkeit',
           'optional: Quittungsnummer oder Bezug zu Rechnung und Auftrag',
         ],
       },
@@ -54,7 +54,7 @@ const quittung = {
       {
         heading: 'Unterschied zwischen einer klassischen Quittung und einer E-Quittung',
         paragraphs: [
-          'Die klassische Quittung ist ein physisches Papierdokument mit handschriftlicher Unterschrift. Die E-Quittung ist ein rein digitales Dokument (z. B. PDF), das elektronisch übermittelt und digital signiert oder zertifiziert wird.',
+          'Eine Quittung kann auf Papier oder digital erstellt werden. Wichtig ist, dass Inhalt, Aussteller und Empfang der Leistung nachvollziehbar bleiben.',
         ],
       },
     ],
@@ -85,11 +85,11 @@ const quittung = {
     },
     {
       question: 'Wann brauche ich eine Quittung?',
-      answer: 'Immer wenn mit Bargeld bezahlt wurde, um einen rechtlichen und steuerlichen Nachweis zu haben.',
+      answer: 'Bei Barzahlungen ist eine Quittung ein sinnvoller Nachweis, besonders wenn keine andere Zahlungsdokumentation vorliegt.',
     },
     {
       question: 'Muss eine Quittung unterschrieben sein?',
-      answer: 'Ja, eine rechtssichere Quittung muss vom Zahlungsempfänger unterschrieben sein. Erst durch die Unterschrift erhält das Dokument seine volle Beweiskraft als Quittung.',
+      answer: 'Eine Quittung sollte klar erkennen lassen, dass der Zahlungsempfänger die Leistung erhalten hat. Eine Unterschrift stärkt bei Papierquittungen die Nachweisbarkeit; ob sie im Einzelfall erforderlich ist, hängt von Zweck und Form ab.',
     },    
   ],
   related: [
@@ -98,9 +98,18 @@ const quittung = {
     'lieferschein',
     'angebot',
   ],
-  sources: [],
-  updatedAt: '2026-06-22',
-  reviewedAt: '2026-06-22',
+  sources: [
+    {
+      label: '§ 368 BGB – Quittung',
+      url: 'https://www.gesetze-im-internet.de/bgb/__368.html',
+    },
+    {
+      label: '§ 14 UStG – Ausstellung von Rechnungen',
+      url: 'https://www.gesetze-im-internet.de/ustg_1980/__14.html',
+    },
+  ],
+  updatedAt: '2026-08-30',
+  reviewedAt: '2026-08-30',
   disclaimer: defaultDisclaimer,
 };
 

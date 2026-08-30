@@ -17,7 +17,7 @@ const rechnung = {
       {
         heading: "Pflichtangaben einer Rechnung",
         paragraphs: [
-          "Damit eine Rechnung rechtlich gültig ist, muss diese bestimmte Pflichtangaben nach UStG §14 (Ausstellung von Rechnungen) enthalten.",
+          "Damit eine Rechnung die umsatzsteuerlichen Pflichtangaben erfüllt, muss sie die Angaben nach § 14 UStG enthalten.",
         ],
         list: [
           "Name und Anschrift des Rechnungsausstellers",
@@ -113,7 +113,7 @@ const rechnung = {
     },
     {
       question: "Was ist eine Kleinunternehmerrechnung?",
-      answer: "Bei einer Kleinunternehmerrechnung wird keine Umsatzsteuer ausgewiesen. Stattdessen enthält die Rechnung einen Hinweis auf die Anwendung der Kleinunternehmerregelung. Diese werden erstellt von Kleinunternehmern, welche unter das UStG §19 fallen und ein Jährlichen Gesamtumsatz von 25.000 Euro und im laufenden Kalenderjahr 100.000 Euro nicht überschreiten.",
+      answer: "Bei einer Kleinunternehmerrechnung wird keine Umsatzsteuer ausgewiesen. Stattdessen enthält sie einen Hinweis auf die Anwendung der Kleinunternehmerregelung. Die Voraussetzungen und Umsatzgrenzen ergeben sich aus § 19 UStG.",
     },
     {
       question: "Was ist das Reverse-Charge-Verfahren?",
@@ -130,9 +130,26 @@ const rechnung = {
     "gutschrift",
     "mahnverfahren",
   ],
-  sources: [],
-  updatedAt: "2026-06-03",
-  reviewedAt: "2026-06-03",
+  sources: [
+    {
+      label: '§ 14 UStG – Ausstellung von Rechnungen',
+      url: 'https://www.gesetze-im-internet.de/ustg_1980/__14.html',
+    },
+    {
+      label: '§ 19 UStG – Besteuerung der Kleinunternehmer',
+      url: 'https://www.gesetze-im-internet.de/ustg_1980/__19.html',
+    },
+    {
+      label: '§ 147 AO – Aufbewahrung von Unterlagen',
+      url: 'https://www.gesetze-im-internet.de/ao_1977/__147.html',
+    },
+    {
+      label: 'BMF – Fragen und Antworten zur E-Rechnung',
+      url: 'https://www.bundesfinanzministerium.de/Content/DE/FAQ/e-rechnung.html',
+    },
+  ],
+  updatedAt: "2026-08-30",
+  reviewedAt: "2026-08-30",
   disclaimer: defaultDisclaimer,
 };
 

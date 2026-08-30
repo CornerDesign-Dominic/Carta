@@ -196,9 +196,26 @@ const mahnverfahren = {
   related: [
     "rechnung",
   ],
-  sources: [],
-  updatedAt: "2026-07-01",
-  reviewedAt: "2026-07-01",
+  sources: [
+    {
+      label: '§ 271 BGB – Leistungszeit',
+      url: 'https://www.gesetze-im-internet.de/bgb/__271.html',
+    },
+    {
+      label: '§ 286 BGB – Verzug des Schuldners',
+      url: 'https://www.gesetze-im-internet.de/bgb/__286.html',
+    },
+    {
+      label: '§ 288 BGB – Verzugszinsen und sonstiger Verzugsschaden',
+      url: 'https://www.gesetze-im-internet.de/bgb/__288.html',
+    },
+    {
+      label: 'Mahngerichte.de – Der Mahnbescheid',
+      url: 'https://www.mahngerichte.de/verfahrensueberblick/verfahrensablauf/mahnbescheid',
+    },
+  ],
+  updatedAt: "2026-08-30",
+  reviewedAt: "2026-08-30",
   disclaimer: defaultDisclaimer,
 };
 

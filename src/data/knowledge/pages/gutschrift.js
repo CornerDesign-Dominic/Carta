@@ -29,13 +29,13 @@ const gutschrift = {
           {
             heading: "Kaufmaennische Gutschrift",
             paragraphs: [
-              "Diese Form wird vom Leistungsbringer erstellt und dient dazu, eine Rechnung zu korrigieren oder zu stornieren. Der Betrag wird dabei vollstaendig oder teilweise reduziert.",
+              "Diese Form wird meist vom leistenden Unternehmen erstellt, um einen Betrag zu mindern, zurückzuzahlen oder mit einer Forderung zu verrechnen. Sie ist nicht dasselbe wie die umsatzsteuerliche Gutschrift im Gutschriftsverfahren.",
             ],
           },
           {
             heading: "Umsatzsteuerliche Gutschrift",
             paragraphs: [
-              "Diese Form wird vom Leistungsempfaenger ausgestellt und kann eine Rechnung ersetzen. Sie muss dieselben Anforderungen wie eine Rechnung erfuellen, ausdruecklich als Gutschrift bezeichnet sein und von beiden Parteien vereinbart werden.",
+              "Diese Form wird vom Leistungsempfaenger auf Grundlage einer vorherigen Vereinbarung ausgestellt und kann als Rechnung dienen. Sie muss die Rechnungsanforderungen erfüllen und ausdrücklich als Gutschrift bezeichnet sein.",
             ],
           },
         ],
@@ -89,7 +89,7 @@ const gutschrift = {
     },
     {
       question: "Ist eine Stornorechnung eine Gutschrift?",
-      answer: "Ja, eine Stornorechnung ist eine Form der Gutschrift. Sie reduziert den in Rechnung gestellten Betrag vollständig und schreibt diesen entsprechend gut. Wurde die ursprüngliche Rechnung bereits beglichen, kann durch die Stornorechnung eine Rückabwicklung eingeleitet werden.",
+      answer: "Eine Stornorechnung hebt eine zuvor ausgestellte Rechnung vollständig auf. Im kaufmännischen Sprachgebrauch wird sie häufig als Form einer Gutschrift bezeichnet; umsatzsteuerlich ist sie nicht mit dem Gutschriftsverfahren gleichzusetzen.",
     },
     {
       question: "Was ist der Unterschied zwischen Rechnungskorrektur und Gutschrift?",
@@ -101,9 +101,18 @@ const gutschrift = {
     "angebot",
     "lieferschein",
   ],
-  sources: [],
-  updatedAt: "2026-05-12",
-  reviewedAt: "2026-05-12",
+  sources: [
+    {
+      label: '§ 14 UStG – Ausstellung von Rechnungen und Gutschriften',
+      url: 'https://www.gesetze-im-internet.de/ustg_1980/__14.html',
+    },
+    {
+      label: '§ 31 UStDV – Angaben in der Rechnung und Berichtigung',
+      url: 'https://www.gesetze-im-internet.de/ustdv_1980/__31.html',
+    },
+  ],
+  updatedAt: "2026-08-30",
+  reviewedAt: "2026-08-30",
   disclaimer: defaultDisclaimer,
 };
 
