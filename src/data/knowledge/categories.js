@@ -501,6 +501,7 @@ export const knowledgeCategories = [
       { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
       { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
       { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
+      { slug: 'lohnnebenkosten', title: 'Lohnnebenkosten' },
       { slug: 'minijob', title: 'Minijob' },
       { slug: 'kurzfristige-beschaeftigung', title: 'Kurzfristige Beschäftigung' },
       { slug: 'sachbezug', title: 'Sachbezug' },
@@ -533,6 +534,7 @@ export const knowledgeCategories = [
         topics: [
           { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
           { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
+          { slug: 'lohnnebenkosten', title: 'Lohnnebenkosten' },
           { slug: 'beitragsbemessungsgrenze', title: 'Beitragsbemessungsgrenze' },
         ],
       },

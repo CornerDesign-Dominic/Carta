@@ -52,6 +52,7 @@ import verguetungsarten from './pages/verguetungsarten.js';
 import sozialversicherungsbeitraege from './pages/sozialversicherungsbeitraege.js';
 import bruttolohnNettolohn from './pages/bruttolohn-nettolohn.js';
 import arbeitgeberArbeitnehmeranteile from './pages/arbeitgeber-arbeitnehmeranteile.js';
+import lohnnebenkosten from './pages/lohnnebenkosten.js';
 import minijob from './pages/minijob.js';
 import kurzfristigeBeschaeftigung from './pages/kurzfristige-beschaeftigung.js';
 import sachbezug from './pages/sachbezug.js';
@@ -131,6 +132,7 @@ export const knowledgePages = {
   'sozialversicherungsbeitraege': sozialversicherungsbeitraege,
   'bruttolohn-nettolohn': bruttolohnNettolohn,
   'arbeitgeber-arbeitnehmeranteile': arbeitgeberArbeitnehmeranteile,
+  lohnnebenkosten,
   minijob,
   'kurzfristige-beschaeftigung': kurzfristigeBeschaeftigung,
   sachbezug,
