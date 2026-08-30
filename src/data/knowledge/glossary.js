@@ -702,6 +702,12 @@ export const glossaryEntries = [
     explanation: 'Sie hängt von verfügbaren Zahlungsmitteln, erwarteten Einzahlungen, Fälligkeiten und Finanzierungsmöglichkeiten ab und ist nicht mit Gewinn oder einem einzelnen Cashflow-Wert gleichzusetzen.',
   },
   {
+    id: 'liquiditaetsplanung',
+    term: 'Liquiditätsplanung',
+    definition: 'Eine Liquiditätsplanung stellt erwartete Ein- und Auszahlungen nach ihren Zeitpunkten gegenüber.',
+    explanation: 'Sie zeigt, ob die verfügbaren Mittel für fällige Zahlungen voraussichtlich ausreichen. Dazu werden Anfangsbestand, Zahlungstermine und eine angemessene Reserve regelmäßig aktualisiert.',
+  },
+  {
     id: 'kapitalflussrechnung',
     term: 'Kapitalflussrechnung',
     definition: 'Die Kapitalflussrechnung stellt Zahlungsströme eines Zeitraums gegliedert nach laufender Geschäftstätigkeit, Investition und Finanzierung dar.',

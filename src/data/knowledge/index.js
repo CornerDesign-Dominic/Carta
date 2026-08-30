@@ -82,6 +82,7 @@ import eigenfinanzierung from './pages/eigenfinanzierung.js';
 import fremdfinanzierung from './pages/fremdfinanzierung.js';
 import finanzierungsstruktur from './pages/finanzierungsstruktur.js';
 import finanzierungsrisiken from './pages/finanzierungsrisiken.js';
+import liquiditaetsplanung from './pages/liquiditaetsplanung.js';
 import darlehenKreditarten from './pages/darlehen-kreditarten.js';
 import investitionenInvestitionsarten from './pages/investitionen-investitionsarten.js';
 import leasing from './pages/leasing.js';
@@ -297,6 +298,7 @@ export const knowledgePages = {
   finanzierungsstruktur,
   finanzierungsrisiken,
   'darlehen-kreditarten': darlehenKreditarten,
+  liquiditaetsplanung,
   'investitionen-investitionsarten': investitionenInvestitionsarten,
   leasing,
   'innen-aussenfinanzierung': innenAussenfinanzierung,

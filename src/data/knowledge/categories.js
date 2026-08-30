@@ -247,6 +247,13 @@ export const knowledgeCategories = [
         ],
       },
       {
+        id: 'liquiditaet-planung',
+        title: 'Liquidität & Planung',
+        topics: [
+          { slug: 'liquiditaetsplanung', title: 'Liquiditätsplanung' },
+        ],
+      },
+      {
         id: 'kurzfristige-finanzierung',
         title: 'Kurzfristige Finanzierung',
         topics: [
