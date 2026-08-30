@@ -12,6 +12,6 @@ export default {
     canonicalPath: '/wissen/finanzierung-investition',
   },
   article: { intro: 'Finanzierung stellt Kapital für den laufenden Betrieb oder neue Vorhaben bereit. Investitionsrechnung hilft dabei, geplante Ausgaben und ihren erwarteten Nutzen strukturiert zu beurteilen.', sections: [] },
-  generator: null, keyPoints: [], commonMistakes: [], faqs: [], related: ['zinsen', 'zinseszins'], sources: [],
+  generator: null, keyPoints: [], commonMistakes: [], faqs: [], related: ['statische-investitionsrechnung', 'dynamische-investitionsrechnung', 'kostenvergleichsrechnung', 'zinsen', 'zinseszins'], sources: [],
   updatedAt: '2026-08-30', reviewedAt: '2026-08-30', disclaimer: defaultDisclaimer,
 };

@@ -230,22 +230,27 @@ export const knowledgeCategories = [
         id: 'finanzierungsformen',
         title: 'Finanzierungsformen',
         topics: [
-          { slug: 'eigenkapital-fremdkapital', title: 'Eigenkapital und Fremdkapital' },
-          { slug: 'darlehen', title: 'Darlehen' },
-          { slug: 'leasing', title: 'Leasing' },
-          { slug: 'factoring', title: 'Factoring' },
-          { slug: 'skonto', title: 'Skonto' },
-          { slug: 'liquiditaet', title: 'Liquidität' },
+          { slug: 'eigenfinanzierung', title: 'Eigenfinanzierung' },
+          { slug: 'fremdfinanzierung', title: 'Fremdfinanzierung' },
+          { slug: 'innenfinanzierung', title: 'Innenfinanzierung' },
+          { slug: 'aussenfinanzierung', title: 'Außenfinanzierung' },
         ],
       },
       {
-        id: 'investitionsentscheidungen',
-        title: 'Investitionsentscheidungen',
+        id: 'kurzfristige-finanzierung',
+        title: 'Kurzfristige Finanzierung',
         topics: [
-          { slug: 'investitionsrechnung', title: 'Investitionsrechnung' },
-          { slug: 'amortisation', title: 'Amortisation' },
-          { slug: 'kapitalwert', title: 'Kapitalwert' },
-          { slug: 'finanzierungskosten', title: 'Finanzierungskosten' },
+          { slug: 'kontokorrentkredit', title: 'Kontokorrentkredit' },
+          { slug: 'lieferantenkredit', title: 'Lieferantenkredit' },
+          { slug: 'factoring', title: 'Factoring' },
+        ],
+      },
+      {
+        id: 'investitionsrechnung',
+        title: 'Investitionsrechnung',
+        topics: [
+          { slug: 'statische-investitionsrechnung', title: 'Statische Investitionsrechnung' },
+          { slug: 'dynamische-investitionsrechnung', title: 'Dynamische Investitionsrechnung' },
         ],
       },
       {
@@ -254,6 +259,52 @@ export const knowledgeCategories = [
         topics: [
           { slug: 'zinsen', title: 'Zinsen' },
           { slug: 'zinseszins', title: 'Zinseszins' },
+        ],
+      },
+    ],
+    subHubs: [
+      {
+        id: 'statische-investitionsrechnung',
+        landingSlug: 'statische-investitionsrechnung',
+        title: 'Statische Investitionsrechnung',
+        topicsTitle: 'Verfahren der statischen Investitionsrechnung',
+        topicGroups: [
+          {
+            id: 'statische-verfahren',
+            title: 'Statische Verfahren',
+            topics: [
+              { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
+              { slug: 'gewinnvergleichsrechnung', title: 'Gewinnvergleichsrechnung' },
+              { slug: 'rentabilitaetsvergleichsrechnung', title: 'Rentabilitätsvergleichsrechnung' },
+              { slug: 'amortisationsrechnung', title: 'Amortisationsrechnung' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'dynamische-investitionsrechnung',
+        landingSlug: 'dynamische-investitionsrechnung',
+        title: 'Dynamische Investitionsrechnung',
+        topicsTitle: 'Verfahren der dynamischen Investitionsrechnung',
+        topicGroups: [
+          {
+            id: 'dynamische-verfahren',
+            title: 'Dynamische Verfahren',
+            topics: [
+              { slug: 'kapitalwertmethode', title: 'Kapitalwertmethode' },
+              { slug: 'annuitaetenmethode', title: 'Annuitätenmethode' },
+              { slug: 'interner-zinsfuss', title: 'Interner Zinsfuß' },
+              { slug: 'dynamische-amortisationsrechnung', title: 'Dynamische Amortisationsrechnung' },
+            ],
+          },
+          {
+            id: 'grundlagen',
+            title: 'Grundlagen',
+            topics: [
+              { slug: 'zinsen', title: 'Zinsen' },
+              { slug: 'zinseszins', title: 'Zinseszins' },
+            ],
+          },
         ],
       },
     ],

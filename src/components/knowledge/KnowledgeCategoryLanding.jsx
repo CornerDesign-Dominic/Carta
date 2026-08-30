@@ -19,7 +19,9 @@ function handleInternalLinkClick(event, callback) {
 
 export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
   const landingPage = findKnowledgePage(slug);
-  const category = knowledgeCategories.find((item) => item.landingSlug === slug);
+  const category = knowledgeCategories
+    .flatMap((item) => [item, ...(item.subHubs ?? [])])
+    .find((item) => item.landingSlug === slug);
 
   if (!landingPage || !category) {
     return null;

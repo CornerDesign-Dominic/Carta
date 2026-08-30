@@ -78,6 +78,8 @@ import urlaubsentgeltUrlaubsgeld from './pages/urlaubsentgelt-urlaubsgeld.js';
 import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
 import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
+import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
+import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kennzahlen from './pages/kennzahlen.js';
 import roi from './pages/roi.js';
 import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
@@ -212,6 +214,8 @@ export const knowledgePages = {
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
   'finanzierung-investition': finanzierungInvestition,
+  'statische-investitionsrechnung': statischeInvestitionsrechnung,
+  'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
   kennzahlen,
   roi,
   eigenkapitalrentabilitaet,
