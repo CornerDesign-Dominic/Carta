@@ -29,7 +29,9 @@ const breakEvenPoint = {
         paragraphs: [
           [
             { type: 'glossary', id: 'fixkosten', text: 'Fixkosten' },
-            ' fallen innerhalb eines betrachteten Zeitraums unabhängig von der produzierten oder verkauften Menge an, zum Beispiel Miete oder feste Gehälter.',
+            ' fallen innerhalb eines betrachteten Zeitraums unabhängig von der produzierten oder verkauften Menge an, zum Beispiel Miete oder feste Gehälter. Wie sich fixe und variable Kosten unterscheiden, erklärt ',
+            { type: 'link', href: '/wissen/fixe-variable-kosten', text: 'Fixe und variable Kosten' },
+            '.',
           ],
           [
             { type: 'glossary', id: 'variable-kosten', text: 'Variable Kosten' },
@@ -38,7 +40,9 @@ const breakEvenPoint = {
           [
             'Der ',
             { type: 'glossary', id: 'deckungsbeitrag', text: 'Deckungsbeitrag' },
-            ' je Einheit ist der Teil des Verkaufspreises, der nach Abzug der variablen Kosten übrig bleibt und zunächst zur Deckung der Fixkosten beiträgt. Er ist nicht mit dem Gewinn gleichzusetzen.',
+            ' je Einheit ist der Teil des Verkaufspreises, der nach Abzug der variablen Kosten übrig bleibt und zunächst zur Deckung der Fixkosten beiträgt. Er ist nicht mit dem Gewinn gleichzusetzen. Mehr dazu findest du bei ',
+            { type: 'link', href: '/wissen/deckungsbeitrag', text: 'Deckungsbeitrag' },
+            '.',
           ],
         ],
         list: [
@@ -49,8 +53,16 @@ const breakEvenPoint = {
       {
         heading: 'Break-even-Menge berechnen',
         paragraphs: [
-          'Die Break-even-Menge ist die Absatzmenge, bei der Erlöse und Gesamtkosten gleich hoch sind. Für ein Produkt mit konstantem Preis und konstanten variablen Kosten gilt grundsätzlich: Break-even-Menge = Fixkosten ÷ Stückdeckungsbeitrag.',
+          'Die Break-even-Menge ist die Absatzmenge, bei der Erlöse und Gesamtkosten gleich hoch sind. Die vereinfachte Formel passt zu einem Produkt mit konstantem Preis und konstanten variablen Kosten.',
           'Ergibt die Rechnung keine ganze Zahl, musst du in der Praxis auf die nächste ganze Einheit aufrunden. Erst dann sind die Fixkosten vollständig gedeckt.',
+        ],
+        formulaCards: [
+          {
+            label: 'Formel',
+            title: 'Break-even-Menge',
+            formula: 'Break-even-Menge = Fixkosten ÷ Stückdeckungsbeitrag',
+            description: 'Fixkosten und Stückdeckungsbeitrag müssen sich auf denselben Zeitraum und dieselbe Bezugsgröße beziehen.',
+          },
         ],
       },
       {
@@ -59,19 +71,29 @@ const breakEvenPoint = {
           'Ein Unternehmen hat Fixkosten von 10.000 Euro. Ein Produkt wird für 100 Euro verkauft; die variablen Kosten liegen bei 60 Euro je Stück. Damit beträgt der Stückdeckungsbeitrag 40 Euro.',
           'Die Rechnung lautet: 10.000 Euro ÷ 40 Euro = 250 Stück. Bei 250 verkauften Einheiten sind die Fixkosten gedeckt. Unterhalb dieser Menge reicht der Deckungsbeitrag noch nicht aus; oberhalb der Menge trägt jeder weitere Stückdeckungsbeitrag grundsätzlich zum Gewinn bei.',
         ],
-        list: [
-          'Fixkosten: 10.000 Euro',
-          'Verkaufspreis je Stück: 100 Euro',
-          'Variable Kosten je Stück: 60 Euro',
-          'Stückdeckungsbeitrag: 100 Euro − 60 Euro = 40 Euro',
-          'Break-even-Menge: 10.000 Euro ÷ 40 Euro = 250 Stück',
+        exampleCards: [
+          {
+            title: '250 Stück bis zur Gewinnschwelle',
+            paragraphs: [
+              'Fixkosten: 10.000 Euro. Verkaufspreis je Stück: 100 Euro. Variable Kosten je Stück: 60 Euro.',
+              'Der Stückdeckungsbeitrag beträgt 40 Euro. 10.000 Euro ÷ 40 Euro ergeben 250 Stück. Erst ab der aufgerundeten erforderlichen Menge sind die Fixkosten im Beispiel gedeckt.',
+            ],
+          },
         ],
       },
       {
         heading: 'Break-even-Umsatz bestimmen',
         paragraphs: [
           'Der Break-even-Umsatz ist der Umsatz, der mindestens nötig ist, damit kein Verlust entsteht. Im Beispiel beträgt er 250 Stück × 100 Euro = 25.000 Euro.',
-          'Bei einem einzelnen Produkt kannst du den Umsatz aus der Break-even-Menge und dem Verkaufspreis berechnen. Alternativ lässt er sich über die Deckungsbeitragsquote ermitteln: Break-even-Umsatz = Fixkosten ÷ Deckungsbeitragsquote. Die Deckungsbeitragsquote ist der Stückdeckungsbeitrag im Verhältnis zum Verkaufspreis.',
+          'Bei einem einzelnen Produkt kannst du den Umsatz aus der Break-even-Menge und dem Verkaufspreis berechnen. Alternativ lässt er sich über die Deckungsbeitragsquote ermitteln. Die Deckungsbeitragsquote ist der Stückdeckungsbeitrag im Verhältnis zum Verkaufspreis.',
+        ],
+        formulaCards: [
+          {
+            label: 'Formel',
+            title: 'Break-even-Umsatz',
+            formula: 'Break-even-Umsatz = Fixkosten ÷ Deckungsbeitragsquote',
+            description: 'Die Deckungsbeitragsquote setzt den Stückdeckungsbeitrag ins Verhältnis zum Verkaufspreis.',
+          },
         ],
       },
       {
@@ -167,6 +189,9 @@ const breakEvenPoint = {
     },
   ],
   related: [
+    'kostenrechnung-controlling',
+    'fixe-variable-kosten',
+    'deckungsbeitrag',
     'kostenvergleichsrechnung',
     'businessplan',
   ],
