@@ -31,6 +31,13 @@ export const glossaryEntries = [
     explanation: 'Die restlichen Positionen folgen später. Eine eindeutige Zuordnung zur Bestellung hilft dabei, gelieferte und noch offene Mengen im Blick zu behalten.',
   },
   {
+    id: 'bindefrist',
+    term: 'Bindefrist',
+    definition: 'Die Bindefrist ist der Zeitraum, in dem ein Angebot angenommen werden kann.',
+    explanation: 'Sie kann ausdrücklich im Angebot festgelegt sein. Nach ihrem Ablauf sollte vor einer Annahme geklärt werden, ob die angebotenen Bedingungen weiterhin gelten.',
+    important: 'Ob und wie lange ein Angebot rechtlich bindend ist, hängt auch von seinem Inhalt, der Formulierung und den Umständen ab.',
+  },
+  {
     id: 'leistungsdatum',
     term: 'Leistungsdatum',
     definition: 'Das Leistungsdatum zeigt, wann eine Leistung erbracht oder eine Ware geliefert wurde.',
