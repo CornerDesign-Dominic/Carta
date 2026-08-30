@@ -513,6 +513,7 @@ export const knowledgeCategories = [
       { slug: 'ausbildungsverguetung', title: 'Ausbildungsvergütung' },
       { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
       { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
+      { slug: 'krankengeld', title: 'Krankengeld' },
       { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
     ],
     topicGroups: [
@@ -525,7 +526,6 @@ export const knowledgeCategories = [
           { slug: 'verguetungsarten', title: 'Vergütungsarten' },
           { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
           { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
-          { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
           { slug: 'urlaubsentgelt-urlaubsgeld', title: 'Urlaubsentgelt und Urlaubsgeld' },
           { slug: 'lohnsteuer', title: 'Lohnsteuer' },
         ],
@@ -559,8 +559,16 @@ export const knowledgeCategories = [
           { slug: 'ueberstunden', title: 'Überstunden' },
           { slug: 'zuschlaege', title: 'Zuschläge' },
           { slug: 'mindestlohn', title: 'Mindestlohn' },
-          { slug: 'urlaubsanspruch', title: 'Urlaubsanspruch' },
           { slug: 'teilzeit', title: 'Teilzeit' },
+        ],
+      },
+      {
+        id: 'arbeitsrecht-und-abwesenheit',
+        title: 'Arbeitsrecht & Abwesenheit',
+        topics: [
+          { slug: 'urlaubsanspruch', title: 'Urlaubsanspruch' },
+          { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
+          { slug: 'krankengeld', title: 'Krankengeld' },
         ],
       },
       {
