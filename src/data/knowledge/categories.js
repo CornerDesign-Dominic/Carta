@@ -173,6 +173,7 @@ export const knowledgeCategories = [
       { slug: 'ug', title: 'UG (haftungsbeschränkt)' },
       { slug: 'ohg', title: 'OHG' },
       { slug: 'kg', title: 'KG' },
+      { slug: 'gmbh-und-co-kg', title: 'GmbH & Co. KG' },
     ],
     topicGroups: [
       {
@@ -190,7 +191,7 @@ export const knowledgeCategories = [
           { slug: 'gbr', title: 'GbR' },
           { slug: 'ohg', title: 'OHG' },
           { slug: 'kg', title: 'KG' },
-          { slug: 'gmbh-co-kg', title: 'GmbH & Co. KG' },
+          { slug: 'gmbh-und-co-kg', title: 'GmbH & Co. KG' },
         ],
       },
       {

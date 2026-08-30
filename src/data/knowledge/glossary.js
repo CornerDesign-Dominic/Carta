@@ -415,6 +415,18 @@ export const glossaryEntries = [
     explanation: 'In Abteilung A werden insbesondere Einzelkaufleute, OHGs und KGs eingetragen. Kapitalgesellschaften wie GmbH und UG stehen dagegen grundsätzlich in Abteilung B (HRB).',
   },
   {
+    id: 'hrb',
+    term: 'HRB',
+    definition: 'HRB ist die Abkürzung für eine Registernummer in Abteilung B des Handelsregisters.',
+    explanation: 'In Abteilung B werden insbesondere Kapitalgesellschaften wie GmbH, UG und AG eingetragen. Personengesellschaften wie OHG und KG stehen dagegen grundsätzlich in Abteilung A (HRA).',
+  },
+  {
+    id: 'komplementaer-gmbh',
+    term: 'Komplementär-GmbH',
+    definition: 'Eine Komplementär-GmbH ist die GmbH, die in einer GmbH & Co. KG die Rolle der persönlich haftenden Gesellschafterin übernimmt.',
+    explanation: 'Sie führt und vertritt die KG grundsätzlich über ihre Geschäftsführer. Die GmbH und die KG bleiben dabei rechtlich getrennte Gesellschaften.',
+  },
+  {
     id: 'komplementaer',
     term: 'Komplementär',
     definition: 'Ein Komplementär ist der persönlich haftende Gesellschafter einer Kommanditgesellschaft.',

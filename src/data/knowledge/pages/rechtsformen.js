@@ -56,7 +56,7 @@ const rechtsformen = {
         cells: ['KG', 'Komplementär persönlich und unbeschränkt; Kommanditist bis zur Haftsumme', 'Keine gesetzliche Anforderung', 'Mindestens ein Komplementär und ein Kommanditist', 'Grundsätzlich der Komplementär', 'Einkommensteuer bei Gesellschaftern und Gewerbesteuer', 'Kaufmännische Buchführung und Jahresabschluss', 'Handelsregister erforderlich', 'HRA', 'Unternehmen mit aktivem und kapitalgebendem Partner'],
       },
       {
-        slug: 'gmbh-co-kg',
+        slug: 'gmbh-und-co-kg',
         title: 'GmbH & Co. KG',
         cells: ['GmbH & Co. KG', 'GmbH als Komplementärin; Kommanditisten bis zur Haftsumme', 'GmbH: 25.000 €; KG selbst keine gesetzliche Anforderung', 'Mindestens GmbH und Kommanditist', 'Typischerweise die GmbH, vertreten durch ihre Geschäftsführer', 'KG: Einkommensteuer bei Gesellschaftern und Gewerbesteuer; GmbH: Körperschaftsteuer', 'Kaufmännische Buchführung und Jahresabschluss', 'KG und Komplementär-GmbH eingetragen', 'KG: HRA; GmbH: HRB', 'Haftungsbegrenzung bei personengesellschaftlicher Struktur'],
       },
