@@ -78,11 +78,34 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
                 </tr>
               </thead>
               <tbody>
-                {comparisonTable.rows.map((row) => (
-                  <tr key={row[0]}>
-                    {row.map((cell, index) => <td key={`${row[0]}-${comparisonTable.columns[index]}`}>{cell}</td>)}
-                  </tr>
-                ))}
+                {comparisonTable.rows.map((row) => {
+                  const cells = row.cells ?? row;
+                  const rowTitle = row.title ?? cells[0];
+                  const detailPage = row.slug ? findKnowledgePage(row.slug) : null;
+
+                  return (
+                    <tr key={row.slug ?? rowTitle}>
+                      {cells.map((cell, index) => {
+                        if (index === 0) {
+                          return (
+                            <th key={`${rowTitle}-${comparisonTable.columns[index]}`} scope="row">
+                              {detailPage ? (
+                                <a
+                                  href={`/wissen/${row.slug}`}
+                                  onClick={(event) => handleInternalLinkClick(event, () => onSelectTopic(row.slug))}
+                                >
+                                  {cell}
+                                </a>
+                              ) : cell}
+                            </th>
+                          );
+                        }
+
+                        return <td key={`${rowTitle}-${comparisonTable.columns[index]}`}>{cell}</td>;
+                      })}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
