@@ -511,6 +511,24 @@ export const glossaryEntries = [
     explanation: 'Seine Höhe legt die jeweilige Krankenkasse fest. Er kommt zum allgemeinen Beitragssatz hinzu und kann sich ändern.',
   },
   {
+    id: 'arbeitgeberanteil',
+    term: 'Arbeitgeberanteil',
+    definition: 'Der Arbeitgeberanteil ist der Teil eines Sozialversicherungsbeitrags, den der Arbeitgeber zusätzlich zum Arbeitsentgelt trägt.',
+    explanation: 'Er gehört zu den Arbeitgeberaufwendungen und wird nicht vom Nettoentgelt des Beschäftigten abgezogen. Die genaue Höhe und Verteilung richten sich nach Versicherungszweig und Beschäftigung.',
+  },
+  {
+    id: 'arbeitnehmeranteil',
+    term: 'Arbeitnehmeranteil',
+    definition: 'Der Arbeitnehmeranteil ist der Teil eines Sozialversicherungsbeitrags, den ein Beschäftigter trägt.',
+    explanation: 'Der Arbeitgeber behält ihn bei der Entgeltabrechnung grundsätzlich vom Arbeitsentgelt ein und führt ihn zusammen mit seinem eigenen Anteil ab. Es können je nach Beschäftigung und Versicherungszweig abweichende Regeln gelten.',
+  },
+  {
+    id: 'umlage',
+    term: 'Umlage',
+    definition: 'Eine Umlage ist ein gesetzlich geregelter Arbeitgeberaufwand, der bestimmte gemeinsame Risiken oder Erstattungsverfahren finanziert.',
+    explanation: 'Welche Umlagen anfallen und wie sie berechnet werden, hängt unter anderem von Arbeitgeber, Beschäftigung und dem jeweiligen Verfahren ab. Sie sind nicht mit Arbeitnehmeranteilen zur Sozialversicherung gleichzusetzen.',
+  },
+  {
     id: 'arbeitsentgelt',
     term: 'Arbeitsentgelt',
     definition: 'Arbeitsentgelt sind laufende oder einmalige Einnahmen aus einer Beschäftigung, unabhängig davon, ob ein Rechtsanspruch darauf besteht.',

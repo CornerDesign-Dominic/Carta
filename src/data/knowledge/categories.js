@@ -219,6 +219,7 @@ export const knowledgeCategories = [
       { slug: 'verguetungsarten', title: 'Vergütungsarten' },
       { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
       { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
+      { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
     ],
     topicGroups: [
       {

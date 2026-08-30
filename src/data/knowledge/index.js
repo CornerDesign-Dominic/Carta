@@ -51,6 +51,7 @@ import lohnabrechnung from './pages/lohnabrechnung.js';
 import verguetungsarten from './pages/verguetungsarten.js';
 import sozialversicherungsbeitraege from './pages/sozialversicherungsbeitraege.js';
 import bruttolohnNettolohn from './pages/bruttolohn-nettolohn.js';
+import arbeitgeberArbeitnehmeranteile from './pages/arbeitgeber-arbeitnehmeranteile.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -109,6 +110,7 @@ export const knowledgePages = {
   'verguetungsarten': verguetungsarten,
   'sozialversicherungsbeitraege': sozialversicherungsbeitraege,
   'bruttolohn-nettolohn': bruttolohnNettolohn,
+  'arbeitgeber-arbeitnehmeranteile': arbeitgeberArbeitnehmeranteile,
 };
 
 export function findKnowledgePage(slug) {
