@@ -9506,6 +9506,12 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   line-height: 1.3;
 }
 
+.knowledge-category-section h2.knowledge-category-topics-title {
+  color: var(--color-text);
+  font-size: clamp(1.18rem, 2vw, 1.35rem);
+  font-weight: 720;
+}
+
 .knowledge-category-card h3 {
   margin: 0 0 8px;
   color: var(--accent-deep);
