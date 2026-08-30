@@ -1540,6 +1540,12 @@ export const glossaryEntries = [
     explanation: 'Er wird auch Kapitalwiedergewinnungsfaktor genannt. Seine Höhe hängt vom Kalkulationszinssatz und der Anzahl der Perioden ab.',
   },
     id: 'break-even-point',
+  {
+    id: 'interner-zinsfuss',
+    term: 'Interner Zinsfuß',
+    definition: 'Der interne Zinsfuß ist der Zinssatz, bei dem der Kapitalwert einer Zahlungsreihe null wird.',
+    explanation: 'Er beschreibt die rechnerische Rendite der zugrunde gelegten Zahlungen. Bei mehrfachen Vorzeichenwechseln kann die Berechnung mehrere oder keine sinnvoll interpretierbare Lösungen haben.',
+  },
     term: 'Break-even-Point',
     definition: 'Der Break-even-Point ist die Gewinnschwelle, an der Erlöse und Gesamtkosten gleich hoch sind.',
     explanation: 'Unterhalb der Gewinnschwelle decken die Erlöse die Kosten noch nicht vollständig. Oberhalb können bei gleichbleibenden Annahmen Gewinne entstehen.',

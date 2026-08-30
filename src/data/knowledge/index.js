@@ -91,6 +91,7 @@ import statischeInvestitionsrechnung from './pages/statische-investitionsrechnun
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kapitalwertmethode from './pages/kapitalwertmethode.js';
 import annuitaetenmethode from './pages/annuitaetenmethode.js';
+import internerZinsfuss from './pages/interner-zinsfuss.js';
 import kennzahlen from './pages/kennzahlen.js';
 import roi from './pages/roi.js';
 import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
@@ -274,6 +275,7 @@ export const knowledgePages = {
   'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
   kapitalwertmethode,
   annuitaetenmethode,
+  'interner-zinsfuss': internerZinsfuss,
   kennzahlen,
   roi,
   eigenkapitalrentabilitaet,
