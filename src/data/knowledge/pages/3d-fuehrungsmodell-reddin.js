@@ -115,6 +115,11 @@ const dreiDFuehrungsmodellReddin = {
             ' verlangt mehr als einen spontanen Stilwechsel. Führungskräfte müssen Anforderungen erkennen, ihre Annahmen prüfen und erklären, warum Beteiligung, Vorgaben oder Kontrolle in einer Lage stärker oder schwächer ausfallen.',
           ],
           'Hilfreiche Fragen sind: Wie klar ist die Aufgabe? Welche Risiken bestehen? Wie viel Erfahrung und Information hat das Team? Wer trägt welche Verantwortung? Wie dringend ist die Entscheidung? Welche Regeln und Erwartungen gelten? Eine Situation kann sich verändern, sodass auch das Führungsverhalten überprüft werden sollte.',
+          [
+            'Eine stärker auf den aufgabenbezogenen Entwicklungsstand ausgerichtete Variante beschreibt das ',
+            { type: 'link', href: '/wissen/reifegradmodell', text: 'Reifegradmodell nach Hersey & Blanchard' },
+            '.',
+          ],
         ],
       },
       {
@@ -152,7 +157,7 @@ const dreiDFuehrungsmodellReddin = {
     { question: 'Sind die acht Varianten eigene Führungsstile?', answer: 'Nicht im Kern. Sie bezeichnen die eher effektive oder eher ineffektive Anwendung der vier grundlegenden Verhaltensstile.' },
     { question: 'Was unterscheidet Reddin vom Managerial Grid?', answer: 'Beide betrachten Aufgabe und Menschen. Reddin ergänzt ausdrücklich die Situationsangemessenheit als dritte Dimension und lehnt eine generell optimale Grundposition ab.' },
   ],
-  related: ['2d-fuehrungsmodell', 'managerial-grid', 'fuehrungsstile'],
+  related: ['2d-fuehrungsmodell', 'managerial-grid', 'reifegradmodell', 'fuehrungsstile'],
   sources: [
     {
       label: 'Reddin (1967): The 3-D Management Style Theory',

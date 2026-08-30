@@ -18,6 +18,11 @@ const unternehmensziele = {
         paragraphs: [
           'Ein Unternehmensziel legt einen gewünschten zukünftigen Zustand fest. Es beantwortet nicht nur, was erreicht werden soll, sondern möglichst auch in welchem Umfang und bis wann. Ziele können das gesamte Unternehmen, einen Bereich, ein Team oder ein einzelnes Vorhaben betreffen.',
           'Ohne klare Ziele fehlt ein gemeinsamer Maßstab für Entscheidungen. Einkauf, Vertrieb oder Personal können dann jeweils sinnvoll handeln, aber in unterschiedliche Richtungen. Verständlich formulierte Ziele helfen, Ressourcen zu verteilen, Maßnahmen auszuwählen und Ergebnisse später mit der ursprünglichen Absicht zu vergleichen.',
+          [
+            'Wie Zielarten nach Zeithorizont, Planungsebene und Inhalt zusammenhängen und wie ein vollständiger Zielbildungsprozess abläuft, vertieft die Seite ',
+            { type: 'link', href: '/wissen/ziele-im-unternehmen', text: 'Ziele im Unternehmen' },
+            '.',
+          ],
         ],
       },
       {
@@ -199,7 +204,7 @@ const unternehmensziele = {
       answer: 'Zunächst wird der gewünschte Zustand als Ziel geklärt. Danach beschreibt die Strategie den grundsätzlichen Weg, auf dem das Ziel erreicht werden soll.',
     },
   ],
-  related: ['unternehmensstrategie', 'zielsysteme-smart-ziele', 'vision-mission-leitbild', 'businessplan', 'kennzahlen'],
+  related: ['ziele-im-unternehmen', 'unternehmensstrategie', 'zielsysteme-smart-ziele', 'vision-mission-leitbild', 'businessplan', 'kennzahlen'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

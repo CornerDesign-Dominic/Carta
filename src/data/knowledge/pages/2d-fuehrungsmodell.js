@@ -137,7 +137,7 @@ const zweiDFuehrungsmodell = {
     { question: 'Ist hoch/hoch immer die beste Kombination?', answer: 'Nein. Die passende Ausprägung hängt unter anderem von Aufgabe, Risiko, Erfahrung, Zeitdruck und organisatorischem Rahmen ab.' },
     { question: 'Was unterscheidet das Modell vom Managerial Grid?', answer: 'Beide arbeiten mit zwei ähnlichen Blickrichtungen. Das Managerial Grid nutzt jedoch eigene Achsen, ein differenzierteres Raster und eigene Aussagen zu Führungsstilen.' },
   ],
-  related: ['managerial-grid', '3d-fuehrungsmodell-reddin', 'fuehrungsstile'],
+  related: ['managerial-grid', '3d-fuehrungsmodell-reddin', 'kontingenzmodell-fiedler', 'fuehrungsstile'],
   sources: [
     {
       label: 'The Ohio State University: Leader Behavior Description Questionnaire (LBDQ)',

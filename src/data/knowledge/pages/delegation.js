@@ -165,7 +165,7 @@ const delegation = {
     { question: 'Wie kontrolliere ich ohne Mikromanagement?', answer: 'Vereinbare ergebnisbezogene Kontrollpunkte passend zu Risiko, Dauer und Erfahrung und greife nicht unnötig in jeden Arbeitsschritt ein.' },
     { question: 'Kann eine Führungskraft jede Verantwortung delegieren?', answer: 'Nein. Je nach Rolle und Aufgabe können Auswahl-, Organisations-, Informations- und Überwachungspflichten sowie gesetzliche oder organschaftliche Verantwortung verbleiben.' },
   ],
-  related: ['verantwortlichkeiten-zustaendigkeiten', 'fuehrungsstile', 'mitarbeitergespraeche', 'zielvereinbarungen'],
+  related: ['verantwortlichkeiten-zustaendigkeiten', 'fuehrungsstile', 'reifegradmodell', 'fuehrungskontinuum', 'mitarbeitergespraeche', 'zielvereinbarungen'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

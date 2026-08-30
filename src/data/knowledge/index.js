@@ -81,6 +81,7 @@ import finanzierungInvestition from './pages/finanzierung-investition.js';
 import eigenfinanzierung from './pages/eigenfinanzierung.js';
 import fremdfinanzierung from './pages/fremdfinanzierung.js';
 import finanzierungsstruktur from './pages/finanzierungsstruktur.js';
+import finanzierungsrisiken from './pages/finanzierungsrisiken.js';
 import darlehenKreditarten from './pages/darlehen-kreditarten.js';
 import investitionenInvestitionsarten from './pages/investitionen-investitionsarten.js';
 import leasing from './pages/leasing.js';
@@ -121,16 +122,31 @@ import anlagendeckungsgrad from './pages/anlagendeckungsgrad.js';
 import zinsdeckungsgrad from './pages/zinsdeckungsgrad.js';
 import einkaufVerkauf from './pages/einkauf-verkauf.js';
 import beschaffung from './pages/beschaffung.js';
+import beschaffungsmarktforschung from './pages/beschaffungsmarktforschung.js';
+import bedarfsermittlung from './pages/bedarfsermittlung.js';
+import methodenBedarfsermittlung from './pages/methoden-bedarfsermittlung.js';
+import mrpErpDisposition from './pages/mrp-erp-disposition.js';
+import bezugskalkulation from './pages/bezugskalkulation.js';
+import bestellkosten from './pages/bestellkosten.js';
+import bestellverfahren from './pages/bestellverfahren.js';
+import optimaleBestellmenge from './pages/optimale-bestellmenge.js';
 import beschaffungsarten from './pages/beschaffungsarten.js';
 import beschaffungsprinzipien from './pages/beschaffungsprinzipien.js';
+import sourcingStrategien from './pages/sourcing-strategien.js';
 import makeOrBuy from './pages/make-or-buy.js';
 import strategischerEinkauf from './pages/strategischer-einkauf.js';
 import operativerEinkauf from './pages/operativer-einkauf.js';
+import lieferantenauswahl from './pages/lieferantenauswahl.js';
+import lieferantenbewertung from './pages/lieferantenbewertung.js';
+import lieferantenportfolio from './pages/lieferantenportfolio.js';
 import lieferantenentwicklung from './pages/lieferantenentwicklung.js';
+import lieferantenrisiko from './pages/lieferantenrisiko.js';
 import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
 import unternehmensziele from './pages/unternehmensziele.js';
+import zieleImUnternehmen from './pages/ziele-im-unternehmen.js';
 import visionMissionLeitbild from './pages/vision-mission-leitbild.js';
 import unternehmensstrategie from './pages/unternehmensstrategie.js';
+import planungsverfahren from './pages/planungsverfahren.js';
 import produktlebenszyklus from './pages/produktlebenszyklus.js';
 import bcgMatrix from './pages/bcg-matrix.js';
 import paretoPrinzip from './pages/pareto-prinzip.js';
@@ -139,6 +155,7 @@ import abcAnalyse from './pages/abc-analyse.js';
 import nutzwertanalyse from './pages/nutzwertanalyse.js';
 import portfolioanalyse from './pages/portfolioanalyse.js';
 import entscheidungsmatrix from './pages/entscheidungsmatrix.js';
+import rechtVertraege from './pages/recht-vertraege.js';
 import swotAnalyse from './pages/swot-analyse.js';
 import zielsystemeSmartZiele from './pages/zielsysteme-smart-ziele.js';
 import aufbauorganisation from './pages/aufbauorganisation.js';
@@ -152,9 +169,16 @@ import fuehrungsstileLewin from './pages/fuehrungsstile-lewin.js';
 import zweiDFuehrungsmodell from './pages/2d-fuehrungsmodell.js';
 import managerialGrid from './pages/managerial-grid.js';
 import dreiDFuehrungsmodellReddin from './pages/3d-fuehrungsmodell-reddin.js';
+import reifegradmodell from './pages/reifegradmodell.js';
+import fuehrungskontinuum from './pages/fuehrungskontinuum.js';
+import vroomYettonJago from './pages/vroom-yetton-jago.js';
+import wegZielTheorie from './pages/weg-ziel-theorie.js';
+import kontingenzmodellFiedler from './pages/kontingenzmodell-fiedler.js';
+import transformationaleTransaktionaleFuehrung from './pages/transformationale-transaktionale-fuehrung.js';
 import mitarbeitergespraeche from './pages/mitarbeitergespraeche.js';
 import zielvereinbarungen from './pages/zielvereinbarungen.js';
 import delegation from './pages/delegation.js';
+import managementByKonzepte from './pages/management-by-konzepte.js';
 import mitarbeitermotivation from './pages/mitarbeitermotivation.js';
 import konfliktmanagement from './pages/konfliktmanagement.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
@@ -269,10 +293,12 @@ export const knowledgePages = {
   'kostenrechnung-controlling': kostenrechnungControlling,
   'finanzierung-investition': finanzierungInvestition,
   eigenfinanzierung,
-  'investitionen-investitionsarten': investitionenInvestitionsarten,
-  'darlehen-kreditarten': darlehenKreditarten,
-  finanzierungsstruktur,
   fremdfinanzierung,
+  finanzierungsstruktur,
+  finanzierungsrisiken,
+  'darlehen-kreditarten': darlehenKreditarten,
+  'investitionen-investitionsarten': investitionenInvestitionsarten,
+  leasing,
   'innen-aussenfinanzierung': innenAussenfinanzierung,
   kontokorrentkredit,
   lieferantenkredit,
@@ -288,7 +314,6 @@ export const knowledgePages = {
   'dynamische-amortisationsrechnung': dynamischeAmortisationsrechnung,
   'leverage-effekt': leverageEffekt,
   kennzahlen,
-  leasing,
   roi,
   eigenkapitalrentabilitaet,
   gesamtkapitalrentabilitaet,
@@ -311,16 +336,31 @@ export const knowledgePages = {
   zinsdeckungsgrad,
   'einkauf-verkauf': einkaufVerkauf,
   beschaffung,
+  beschaffungsmarktforschung,
+  bedarfsermittlung,
+  'methoden-bedarfsermittlung': methodenBedarfsermittlung,
+  'mrp-erp-disposition': mrpErpDisposition,
+  bezugskalkulation,
+  bestellkosten,
+  bestellverfahren,
+  'optimale-bestellmenge': optimaleBestellmenge,
   beschaffungsarten,
   beschaffungsprinzipien,
+  'sourcing-strategien': sourcingStrategien,
   'make-or-buy': makeOrBuy,
   'strategischer-einkauf': strategischerEinkauf,
   'operativer-einkauf': operativerEinkauf,
+  lieferantenauswahl,
+  lieferantenbewertung,
+  lieferantenportfolio,
   lieferantenentwicklung,
+  lieferantenrisiko,
   unternehmensfuehrung,
   unternehmensziele,
+  'ziele-im-unternehmen': zieleImUnternehmen,
   'vision-mission-leitbild': visionMissionLeitbild,
   unternehmensstrategie,
+  planungsverfahren,
   produktlebenszyklus,
   'bcg-matrix': bcgMatrix,
   'pareto-prinzip': paretoPrinzip,
@@ -329,6 +369,7 @@ export const knowledgePages = {
   nutzwertanalyse,
   portfolioanalyse,
   entscheidungsmatrix,
+  'recht-vertraege': rechtVertraege,
   'swot-analyse': swotAnalyse,
   'zielsysteme-smart-ziele': zielsystemeSmartZiele,
   aufbauorganisation,
@@ -342,9 +383,16 @@ export const knowledgePages = {
   '2d-fuehrungsmodell': zweiDFuehrungsmodell,
   'managerial-grid': managerialGrid,
   '3d-fuehrungsmodell-reddin': dreiDFuehrungsmodellReddin,
+  reifegradmodell,
+  fuehrungskontinuum,
+  'vroom-yetton-jago': vroomYettonJago,
+  'weg-ziel-theorie': wegZielTheorie,
+  'kontingenzmodell-fiedler': kontingenzmodellFiedler,
+  'transformationale-transaktionale-fuehrung': transformationaleTransaktionaleFuehrung,
   mitarbeitergespraeche,
   zielvereinbarungen,
   delegation,
+  'management-by-konzepte': managementByKonzepte,
   mitarbeitermotivation,
   konfliktmanagement,
   'marketing-vertrieb': marketingVertrieb,
