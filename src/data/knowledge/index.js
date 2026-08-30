@@ -77,6 +77,13 @@ import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
 import sollUndHaben from './pages/soll-und-haben.js';
 import konten from './pages/konten.js';
+import debitorenKreditoren from './pages/debitoren-kreditoren.js';
+import euer from './pages/euer.js';
+import bilanz from './pages/bilanz.js';
+import guv from './pages/guv.js';
+import inventurInventar from './pages/inventur-inventar.js';
+import jahresabschluss from './pages/jahresabschluss.js';
+import ruecklagen from './pages/ruecklagen.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -161,6 +168,13 @@ export const knowledgePages = {
   geschaeftsvorfaelle,
   'soll-und-haben': sollUndHaben,
   konten,
+  'debitoren-kreditoren': debitorenKreditoren,
+  euer,
+  bilanz,
+  guv,
+  'inventur-inventar': inventurInventar,
+  jahresabschluss,
+  ruecklagen,
 };
 
 export function findKnowledgePage(slug) {

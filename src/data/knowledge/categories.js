@@ -97,6 +97,13 @@ export const knowledgeCategories = [
       { slug: 'geschaeftsvorfaelle', title: 'Geschäftsvorfälle' },
       { slug: 'soll-und-haben', title: 'Soll und Haben' },
       { slug: 'konten', title: 'Konten' },
+      { slug: 'debitoren-kreditoren', title: 'Debitoren und Kreditoren' },
+      { slug: 'euer', title: 'Einnahmenüberschussrechnung (EÜR)' },
+      { slug: 'bilanz', title: 'Bilanz' },
+      { slug: 'guv', title: 'Gewinn- und Verlustrechnung (GuV)' },
+      { slug: 'inventur-inventar', title: 'Inventur und Inventar' },
+      { slug: 'jahresabschluss', title: 'Jahresabschluss' },
+      { slug: 'ruecklagen', title: 'Rücklagen' },
     ],
     topicGroups: [
       {
@@ -119,6 +126,7 @@ export const knowledgeCategories = [
           { slug: 'euer', title: 'Einnahmenüberschussrechnung (EÜR)' },
           { slug: 'bilanz', title: 'Bilanz' },
           { slug: 'guv', title: 'Gewinn- und Verlustrechnung (GuV)' },
+          { slug: 'ruecklagen', title: 'Rücklagen' },
           { slug: 'anlagenbuchhaltung', title: 'Anlagenbuchhaltung' },
           { slug: 'jahresabschluss', title: 'Jahresabschluss' },
           { slug: 'inventur-inventar', title: 'Inventur und Inventar' },
