@@ -220,6 +220,7 @@ export const knowledgeCategories = [
       { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
       { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
       { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
+      { slug: 'minijob', title: 'Minijob' },
     ],
     topicGroups: [
       {

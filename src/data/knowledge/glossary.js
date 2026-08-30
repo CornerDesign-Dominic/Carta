@@ -529,6 +529,30 @@ export const glossaryEntries = [
     explanation: 'Welche Umlagen anfallen und wie sie berechnet werden, hängt unter anderem von Arbeitgeber, Beschäftigung und dem jeweiligen Verfahren ab. Sie sind nicht mit Arbeitnehmeranteilen zur Sozialversicherung gleichzusetzen.',
   },
   {
+    id: 'geringfuegige-beschaeftigung',
+    term: 'Geringfügige Beschäftigung',
+    definition: 'Eine geringfügige Beschäftigung ist eine Beschäftigung, die die gesetzlichen Voraussetzungen für einen Minijob mit Verdienstgrenze oder für eine kurzfristige Beschäftigung erfüllt.',
+    explanation: 'Die beiden Formen unterscheiden sich vor allem danach, ob der regelmäßige Verdienst oder die zeitliche Begrenzung der Beschäftigung maßgeblich ist. Die sozialversicherungsrechtliche Beurteilung richtet sich nach den konkreten Voraussetzungen.',
+  },
+  {
+    id: 'verdienstgrenze',
+    term: 'Verdienstgrenze',
+    definition: 'Die Verdienstgrenze ist die Obergrenze des regelmäßigen Arbeitsentgelts für einen Minijob mit Verdienstgrenze.',
+    explanation: 'Sie ist gesetzlich an den Mindestlohn gekoppelt und kann sich ändern. Für die Beurteilung ist grundsätzlich eine Prognose des regelmäßigen Verdienstes im maßgeblichen Zeitraum erforderlich.',
+  },
+  {
+    id: 'rentenversicherungspflicht',
+    term: 'Rentenversicherungspflicht',
+    definition: 'Rentenversicherungspflicht bedeutet, dass aus einer Beschäftigung Beiträge zur gesetzlichen Rentenversicherung zu zahlen sind.',
+    explanation: 'Bei einem Minijob mit Verdienstgrenze besteht sie grundsätzlich. Unter gesetzlichen Voraussetzungen kann eine Befreiung beantragt werden, die sich auf die rentenrechtliche Absicherung auswirken kann.',
+  },
+  {
+    id: 'pauschalsteuer',
+    term: 'Pauschalsteuer',
+    definition: 'Eine Pauschalsteuer ist eine vereinfachte Form der Lohnsteuer, die nicht nach den individuellen Lohnsteuerabzugsmerkmalen berechnet wird.',
+    explanation: 'Bei einem Minijob mit Verdienstgrenze kann unter gesetzlichen Voraussetzungen eine einheitliche Pauschsteuer angewendet werden. Ob und wie die Steuer wirtschaftlich getragen wird, kann zusätzlich von der arbeitsvertraglichen Vereinbarung abhängen.',
+  },
+  {
     id: 'arbeitsentgelt',
     term: 'Arbeitsentgelt',
     definition: 'Arbeitsentgelt sind laufende oder einmalige Einnahmen aus einer Beschäftigung, unabhängig davon, ob ein Rechtsanspruch darauf besteht.',
