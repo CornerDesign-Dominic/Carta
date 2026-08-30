@@ -169,6 +169,7 @@ export const knowledgeCategories = [
       { slug: 'rechtsformen', title: 'Rechtsformen' },
       { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
       { slug: 'gbr', title: 'GbR' },
+      { slug: 'gmbh', title: 'GmbH' },
     ],
     topicGroups: [
       {

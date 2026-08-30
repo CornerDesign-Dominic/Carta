@@ -372,6 +372,24 @@ export const glossaryEntries = [
     definition: 'Eine eGbR ist eine Gesellschaft bürgerlichen Rechts, die im Gesellschaftsregister eingetragen ist.',
     explanation: 'Der Namenszusatz macht die Eintragung nach außen erkennbar. Die eGbR bleibt eine GbR und begrenzt die persönliche Haftung der Gesellschafter nicht.',
   },
+  {
+    id: 'stammkapital',
+    term: 'Stammkapital',
+    definition: 'Das Stammkapital ist das im Gesellschaftsvertrag festgelegte Kapital einer GmbH oder UG.',
+    explanation: 'Es wird in Geschäftsanteile aufgeteilt, die von den Gesellschaftern übernommen werden. Stammkapital ist nicht mit Gewinn oder einem dauerhaft unantastbaren Bankguthaben gleichzusetzen.',
+  },
+  {
+    id: 'stammeinlage',
+    term: 'Stammeinlage',
+    definition: 'Eine Stammeinlage ist der Beitrag, den ein Gesellschafter auf seinen Geschäftsanteil an einer GmbH oder UG leistet.',
+    explanation: 'Sie kann grundsätzlich als Geld- oder Sacheinlage erbracht werden. Für die Anmeldung zum Handelsregister gelten je nach Einlageform gesetzliche Einzahlungs- und Nachweisanforderungen.',
+  },
+  {
+    id: 'geschaeftsfuehrer',
+    term: 'Geschäftsführer',
+    definition: 'Ein Geschäftsführer leitet eine GmbH oder UG und vertritt sie grundsätzlich nach außen.',
+    explanation: 'Die Gesellschafter bestellen den Geschäftsführer. Seine konkreten Befugnisse und Pflichten ergeben sich aus Gesetz, Gesellschaftsvertrag, Anstellungsvertrag und Gesellschafterbeschlüssen.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

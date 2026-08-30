@@ -39,6 +39,7 @@ import innergemeinschaftlicheLieferung from './pages/innergemeinschaftliche-lief
 import rechtsformen from './pages/rechtsformen.js';
 import einzelunternehmen from './pages/einzelunternehmen.js';
 import gbr from './pages/gbr.js';
+import gmbh from './pages/gmbh.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -85,6 +86,7 @@ export const knowledgePages = {
   'rechtsformen': rechtsformen,
   'einzelunternehmen': einzelunternehmen,
   'gbr': gbr,
+  'gmbh': gmbh,
 };
 
 export function findKnowledgePage(slug) {
