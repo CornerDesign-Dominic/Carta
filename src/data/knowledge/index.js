@@ -23,6 +23,7 @@ import koerperschaftsteuer from './pages/koerperschaftsteuer.js';
 import gewerbesteuer from './pages/gewerbesteuer.js';
 import kapitalertragsteuer from './pages/kapitalertragsteuer.js';
 import solidaritaetszuschlag from './pages/solidaritaetszuschlag.js';
+import kirchensteuer from './pages/kirchensteuer.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -53,6 +54,7 @@ export const knowledgePages = {
   'gewerbesteuer': gewerbesteuer,
   'kapitalertragsteuer': kapitalertragsteuer,
   'solidaritaetszuschlag': solidaritaetszuschlag,
+  'kirchensteuer': kirchensteuer,
 };
 
 export function findKnowledgePage(slug) {

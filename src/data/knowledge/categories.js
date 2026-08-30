@@ -87,6 +87,7 @@ export const knowledgeCategories = [
       { slug: 'einkommensteuer', title: 'Einkommensteuer' },
       { slug: 'lohnsteuer', title: 'Lohnsteuer' },
       { slug: 'solidaritaetszuschlag', title: 'Solidaritätszuschlag' },
+      { slug: 'kirchensteuer', title: 'Kirchensteuer' },
       { slug: 'koerperschaftsteuer', title: 'Körperschaftsteuer' },
       { slug: 'gewerbesteuer', title: 'Gewerbesteuer' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },

@@ -105,7 +105,7 @@ const solidaritaetszuschlag = {
     { question: 'Zahlt eine GmbH Solidaritätszuschlag?', answer: 'Bei einer GmbH kann Solidaritätszuschlag auf die festgesetzte Körperschaftsteuer anfallen. Die Freigrenzen der Einkommensteuer gelten dafür nicht entsprechend.' },
     { question: 'Fällt auf Kapitalerträge Solidaritätszuschlag an?', answer: 'Bei Kapitalertragsteuer kann zusätzlich Solidaritätszuschlag einbehalten werden. Die auszahlende Stelle weist die Beträge in der Regel getrennt aus.' },
   ],
-  related: ['steuern', 'einkommensteuer', 'lohnsteuer', 'koerperschaftsteuer', 'kapitalertragsteuer'],
+  related: ['steuern', 'einkommensteuer', 'lohnsteuer', 'koerperschaftsteuer', 'kapitalertragsteuer', 'kirchensteuer'],
   sources: [
     { label: '§ 3 SolzG 1995 – Bemessungsgrundlage und zeitliche Anwendung', url: 'https://www.gesetze-im-internet.de/solzg_1995/__3.html' },
     { label: '§ 4 SolzG 1995 – Zuschlagsatz', url: 'https://www.gesetze-im-internet.de/solzg_1995/__4.html' },

@@ -157,6 +157,7 @@ const lohnsteuer = {
     'steuern',
     'einkommensteuer',
     'solidaritaetszuschlag',
+    'kirchensteuer',
   ],
   sources: [
     {

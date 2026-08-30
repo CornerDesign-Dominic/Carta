@@ -165,6 +165,7 @@ const einkommensteuer = {
     'gewerbesteuer',
     'kapitalertragsteuer',
     'solidaritaetszuschlag',
+    'kirchensteuer',
     'lohnsteuer',
     'umsatzsteuer',
   ],

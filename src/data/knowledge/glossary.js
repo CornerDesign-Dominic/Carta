@@ -231,6 +231,18 @@ export const glossaryEntries = [
     explanation: 'Dazu gehören insbesondere Steuerklasse, Kinderfreibeträge, Freibeträge und das Kirchensteuermerkmal. Arbeitgeber rufen diese Daten für die Lohnabrechnung elektronisch bei der Finanzverwaltung ab.',
   },
   {
+    id: 'kirchensteuerpflicht',
+    term: 'Kirchensteuerpflicht',
+    definition: 'Kirchensteuerpflicht bedeutet, dass eine Person aufgrund ihrer Mitgliedschaft in einer steuererhebenden Religionsgemeinschaft Kirchensteuer zahlen kann.',
+    explanation: 'Ob sie tatsächlich entsteht, hängt unter anderem von den Regelungen des Bundeslands, der Religionsgemeinschaft und der maßgeblichen Steuer ab.',
+  },
+  {
+    id: 'kirchenaustritt',
+    term: 'Kirchenaustritt',
+    definition: 'Ein Kirchenaustritt ist eine nach Landesrecht geregelte Erklärung, mit der eine Person ihre Mitgliedschaft in einer Religionsgemeinschaft beendet.',
+    explanation: 'Wann sich der Austritt auf die Kirchensteuer auswirkt, richtet sich nach dem Landesrecht und dem Steuerverfahren.',
+  },
+  {
     id: 'restwert',
     term: 'Restwert',
     definition: 'Der Restwert ist der erwartete Wert eines Wirtschaftsguts am Ende eines betrachteten Zeitraums.',
