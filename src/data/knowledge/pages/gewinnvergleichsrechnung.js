@@ -134,6 +134,7 @@ const gewinnvergleichsrechnung = {
   related: [
     'statische-investitionsrechnung',
     'kostenvergleichsrechnung',
+    'rentabilitaetsvergleichsrechnung',
     'wirtschaftlichkeit-rentabilitaet',
     'liquiditaet-controlling',
   ],
