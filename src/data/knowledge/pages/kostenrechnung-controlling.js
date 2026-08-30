@@ -12,6 +12,6 @@ export default {
     canonicalPath: '/wissen/kostenrechnung-controlling',
   },
   article: { intro: 'Kostenrechnung und Controlling helfen dabei, Kosten zu verstehen, Leistungen zu kalkulieren und Entscheidungen mit Zahlen zu unterstützen. Hier findest du die wichtigsten Methoden und Kennzahlen thematisch geordnet.', sections: [] },
-  generator: null, keyPoints: [], commonMistakes: [], faqs: [], related: ['break-even-point', 'kostenvergleichsrechnung'], sources: [],
+  generator: null, keyPoints: [], commonMistakes: [], faqs: [], related: ['kennzahlen', 'break-even-point', 'kostenvergleichsrechnung'], sources: [],
   updatedAt: '2026-08-30', reviewedAt: '2026-08-30', disclaimer: defaultDisclaimer,
 };

@@ -20,6 +20,7 @@ import breakEvenPoint from './pages/break-even-point.js';
 import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
 import kostenartenKostenstellenKostentraeger from './pages/kostenarten-kostenstellen-kostentraeger.js';
 import fixeVariableKosten from './pages/fixe-variable-kosten.js';
+import deckungsbeitrag from './pages/deckungsbeitrag.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -72,21 +73,33 @@ import urlaubsentgeltUrlaubsgeld from './pages/urlaubsentgelt-urlaubsgeld.js';
 import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
 import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
+import kennzahlen from './pages/kennzahlen.js';
+import roi from './pages/roi.js';
+import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
+import gesamtkapitalrentabilitaet from './pages/gesamtkapitalrentabilitaet.js';
 import einkaufVerkauf from './pages/einkauf-verkauf.js';
 import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
 import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
 import sollUndHaben from './pages/soll-und-haben.js';
+import doppelteBuchfuehrung from './pages/doppelte-buchfuehrung.js';
 import konten from './pages/konten.js';
+import kontenrahmenKontenplan from './pages/kontenrahmen-kontenplan.js';
+import bestandskonten from './pages/bestandskonten.js';
+import erfolgskonten from './pages/erfolgskonten.js';
+import privatentnahmenPrivateinlagen from './pages/privatentnahmen-privateinlagen.js';
 import debitorenKreditoren from './pages/debitoren-kreditoren.js';
 import euer from './pages/euer.js';
 import bilanz from './pages/bilanz.js';
+import abschreibung from './pages/abschreibung.js';
 import guv from './pages/guv.js';
+import bestandsveraenderung from './pages/bestandsveraenderung.js';
 import inventurInventar from './pages/inventur-inventar.js';
 import jahresabschluss from './pages/jahresabschluss.js';
 import ruecklagen from './pages/ruecklagen.js';
 import rechnungsabgrenzung from './pages/rechnungsabgrenzung.js';
+import kassenbuch from './pages/kassenbuch.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -114,6 +127,7 @@ export const knowledgePages = {
   'kostenvergleichsrechnung': kostenvergleichsrechnung,
   'kostenarten-kostenstellen-kostentraeger': kostenartenKostenstellenKostentraeger,
   'fixe-variable-kosten': fixeVariableKosten,
+  deckungsbeitrag,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,
@@ -166,21 +180,33 @@ export const knowledgePages = {
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
   'finanzierung-investition': finanzierungInvestition,
+  kennzahlen,
+  roi,
+  eigenkapitalrentabilitaet,
+  gesamtkapitalrentabilitaet,
   'einkauf-verkauf': einkaufVerkauf,
   unternehmensfuehrung,
   'marketing-vertrieb': marketingVertrieb,
   digitalisierung,
   geschaeftsvorfaelle,
   'soll-und-haben': sollUndHaben,
+  'doppelte-buchfuehrung': doppelteBuchfuehrung,
   konten,
+  'kontenrahmen-kontenplan': kontenrahmenKontenplan,
+  bestandskonten,
+  erfolgskonten,
+  'privatentnahmen-privateinlagen': privatentnahmenPrivateinlagen,
   'debitoren-kreditoren': debitorenKreditoren,
   euer,
   bilanz,
+  abschreibung,
   guv,
+  bestandsveraenderung,
   'inventur-inventar': inventurInventar,
   jahresabschluss,
   ruecklagen,
   rechnungsabgrenzung,
+  kassenbuch,
 };
 
 export function findKnowledgePage(slug) {

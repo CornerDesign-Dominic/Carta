@@ -6,6 +6,24 @@
  */
 export const glossaryEntries = [
   {
+    id: 'roi',
+    term: 'ROI (Return on Investment)',
+    definition: 'Der ROI setzt den Gewinn einer Investition oder eines betrachteten Bereichs ins Verhältnis zum dafür eingesetzten Kapital.',
+    explanation: 'Die Kennzahl wird meist in Prozent angegeben. Ihre Aussage hängt davon ab, wie Gewinn, Kapital und Zeitraum abgegrenzt wurden und mit welchem Maßstab der Wert verglichen wird.',
+  },
+  {
+    id: 'eingesetztes-kapital',
+    term: 'Eingesetztes Kapital',
+    definition: 'Das eingesetzte Kapital ist die Kapitalbasis, die einer Investition oder einem betrachteten Unternehmensbereich für die Kennzahlenberechnung zugeordnet wird.',
+    explanation: 'Welche Positionen dazugehören, hängt vom Analysezweck ab. Für Vergleiche muss die Abgrenzung nachvollziehbar sein und einheitlich angewendet werden.',
+  },
+  {
+    id: 'rentabilitaet',
+    term: 'Rentabilität',
+    definition: 'Rentabilität beschreibt das Verhältnis eines Ergebnisses zu einer passenden Bezugsgröße, häufig zu einer Kapitalgröße oder zum Umsatz.',
+    explanation: 'Welche Aussage entsteht, hängt von Zähler, Nenner und Zeitraum ab. Rentabilitätswerte sollten daher nur bei vergleichbarer Berechnung gegenübergestellt werden.',
+  },
+  {
     id: 'euer',
     term: 'Einnahmenüberschussrechnung (EÜR)',
     definition: 'Die Einnahmenüberschussrechnung ist eine steuerliche Gewinnermittlung, bei der Betriebseinnahmen und Betriebsausgaben gegenübergestellt werden.',
@@ -54,10 +72,70 @@ export const glossaryEntries = [
     explanation: 'Sie ist keine Betriebseinnahme. In der EÜR müssen Einlagen je nach Sachverhalt gesondert aufgezeichnet und bewertet werden.',
   },
   {
+    id: 'privatentnahme',
+    term: 'Privatentnahme',
+    definition: 'Eine Privatentnahme liegt vor, wenn ein Unternehmer Geld, Waren oder andere Werte aus seinem Betrieb für private Zwecke verwendet.',
+    explanation: 'Sie ist grundsätzlich keine Betriebsausgabe, sondern mindert das Eigenkapital. Bei Sach- oder Nutzungsentnahmen können besondere steuerliche Regeln gelten.',
+  },
+  {
+    id: 'privateinlage',
+    term: 'Privateinlage',
+    definition: 'Eine Privateinlage liegt vor, wenn ein Unternehmer privates Geld oder ein privates Wirtschaftsgut dem Betrieb zuführt.',
+    explanation: 'Sie ist grundsätzlich keine Betriebseinnahme, sondern erhöht das Eigenkapital. Für Sacheinlagen gelten je nach Gewinnermittlung und Wirtschaftsgut Bewertungsregeln.',
+  },
+  {
+    id: 'privatkonto',
+    term: 'Privatkonto',
+    definition: 'Ein Privatkonto sammelt private Entnahmen und Einlagen eines Unternehmers oder Gesellschafters getrennt von betrieblichen Geschäftsvorfällen.',
+    explanation: 'Es wird vor allem bei Einzelunternehmen und Personengesellschaften genutzt und zum Abschluss in das Eigenkapital beziehungsweise Kapitalkonto überführt.',
+  },
+  {
+    id: 'sachentnahme',
+    term: 'Sachentnahme',
+    definition: 'Eine Sachentnahme ist die Entnahme eines betrieblichen Wirtschaftsguts für private oder andere betriebsfremde Zwecke.',
+    explanation: 'Beispiele sind Waren oder Erzeugnisse für den privaten Haushalt. Die steuerliche Bewertung und eine mögliche Umsatzsteuerpflicht hängen von den jeweiligen Voraussetzungen ab.',
+  },
+  {
     id: 'abschreibung',
     term: 'Abschreibung',
-    definition: 'Eine Abschreibung verteilt den steuerlich berücksichtigten Wertverzehr eines abnutzbaren Wirtschaftsguts über seine Nutzungsdauer.',
-    explanation: 'Sie kann auch bei der EÜR relevant sein, obwohl die Anschaffung bezahlt wurde. Der vollständige Kaufpreis ist dann nicht automatisch im Zahlungsjahr als Betriebsausgabe anzusetzen.',
+    definition: 'Eine Abschreibung verteilt bei abnutzbaren Wirtschaftsgütern Anschaffungs- oder Herstellungskosten über die Nutzungsdauer oder berücksichtigt eine Wertminderung.',
+    explanation: 'Sie mindert als Aufwand das Ergebnis und reduziert den Buchwert. Handels- und Steuerrecht können bei Methode und Voraussetzungen voneinander abweichen.',
+  },
+  {
+    id: 'afa',
+    term: 'Absetzung für Abnutzung (AfA)',
+    definition: 'AfA ist die steuerliche Bezeichnung für die planmäßige Abschreibung abnutzbarer Wirtschaftsgüter.',
+    explanation: 'Sie verteilt Anschaffungs- oder Herstellungskosten über die betriebsgewöhnliche Nutzungsdauer. Welche Methode zulässig ist, richtet sich nach den gesetzlichen Voraussetzungen.',
+  },
+  {
+    id: 'nutzungsdauer',
+    term: 'Nutzungsdauer',
+    definition: 'Die Nutzungsdauer ist der Zeitraum, in dem ein Vermögensgegenstand voraussichtlich genutzt werden kann.',
+    explanation: 'Sie ist Grundlage der planmäßigen Abschreibung. Im Steuerrecht dient regelmäßig die betriebsgewöhnliche Nutzungsdauer als Maßstab; BMF-AfA-Tabellen sind dafür ein Anhaltspunkt.',
+  },
+  {
+    id: 'buchwert',
+    term: 'Buchwert',
+    definition: 'Der Buchwert ist der Wert, mit dem ein Vermögensgegenstand in Buchführung oder Bilanz angesetzt ist.',
+    explanation: 'Bei abnutzbaren Anlagegütern sinkt er durch planmäßige Abschreibungen. Handels- und Steuerbilanz können je nach Vorschriften unterschiedliche Buchwerte ausweisen.',
+  },
+  {
+    id: 'restbuchwert',
+    term: 'Restbuchwert',
+    definition: 'Der Restbuchwert ist der nach bereits vorgenommenen Abschreibungen verbleibende Buchwert eines Vermögensgegenstands.',
+    explanation: 'Bei der degressiven AfA ist er die Bemessungsgrundlage für die nächste Abschreibung. Beim Wechsel zur linearen AfA wird er über die verbleibende Nutzungsdauer verteilt.',
+  },
+  {
+    id: 'linear',
+    term: 'Lineare Abschreibung',
+    definition: 'Bei der linearen Abschreibung wird jährlich derselbe Betrag über die Nutzungsdauer abgeschrieben.',
+    explanation: 'Die Anschaffungs- oder Herstellungskosten werden gleichmäßig auf die Jahre der Nutzung verteilt.',
+  },
+  {
+    id: 'degressiv',
+    term: 'Degressive Abschreibung',
+    definition: 'Bei der degressiven Abschreibung wird ein gleichbleibender Prozentsatz auf den jeweiligen Restbuchwert angewendet.',
+    explanation: 'Dadurch sind die Abschreibungsbeträge zu Beginn höher und sinken mit dem Restbuchwert. Die steuerliche Zulässigkeit ist zeitlich und sachlich begrenzt.',
   },
   {
     id: 'umsatzsteuer',
@@ -114,10 +192,70 @@ export const glossaryEntries = [
     explanation: 'Er wird meist aus einem Kontenrahmen abgeleitet und an Größe, Branche und Anforderungen des Unternehmens angepasst.',
   },
   {
+    id: 'kontenklasse',
+    term: 'Kontenklasse',
+    definition: 'Eine Kontenklasse ist die oberste Gliederungsstufe eines Kontenrahmens.',
+    explanation: 'Sie fasst ähnliche Kontenbereiche zusammen und wird in DATEV-Standardkontenrahmen durch die erste Ziffer der Kontonummer gekennzeichnet. Darunter folgen Kontengruppen und Einzelkonten.',
+  },
+  {
+    id: 'skr03',
+    term: 'SKR03',
+    definition: 'SKR03 ist ein DATEV-Standardkontenrahmen, der nach Geschäftsprozessen gegliedert ist.',
+    explanation: 'Die Kontenreihenfolge orientiert sich an Abläufen wie Leistungserstellung und Leistungsverwertung. Ein Unternehmen leitet daraus seinen eigenen Kontenplan ab.',
+  },
+  {
+    id: 'skr04',
+    term: 'SKR04',
+    definition: 'SKR04 ist ein DATEV-Standardkontenrahmen, der sich an der Gliederung von Bilanz und GuV orientiert.',
+    explanation: 'Er ist wie SKR03 eine Vorlage für einen unternehmensindividuellen Kontenplan. Der gleiche Geschäftsvorfall kann dort eine andere Kontonummer haben.',
+  },
+  {
     id: 'saldo',
     term: 'Saldo',
     definition: 'Der Saldo ist die Differenz zwischen Soll- und Haben-Seite eines Kontos.',
     explanation: 'Er wird auf der betragsmäßig kleineren Seite eingetragen, damit beide Seiten gleich hoch sind. Bei Bestandskonten zeigt er den Endbestand.',
+  },
+  {
+    id: 'anfangsbestand',
+    term: 'Anfangsbestand',
+    definition: 'Der Anfangsbestand ist der Wert, mit dem ein Bestandskonto zu Beginn eines Geschäftsjahrs eröffnet wird.',
+    explanation: 'Er entspricht grundsätzlich dem Endbestand des Vorjahres und wird aus der Eröffnungsbilanz in die Bestandskonten übernommen.',
+  },
+  {
+    id: 'endbestand',
+    term: 'Endbestand',
+    definition: 'Der Endbestand ist der Wert, den ein Bestandskonto am Ende eines Zeitraums ausweist.',
+    explanation: 'Er ergibt sich aus Anfangsbestand, Zugängen und Abgängen. Beim Abschluss entspricht er grundsätzlich dem Saldo des Bestandskontos.',
+  },
+  {
+    id: 'bestandsveraenderung',
+    term: 'Bestandsveränderung',
+    definition: 'Eine Bestandsveränderung ist die Differenz zwischen Anfangs- und Endbestand fertiger oder unfertiger Erzeugnisse.',
+    explanation: 'Sie zeigt, ob der Wert der selbst hergestellten Vorräte im Zeitraum gestiegen oder gesunken ist. Im Gesamtkostenverfahren wird sie in der GuV gesondert berücksichtigt.',
+  },
+  {
+    id: 'bestandsmehrung',
+    term: 'Bestandsmehrung',
+    definition: 'Eine Bestandsmehrung liegt vor, wenn der Endbestand fertiger oder unfertiger Erzeugnisse höher ist als der Anfangsbestand.',
+    explanation: 'Sie kann entstehen, wenn mehr produziert als verkauft oder fertiggestellt wird. Sie ist kein automatischer Geldzufluss.',
+  },
+  {
+    id: 'bestandsminderung',
+    term: 'Bestandsminderung',
+    definition: 'Eine Bestandsminderung liegt vor, wenn der Endbestand fertiger oder unfertiger Erzeugnisse niedriger ist als der Anfangsbestand.',
+    explanation: 'Sie kann entstehen, wenn vorhandene Bestände verkauft oder verarbeitet werden und weniger nachproduziert wird.',
+  },
+  {
+    id: 'fertige-erzeugnisse',
+    term: 'Fertige Erzeugnisse',
+    definition: 'Fertige Erzeugnisse sind selbst hergestellte Produkte, deren Herstellung abgeschlossen ist und die noch nicht verkauft wurden.',
+    explanation: 'Sie gehören zum Vorratsvermögen. Ihr Bestand wird zum Bilanzstichtag ermittelt und bewertet.',
+  },
+  {
+    id: 'unfertige-erzeugnisse',
+    term: 'Unfertige Erzeugnisse',
+    definition: 'Unfertige Erzeugnisse sind selbst hergestellte Produkte, die sich am Bilanzstichtag noch in der Produktion befinden.',
+    explanation: 'Auch sie gehören zum Vorratsvermögen. Ihr Wert berücksichtigt die bis zum Bilanzstichtag angefallenen Herstellungskosten nach den maßgeblichen Regeln.',
   },
   {
     id: 'soll-und-haben',
@@ -360,10 +498,46 @@ export const glossaryEntries = [
     explanation: 'Sie entsteht zum Beispiel beim Einkauf auf Rechnung. Mit der Zahlung sinkt oder entfällt die offene Verpflichtung.',
   },
   {
+    id: 'beleg',
+    term: 'Beleg',
+    definition: 'Ein Beleg dokumentiert einen Geschäftsvorfall und liefert die Grundlage für seine Buchung.',
+    explanation: 'Dazu gehören zum Beispiel Rechnungen, Quittungen, Kontoauszüge oder Eigenbelege. Ein Beleg hilft, Anlass, Datum, Betrag und Beteiligte nachvollziehbar festzuhalten.',
+  },
+  {
     id: 'belegprinzip',
     term: 'Belegprinzip',
     definition: 'Das Belegprinzip bedeutet, dass Buchungen durch nachvollziehbare Unterlagen gestützt werden sollen.',
     explanation: 'Rechnungen, Quittungen, Kontoauszüge und Eigenbelege helfen, Anlass, Zeitpunkt, Betrag und Beteiligte eines Geschäftsvorfalls nachzuweisen.',
+  },
+  {
+    id: 'kassenbuch',
+    term: 'Kassenbuch',
+    definition: 'Ein Kassenbuch dokumentiert die baren Einnahmen und Ausgaben eines Unternehmens sowie den laufenden Kassenbestand.',
+    explanation: 'Es macht nachvollziehbar, wie sich Anfangsbestand, einzelne Bargeldbewegungen und Endbestand zusammensetzen. Bei Buchführungspflichtigen ist es für Bargeldbewegungen regelmäßig erforderlich.',
+  },
+  {
+    id: 'kassensturz',
+    term: 'Kassensturz',
+    definition: 'Ein Kassensturz ist das tatsächliche Zählen des Bargelds in der Kasse zu einem bestimmten Zeitpunkt.',
+    explanation: 'Der gezählte Bestand muss sich aus den Kassenaufzeichnungen nachvollziehen lassen. Diese Abstimmung wird als Kassensturzfähigkeit bezeichnet.',
+  },
+  {
+    id: 'einzelaufzeichnung',
+    term: 'Einzelaufzeichnung',
+    definition: 'Die Einzelaufzeichnung erfasst jeden aufzeichnungspflichtigen Geschäftsvorfall einzeln, vollständig, richtig, zeitgerecht und geordnet.',
+    explanation: 'Bei Barumsätzen gilt sie grundsätzlich auch bei einer offenen Ladenkasse. Eine Ausnahme kann bei Verkäufen an viele nicht bekannte Personen gegen Barzahlung und ohne elektronisches Aufzeichnungssystem bestehen.',
+  },
+  {
+    id: 'offene-ladenkasse',
+    term: 'Offene Ladenkasse',
+    definition: 'Eine offene Ladenkasse ist eine manuell geführte Kasse ohne elektronisches Aufzeichnungssystem.',
+    explanation: 'Sie ist nicht verboten und muss die Aufzeichnungspflichten dennoch erfüllen. Je nach Verkaufssituation kann die Einzelaufzeichnung aus Zumutbarkeitsgründen eingeschränkt sein; ein nachvollziehbarer Kassenbericht bleibt wichtig.',
+  },
+  {
+    id: 'gobd',
+    term: 'GoBD',
+    definition: 'GoBD sind Verwaltungsgrundsätze für die ordnungsmäßige Führung und Aufbewahrung von Büchern, Aufzeichnungen und Unterlagen in elektronischer Form sowie für den Datenzugriff.',
+    explanation: 'Sie konkretisieren unter anderem Anforderungen an Nachvollziehbarkeit, Vollständigkeit, Richtigkeit, Zeitgerechtigkeit, Ordnung und Unveränderbarkeit von steuerlich relevanten Aufzeichnungen.',
   },
   {
     id: 'debitoren-kreditoren',
@@ -613,6 +787,12 @@ export const glossaryEntries = [
     term: 'Deckungsbeitrag',
     definition: 'Der Deckungsbeitrag ist der Betrag, der nach Abzug der variablen Kosten vom Verkaufspreis übrig bleibt.',
     explanation: 'Er trägt zunächst zur Deckung der Fixkosten bei. Erst wenn die Fixkosten gedeckt sind, kann ein positiver Gewinn entstehen.',
+  },
+  {
+    id: 'deckungsbeitragsquote',
+    term: 'Deckungsbeitragsquote',
+    definition: 'Die Deckungsbeitragsquote zeigt den Deckungsbeitrag im Verhältnis zum Erlös.',
+    explanation: 'Sie wird meist in Prozent angegeben und zeigt, welcher Anteil eines Euro Umsatz nach den variablen Kosten übrig bleibt. Vergleichbar ist sie nur bei einheitlicher Kosten- und Erlösabgrenzung.',
   },
   {
     id: 'zu-versteuerndes-einkommen',
