@@ -136,6 +136,7 @@ const umsatzsteuer = {
     'gutschrift',
     'quittung',
     'eigenbeleg',
+    'vorsteuer',
   ],
   sources: [
     {

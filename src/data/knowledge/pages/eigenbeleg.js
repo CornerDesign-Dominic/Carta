@@ -153,6 +153,7 @@ const eigenbeleg = {
     'rechnung',
     'quittung',
     'gutschrift',
+    'vorsteuer',
   ],
   sources: [
     {

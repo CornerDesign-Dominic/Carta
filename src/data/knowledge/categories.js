@@ -81,7 +81,7 @@ export const knowledgeCategories = [
     landingSlug: 'steuern',
     title: 'Steuern',
     description: 'Steuerarten und steuerliche Grundlagen für den geschäftlichen Alltag.',
-    topicsTitle: 'Steuerarten',
+    topicsTitle: 'Steuerthemen',
     pages: [
       { slug: 'steuern', title: 'Steuern' },
       { slug: 'einkommensteuer', title: 'Einkommensteuer' },
@@ -92,6 +92,7 @@ export const knowledgeCategories = [
       { slug: 'gewerbesteuer', title: 'Gewerbesteuer' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
       { slug: 'kapitalertragsteuer', title: 'Kapitalertragsteuer' },
+      { slug: 'vorsteuer', title: 'Vorsteuer' },
     ],
     topicGroups: [
       {
@@ -118,6 +119,13 @@ export const knowledgeCategories = [
         topics: [
           { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
           { slug: 'kapitalertragsteuer', title: 'Kapitalertragsteuer' },
+        ],
+      },
+      {
+        id: 'steuerliche-grundlagen',
+        title: 'Steuerliche Grundlagen',
+        topics: [
+          { slug: 'vorsteuer', title: 'Vorsteuer' },
         ],
       },
     ],
