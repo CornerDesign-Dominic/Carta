@@ -19,7 +19,7 @@ const mahnwesen = {
   keyPoints: [],
   commonMistakes: [],
   faqs: [],
-  related: ['faelligkeit', 'verzugszinsen', 'mahnverfahren'],
+  related: ['faelligkeit', 'verzugszinsen', 'mahnverfahren', 'gerichtliches-mahnverfahren'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

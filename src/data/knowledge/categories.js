@@ -46,6 +46,7 @@ export const knowledgeCategories = [
       { slug: 'faelligkeit', title: 'Fälligkeit' },
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
       { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+      { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
     ],
     topicGroups: [
       {
@@ -61,6 +62,7 @@ export const knowledgeCategories = [
         title: 'Mahnung und Durchsetzung',
         topics: [
           { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+          { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
         ],
       },
     ],
