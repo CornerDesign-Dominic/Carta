@@ -336,6 +336,18 @@ export const glossaryEntries = [
     explanation: 'Er kann die Grundlage dafür bilden, eine Forderung zwangsweise durchzusetzen, zum Beispiel durch eine Zwangsvollstreckung.',
     important: 'Der Vollstreckungsbescheid ist bereits ein vollstreckbarer Titel. Gegen ihn bestehen jedoch weiterhin gesetzlich vorgesehene Rechtsbehelfe.',
   },
+  {
+    id: 'hemmung-der-verjaehrung',
+    term: 'Hemmung der Verjährung',
+    definition: 'Bei einer Hemmung läuft die Verjährungsfrist für einen bestimmten Zeitraum nicht weiter.',
+    explanation: 'Nach dem Ende der Hemmung wird die noch verbleibende Frist grundsätzlich weitergerechnet. Eine Hemmung unterscheidet sich vom Neubeginn der Verjährung.',
+  },
+  {
+    id: 'neubeginn-der-verjaehrung',
+    term: 'Neubeginn der Verjährung',
+    definition: 'Beim Neubeginn startet die Verjährungsfrist erneut.',
+    explanation: 'Er kann unter den gesetzlichen Voraussetzungen etwa durch ein Anerkenntnis oder bestimmte Vollstreckungshandlungen ausgelöst werden. Das ist nicht dasselbe wie eine Hemmung der Verjährung.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

@@ -106,7 +106,7 @@ const vollstreckungsbescheid = {
     { question: 'Ist ein Vollstreckungsbescheid ein vollstreckbarer Titel?', answer: 'Er ist einem für vorläufig vollstreckbar erklärten Versäumnisurteil gleichgestellt und kann die Grundlage für Vollstreckungsmaßnahmen sein.' },
     { question: 'Wie lange kann eine titulierte Forderung grundsätzlich durchgesetzt werden?', answer: 'Rechtskräftig festgestellte Ansprüche verjähren grundsätzlich in 30 Jahren. Für einzelne Bestandteile und wiederkehrende Leistungen können Ausnahmen gelten.' },
   ],
-  related: ['mahnwesen', 'gerichtliches-mahnverfahren', 'mahnbescheid'],
+  related: ['mahnwesen', 'gerichtliches-mahnverfahren', 'mahnbescheid', 'verjaehrung-von-forderungen'],
   sources: [
     { label: '§ 699 ZPO – Vollstreckungsbescheid', url: 'https://www.gesetze-im-internet.de/zpo/__699.html' },
     { label: '§ 700 ZPO – Einspruch gegen den Vollstreckungsbescheid', url: 'https://www.gesetze-im-internet.de/zpo/__700.html' },

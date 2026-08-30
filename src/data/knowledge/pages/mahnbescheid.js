@@ -105,7 +105,7 @@ const mahnbescheid = {
     { question: 'Prüft das Gericht, ob die Forderung berechtigt ist?', answer: 'Zu Beginn des Mahnverfahrens wird die Forderung nicht vollständig materiell geprüft. Bei einem Widerspruch kann ein normales Gerichtsverfahren folgen.' },
     { question: 'Hemmt ein Mahnbescheid die Verjährung?', answer: 'Die Zustellung eines Mahnbescheids kann die Verjährung unter gesetzlichen Voraussetzungen hemmen. Bei knappen Fristen ist eine sorgfältige Prüfung wichtig.' },
   ],
-  related: ['mahnwesen', 'gerichtliches-mahnverfahren', 'mahnverfahren', 'vollstreckungsbescheid'],
+  related: ['mahnwesen', 'gerichtliches-mahnverfahren', 'mahnverfahren', 'verjaehrung-von-forderungen', 'vollstreckungsbescheid'],
   sources: [
     { label: '§ 167 ZPO – Rückwirkung der Zustellung', url: 'https://www.gesetze-im-internet.de/zpo/__167.html' },
     { label: '§ 688 ZPO – Zulässigkeit des Mahnverfahrens', url: 'https://www.gesetze-im-internet.de/zpo/__688.html' },

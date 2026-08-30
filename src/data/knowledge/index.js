@@ -13,6 +13,7 @@ import umsatzsteuer from './pages/umsatzsteuer.js';
 import faelligkeit from './pages/faelligkeit.js';
 import zahlungsverzug from './pages/zahlungsverzug.js';
 import verzugszinsen from './pages/verzugszinsen.js';
+import verjaehrungVonForderungen from './pages/verjaehrung-von-forderungen.js';
 import zinsen from './pages/zinsen.js';
 import zinseszins from './pages/zinseszins.js';
 import breakEvenPoint from './pages/break-even-point.js';
@@ -55,6 +56,7 @@ export const knowledgePages = {
   'faelligkeit': faelligkeit,
   'zahlungsverzug': zahlungsverzug,
   'verzugszinsen': verzugszinsen,
+  'verjaehrung-von-forderungen': verjaehrungVonForderungen,
   'zinsen': zinsen,
   'zinseszins': zinseszins,
   'break-even-point': breakEvenPoint,

@@ -116,7 +116,7 @@ const zahlungsverzug = {
     { question: 'Welche Folgen kann Zahlungsverzug haben?', answer: 'Je nach Fall können Verzugszinsen, angemessene Mahnkosten und weitere Verzugsschäden in Betracht kommen.' },
     { question: 'Gilt für Unternehmen etwas anderes als für Verbraucher?', answer: 'Bei Verbrauchern braucht es für die 30-Tage-Regel einen besonderen Hinweis auf der Rechnung oder Zahlungsaufstellung. Im Übrigen sind Vertrag, Fälligkeit und die gesetzlichen Voraussetzungen maßgeblich.' },
   ],
-  related: ['mahnwesen', 'faelligkeit', 'zahlungserinnerung', 'mahnverfahren', 'verzugszinsen'],
+  related: ['mahnwesen', 'faelligkeit', 'zahlungserinnerung', 'mahnverfahren', 'verzugszinsen', 'verjaehrung-von-forderungen'],
   sources: [
     { label: '§ 280 BGB – Schadensersatz wegen Pflichtverletzung', url: 'https://www.gesetze-im-internet.de/bgb/__280.html' },
     { label: '§ 286 BGB – Verzug des Schuldners', url: 'https://www.gesetze-im-internet.de/bgb/__286.html' },

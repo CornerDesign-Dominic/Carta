@@ -46,6 +46,7 @@ export const knowledgeCategories = [
       { slug: 'faelligkeit', title: 'Fälligkeit' },
       { slug: 'zahlungsverzug', title: 'Zahlungsverzug' },
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
+      { slug: 'verjaehrung-von-forderungen', title: 'Verjährung von Forderungen' },
       { slug: 'mahnverfahren', title: 'Mahnung' },
       { slug: 'zahlungserinnerung', title: 'Zahlungserinnerung' },
       { slug: 'inkasso', title: 'Inkasso' },
