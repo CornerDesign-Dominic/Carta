@@ -122,6 +122,30 @@ const fuehrungsstile = {
         ],
       },
       {
+        heading: 'Führungsmodelle als Vertiefung',
+        paragraphs: [
+          'Die allgemeine Einteilung in autoritäre, kooperative oder situative Führung ist ein Einstieg. Einzelne Führungsmodelle betrachten Führung aus unterschiedlichen Blickwinkeln. Sie beschreiben zum Beispiel das Verhältnis von Aufgaben- und Mitarbeiterorientierung, den Entscheidungsspielraum oder die Passung zwischen Führungsverhalten und Situation.',
+          [
+            'Zu den verbreiteten Ansätzen zählen die ',
+            { type: 'link', href: '/wissen/fuehrungsstile-lewin', text: 'Führungsstile nach Lewin' },
+            ', das ',
+            { type: 'link', href: '/wissen/2d-fuehrungsmodell', text: '2D-Führungsmodell des Ohio-State-Ansatzes' },
+            ', das ',
+            { type: 'link', href: '/wissen/managerial-grid', text: 'Managerial Grid nach Blake und Mouton' },
+            ', das ',
+            { type: 'link', href: '/wissen/3d-fuehrungsmodell-reddin', text: '3D-Führungsmodell nach Reddin' },
+            ', das Reifegradmodell nach Hersey und Blanchard, das Führungskontinuum nach Tannenbaum und Schmidt sowie Fiedlers Kontingenzmodell. Transformationale und transaktionale Führung setzen wiederum andere Schwerpunkte. Die Modelle sind Orientierungshilfen und keine Garantie für einen bestimmten Führungserfolg.',
+          ],
+        ],
+        list: [
+          'Lewin: unterscheidet grundlegend autoritäre, demokratische und Laissez-faire-Führung',
+          'Ohio-State-Ansatz und Managerial Grid: betrachten Aufgaben- und Mitarbeiterorientierung',
+          'Reddin, Hersey und Blanchard sowie Fiedler: beziehen situative Bedingungen auf unterschiedliche Weise ein',
+          'Tannenbaum und Schmidt: ordnen den Entscheidungsspielraum zwischen Führungskraft und Mitarbeitenden ein',
+          'Transformationale und transaktionale Führung: unterscheiden unter anderem Zukunftsorientierung und Entwicklung von klar geregeltem Leistungsaustausch',
+        ],
+      },
+      {
         heading: 'Vor- und Nachteile im Zusammenhang betrachten',
         paragraphs: [
           'Klare Anweisung kann Geschwindigkeit und Sicherheit erhöhen, zugleich aber Beteiligung und Lernmöglichkeiten begrenzen. Kooperative Führung nutzt Wissen und stärkt Mitwirkung, kann bei unklaren Regeln jedoch Entscheidungen verzögern. Großer Freiraum unterstützt Selbstständigkeit, wenn Ziel, Kompetenz und Verantwortung zusammenpassen; ohne Orientierung kann er als Desinteresse wirken.',
@@ -187,7 +211,7 @@ const fuehrungsstile = {
     { question: 'Ist Laissez-faire dasselbe wie Delegation?', answer: 'Nein. Gute Delegation klärt Ergebnis, Befugnisse, Ressourcen, Rückmeldung und Kontrolle. Laissez-faire kann dagegen durch sehr geringe Führung und Orientierung geprägt sein.' },
     { question: 'Können transformationale und transaktionale Führung kombiniert werden?', answer: 'Ja. Zukunftsorientierung und Entwicklung können mit klaren Erwartungen, Rollen und Rückmeldungen verbunden werden.' },
   ],
-  related: ['mitarbeitermotivation', 'delegation', 'mitarbeitergespraeche', 'konfliktmanagement', 'verantwortlichkeiten-zustaendigkeiten'],
+  related: ['fuehrungsstile-lewin', '2d-fuehrungsmodell', 'managerial-grid', '3d-fuehrungsmodell-reddin', 'mitarbeitermotivation', 'delegation', 'mitarbeitergespraeche', 'konfliktmanagement', 'verantwortlichkeiten-zustaendigkeiten'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

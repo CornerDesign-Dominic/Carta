@@ -6,6 +6,42 @@
  */
 export const glossaryEntries = [
   {
+    id: 'konflikt',
+    term: 'Konflikt',
+    definition: 'Ein Konflikt entsteht, wenn Beteiligte Interessen, Ziele, Rollen, Bewertungen oder Handlungen als unvereinbar erleben und dies ihre Zusammenarbeit beeinflusst.',
+    explanation: 'Eine unterschiedliche Meinung allein ist noch kein eskalierter Konflikt. Konflikte können mehrere Ursachen und Ebenen gleichzeitig haben.',
+  },
+  {
+    id: 'konfliktmanagement',
+    term: 'Konfliktmanagement',
+    definition: 'Konfliktmanagement umfasst Verfahren, Rollen und Maßnahmen zum Erkennen, Klären und Bearbeiten von Konflikten.',
+    explanation: 'Ziel kann eine Vereinbarung, eine organisatorische Änderung oder eine nachvollziehbare Entscheidung sein. Nicht jeder Konflikt lässt sich vollständig auflösen.',
+  },
+  {
+    id: 'position-im-konflikt',
+    term: 'Position im Konflikt',
+    definition: 'Eine Position ist eine konkrete Forderung, Aussage oder vorgeschlagene Lösung in einem Konflikt.',
+    explanation: 'Hinter einer Position können mehrere Interessen stehen. Ihre Klärung kann zusätzliche Lösungsoptionen sichtbar machen.',
+  },
+  {
+    id: 'interesse-im-konflikt',
+    term: 'Interesse im Konflikt',
+    definition: 'Ein Interesse ist ein Anliegen, Bedürfnis oder Ziel, das hinter einer Position im Konflikt steht.',
+    explanation: 'Interessen zu verstehen bedeutet nicht automatisch, ihnen zuzustimmen. Es verbessert die Grundlage für Optionen und Entscheidungen.',
+  },
+  {
+    id: 'moderation',
+    term: 'Moderation',
+    definition: 'Moderation strukturiert ein Gespräch oder einen gemeinsamen Arbeits- und Entscheidungsprozess.',
+    explanation: 'Sie hilft, Themen, Beiträge und nächste Schritte zu ordnen. Rolle, Auftrag und mögliche eigene Entscheidungsbefugnisse der Moderation sollten transparent sein.',
+  },
+  {
+    id: 'mediation',
+    term: 'Mediation',
+    definition: 'Mediation ist ein strukturiertes Verfahren, in dem eine neutrale, allparteiliche Person Beteiligte bei einer eigenverantwortlichen Konfliktlösung unterstützt.',
+    explanation: 'Sie setzt grundsätzlich ausreichende Bereitschaft zur Teilnahme voraus und ersetzt weder notwendige Schutzmaßnahmen noch gesetzlich oder organisatorisch erforderliche Entscheidungen.',
+  },
+  {
     id: 'arbeitsmotivation',
     term: 'Arbeitsmotivation',
     definition: 'Arbeitsmotivation beschreibt Beweggründe sowie Richtung, Intensität und Ausdauer von Verhalten bei der Arbeit.',
@@ -52,6 +88,48 @@ export const glossaryEntries = [
     term: 'Zielvereinbarung',
     definition: 'Eine Zielvereinbarung ist eine abgestimmte Festlegung zu einem erwarteten Ergebnis, Zeitraum und Verfahren zur Bewertung der Zielerreichung.',
     explanation: 'Sie sollte außerdem Verantwortung, Ressourcen, Abhängigkeiten und Kontrollpunkte klären. Rechtliche und vergütungsbezogene Wirkungen hängen von der konkreten Regelung ab.',
+  },
+  {
+    id: 'lieferantenentwicklung',
+    term: 'Lieferantenentwicklung',
+    definition: 'Lieferantenentwicklung bezeichnet die gezielte Zusammenarbeit mit bestehenden Lieferanten, um Leistung, Prozesse oder Zusammenarbeit zu verbessern.',
+    explanation: 'Mögliche Ziele sind bessere Qualität, höhere Liefertreue, zuverlässigere Kapazitäten, geringere Gesamtkosten oder transparentere Kommunikation. Maßnahmen und Verantwortung sollten nachvollziehbar vereinbart und regelmäßig überprüft werden.',
+  },
+  {
+    id: 'beschaffung',
+    term: 'Beschaffung',
+    definition: 'Beschaffung umfasst die Planung, Auswahl, Bestellung und Bereitstellung von Gütern und Leistungen, die ein Unternehmen benötigt.',
+    explanation: 'Sie verbindet Bedarf, Markt, Lieferanten, Bestellung, Lieferung und Kontrolle. Ziele sind unter anderem Versorgungssicherheit, Qualität, Kosten, Zeit und Flexibilität.',
+  },
+  {
+    id: 'beschaffungsart',
+    term: 'Beschaffungsart',
+    definition: 'Eine Beschaffungsart beschreibt, wann und in welchem Umfang ein Unternehmen Güter oder Leistungen im Verhältnis zum Bedarf beschafft.',
+    explanation: 'Zum Beispiel kann erst im konkreten Bedarfsfall, auf Vorrat, fertigungssynchron oder bezogen auf einen Kundenauftrag beschafft werden. Die Wahl beeinflusst Bestände, Kosten, Flexibilität und Versorgungsrisiken.',
+  },
+  {
+    id: 'beschaffungsprinzip',
+    term: 'Beschaffungsprinzip',
+    definition: 'Ein Beschaffungsprinzip beschreibt, wie ein Unternehmen seine Bezugsquellen und Lieferbeziehungen grundsätzlich gestaltet.',
+    explanation: 'Dazu gehören etwa die Anzahl der Lieferanten, deren geografische Lage oder der Umfang der bezogenen Leistung. Es ist von der Beschaffungsart zu unterscheiden, die Zeitpunkt und Menge der Bedarfsdeckung beschreibt.',
+  },
+  {
+    id: 'make-or-buy',
+    term: 'Make-or-Buy',
+    definition: 'Make-or-Buy ist die Entscheidung, eine Leistung selbst zu erstellen oder von einem externen Anbieter zu beziehen.',
+    explanation: 'Neben Kosten sind dafür unter anderem Kapazität, Qualität, Know-how, Flexibilität, strategische Bedeutung und Abhängigkeit von Lieferanten relevant.',
+  },
+  {
+    id: 'strategischer-einkauf',
+    term: 'Strategischer Einkauf',
+    definition: 'Strategischer Einkauf gestaltet Beschaffungsmärkte, Lieferantenstruktur, Kosten und Risiken langfristig.',
+    explanation: 'Er legt unter anderem fest, welche Bezugsquellen, Vertrags- und Sourcing-Strategien zur Versorgungssicherheit und den Unternehmenszielen passen. Er ist vom operativen Einkauf mit seinen laufenden Bestellungen und Terminaufgaben zu unterscheiden.',
+  },
+  {
+    id: 'operativer-einkauf',
+    term: 'Operativer Einkauf',
+    definition: 'Operativer Einkauf deckt den konkreten Bedarf im Tagesgeschäft und steuert die laufende Abwicklung von Bestellungen.',
+    explanation: 'Er verarbeitet Bedarfsmeldungen, holt Informationen ein, bestellt, überwacht Termine, klärt Abweichungen und stimmt sich mit Lager, Wareneingang und Buchhaltung ab.',
   },
   {
     id: 'zielvorgabe',
@@ -106,6 +184,18 @@ export const glossaryEntries = [
     term: 'Situative Führung',
     definition: 'Situative Führung passt Führungsverhalten begründet an Aufgabe, Risiko, Erfahrung und weitere Bedingungen an.',
     explanation: 'Sie sollte auf beobachtbaren Anforderungen beruhen und nicht auf pauschalen Persönlichkeitsetiketten. Änderungen von Spielraum oder Kontrolle müssen nachvollziehbar sein.',
+  },
+  {
+    id: 'aufgabenorientierung',
+    term: 'Aufgabenorientierung',
+    definition: 'Aufgabenorientierung beschreibt Führungsverhalten, das Ziele, Rollen, Abläufe, Qualitätsmaßstäbe und Kontrollen strukturiert.',
+    explanation: 'Im Ohio-State-Ansatz wird diese Dimension Initiating Structure genannt. Eine hohe Ausprägung kann mit hoher Mitarbeiterorientierung verbunden werden.',
+  },
+  {
+    id: 'mitarbeiterorientierung',
+    term: 'Mitarbeiterorientierung',
+    definition: 'Mitarbeiterorientierung beschreibt Führungsverhalten, das Respekt, Vertrauen, Zugänglichkeit und die Qualität der Arbeitsbeziehung berücksichtigt.',
+    explanation: 'Im Ohio-State-Ansatz wird diese Dimension Consideration genannt. Sie schließt klare Erwartungen und sachliche Kritik nicht aus.',
   },
   {
     id: 'transformationale-fuehrung',
@@ -468,6 +558,12 @@ export const glossaryEntries = [
     explanation: 'Die gemeinsame Darstellung unterstützt strategische Überlegungen zu Positionen, Abhängigkeiten und Ressourceneinsatz. Sie vereinfacht die Wirklichkeit und benötigt ergänzende Analysen.',
   },
   {
+    id: 'entscheidungsmatrix',
+    term: 'Entscheidungsmatrix',
+    definition: 'Eine Entscheidungsmatrix stellt mehrere Alternativen und ihre Bewertungen anhand festgelegter Kriterien tabellarisch gegenüber.',
+    explanation: 'Sie kann mit Ja/Nein-Angaben, Punkten oder Gewichtungen arbeiten. Kriterien, Skala und Bewertungen müssen transparent sein, weil das Ergebnis keine objektive Wahrheit darstellt.',
+  },
+  {
     id: 'gewichtung',
     term: 'Gewichtung',
     definition: 'Eine Gewichtung legt fest, wie stark ein Kriterium in eine Gesamtbewertung eingeht.',
@@ -478,6 +574,24 @@ export const glossaryEntries = [
     term: 'ABC-Analyse',
     definition: 'Die ABC-Analyse ordnet Objekte anhand eines festgelegten Wertbeitrags in Klassen mit unterschiedlicher Bedeutung ein.',
     explanation: 'Die Grenzen der A-, B- und C-Klassen richten sich nach Analysezweck und Daten. Zusätzliche Kriterien können nötig sein, wenn der Wertbeitrag Risiken oder strategische Bedeutung nicht abbildet.',
+  },
+  {
+    id: 'xyz-analyse',
+    term: 'XYZ-Analyse',
+    definition: 'Die XYZ-Analyse ordnet Materialien oder andere Bedarfsobjekte nach der Regelmäßigkeit und Prognostizierbarkeit ihres Verbrauchs ein.',
+    explanation: 'X steht für relativ gleichmäßigen, Y für schwankenden, trend- oder saisonabhängigen und Z für unregelmäßigen Bedarf. Die konkreten Klassengrenzen hängen von Methode und Unternehmen ab.',
+  },
+  {
+    id: 'bedarfsregelmaessigkeit',
+    term: 'Bedarfsregelmäßigkeit',
+    definition: 'Bedarfsregelmäßigkeit beschreibt, wie gleichmäßig sich der Bedarf eines Objekts über vergleichbare Zeiträume verteilt.',
+    explanation: 'Trend, Saison, Nullverbräuche und Sondereffekte beeinflussen die Beurteilung. Regelmäßigkeit ist von der wertmäßigen Bedeutung des Objekts zu unterscheiden.',
+  },
+  {
+    id: 'abc-xyz-matrix',
+    term: 'ABC-XYZ-Matrix',
+    definition: 'Die ABC-XYZ-Matrix kombiniert die Wertklassen A bis C mit den Planbarkeitsklassen X bis Z zu neun Feldern.',
+    explanation: 'Klassen wie AX oder CZ zeigen gleichzeitig Wertbedeutung und Bedarfsregelmäßigkeit. Konkrete Bestands- oder Beschaffungsmaßnahmen erfordern zusätzliche Kriterien.',
   },
   {
     id: 'relativer-marktanteil',

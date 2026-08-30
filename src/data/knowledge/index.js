@@ -89,6 +89,7 @@ import rentabilitaetsvergleichsrechnung from './pages/rentabilitaetsvergleichsre
 import amortisationsrechnung from './pages/amortisationsrechnung.js';
 import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
+import kapitalwertmethode from './pages/kapitalwertmethode.js';
 import kennzahlen from './pages/kennzahlen.js';
 import roi from './pages/roi.js';
 import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
@@ -111,6 +112,13 @@ import verschuldungsgrad from './pages/verschuldungsgrad.js';
 import anlagendeckungsgrad from './pages/anlagendeckungsgrad.js';
 import zinsdeckungsgrad from './pages/zinsdeckungsgrad.js';
 import einkaufVerkauf from './pages/einkauf-verkauf.js';
+import beschaffung from './pages/beschaffung.js';
+import beschaffungsarten from './pages/beschaffungsarten.js';
+import beschaffungsprinzipien from './pages/beschaffungsprinzipien.js';
+import makeOrBuy from './pages/make-or-buy.js';
+import strategischerEinkauf from './pages/strategischer-einkauf.js';
+import operativerEinkauf from './pages/operativer-einkauf.js';
+import lieferantenentwicklung from './pages/lieferantenentwicklung.js';
 import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
 import unternehmensziele from './pages/unternehmensziele.js';
 import visionMissionLeitbild from './pages/vision-mission-leitbild.js';
@@ -122,6 +130,7 @@ import eisenhowerMatrix from './pages/eisenhower-matrix.js';
 import abcAnalyse from './pages/abc-analyse.js';
 import nutzwertanalyse from './pages/nutzwertanalyse.js';
 import portfolioanalyse from './pages/portfolioanalyse.js';
+import entscheidungsmatrix from './pages/entscheidungsmatrix.js';
 import swotAnalyse from './pages/swot-analyse.js';
 import zielsystemeSmartZiele from './pages/zielsysteme-smart-ziele.js';
 import aufbauorganisation from './pages/aufbauorganisation.js';
@@ -131,10 +140,15 @@ import prokura from './pages/prokura.js';
 import handlungsvollmacht from './pages/handlungsvollmacht.js';
 import verantwortlichkeitenZustaendigkeiten from './pages/verantwortlichkeiten-zustaendigkeiten.js';
 import fuehrungsstile from './pages/fuehrungsstile.js';
+import fuehrungsstileLewin from './pages/fuehrungsstile-lewin.js';
+import zweiDFuehrungsmodell from './pages/2d-fuehrungsmodell.js';
+import managerialGrid from './pages/managerial-grid.js';
+import dreiDFuehrungsmodellReddin from './pages/3d-fuehrungsmodell-reddin.js';
 import mitarbeitergespraeche from './pages/mitarbeitergespraeche.js';
 import zielvereinbarungen from './pages/zielvereinbarungen.js';
 import delegation from './pages/delegation.js';
 import mitarbeitermotivation from './pages/mitarbeitermotivation.js';
+import konfliktmanagement from './pages/konfliktmanagement.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
 import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
@@ -249,14 +263,15 @@ export const knowledgePages = {
   eigenfinanzierung,
   fremdfinanzierung,
   'innen-aussenfinanzierung': innenAussenfinanzierung,
+  kontokorrentkredit,
+  lieferantenkredit,
+  factoring,
   gewinnvergleichsrechnung,
   rentabilitaetsvergleichsrechnung,
   amortisationsrechnung,
-  factoring,
-  lieferantenkredit,
-  kontokorrentkredit,
   'statische-investitionsrechnung': statischeInvestitionsrechnung,
   'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
+  kapitalwertmethode,
   kennzahlen,
   roi,
   eigenkapitalrentabilitaet,
@@ -279,6 +294,13 @@ export const knowledgePages = {
   anlagendeckungsgrad,
   zinsdeckungsgrad,
   'einkauf-verkauf': einkaufVerkauf,
+  beschaffung,
+  beschaffungsarten,
+  beschaffungsprinzipien,
+  'make-or-buy': makeOrBuy,
+  'strategischer-einkauf': strategischerEinkauf,
+  'operativer-einkauf': operativerEinkauf,
+  lieferantenentwicklung,
   unternehmensfuehrung,
   unternehmensziele,
   'vision-mission-leitbild': visionMissionLeitbild,
@@ -290,6 +312,7 @@ export const knowledgePages = {
   'abc-analyse': abcAnalyse,
   nutzwertanalyse,
   portfolioanalyse,
+  entscheidungsmatrix,
   'swot-analyse': swotAnalyse,
   'zielsysteme-smart-ziele': zielsystemeSmartZiele,
   aufbauorganisation,
@@ -299,10 +322,15 @@ export const knowledgePages = {
   handlungsvollmacht,
   'verantwortlichkeiten-zustaendigkeiten': verantwortlichkeitenZustaendigkeiten,
   fuehrungsstile,
+  'fuehrungsstile-lewin': fuehrungsstileLewin,
+  '2d-fuehrungsmodell': zweiDFuehrungsmodell,
+  'managerial-grid': managerialGrid,
+  '3d-fuehrungsmodell-reddin': dreiDFuehrungsmodellReddin,
   mitarbeitergespraeche,
   zielvereinbarungen,
   delegation,
   mitarbeitermotivation,
+  konfliktmanagement,
   'marketing-vertrieb': marketingVertrieb,
   digitalisierung,
   geschaeftsvorfaelle,

@@ -3,177 +3,131 @@ import { defaultDisclaimer } from '../shared.js';
 const abcAnalyse = {
   slug: 'abc-analyse',
   category: 'Unternehmensführung',
-  title: 'ABC-Analyse',
-  description: 'Objekte mit der ABC-Analyse nach ihrem Wertbeitrag priorisieren und Kunden, Produkte, Materialien oder Lagerbestände nachvollziehbar einteilen.',
+  title: 'ABC- & XYZ-Analyse',
+  description: 'Materialien und andere Objekte mit ABC- und XYZ-Analyse nach Wertbedeutung und Bedarfsregelmäßigkeit einteilen und gemeinsam steuern.',
   seo: {
-    title: 'ABC-Analyse einfach erklärt | Belege24',
-    description: 'ABC-Analyse Schritt für Schritt: Wertanteile berechnen, kumulieren, Klassen bilden und Ergebnisse richtig interpretieren.',
+    title: 'ABC- & XYZ-Analyse einfach erklärt | Belege24',
+    description: 'ABC- und XYZ-Analyse getrennt verstehen und in einer 3×3-Matrix kombinieren – mit Formeln, Materialbeispiel und Grenzen.',
     canonicalPath: '/wissen/abc-analyse',
   },
   article: {
-    intro: 'Die ABC-Analyse teilt Kunden, Produkte, Materialien oder andere Objekte nach ihrem Beitrag zu einer festgelegten Wertgröße in A-, B- und C-Klassen ein. So werden besonders bedeutende Positionen sichtbar und können gezielter gesteuert werden. Die Klassengrenzen hängen vom Zweck und von den Daten ab; feste Prozentwerte gelten nicht universell.',
+    intro: 'Die ABC-Analyse ordnet Objekte nach ihrer wertmäßigen Bedeutung, die XYZ-Analyse nach der Regelmäßigkeit und Planbarkeit ihres Bedarfs. Gemeinsam zeigen beide Verfahren, welche Materialien oder Artikel zugleich wichtig und gut oder schwer planbar sind. Klassengrenzen müssen zum Unternehmen, zur Datenlage und zum Analysezweck passen; starre allgemeingültige Schwellen gibt es nicht.',
     sections: [
       {
-        heading: 'Was ist die ABC-Analyse?',
+        heading: 'ABC- und XYZ-Analyse im Überblick',
         paragraphs: [
-          [
-            'Die ',
-            { type: 'glossary', id: 'abc-analyse', text: 'ABC-Analyse' },
-            ' ist ein Verfahren zur Priorisierung. Sie sortiert betrachtete Objekte nach einer klar definierten Wert- oder Bedeutungsgröße und fasst sie anschließend in drei Klassen zusammen.',
-          ],
-          'A-Objekte haben in der gewählten Auswertung den höchsten Wertbeitrag und verdienen meist besondere Aufmerksamkeit. B-Objekte bilden einen mittleren Bereich. C-Objekte tragen einzeln häufig wenig bei, können zusammen aber zahlreich sein und erheblichen Bearbeitungsaufwand verursachen.',
+          'Beide Verfahren teilen dieselben Objekte aus unterschiedlichen Blickwinkeln ein. Die ABC-Analyse beantwortet: Wie wichtig beziehungsweise wertmäßig bedeutend ist ein Objekt? Die XYZ-Analyse beantwortet: Wie regelmäßig beziehungsweise planbar ist sein Bedarf?',
+          'Die Kombination beantwortet damit eine dritte Frage: Wie wichtig und gleichzeitig wie planbar ist ein Objekt? Diese Information kann Einkauf, Lager und Materialwirtschaft bei Bestellrhythmus, Bestandskontrolle und Prognoseaufwand unterstützen.',
+        ],
+        formulaCards: [{ label: 'Schema', title: 'Zwei Perspektiven verbinden', formula: 'ABC: Wertbedeutung + XYZ: Planbarkeit → ABC-XYZ-Klasse', description: 'Die kombinierte Klasse ergänzt die Analyse. Sie gibt keine automatische Bestell- oder Bestandsentscheidung vor.' }],
+      },
+      {
+        heading: 'ABC-Analyse: nach Wert und Bedeutung einteilen',
+        paragraphs: [
+          ['Die ', { type: 'glossary', id: 'abc-analyse', text: 'ABC-Analyse' }, ' sortiert Objekte nach einer festgelegten Wertgröße und bildet kumulierte Anteile. A-Objekte leisten den höchsten Beitrag zur gewählten Größe, B-Objekte einen mittleren und C-Objekte einen niedrigeren Beitrag.'],
+          'Bei Materialien wird häufig der jährliche Verbrauchswert verwendet. Bei Kunden oder Produkten können Umsatz, Deckungsbeitrag oder eine andere klar definierte Größe sinnvoll sein. Die Klassifizierung sagt nur etwas über diese gewählte Größe aus und nicht automatisch über Risiko oder strategische Bedeutung.',
         ],
         formulaCards: [
-          {
-            label: 'Schema',
-            title: 'Ablauf der ABC-Analyse',
-            formula: 'Wert ermitteln → sortieren → kumulieren → Klassen bilden',
-            description: 'Vor dem ersten Schritt müssen Analyseziel, betrachtete Objekte, Wertgröße und Zeitraum eindeutig feststehen.',
-          },
+          { label: 'Schema', title: 'Ablauf der ABC-Analyse', formula: 'Wert ermitteln → absteigend sortieren → Anteile kumulieren → A-, B- und C-Klassen bilden', description: 'Objekte, Wertgröße, Zeitraum und Klassengrenzen werden vor der Auswertung nachvollziehbar festgelegt.' },
+          { label: 'Formel', title: 'Wertanteil eines Objekts', formula: 'Wertanteil = Einzelwert / Gesamtwert × 100', description: 'Einzelwert und Gesamtwert müssen dieselbe Definition und denselben Zeitraum verwenden.' },
         ],
       },
       {
-        heading: 'Mengenanteil und Wertanteil unterscheiden',
+        heading: 'A-, B- und C-Klassen verstehen',
         paragraphs: [
-          'Der Mengenanteil zeigt, wie viele Objekte eine Position oder Klasse im Verhältnis zur Gesamtzahl umfasst. Der Wertanteil zeigt dagegen ihren Anteil an der gewählten Wertgröße, beispielsweise Umsatz, Deckungsbeitrag, Verbrauchswert oder Lagerwert.',
-          'Eine kleine Zahl von Materialien kann einen großen Anteil am gesamten Verbrauchswert ausmachen. Umgekehrt können viele preisgünstige Teile zusammen nur einen kleinen Wertanteil haben. Genau diese mögliche Konzentration macht die ABC-Analyse sichtbar.',
-        ],
-        formulaCards: [
-          {
-            label: 'Formel',
-            title: 'Wertanteil eines Objekts',
-            formula: 'Wertanteil = Einzelwert / Gesamtwert × 100',
-            description: 'Einzelwert und Gesamtwert müssen auf derselben Definition und demselben Zeitraum beruhen.',
-          },
-          {
-            label: 'Formel',
-            title: 'Mengenanteil einer Klasse',
-            formula: 'Mengenanteil = Anzahl der Objekte in der Klasse / Gesamtzahl der Objekte × 100',
-            description: 'Der Mengenanteil wird erst nach der Klasseneinteilung für A, B und C zusammengefasst.',
-          },
-        ],
-      },
-      {
-        heading: 'Typische Anwendungsbereiche',
-        paragraphs: [
-          'Bei Kunden kann nach Umsatz, Deckungsbeitrag oder einem nachvollziehbar definierten Kundenwert sortiert werden. Bei Produkten sind Umsatz, Ergebnisbeitrag oder Absatz mögliche Größen. Welche Größe sinnvoll ist, hängt von der konkreten Entscheidung ab.',
-          'In Einkauf und Lager werden Materialien häufig nach ihrem jährlichen Verbrauchswert betrachtet. Dafür kann die Verbrauchsmenge mit dem Einstandspreis multipliziert werden. A-Materialien können eine engere Planung und Kontrolle rechtfertigen, während bei C-Materialien einfache und aufwandsarme Verfahren wichtiger sein können.',
+          'A-Objekte sind meist wenige Positionen mit hohem kumuliertem Wertanteil. Sie können eine engere Planung, Kontrolle und Lieferantenbeobachtung rechtfertigen. B-Objekte liegen im mittleren Bereich. C-Objekte sind häufig zahlreich, tragen einzeln aber weniger zum betrachteten Wert bei; hier können einfache, aufwandsarme Abläufe sinnvoll sein.',
+          'Typische Prozentgrenzen sind nur Orientierung. Je nach Verteilung, Branche und geplanter Maßnahme können Unternehmen andere Grenzen wählen. Liegen mehrere Werte eng beieinander, sollte eine willkürliche Trennung keine künstliche Genauigkeit vortäuschen.',
         ],
       },
       {
         heading: 'ABC-Analyse Schritt für Schritt',
-        paragraphs: ['Eine nachvollziehbare ABC-Analyse folgt einem einheitlichen Ablauf. Die einzelnen Schritte sollten dokumentiert werden, damit die Einteilung später geprüft und mit einer neuen Periode verglichen werden kann.'],
-        list: [
-          'Analyseziel, Objekte, Wertgröße und Zeitraum festlegen',
-          'Wert jedes Objekts auf einer einheitlichen Datenbasis ermitteln',
-          'Gesamtwert bilden und den Wertanteil je Objekt berechnen',
-          'Objekte absteigend nach ihrem Wert oder ihrer Bedeutung sortieren',
-          'Wertanteile von oben nach unten kumulieren',
-          'sachgerechte Grenzen für A-, B- und C-Klasse festlegen',
-          'Mengen- und Wertanteile der Klassen auswerten',
-          'Maßnahmen ableiten und Einteilung regelmäßig überprüfen',
+        paragraphs: ['Die Vorgehensweise bleibt kurz und nachvollziehbar:'],
+        list: ['Analyseziel, Objekte, Wertgröße und Zeitraum festlegen', 'Wert je Objekt auf einheitlicher Basis ermitteln', 'Objekte absteigend nach Wert sortieren', 'Einzel- und kumulierte Wertanteile berechnen', 'begründete Grenzen für A, B und C festlegen', 'Klassen auswerten und regelmäßig aktualisieren'],
+      },
+      {
+        heading: 'XYZ-Analyse: nach Regelmäßigkeit und Planbarkeit einteilen',
+        paragraphs: [
+          ['Die ', { type: 'glossary', id: 'xyz-analyse', text: 'XYZ-Analyse' }, ' untersucht die zeitliche Verteilung von Verbrauch oder Bedarf. Sie ordnet Objekte danach ein, wie regelmäßig sie benötigt werden und wie zuverlässig sich ihr zukünftiger Bedarf aus Vergangenheitsdaten prognostizieren lässt.'],
+          ['Die ', { type: 'glossary', id: 'bedarfsregelmaessigkeit', text: 'Bedarfsregelmäßigkeit' }, ' wird anhand ausreichend vieler, vergleichbarer Perioden beurteilt. Neben statistischen Streuungsmaßen können Trend, Saison, einzelne Nullverbräuche und bekannte zukünftige Änderungen berücksichtigt werden. Die konkrete Methode muss dokumentiert sein.'],
+        ],
+        subsections: [
+          { heading: 'X: gleichmäßig und gut planbar', paragraphs: ['X-Objekte weisen einen relativ gleichmäßigen Verbrauch auf. Abweichungen zwischen den Perioden sind im gewählten Betrachtungsrahmen gering, sodass Prognosen häufig vergleichsweise verlässlich sind. Auch hier können Lieferzeit und Ausfallfolgen zusätzliche Bestände erforderlich machen.'] },
+          { heading: 'Y: schwankend, trend- oder saisonabhängig', paragraphs: ['Y-Objekte schwanken stärker oder folgen erkennbaren Trends beziehungsweise saisonalen Mustern. Sie können planbar sein, wenn das Muster verstanden und im Prognoseverfahren berücksichtigt wird. Ein einfacher Durchschnitt kann saisonale Spitzen verdecken.'] },
+          { heading: 'Z: unregelmäßig und schwer planbar', paragraphs: ['Z-Objekte zeigen unregelmäßige, sporadische oder stark schwankende Bedarfe. Vergangenheitswerte liefern dann nur begrenzte Hinweise für den nächsten Zeitraum. Projektbedarfe, selten benötigte Ersatzteile oder einmalige Sondereffekte können in diese Gruppe fallen.'] },
         ],
       },
       {
-        heading: 'Beispiel: fünf Kunden nach Umsatz einteilen',
+        heading: 'XYZ-Klassen und Schwellen festlegen',
         paragraphs: [
-          'Ein kleiner Betrieb analysiert fünf Kunden anhand des Jahresumsatzes. Die Werte werden absteigend sortiert und die Anteile kumuliert. Für dieses Beispiel legt der Betrieb A bis einschließlich 60 Prozent, B bis einschließlich 90 Prozent und C für den Rest fest. Diese Grenzen dienen nur der nachvollziehbaren Beispielrechnung.',
-        ],
-        exampleCards: [
-          {
-            title: 'Kundenumsätze sortieren und kumulieren',
-            paragraphs: [
-              'Die Umsätze betragen: Kunde Nord 60.000 €, Kunde West 20.000 €, Kunde Süd 10.000 €, Kunde Ost 6.000 € und Kunde Mitte 4.000 €. Der Gesamtumsatz beträgt 100.000 €. Damit entsprechen die Einzelanteile direkt 60 %, 20 %, 10 %, 6 % und 4 %.',
-            ],
-            effects: [
-              'Kunde Nord: 60.000 € = 60 %; kumuliert 60 % → A',
-              'Kunde West: 20.000 € = 20 %; kumuliert 80 % → B',
-              'Kunde Süd: 10.000 € = 10 %; kumuliert 90 % → B',
-              'Kunde Ost: 6.000 € = 6 %; kumuliert 96 % → C',
-              'Kunde Mitte: 4.000 € = 4 %; kumuliert 100 % → C',
-              'Ergebnis: 1 A-Kunde, 2 B-Kunden und 2 C-Kunden nach der für dieses Beispiel gewählten Regel',
-            ],
-          },
+          'Unternehmen können die Einteilung anhand fachlich begründeter Regeln, statistischer Kennzahlen oder einer Kombination vornehmen. Der Variationskoeffizient wird häufig als Verhältnis von Standardabweichung zu Mittelwert verwendet, ist bei sehr kleinen Mittelwerten, vielen Nullwerten, Trends oder saisonalen Mustern aber nur eingeschränkt aussagekräftig.',
+          'Deshalb wird hier keine allgemeine Formelgrenze für X, Y oder Z vorgegeben. Schwellen unterscheiden sich je nach Datenrhythmus, Branche, Materialart und Prognoseverfahren. Sie sollten an historischen Daten getestet, dokumentiert und bei veränderten Bedingungen überprüft werden.',
         ],
       },
       {
-        heading: 'Klassen und Grenzen festlegen',
+        heading: 'Typische Einsatzbereiche der XYZ-Analyse',
         paragraphs: [
-          'In Lehrbeispielen werden A-Objekte häufig als wenige Positionen mit hohem kumuliertem Wertanteil, B-Objekte als mittlerer Bereich und C-Objekte als viele Positionen mit niedrigerem Wertanteil beschrieben. Dafür finden sich unterschiedliche Orientierungswerte, etwa ungefähr 70 bis 80 Prozent kumulierter Wert für A und weitere 15 bis 20 Prozent für B.',
-          'Solche Werte sind keine verbindlichen Grenzen. Sie sollten an Verteilung, Analysezweck, Branche und mögliche Maßnahmen angepasst werden. Liegen mehrere Objekte dicht beieinander, kann eine starre Trennung sogar eine Genauigkeit vortäuschen, die in den Daten nicht vorhanden ist.',
+          'In Einkauf und Materialwirtschaft unterstützt die XYZ-Analyse die Auswahl geeigneter Bestell- und Prognoseverfahren. Regelmäßige X-Bedarfe lassen sich häufig anders planen als unregelmäßige Z-Bedarfe. Im Lager kann die Einteilung helfen, Prognoseaufwand, Sicherheitsbestand und Kontrollen gezielter zu prüfen.',
+          'Die Klasse allein bestimmt jedoch weder Bestellmenge noch Sicherheitsbestand. Lieferzeit, Mindestbestellmenge, Haltbarkeit, Beschaffungsrisiko, Fehlmengenkosten und bekannte künftige Änderungen bleiben zusätzlich relevant.',
         ],
       },
       {
-        heading: 'Zusammenhang mit dem Pareto-Prinzip',
+        heading: 'ABC-XYZ-Matrix',
         paragraphs: [
-          [
-            'Das ',
-            { type: 'link', href: '/wissen/pareto-prinzip', text: 'Pareto-Prinzip' },
-            ' beschreibt die mögliche Beobachtung, dass wenige Ursachen einen großen Teil der Wirkung erzeugen. Die ABC-Analyse greift diese Idee auf und übersetzt sie in ein systematisches Vorgehen aus Sortierung, Kumulierung und Klasseneinteilung.',
+          ['Die ', { type: 'glossary', id: 'abc-xyz-matrix', text: 'ABC-XYZ-Matrix' }, ' kombiniert jede Wertklasse mit jeder Planbarkeitsklasse. So entstehen neun Felder von AX bis CZ. Die Buchstabenkombination beschreibt eine Position, aber noch keine feste Maßnahme.'],
+          'AX bedeutet beispielsweise hoher Wert bei gut planbarem Bedarf. AZ verbindet hohen Wert mit schwer planbarem Bedarf und verlangt häufig besonders sorgfältige Beschaffungs- und Risikoprüfung. CX steht für einen geringeren Wertbeitrag bei regelmäßigem Bedarf und kann für vereinfachte Abläufe geeignet sein.',
+        ],
+        matrixCards: [{
+          title: 'ABC-XYZ-Matrix', columns: 3,
+          cells: [
+            { code: 'AX', title: 'Hoher Wert · gut planbar', context: 'A + X', text: 'Wirtschaftlich bedeutend und regelmäßig. Präzise Planung sowie enge Wert- und Lieferkontrolle können sinnvoll sein.' },
+            { code: 'AY', title: 'Hoher Wert · bedingt planbar', context: 'A + Y', text: 'Hoher Wert trifft auf Trend oder Saison. Muster, Prognose und Beschaffungszeit besonders sorgfältig abstimmen.' },
+            { code: 'AZ', title: 'Hoher Wert · schwer planbar', context: 'A + Z', text: 'Wertmäßig bedeutend und unregelmäßig. Risiken, Alternativen, Lieferzeit und Kapitalbindung gemeinsam prüfen.' },
+            { code: 'BX', title: 'Mittlerer Wert · gut planbar', context: 'B + X', text: 'Mittlere Wertbedeutung bei regelmäßigem Bedarf. Standardisierte Planung mit angemessener Kontrolle ist häufig möglich.' },
+            { code: 'BY', title: 'Mittlerer Wert · bedingt planbar', context: 'B + Y', text: 'Mittlerer Wert und schwankendes Muster. Saison- oder Trendinformationen in die Planung einbeziehen.' },
+            { code: 'BZ', title: 'Mittlerer Wert · schwer planbar', context: 'B + Z', text: 'Mittlere Bedeutung bei unregelmäßigem Bedarf. Bestellaufwand und Fehlmengenrisiko gegeneinander abwägen.' },
+            { code: 'CX', title: 'Geringer Wert · gut planbar', context: 'C + X', text: 'Geringer Wertbeitrag und regelmäßiger Bedarf. Einfache, gebündelte oder automatisierte Abläufe können passen.' },
+            { code: 'CY', title: 'Geringer Wert · bedingt planbar', context: 'C + Y', text: 'Geringer Wert mit saisonaler oder trendbedingter Schwankung. Vereinfachung darf Bedarfsspitzen nicht übersehen.' },
+            { code: 'CZ', title: 'Geringer Wert · schwer planbar', context: 'C + Z', text: 'Geringer Wert und unregelmäßiger Bedarf. Prozesskosten, Verfügbarkeit und mögliche Ausfallfolgen getrennt prüfen.' },
           ],
-          'Eine ABC-Verteilung muss aber nicht exakt dem Verhältnis 80/20 entsprechen. Sind die Werte gleichmäßig verteilt, entstehen weniger deutliche Klassen. Auch dieses Ergebnis ist nützlich, weil es zeigt, dass eine starke Konzentration gerade nicht vorliegt.',
+        }],
+      },
+      {
+        heading: 'Praxisbeispiel: Materialien eines Reparaturbetriebs',
+        paragraphs: ['Ein Reparaturbetrieb wertet Jahresverbrauchswert und monatliche Bedarfsmuster aus. Die Klassengrenzen wurden intern anhand der eigenen Verteilung festgelegt und sind nicht auf andere Betriebe übertragbar.'],
+        exampleCards: [{
+          title: 'Vier Materialien in der ABC-XYZ-Matrix',
+          paragraphs: ['Steuerungsmodule verursachen einen hohen Jahresverbrauchswert und werden unregelmäßig für größere Reparaturen benötigt. Standardschrauben sind günstig und werden jeden Monat ähnlich oft verbraucht. Spezialdichtungen liegen wertmäßig im Mittelfeld und zeigen saisonale Schwankungen. Ein häufig verbauter Motor ist teuer, sein Bedarf aber relativ stabil.'],
+          effects: ['Steuerungsmodul → AZ: hoher Wert, schwer planbarer Bedarf; Lieferfähigkeit, Kapitalbindung und Alternativen eng prüfen', 'Standardschraube → CX: geringer Wert, gut planbarer Bedarf; einfache Sammelbestellungen oder Automatisierung prüfen', 'Spezialdichtung → BY: mittlerer Wert, saisonabhängiger Bedarf; Saisonmuster in der Planung berücksichtigen', 'Motor → AX: hoher Wert, relativ gleichmäßiger Bedarf; Verbrauch und Liefertermine präzise planen', 'Keine Klasse bestimmt allein den Bestand: Lieferzeiten, Ausfallfolgen und Mindestmengen bleiben zusätzlich relevant'],
+        }],
+      },
+      {
+        heading: 'Verbindung zu Pareto-Prinzip und Portfolioanalyse',
+        paragraphs: [
+          ['Das ', { type: 'link', href: '/wissen/pareto-prinzip', text: 'Pareto-Prinzip' }, ' beschreibt die mögliche Konzentration eines großen Wertanteils auf wenige Objekte. Die ABC-Analyse macht eine solche Verteilung durch Sortierung und kumulierte Anteile konkret, ohne ein exaktes 80/20-Verhältnis vorauszusetzen.'],
+          ['Wie eine ', { type: 'link', href: '/wissen/portfolioanalyse', text: 'Portfolioanalyse' }, ' betrachtet die ABC-XYZ-Matrix mehrere Objekte anhand zweier Perspektiven. Sie ist jedoch speziell auf Wertbedeutung und Bedarfsregelmäßigkeit ausgerichtet. Grundlagen zu Einkauf und Lager ordnet der Hub ', { type: 'link', href: '/wissen/einkauf-verkauf', text: 'Einkauf & Verkauf' }, ' ein.'],
         ],
       },
       {
-        heading: 'Vorteile der ABC-Analyse',
+        heading: 'Vorteile und Grenzen',
         paragraphs: [
-          'Die Analyse ist leicht nachvollziehbar, mit überschaubaren Daten umsetzbar und auf viele Fragestellungen übertragbar. Sie kann helfen, Kontrollaufwand, Bestandsplanung, Lieferantenmanagement oder Kundenbetreuung stärker am wirtschaftlichen Beitrag auszurichten.',
-          'Durch regelmäßige Wiederholung werden Verschiebungen sichtbar. Ein früheres C-Objekt kann an Bedeutung gewinnen, während ein A-Objekt zurückfällt. Die Klassen sind deshalb Momentaufnahmen für den gewählten Zeitraum und keine dauerhaften Eigenschaften.',
-        ],
-      },
-      {
-        heading: 'Grenzen der Aussagekraft',
-        paragraphs: [
-          'Die ABC-Analyse betrachtet grundsätzlich nur die gewählte Wertgröße. Lieferzeiten, Ausfallrisiken, strategische Bedeutung, Qualität oder gesetzliche Anforderungen können unberücksichtigt bleiben. Ein günstiges C-Material kann beispielsweise eine gesamte Produktion stoppen, wenn es fehlt.',
-          'Bei Kunden sagt hoher Umsatz allein nichts über Gewinn, Zahlungsrisiko oder Betreuungsaufwand aus. Bei Lagerbeständen können schwankende Preise und Verbräuche das Ergebnis verändern. Für wichtige Entscheidungen sind deshalb ergänzende Kriterien und aktuelle Daten erforderlich.',
+          'Die kombinierte Analyse schafft eine gut lesbare Übersicht und unterstützt eine differenzierte Behandlung von Materialien. Sie trennt wirtschaftliche Bedeutung von Planbarkeit und verhindert damit, dass ein hoher Verbrauchswert automatisch mit einem gleichmäßigen Bedarf verwechselt wird.',
+          'Beide Klassifizierungen verdichten Daten und können wichtige Einzelheiten verdecken. Preise, Bedarfe, Lieferzeiten und Märkte verändern sich; Klassen sind deshalb regelmäßig zu aktualisieren. Neue Produkte ohne ausreichende Historie und bekannte künftige Änderungen brauchen eine zusätzliche fachliche Einschätzung.',
         ],
       },
     ],
   },
   generator: null,
-  keyPoints: [
-    'Die ABC-Analyse priorisiert Objekte anhand einer vorab definierten Wert- oder Bedeutungsgröße',
-    'Objekte werden absteigend sortiert, ihre Anteile kumuliert und anschließend Klassen zugeordnet',
-    'Mengenanteil und Wertanteil beschreiben unterschiedliche Bezugsgrößen',
-    'Grenzen zwischen A, B und C sind Orientierungen und müssen zum Analysezweck passen',
-    'Risiken, Abhängigkeiten und qualitative Bedeutung benötigen zusätzliche Kriterien',
-  ],
-  commonMistakes: [
-    'Wertgröße und Analyseziel nicht eindeutig festlegen',
-    'Umsatz ungeprüft mit Gewinn, Kundenwert oder strategischer Bedeutung gleichsetzen',
-    'Daten aus unterschiedlichen Zeiträumen oder Definitionen gemeinsam verwenden',
-    'vor dem Kumulieren nicht absteigend nach Wert sortieren',
-    'typische Prozentgrenzen als universell verbindlich behandeln',
-    'C-Objekte pauschal für unwichtig halten und Risiken oder Abhängigkeiten übersehen',
-    'Klassen dauerhaft beibehalten, obwohl sich Preise, Mengen oder Bedeutung geändert haben',
-  ],
+  keyPoints: ['ABC ordnet nach Wertbedeutung, XYZ nach Bedarfsregelmäßigkeit und Planbarkeit', 'A-, B- und C-Klassen entstehen aus sortierten und kumulierten Wertanteilen', 'X steht für gleichmäßigen, Y für schwankenden oder saisonalen und Z für unregelmäßigen Bedarf', 'Die ABC-XYZ-Matrix kombiniert beide Sichtweisen zu neun Klassen von AX bis CZ', 'Klassengrenzen und daraus abgeleitete Maßnahmen müssen zum Unternehmen und zur Datenlage passen'],
+  commonMistakes: ['ABC- und XYZ-Analyse als austauschbare Verfahren behandeln', 'typische Klassengrenzen als universell verbindlich übernehmen', 'ABC-Klassen ohne vorheriges Sortieren und Kumulieren bilden', 'bei der XYZ-Analyse zu wenige oder nicht vergleichbare Perioden verwenden', 'Trend, Saison, Nullverbräuche oder bekannte künftige Änderungen ignorieren', 'hohen Wert automatisch mit hohem Risiko oder regelmäßigem Bedarf gleichsetzen', 'aus einer ABC-XYZ-Klasse automatisch Bestellmenge oder Sicherheitsbestand ableiten', 'Klassen trotz veränderter Preise und Bedarfe nicht aktualisieren'],
   faqs: [
-    {
-      question: 'Was ist das Ziel einer ABC-Analyse?',
-      answer: 'Sie macht unterschiedliche Wertbeiträge sichtbar und hilft, Aufmerksamkeit und Steuerungsaufwand gezielt zu priorisieren.',
-    },
-    {
-      question: 'Wie werden A-, B- und C-Objekte gebildet?',
-      answer: 'Die Objekte werden nach ihrem Wertbeitrag sortiert, die Anteile kumuliert und anhand begründeter Grenzen den drei Klassen zugeordnet.',
-    },
-    {
-      question: 'Gibt es feste Prozentgrenzen für die Klassen?',
-      answer: 'Nein. Orientierungswerte sind verbreitet, die sinnvollen Grenzen hängen aber von Datenverteilung, Zweck und geplanten Maßnahmen ab.',
-    },
-    {
-      question: 'Was ist der Unterschied zwischen Mengen- und Wertanteil?',
-      answer: 'Der Mengenanteil bezieht sich auf die Anzahl der Objekte, der Wertanteil auf ihren Beitrag zur gewählten Größe wie Umsatz oder Verbrauchswert.',
-    },
-    {
-      question: 'Ist ein C-Objekt unwichtig?',
-      answer: 'Nicht automatisch. Es hat nur einen niedrigen Beitrag zur gewählten Wertgröße und kann trotzdem für Prozesse, Risiken oder Kunden wichtig sein.',
-    },
+    { question: 'Was ist der Unterschied zwischen ABC- und XYZ-Analyse?', answer: 'ABC bewertet die wertmäßige Bedeutung eines Objekts. XYZ bewertet, wie regelmäßig und prognostizierbar sein Bedarf ist.' },
+    { question: 'Was bedeuten X, Y und Z?', answer: 'X steht für gleichmäßigen und gut planbaren, Y für schwankenden, trend- oder saisonabhängigen und Z für unregelmäßigen, schwer planbaren Bedarf.' },
+    { question: 'Was bedeutet die Klasse AZ?', answer: 'AZ bezeichnet ein Objekt mit hohem Wertbeitrag und schwer planbarem Bedarf. Beschaffungsrisiko, Lieferzeit und Kapitalbindung sollten besonders sorgfältig geprüft werden.' },
+    { question: 'Gibt es feste Grenzen für die Klassen?', answer: 'Nein. Schwellen hängen von Daten, Branche, Analysezweck und verwendeter Methode ab und sollten intern begründet werden.' },
+    { question: 'Bestimmt die ABC-XYZ-Klasse den Sicherheitsbestand?', answer: 'Nein. Zusätzlich sind unter anderem Lieferzeit, Serviceziel, Bedarfsverteilung, Fehlmengenkosten, Haltbarkeit und Beschaffungsrisiko zu berücksichtigen.' },
   ],
-  related: ['pareto-prinzip', 'einkauf-verkauf', 'kennzahlen'],
-  sources: [],
-  updatedAt: '2026-08-30',
-  reviewedAt: '2026-08-30',
-  disclaimer: defaultDisclaimer,
+  related: ['pareto-prinzip', 'einkauf-verkauf', 'portfolioanalyse'],
+  sources: [], updatedAt: '2026-08-30', reviewedAt: '2026-08-30', disclaimer: defaultDisclaimer,
 };
 
 export default abcAnalyse;

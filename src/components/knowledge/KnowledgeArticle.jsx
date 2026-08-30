@@ -180,7 +180,7 @@ export default function KnowledgeArticle({
                   <section className="knowledge-matrix-card" key={matrix.title} aria-label={matrix.title}>
                     <p className="knowledge-matrix-card-kicker">Matrix</p>
                     <h3>{matrix.title}</h3>
-                    <div className="knowledge-matrix-grid">
+                    <div className={`knowledge-matrix-grid${matrix.columns === 3 ? ' knowledge-matrix-grid--3' : ''}`}>
                       {matrix.cells.map((cell) => (
                         <section className="knowledge-matrix-cell" key={cell.code}>
                           <header>

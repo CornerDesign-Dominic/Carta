@@ -9749,6 +9749,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 
 .knowledge-matrix-card > h3 { margin: 0; color: var(--accent-deep); font-size: 1rem; }
 .knowledge-matrix-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.knowledge-matrix-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .knowledge-matrix-cell {
   display: grid;
