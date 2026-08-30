@@ -53,6 +53,7 @@ import sozialversicherungsbeitraege from './pages/sozialversicherungsbeitraege.j
 import bruttolohnNettolohn from './pages/bruttolohn-nettolohn.js';
 import arbeitgeberArbeitnehmeranteile from './pages/arbeitgeber-arbeitnehmeranteile.js';
 import minijob from './pages/minijob.js';
+import kurzfristigeBeschaeftigung from './pages/kurzfristige-beschaeftigung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -113,6 +114,7 @@ export const knowledgePages = {
   'bruttolohn-nettolohn': bruttolohnNettolohn,
   'arbeitgeber-arbeitnehmeranteile': arbeitgeberArbeitnehmeranteile,
   minijob,
+  'kurzfristige-beschaeftigung': kurzfristigeBeschaeftigung,
 };
 
 export function findKnowledgePage(slug) {

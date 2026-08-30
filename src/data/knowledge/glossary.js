@@ -553,6 +553,18 @@ export const glossaryEntries = [
     explanation: 'Bei einem Minijob mit Verdienstgrenze kann unter gesetzlichen Voraussetzungen eine einheitliche Pauschsteuer angewendet werden. Ob und wie die Steuer wirtschaftlich getragen wird, kann zusätzlich von der arbeitsvertraglichen Vereinbarung abhängen.',
   },
   {
+    id: 'kurzfristige-beschaeftigung',
+    term: 'Kurzfristige Beschäftigung',
+    definition: 'Eine kurzfristige Beschäftigung ist eine zeitlich begrenzte geringfügige Beschäftigung.',
+    explanation: 'Sie muss die gesetzlichen Zeitgrenzen einhalten. Bei einem Verdienst über der Geringfügigkeitsgrenze ist außerdem entscheidend, ob die Tätigkeit berufsmäßig ausgeübt wird.',
+  },
+  {
+    id: 'berufsmaessigkeit',
+    term: 'Berufsmäßigkeit',
+    definition: 'Berufsmäßigkeit bedeutet, dass eine Beschäftigung für die betreffende Person wirtschaftlich nicht nur von untergeordneter Bedeutung ist.',
+    explanation: 'Bei kurzfristigen Beschäftigungen ist sie insbesondere bei einem regelmäßigen Verdienst über der Geringfügigkeitsgrenze zu prüfen. Die Beurteilung hängt von den gesamten Umständen ab.',
+  },
+  {
     id: 'arbeitsentgelt',
     term: 'Arbeitsentgelt',
     definition: 'Arbeitsentgelt sind laufende oder einmalige Einnahmen aus einer Beschäftigung, unabhängig davon, ob ein Rechtsanspruch darauf besteht.',

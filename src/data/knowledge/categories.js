@@ -221,6 +221,7 @@ export const knowledgeCategories = [
       { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
       { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
       { slug: 'minijob', title: 'Minijob' },
+      { slug: 'kurzfristige-beschaeftigung', title: 'Kurzfristige Beschäftigung' },
     ],
     topicGroups: [
       {
@@ -249,7 +250,7 @@ export const knowledgeCategories = [
           { slug: 'minijob', title: 'Minijob' },
           { slug: 'midijob', title: 'Midijob' },
           { slug: 'werkstudent', title: 'Werkstudent' },
-          { slug: 'kurzfristige-beschaeftigung', title: 'kurzfristige Beschäftigung' },
+          { slug: 'kurzfristige-beschaeftigung', title: 'Kurzfristige Beschäftigung' },
         ],
       },
       {
