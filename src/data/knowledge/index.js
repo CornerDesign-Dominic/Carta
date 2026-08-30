@@ -6,6 +6,7 @@ import gutschrift from './pages/gutschrift.js';
 import quittung from './pages/quittung.js';
 import eigenbeleg from './pages/eigenbeleg.js';
 import mahnverfahren from './pages/mahnverfahren.js';
+import zahlungserinnerung from './pages/zahlungserinnerung.js';
 import businessplan from './pages/businessplan.js';
 import umsatzsteuer from './pages/umsatzsteuer.js';
 import faelligkeit from './pages/faelligkeit.js';
@@ -45,6 +46,7 @@ export const knowledgePages = {
   'quittung': quittung,
   'eigenbeleg': eigenbeleg,
   'mahnverfahren': mahnverfahren,
+  'zahlungserinnerung': zahlungserinnerung,
   'businessplan': businessplan,
   'umsatzsteuer': umsatzsteuer,
   'faelligkeit': faelligkeit,
