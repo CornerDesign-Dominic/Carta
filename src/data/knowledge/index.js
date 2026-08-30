@@ -22,6 +22,7 @@ import kostenartenKostenstellenKostentraeger from './pages/kostenarten-kostenste
 import fixeVariableKosten from './pages/fixe-variable-kosten.js';
 import deckungsbeitrag from './pages/deckungsbeitrag.js';
 import bab from './pages/bab.js';
+import zuschlagskalkulation from './pages/zuschlagskalkulation.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -130,6 +131,7 @@ export const knowledgePages = {
   'fixe-variable-kosten': fixeVariableKosten,
   deckungsbeitrag,
   bab,
+  zuschlagskalkulation,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,

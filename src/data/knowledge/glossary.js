@@ -783,6 +783,18 @@ export const glossaryEntries = [
     explanation: 'Er setzt zum Beispiel die Gemeinkosten einer Kostenstelle ins Verhältnis zu Materialeinzelkosten oder Fertigungslöhnen. Die Bezugsgröße sollte zur Kostenstruktur passen.',
   },
   {
+    id: 'herstellkosten',
+    term: 'Herstellkosten',
+    definition: 'Herstellkosten fassen die Kosten zusammen, die einem Produkt oder einer Leistung in der Herstellung zugerechnet werden.',
+    explanation: 'In einem vereinfachten Schema bestehen sie aus Material- und Fertigungskosten. Je nach Kalkulationsstruktur können weitere direkt zurechenbare Herstellungskosten berücksichtigt werden.',
+  },
+  {
+    id: 'selbstkosten',
+    term: 'Selbstkosten',
+    definition: 'Selbstkosten sind die für ein Produkt oder einen Auftrag ermittelten Kosten vor Gewinn, Rabatten und Umsatzsteuer.',
+    explanation: 'Sie bauen in einer typischen Zuschlagskalkulation auf den Herstellkosten auf und enthalten zusätzlich Verwaltungs- und Vertriebsgemeinkosten.',
+  },
+  {
     id: 'variable-kosten',
     term: 'Variable Kosten',
     definition: 'Variable Kosten verändern sich mit der produzierten, verkauften oder erbrachten Menge.',
