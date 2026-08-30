@@ -254,6 +254,13 @@ export const knowledgeCategories = [
         ],
       },
       {
+        id: 'investitionsgrundlagen',
+        title: 'Investitionsgrundlagen',
+        topics: [
+          { slug: 'investitionen-investitionsarten', title: 'Investitionen & Investitionsarten' },
+        ],
+      },
+      {
         id: 'investitionsrechnung',
         title: 'Investitionsrechnung',
         topics: [

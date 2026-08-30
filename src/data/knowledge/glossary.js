@@ -1098,6 +1098,18 @@ export const glossaryEntries = [
     explanation: 'Auf die Restschuld werden die Zinsen nach den vertraglichen Regeln berechnet. Sie zeigt auch, welcher Betrag zu einem bestimmten Zeitpunkt noch zurückgezahlt werden muss.',
   },
   {
+    id: 'investition',
+    term: 'Investition',
+    definition: 'Eine Investition setzt Kapital ein, um einen erwarteten zukünftigen Nutzen zu erzielen.',
+    explanation: 'Sie kann zum Beispiel Sachmittel, Software, Beteiligungen oder andere langfristig wirkende Maßnahmen betreffen. Nutzen, Laufzeit, Risiken und Finanzierung sollten gemeinsam betrachtet werden.',
+  },
+  {
+    id: 'kapitalbindung',
+    term: 'Kapitalbindung',
+    definition: 'Kapitalbindung bedeutet, dass finanzielle Mittel in Vermögenswerten, Vorräten oder anderen Verwendungszwecken gebunden sind.',
+    explanation: 'Die Mittel stehen dann nicht gleichzeitig für andere Auszahlungen zur Verfügung. Ihre Wirkung auf die Liquidität hängt davon ab, wann aus dem gebundenen Kapital wieder Einzahlungen entstehen.',
+  },
+  {
     id: 'eigenkapitalquote',
     term: 'Eigenkapitalquote',
     definition: 'Die Eigenkapitalquote zeigt, welcher Anteil des Gesamtkapitals durch Eigenkapital finanziert ist.',
