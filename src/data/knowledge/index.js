@@ -40,6 +40,7 @@ import rechtsformen from './pages/rechtsformen.js';
 import einzelunternehmen from './pages/einzelunternehmen.js';
 import gbr from './pages/gbr.js';
 import gmbh from './pages/gmbh.js';
+import ug from './pages/ug.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -87,6 +88,7 @@ export const knowledgePages = {
   'einzelunternehmen': einzelunternehmen,
   'gbr': gbr,
   'gmbh': gmbh,
+  'ug': ug,
 };
 
 export function findKnowledgePage(slug) {

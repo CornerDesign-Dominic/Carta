@@ -390,6 +390,18 @@ export const glossaryEntries = [
     definition: 'Ein Geschäftsführer leitet eine GmbH oder UG und vertritt sie grundsätzlich nach außen.',
     explanation: 'Die Gesellschafter bestellen den Geschäftsführer. Seine konkreten Befugnisse und Pflichten ergeben sich aus Gesetz, Gesellschaftsvertrag, Anstellungsvertrag und Gesellschafterbeschlüssen.',
   },
+  {
+    id: 'bareinlage',
+    term: 'Bareinlage',
+    definition: 'Eine Bareinlage ist eine Stammeinlage, die in Geld geleistet wird.',
+    explanation: 'Bei der Gründung einer UG sind nur Bareinlagen zulässig und das Stammkapital muss vor der Anmeldung vollständig eingezahlt werden.',
+  },
+  {
+    id: 'gesetzliche-ruecklage',
+    term: 'Gesetzliche Rücklage',
+    definition: 'Die gesetzliche Rücklage ist ein Teil des Jahresüberschusses, den eine UG unter den gesetzlichen Voraussetzungen ansammeln muss.',
+    explanation: 'Sie soll das Eigenkapital der Gesellschaft stärken. Ihre Bildung und Verwendung richten sich nach den besonderen Regeln für die Unternehmergesellschaft.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

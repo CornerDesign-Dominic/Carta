@@ -66,7 +66,7 @@ const rechtsformen = {
         cells: ['GmbH', 'Grundsätzlich Gesellschaftsvermögen', '25.000 € Stammkapital', 'Eine oder mehrere Personen bzw. Gesellschaften', 'Geschäftsführer', 'Körperschaftsteuer und Gewerbesteuer', 'Doppelte Buchführung und Jahresabschluss', 'Handelsregister erforderlich', 'HRB', 'Unternehmen mit gewünschter Haftungsbegrenzung'],
       },
       {
-        slug: 'ug-haftungsbeschraenkt',
+        slug: 'ug',
         title: 'UG (haftungsbeschränkt)',
         cells: ['UG (haftungsbeschränkt)', 'Grundsätzlich Gesellschaftsvermögen', 'Ab 1 € Stammkapital, vollständig einzuzahlen', 'Eine oder mehrere Personen bzw. Gesellschaften', 'Geschäftsführer', 'Körperschaftsteuer und Gewerbesteuer', 'Doppelte Buchführung und Jahresabschluss', 'Handelsregister erforderlich', 'HRB', 'Kapitalgesellschaft mit geringem Startkapital'],
       },

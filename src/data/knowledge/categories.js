@@ -170,6 +170,7 @@ export const knowledgeCategories = [
       { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
       { slug: 'gbr', title: 'GbR' },
       { slug: 'gmbh', title: 'GmbH' },
+      { slug: 'ug', title: 'UG (haftungsbeschränkt)' },
     ],
     topicGroups: [
       {
@@ -195,7 +196,7 @@ export const knowledgeCategories = [
         title: 'Kapitalgesellschaften',
         topics: [
           { slug: 'gmbh', title: 'GmbH' },
-          { slug: 'ug-haftungsbeschraenkt', title: 'UG (haftungsbeschränkt)' },
+          { slug: 'ug', title: 'UG (haftungsbeschränkt)' },
           { slug: 'ag', title: 'AG' },
         ],
       },
