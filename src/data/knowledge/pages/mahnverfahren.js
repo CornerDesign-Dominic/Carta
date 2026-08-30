@@ -196,6 +196,7 @@ const mahnverfahren = {
   related: [
     "mahnwesen",
     "rechnung",
+    "zahlungsverzug",
     "zahlungserinnerung",
     "inkasso",
     "gerichtliches-mahnverfahren",

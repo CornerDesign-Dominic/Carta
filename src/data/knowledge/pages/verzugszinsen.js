@@ -139,6 +139,7 @@ const verzugszinsen = {
     'mahnwesen',
     'mahnverfahren',
     'faelligkeit',
+    'zahlungsverzug',
     'rechnung',
   ],
   sources: [

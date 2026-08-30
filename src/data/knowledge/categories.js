@@ -44,6 +44,7 @@ export const knowledgeCategories = [
     pages: [
       { slug: 'mahnwesen', title: 'Mahnwesen' },
       { slug: 'faelligkeit', title: 'Fälligkeit' },
+      { slug: 'zahlungsverzug', title: 'Zahlungsverzug' },
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
       { slug: 'mahnverfahren', title: 'Mahnung' },
       { slug: 'zahlungserinnerung', title: 'Zahlungserinnerung' },

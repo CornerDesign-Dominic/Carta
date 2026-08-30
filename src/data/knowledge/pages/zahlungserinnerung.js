@@ -111,7 +111,7 @@ const zahlungserinnerung = {
     { question: 'Wann sollte ich eine Mahnung schicken?', answer: 'Wenn die Zahlung trotz Erinnerung ausbleibt und keine nachvollziehbare Rückmeldung vorliegt, kannst du eine Mahnung prüfen.' },
     { question: 'Löst eine Zahlungserinnerung automatisch Zahlungsverzug aus?', answer: 'Nein. Verzug setzt weitere gesetzliche Voraussetzungen voraus. Entscheidend sind Fälligkeit, Inhalt des Schreibens und die Umstände des Einzelfalls.' },
   ],
-  related: ['mahnwesen', 'mahnverfahren', 'inkasso', 'faelligkeit'],
+  related: ['mahnwesen', 'mahnverfahren', 'inkasso', 'faelligkeit', 'zahlungsverzug'],
   sources: [
     { label: '§ 271 BGB – Leistungszeit', url: 'https://www.gesetze-im-internet.de/bgb/__271.html' },
     { label: '§ 286 BGB – Verzug des Schuldners', url: 'https://www.gesetze-im-internet.de/bgb/__286.html' },

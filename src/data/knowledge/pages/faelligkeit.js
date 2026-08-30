@@ -131,6 +131,7 @@ const faelligkeit = {
   related: [
     'mahnwesen',
     'rechnung',
+    'zahlungsverzug',
     'mahnverfahren',
   ],
   sources: [

@@ -11,6 +11,7 @@ import inkasso from './pages/inkasso.js';
 import businessplan from './pages/businessplan.js';
 import umsatzsteuer from './pages/umsatzsteuer.js';
 import faelligkeit from './pages/faelligkeit.js';
+import zahlungsverzug from './pages/zahlungsverzug.js';
 import verzugszinsen from './pages/verzugszinsen.js';
 import zinsen from './pages/zinsen.js';
 import zinseszins from './pages/zinseszins.js';
@@ -52,6 +53,7 @@ export const knowledgePages = {
   'businessplan': businessplan,
   'umsatzsteuer': umsatzsteuer,
   'faelligkeit': faelligkeit,
+  'zahlungsverzug': zahlungsverzug,
   'verzugszinsen': verzugszinsen,
   'zinsen': zinsen,
   'zinseszins': zinseszins,
