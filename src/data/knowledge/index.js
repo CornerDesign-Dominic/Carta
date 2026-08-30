@@ -80,6 +80,7 @@ import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
 import eigenfinanzierung from './pages/eigenfinanzierung.js';
 import fremdfinanzierung from './pages/fremdfinanzierung.js';
+import innenAussenfinanzierung from './pages/innen-aussenfinanzierung.js';
 import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kennzahlen from './pages/kennzahlen.js';
@@ -215,6 +216,7 @@ export const knowledgePages = {
   'urlaubsentgelt-urlaubsgeld': urlaubsentgeltUrlaubsgeld,
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
+  'innen-aussenfinanzierung': innenAussenfinanzierung,
   fremdfinanzierung,
   eigenfinanzierung,
   'finanzierung-investition': finanzierungInvestition,
