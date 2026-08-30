@@ -1,4 +1,5 @@
 import { findKnowledgePage, knowledgeCategories } from '../../data/knowledgePages.js';
+import { findToolItemByPath } from '../../data/tools.js';
 
 function handleInternalLinkClick(event, callback) {
   if (
@@ -27,7 +28,10 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
   const activeTopicGroups = category.topicGroups
     ?.map((group) => ({
       ...group,
-      topics: group.topics?.filter((topic) => topic.slug && findKnowledgePage(topic.slug)) ?? [],
+      topics: group.topics?.filter((topic) => (
+        (topic.slug && findKnowledgePage(topic.slug))
+        || (topic.path && findToolItemByPath(topic.path))
+      )) ?? [],
     }))
     .filter((group) => group.topics.length > 0);
   const comparisonTable = landingPage.comparisonTable;
@@ -53,8 +57,8 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
                   {group.topics.map((topic) => (
                     <li key={topic.slug}>
                       <a
-                        href={`/wissen/${topic.slug}`}
-                        onClick={(event) => handleInternalLinkClick(event, () => onSelectTopic(topic.slug))}
+                        href={topic.path ?? `/wissen/${topic.slug}`}
+                        onClick={(event) => handleInternalLinkClick(event, () => onSelectTopic(topic))}
                       >
                         {topic.title}
                       </a>

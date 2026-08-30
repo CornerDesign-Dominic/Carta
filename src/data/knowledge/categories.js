@@ -208,6 +208,63 @@ export const knowledgeCategories = [
     ],
   },
   {
+    id: 'personal-lohn',
+    landingSlug: 'personal-lohn',
+    title: 'Personal & Lohn',
+    description: 'Grundlagen zu Lohnabrechnung, Sozialversicherung, Beschäftigungsformen, Arbeitszeit und Vergütung.',
+    topicsTitle: 'Themen rund um Personal & Lohn',
+    pages: [
+      { slug: 'personal-lohn', title: 'Personal & Lohn' },
+    ],
+    topicGroups: [
+      {
+        id: 'lohn-und-abrechnung',
+        title: 'Lohn & Abrechnung',
+        topics: [
+          { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
+          { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
+          { slug: 'lohnsteuer', title: 'Lohnsteuer' },
+        ],
+      },
+      {
+        id: 'sozialversicherung',
+        title: 'Sozialversicherung',
+        topics: [
+          { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
+          { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
+          { slug: 'beitragsbemessungsgrenze', title: 'Beitragsbemessungsgrenze' },
+        ],
+      },
+      {
+        id: 'beschaeftigungsformen',
+        title: 'Beschäftigungsformen',
+        topics: [
+          { slug: 'minijob', title: 'Minijob' },
+          { slug: 'midijob', title: 'Midijob' },
+          { slug: 'werkstudent', title: 'Werkstudent' },
+          { slug: 'kurzfristige-beschaeftigung', title: 'kurzfristige Beschäftigung' },
+        ],
+      },
+      {
+        id: 'arbeitszeit-und-verguetung',
+        title: 'Arbeitszeit & Vergütung',
+        topics: [
+          { slug: 'arbeitszeit', title: 'Arbeitszeit', path: '/tools/arbeitszeitrechner' },
+          { slug: 'stundenlohn', title: 'Stundenlohn', path: '/tools/stundenlohnrechner' },
+          { slug: 'ueberstunden', title: 'Überstunden' },
+        ],
+      },
+      {
+        id: 'zusatzleistungen',
+        title: 'Zusatzleistungen',
+        topics: [
+          { slug: 'sachbezug', title: 'Sachbezug' },
+          { slug: 'geldwerter-vorteil', title: 'geldwerter Vorteil' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'gruendung',
     title: 'Gründung',
     description: 'Grundlagen für Selbstständige, Gründer und kleine Unternehmen.',

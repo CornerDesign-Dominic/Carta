@@ -46,6 +46,7 @@ import kg from './pages/kg.js';
 import gmbhUndCoKg from './pages/gmbh-und-co-kg.js';
 import ag from './pages/ag.js';
 import ek from './pages/ek.js';
+import personalLohn from './pages/personal-lohn.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -99,6 +100,7 @@ export const knowledgePages = {
   'gmbh-und-co-kg': gmbhUndCoKg,
   'ag': ag,
   'ek': ek,
+  'personal-lohn': personalLohn,
 };
 
 export function findKnowledgePage(slug) {

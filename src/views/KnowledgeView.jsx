@@ -28,6 +28,20 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
     onSelectSlug(slug);
   }
 
+  function handleSelectTopic(topic) {
+    if (typeof topic === 'string') {
+      onSelectSlug(topic);
+      return;
+    }
+
+    if (topic.path?.startsWith('/tools/')) {
+      onNavigate({ view: 'tools', toolPath: topic.path });
+      return;
+    }
+
+    onSelectSlug(topic.slug);
+  }
+
   function handleShowLanding() {
     onSelectSlug(null);
   }
@@ -63,7 +77,7 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
       <section className="paper-page document-paper knowledge-paper" aria-labelledby="knowledge-title">
         {!activeSlug && <KnowledgeLanding onSelect={handleSelectSlug} />}
         {activePage?.type === 'category-landing' && (
-          <KnowledgeCategoryLanding slug={activeSlug} onSelectTopic={handleSelectSlug} />
+          <KnowledgeCategoryLanding slug={activeSlug} onSelectTopic={handleSelectTopic} />
         )}
         {activeSlug && activePage?.type !== 'category-landing' && (
           <KnowledgeArticle
