@@ -138,6 +138,7 @@ const umsatzsteuer = {
     'eigenbeleg',
     'vorsteuer',
     'kleinunternehmerregelung',
+    'steuerfreie-umsaetze',
   ],
   sources: [
     {

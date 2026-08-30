@@ -26,6 +26,7 @@ import solidaritaetszuschlag from './pages/solidaritaetszuschlag.js';
 import kirchensteuer from './pages/kirchensteuer.js';
 import vorsteuer from './pages/vorsteuer.js';
 import kleinunternehmerregelung from './pages/kleinunternehmerregelung.js';
+import steuerfreieUmsaetze from './pages/steuerfreie-umsaetze.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -59,6 +60,7 @@ export const knowledgePages = {
   'kirchensteuer': kirchensteuer,
   'vorsteuer': vorsteuer,
   'kleinunternehmerregelung': kleinunternehmerregelung,
+  'steuerfreie-umsaetze': steuerfreieUmsaetze,
 };
 
 export function findKnowledgePage(slug) {

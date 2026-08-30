@@ -119,7 +119,7 @@ const kleinunternehmerregelung = {
     { question: 'Ist Kleinunternehmer dasselbe wie Kleingewerbe?', answer: 'Nein. Die Kleinunternehmerregelung betrifft nur die Umsatzsteuer. Kleingewerbe ist keine eigene umsatzsteuerliche Kategorie und keine Rechtsform.' },
     { question: 'Kann ich freiwillig zur Regelbesteuerung wechseln?', answer: 'Ja. Der Verzicht auf die Kleinunternehmerregelung ist gegenüber dem Finanzamt zu erklären und bindet mindestens fünf Kalenderjahre.' },
   ],
-  related: ['steuern', 'umsatzsteuer', 'vorsteuer', 'rechnung'],
+  related: ['steuern', 'umsatzsteuer', 'vorsteuer', 'rechnung', 'steuerfreie-umsaetze'],
   sources: [
     { label: '§ 14 UStG – Ausstellung von Rechnungen', url: 'https://www.gesetze-im-internet.de/ustg_1980/__14.html' },
     { label: '§ 15 UStG – Vorsteuerabzug', url: 'https://www.gesetze-im-internet.de/ustg_1980/__15.html' },

@@ -44,6 +44,18 @@ export const glossaryEntries = [
     explanation: 'Sie gilt grundsätzlich, wenn die Kleinunternehmerregelung nicht anwendbar ist oder auf sie wirksam verzichtet wurde.',
   },
   {
+    id: 'steuerbefreiung',
+    term: 'Steuerbefreiung',
+    definition: 'Eine Steuerbefreiung ist eine gesetzliche Regelung, nach der ein grundsätzlich steuerbarer Umsatz von der Umsatzsteuer befreit ist.',
+    explanation: 'Welche Voraussetzungen und Folgen gelten, richtet sich nach der jeweiligen Befreiung. Besonders wichtig ist, ob ein Vorsteuerabzug erhalten bleibt oder ausgeschlossen ist.',
+  },
+  {
+    id: 'nicht-steuerbar',
+    term: 'Nicht steuerbar',
+    definition: 'Nicht steuerbar bedeutet, dass ein Vorgang nicht unter den deutschen Umsatzsteuertatbestand fällt.',
+    explanation: 'Das unterscheidet sich von einer Steuerbefreiung: Bei einem steuerfreien Umsatz ist der Umsatz grundsätzlich steuerbar, die Steuer wird aber nicht erhoben.',
+  },
+  {
     id: 'umsatzsteuer-zahllast',
     term: 'Umsatzsteuer-Zahllast',
     definition: 'Die Umsatzsteuer-Zahllast ist vereinfacht der Betrag, der nach Verrechnung von Umsatzsteuer und abziehbarer Vorsteuer an das Finanzamt zu zahlen ist.',

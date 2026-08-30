@@ -94,6 +94,7 @@ export const knowledgeCategories = [
       { slug: 'kapitalertragsteuer', title: 'Kapitalertragsteuer' },
       { slug: 'vorsteuer', title: 'Vorsteuer' },
       { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
+      { slug: 'steuerfreie-umsaetze', title: 'Steuerfreie Umsätze' },
     ],
     topicGroups: [
       {
@@ -128,6 +129,7 @@ export const knowledgeCategories = [
         topics: [
           { slug: 'vorsteuer', title: 'Vorsteuer' },
           { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
+          { slug: 'steuerfreie-umsaetze', title: 'Steuerfreie Umsätze' },
         ],
       },
     ],
