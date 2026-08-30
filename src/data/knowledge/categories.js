@@ -87,6 +87,7 @@ export const knowledgeCategories = [
       { slug: 'einkommensteuer', title: 'Einkommensteuer' },
       { slug: 'lohnsteuer', title: 'Lohnsteuer' },
       { slug: 'koerperschaftsteuer', title: 'Körperschaftsteuer' },
+      { slug: 'gewerbesteuer', title: 'Gewerbesteuer' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
     ],
     topicGroups: [

@@ -135,6 +135,30 @@ export const glossaryEntries = [
     explanation: 'Sie unterscheidet sich von einem betrieblichen Aufwand. Ob und wie die Ausschüttung bei den Gesellschaftern besteuert wird, hängt von deren persönlicher und rechtlicher Situation ab.',
   },
   {
+    id: 'gewerbebetrieb',
+    term: 'Gewerbebetrieb',
+    definition: 'Ein Gewerbebetrieb ist ein gewerbliches Unternehmen im steuerrechtlichen Sinn.',
+    explanation: 'Ob eine Tätigkeit als Gewerbebetrieb gilt, richtet sich nach den gesetzlichen Voraussetzungen und der konkreten Ausgestaltung. Kapitalgesellschaften gelten für die Gewerbesteuer stets als Gewerbebetrieb.',
+  },
+  {
+    id: 'gewerbeertrag',
+    term: 'Gewerbeertrag',
+    definition: 'Der Gewerbeertrag ist die Grundlage für die Berechnung der Gewerbesteuer.',
+    explanation: 'Er baut grundsätzlich auf dem steuerlich ermittelten Gewinn auf und wird für die Gewerbesteuer um gesetzlich bestimmte Hinzurechnungen und Kürzungen angepasst.',
+  },
+  {
+    id: 'gewerbesteuer-messbetrag',
+    term: 'Gewerbesteuer-Messbetrag',
+    definition: 'Der Gewerbesteuer-Messbetrag ist ein Zwischenergebnis bei der Berechnung der Gewerbesteuer.',
+    explanation: 'Er entsteht, indem der nach den gesetzlichen Regeln maßgebliche Gewerbeertrag mit der Steuermesszahl multipliziert wird. Die Gemeinde wendet anschließend ihren Hebesatz auf den Messbetrag an.',
+  },
+  {
+    id: 'hebesatz',
+    term: 'Hebesatz',
+    definition: 'Der Hebesatz ist der von einer Gemeinde festgelegte Prozentsatz für die Berechnung der Gewerbesteuer aus dem Messbetrag.',
+    explanation: 'Da Gemeinden unterschiedliche Hebesätze festlegen können, kann die Gewerbesteuer bei gleichem Gewerbeertrag je nach Standort unterschiedlich hoch sein.',
+  },
+  {
     id: 'grundfreibetrag',
     term: 'Grundfreibetrag',
     definition: 'Der Grundfreibetrag ist die im Einkommensteuertarif festgelegte Grenze, bis zu der keine tarifliche Einkommensteuer anfällt.',

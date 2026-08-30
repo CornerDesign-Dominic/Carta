@@ -162,6 +162,7 @@ const einkommensteuer = {
   related: [
     'steuern',
     'koerperschaftsteuer',
+    'gewerbesteuer',
     'lohnsteuer',
     'umsatzsteuer',
   ],

@@ -135,6 +135,7 @@ const koerperschaftsteuer = {
   related: [
     'steuern',
     'einkommensteuer',
+    'gewerbesteuer',
   ],
   sources: [
     {

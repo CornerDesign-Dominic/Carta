@@ -20,6 +20,7 @@ import lohnsteuer from './pages/lohnsteuer.js';
 import belege from './pages/belege.js';
 import mahnwesen from './pages/mahnwesen.js';
 import koerperschaftsteuer from './pages/koerperschaftsteuer.js';
+import gewerbesteuer from './pages/gewerbesteuer.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -47,6 +48,7 @@ export const knowledgePages = {
   'belege': belege,
   'mahnwesen': mahnwesen,
   'koerperschaftsteuer': koerperschaftsteuer,
+  'gewerbesteuer': gewerbesteuer,
 };
 
 export function findKnowledgePage(slug) {
