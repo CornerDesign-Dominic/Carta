@@ -24,6 +24,12 @@ export const glossaryEntries = [
     explanation: 'Welche Aussage entsteht, hängt von Zähler, Nenner und Zeitraum ab. Rentabilitätswerte sollten daher nur bei vergleichbarer Berechnung gegenübergestellt werden.',
   },
   {
+    id: 'wirtschaftlichkeit',
+    term: 'Wirtschaftlichkeit',
+    definition: 'Wirtschaftlichkeit beschreibt das Verhältnis einer bewerteten Leistung zu den dafür eingesetzten Kosten.',
+    explanation: 'Die Grundformel lautet Leistung geteilt durch Kosten. Aussagekräftig ist sie nur, wenn Leistung, Kosten und Zeitraum einheitlich abgegrenzt sind.',
+  },
+  {
     id: 'euer',
     term: 'Einnahmenüberschussrechnung (EÜR)',
     definition: 'Die Einnahmenüberschussrechnung ist eine steuerliche Gewinnermittlung, bei der Betriebseinnahmen und Betriebsausgaben gegenübergestellt werden.',

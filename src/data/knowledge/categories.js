@@ -167,6 +167,7 @@ export const knowledgeCategories = [
       { slug: 'deckungsbeitrag', title: 'Deckungsbeitrag' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
+      { slug: 'wirtschaftlichkeit-rentabilitaet', title: 'Wirtschaftlichkeit & Rentabilität' },
     ],
     topicGroups: [
       {
@@ -192,7 +193,7 @@ export const knowledgeCategories = [
         id: 'steuerung',
         title: 'Steuerung und Kennzahlen',
         topics: [
-          { slug: 'rentabilitaet-wirtschaftlichkeit', title: 'Rentabilität und Wirtschaftlichkeit' },
+          { slug: 'wirtschaftlichkeit-rentabilitaet', title: 'Wirtschaftlichkeit & Rentabilität' },
           { slug: 'kennzahlen', title: 'Kennzahlen' },
         ],
       },

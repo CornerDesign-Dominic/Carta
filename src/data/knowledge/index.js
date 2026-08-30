@@ -23,6 +23,7 @@ import fixeVariableKosten from './pages/fixe-variable-kosten.js';
 import deckungsbeitrag from './pages/deckungsbeitrag.js';
 import bab from './pages/bab.js';
 import zuschlagskalkulation from './pages/zuschlagskalkulation.js';
+import wirtschaftlichkeitRentabilitaet from './pages/wirtschaftlichkeit-rentabilitaet.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -132,6 +133,7 @@ export const knowledgePages = {
   deckungsbeitrag,
   bab,
   zuschlagskalkulation,
+  'wirtschaftlichkeit-rentabilitaet': wirtschaftlichkeitRentabilitaet,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,
