@@ -78,6 +78,7 @@ import urlaubsentgeltUrlaubsgeld from './pages/urlaubsentgelt-urlaubsgeld.js';
 import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
 import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
+import eigenfinanzierung from './pages/eigenfinanzierung.js';
 import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kennzahlen from './pages/kennzahlen.js';
@@ -213,6 +214,7 @@ export const knowledgePages = {
   'urlaubsentgelt-urlaubsgeld': urlaubsentgeltUrlaubsgeld,
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
+  eigenfinanzierung,
   'finanzierung-investition': finanzierungInvestition,
   'statische-investitionsrechnung': statischeInvestitionsrechnung,
   'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
