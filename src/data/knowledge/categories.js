@@ -218,6 +218,7 @@ export const knowledgeCategories = [
       { slug: 'lohnabrechnung', title: 'Lohnabrechnung' },
       { slug: 'verguetungsarten', title: 'Vergütungsarten' },
       { slug: 'sozialversicherungsbeitraege', title: 'Sozialversicherungsbeiträge' },
+      { slug: 'bruttolohn-nettolohn', title: 'Bruttolohn und Nettolohn' },
     ],
     topicGroups: [
       {

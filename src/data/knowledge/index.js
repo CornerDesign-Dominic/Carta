@@ -50,6 +50,7 @@ import personalLohn from './pages/personal-lohn.js';
 import lohnabrechnung from './pages/lohnabrechnung.js';
 import verguetungsarten from './pages/verguetungsarten.js';
 import sozialversicherungsbeitraege from './pages/sozialversicherungsbeitraege.js';
+import bruttolohnNettolohn from './pages/bruttolohn-nettolohn.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -107,6 +108,7 @@ export const knowledgePages = {
   'lohnabrechnung': lohnabrechnung,
   'verguetungsarten': verguetungsarten,
   'sozialversicherungsbeitraege': sozialversicherungsbeitraege,
+  'bruttolohn-nettolohn': bruttolohnNettolohn,
 };
 
 export function findKnowledgePage(slug) {
