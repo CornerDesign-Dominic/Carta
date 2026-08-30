@@ -16,6 +16,7 @@ import breakEvenPoint from './pages/break-even-point.js';
 import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
+import lohnsteuer from './pages/lohnsteuer.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -39,6 +40,7 @@ export const knowledgePages = {
   'kostenvergleichsrechnung': kostenvergleichsrechnung,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
+  'lohnsteuer': lohnsteuer,
 };
 
 export function findKnowledgePage(slug) {

@@ -41,6 +41,7 @@ export const knowledgeCategories = [
     pages: [
       { slug: 'steuern', title: 'Steuern' },
       { slug: 'einkommensteuer', title: 'Einkommensteuer' },
+      { slug: 'lohnsteuer', title: 'Lohnsteuer' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
     ],
     topicGroups: [
@@ -49,7 +50,7 @@ export const knowledgeCategories = [
         title: 'Steuerarten',
         topics: [
           { slug: 'einkommensteuer', title: 'Einkommensteuer', description: 'Steuer auf das Einkommen natürlicher Personen; die Wissensseite ist bereits verfügbar.' },
-          { slug: 'lohnsteuer', title: 'Lohnsteuer', description: 'Erhebungsform der Einkommensteuer bei Arbeitslohn.' },
+          { slug: 'lohnsteuer', title: 'Lohnsteuer', description: 'Erhebungsform der Einkommensteuer bei Arbeitslohn; die Wissensseite ist bereits verfügbar.' },
           { slug: 'koerperschaftsteuer', title: 'Körperschaftsteuer', description: 'Steuer auf das Einkommen bestimmter juristischer Personen.' },
           { slug: 'gewerbesteuer', title: 'Gewerbesteuer', description: 'Steuer auf den Gewerbeertrag eines Gewerbebetriebs.' },
           { slug: 'umsatzsteuer', title: 'Umsatzsteuer', description: 'Steuer auf viele Lieferungen und Leistungen; die Wissensseite ist bereits verfügbar.' },

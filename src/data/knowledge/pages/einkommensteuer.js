@@ -161,6 +161,7 @@ const einkommensteuer = {
   ],
   related: [
     'steuern',
+    'lohnsteuer',
     'umsatzsteuer',
   ],
   sources: [

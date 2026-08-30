@@ -19,7 +19,7 @@ const steuern = {
   keyPoints: [],
   commonMistakes: [],
   faqs: [],
-  related: ['einkommensteuer', 'umsatzsteuer'],
+  related: ['einkommensteuer', 'lohnsteuer', 'umsatzsteuer'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

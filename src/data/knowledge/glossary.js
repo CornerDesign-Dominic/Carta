@@ -141,6 +141,18 @@ export const glossaryEntries = [
     explanation: 'Sie wird später auf die festgesetzte Einkommensteuer angerechnet. Die Höhe kann angepasst werden, wenn sich die voraussichtlichen Einkünfte wesentlich verändern.',
   },
   {
+    id: 'steuerklasse',
+    term: 'Steuerklasse',
+    definition: 'Die Steuerklasse ist ein Merkmal für die Berechnung des laufenden Lohnsteuerabzugs.',
+    explanation: 'Sie berücksichtigt bestimmte persönliche Verhältnisse typisiert. Die Steuerklasse legt nicht allein fest, wie hoch die endgültige Einkommensteuer eines Jahres ist.',
+  },
+  {
+    id: 'elstam',
+    term: 'ELStAM',
+    definition: 'ELStAM steht für Elektronische LohnSteuerAbzugsMerkmale.',
+    explanation: 'Dazu gehören insbesondere Steuerklasse, Kinderfreibeträge, Freibeträge und das Kirchensteuermerkmal. Arbeitgeber rufen diese Daten für die Lohnabrechnung elektronisch bei der Finanzverwaltung ab.',
+  },
+  {
     id: 'restwert',
     term: 'Restwert',
     definition: 'Der Restwert ist der erwartete Wert eines Wirtschaftsguts am Ende eines betrachteten Zeitraums.',
