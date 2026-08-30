@@ -22,6 +22,7 @@ import mahnwesen from './pages/mahnwesen.js';
 import koerperschaftsteuer from './pages/koerperschaftsteuer.js';
 import gewerbesteuer from './pages/gewerbesteuer.js';
 import kapitalertragsteuer from './pages/kapitalertragsteuer.js';
+import solidaritaetszuschlag from './pages/solidaritaetszuschlag.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -51,6 +52,7 @@ export const knowledgePages = {
   'koerperschaftsteuer': koerperschaftsteuer,
   'gewerbesteuer': gewerbesteuer,
   'kapitalertragsteuer': kapitalertragsteuer,
+  'solidaritaetszuschlag': solidaritaetszuschlag,
 };
 
 export function findKnowledgePage(slug) {

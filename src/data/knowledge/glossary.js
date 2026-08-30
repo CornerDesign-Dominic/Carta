@@ -189,6 +189,18 @@ export const glossaryEntries = [
     explanation: 'Der Auftrag darf insgesamt den gesetzlichen Pauschbetrag nicht übersteigen. Er ist keine Nichtveranlagungs-Bescheinigung und ersetzt keine Steuererklärung, wenn diese erforderlich ist.',
   },
   {
+    id: 'freigrenze',
+    term: 'Freigrenze',
+    definition: 'Eine Freigrenze ist ein gesetzlicher Schwellenwert, bis zu dem eine Abgabe nicht erhoben wird.',
+    explanation: 'Wird die Freigrenze überschritten, können besondere gesetzliche Berechnungsregeln gelten. Sie ist nicht mit einem Freibetrag gleichzusetzen, der den maßgeblichen Betrag selbst mindert.',
+  },
+  {
+    id: 'milderungszone',
+    term: 'Milderungszone',
+    definition: 'Eine Milderungszone begrenzt den Anstieg einer Abgabe unmittelbar oberhalb einer Freigrenze.',
+    explanation: 'Sie soll verhindern, dass bei einem geringen Überschreiten der Freigrenze sofort die volle Belastung entsteht. Wie die Milderung berechnet wird, bestimmt das jeweilige Gesetz.',
+  },
+  {
     id: 'grundfreibetrag',
     term: 'Grundfreibetrag',
     definition: 'Der Grundfreibetrag ist die im Einkommensteuertarif festgelegte Grenze, bis zu der keine tarifliche Einkommensteuer anfällt.',

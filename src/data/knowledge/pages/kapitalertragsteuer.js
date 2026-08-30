@@ -131,7 +131,7 @@ const kapitalertragsteuer = {
     { question: 'Wann brauche ich eine Steuererklärung für Kapitalerträge?', answer: 'Sie kann zum Beispiel bei Erträgen ohne inländischen Steuerabzug, zur Erstattung oder für eine Günstigerprüfung relevant sein. Ob sie erforderlich ist, hängt von deinem Einzelfall ab.' },
     { question: 'Gilt die Abgeltungsteuer auch für Kapitalerträge im Betriebsvermögen?', answer: 'Kapitalerträge im Betriebsvermögen werden grundsätzlich den Einkünften des Betriebs zugeordnet. Deshalb gelten für sie regelmäßig andere Regeln als für private Kapitalerträge.' },
   ],
-  related: ['steuern', 'einkommensteuer'],
+  related: ['steuern', 'einkommensteuer', 'solidaritaetszuschlag'],
   sources: [
     { label: '§ 20 EStG – Einkünfte aus Kapitalvermögen', url: 'https://www.gesetze-im-internet.de/estg/__20.html' },
     { label: '§ 32d EStG – Gesonderter Steuertarif für Einkünfte aus Kapitalvermögen', url: 'https://www.gesetze-im-internet.de/estg/__32d.html' },

@@ -136,6 +136,7 @@ const koerperschaftsteuer = {
     'steuern',
     'einkommensteuer',
     'gewerbesteuer',
+    'solidaritaetszuschlag',
   ],
   sources: [
     {
