@@ -90,6 +90,12 @@ import eigenkapitalrentabilitaet from './pages/eigenkapitalrentabilitaet.js';
 import gesamtkapitalrentabilitaet from './pages/gesamtkapitalrentabilitaet.js';
 import umsatzrentabilitaet from './pages/umsatzrentabilitaet.js';
 import ebitEbitdaMarge from './pages/ebit-ebitda-marge.js';
+import deckungsbeitragsquote from './pages/deckungsbeitragsquote.js';
+import fixkostenquote from './pages/fixkostenquote.js';
+import personalkostenquote from './pages/personalkostenquote.js';
+import materialkostenquote from './pages/materialkostenquote.js';
+import wareneinsatzquote from './pages/wareneinsatzquote.js';
+import rohertragsquote from './pages/rohertragsquote.js';
 import wirtschaftlichkeit from './pages/wirtschaftlichkeit.js';
 import workingCapital from './pages/working-capital.js';
 import liquiditaetsgrade from './pages/liquiditaetsgrade.js';
@@ -104,9 +110,26 @@ import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
 import unternehmensziele from './pages/unternehmensziele.js';
 import visionMissionLeitbild from './pages/vision-mission-leitbild.js';
 import unternehmensstrategie from './pages/unternehmensstrategie.js';
+import produktlebenszyklus from './pages/produktlebenszyklus.js';
+import bcgMatrix from './pages/bcg-matrix.js';
+import paretoPrinzip from './pages/pareto-prinzip.js';
+import eisenhowerMatrix from './pages/eisenhower-matrix.js';
+import abcAnalyse from './pages/abc-analyse.js';
+import nutzwertanalyse from './pages/nutzwertanalyse.js';
+import portfolioanalyse from './pages/portfolioanalyse.js';
 import swotAnalyse from './pages/swot-analyse.js';
 import zielsystemeSmartZiele from './pages/zielsysteme-smart-ziele.js';
 import aufbauorganisation from './pages/aufbauorganisation.js';
+import ablauforganisation from './pages/ablauforganisation.js';
+import geschaeftsfuehrung from './pages/geschaeftsfuehrung.js';
+import prokura from './pages/prokura.js';
+import handlungsvollmacht from './pages/handlungsvollmacht.js';
+import verantwortlichkeitenZustaendigkeiten from './pages/verantwortlichkeiten-zustaendigkeiten.js';
+import fuehrungsstile from './pages/fuehrungsstile.js';
+import mitarbeitergespraeche from './pages/mitarbeitergespraeche.js';
+import zielvereinbarungen from './pages/zielvereinbarungen.js';
+import delegation from './pages/delegation.js';
+import mitarbeitermotivation from './pages/mitarbeitermotivation.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
 import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
@@ -217,11 +240,11 @@ export const knowledgePages = {
   'urlaubsentgelt-urlaubsgeld': urlaubsentgeltUrlaubsgeld,
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
-  kontokorrentkredit,
-  'innen-aussenfinanzierung': innenAussenfinanzierung,
-  fremdfinanzierung,
-  eigenfinanzierung,
   'finanzierung-investition': finanzierungInvestition,
+  eigenfinanzierung,
+  fremdfinanzierung,
+  'innen-aussenfinanzierung': innenAussenfinanzierung,
+  kontokorrentkredit,
   'statische-investitionsrechnung': statischeInvestitionsrechnung,
   'dynamische-investitionsrechnung': dynamischeInvestitionsrechnung,
   kennzahlen,
@@ -230,6 +253,12 @@ export const knowledgePages = {
   gesamtkapitalrentabilitaet,
   umsatzrentabilitaet,
   'ebit-ebitda-marge': ebitEbitdaMarge,
+  deckungsbeitragsquote,
+  fixkostenquote,
+  personalkostenquote,
+  materialkostenquote,
+  wareneinsatzquote,
+  rohertragsquote,
   wirtschaftlichkeit,
   'working-capital': workingCapital,
   liquiditaetsgrade,
@@ -244,9 +273,26 @@ export const knowledgePages = {
   unternehmensziele,
   'vision-mission-leitbild': visionMissionLeitbild,
   unternehmensstrategie,
+  produktlebenszyklus,
+  'bcg-matrix': bcgMatrix,
+  'pareto-prinzip': paretoPrinzip,
+  'eisenhower-matrix': eisenhowerMatrix,
+  'abc-analyse': abcAnalyse,
+  nutzwertanalyse,
+  portfolioanalyse,
   'swot-analyse': swotAnalyse,
   'zielsysteme-smart-ziele': zielsystemeSmartZiele,
   aufbauorganisation,
+  ablauforganisation,
+  geschaeftsfuehrung,
+  prokura,
+  handlungsvollmacht,
+  'verantwortlichkeiten-zustaendigkeiten': verantwortlichkeitenZustaendigkeiten,
+  fuehrungsstile,
+  mitarbeitergespraeche,
+  zielvereinbarungen,
+  delegation,
+  mitarbeitermotivation,
   'marketing-vertrieb': marketingVertrieb,
   digitalisierung,
   geschaeftsvorfaelle,
