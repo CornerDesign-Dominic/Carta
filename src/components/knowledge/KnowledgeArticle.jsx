@@ -154,7 +154,8 @@ export default function KnowledgeArticle({
 
       {generator && (
         <section className="knowledge-cta-section" aria-label="Passender Generator">
-          <div>
+          <div className="knowledge-cta-content">
+            <p className="knowledge-cta-kicker">Direkt umsetzen</p>
             <h2>Passenden Generator nutzen</h2>
             <p>
               {generator.text
@@ -162,7 +163,8 @@ export default function KnowledgeArticle({
             </p>
           </div>
           <button type="button" onClick={() => onOpenTool(generator.href)}>
-            {generator.label}
+            <span>{generator.label}</span>
+            <span aria-hidden="true">→</span>
           </button>
         </section>
       )}
