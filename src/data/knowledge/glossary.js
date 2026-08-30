@@ -159,6 +159,36 @@ export const glossaryEntries = [
     explanation: 'Da Gemeinden unterschiedliche Hebesätze festlegen können, kann die Gewerbesteuer bei gleichem Gewerbeertrag je nach Standort unterschiedlich hoch sein.',
   },
   {
+    id: 'kapitalertrag',
+    term: 'Kapitalertrag',
+    definition: 'Ein Kapitalertrag ist ein Ertrag aus einer Kapitalanlage oder Kapitalforderung.',
+    explanation: 'Dazu können zum Beispiel Zinsen, Dividenden oder bestimmte Gewinne aus der Veräußerung von Kapitalanlagen gehören. Welche Erträge steuerlich dazugehören, bestimmt das Einkommensteuergesetz.',
+  },
+  {
+    id: 'dividende',
+    term: 'Dividende',
+    definition: 'Eine Dividende ist ein Anteil am Gewinn einer Aktiengesellschaft oder einer vergleichbaren Kapitalgesellschaft, der an Anteilseigner ausgeschüttet wird.',
+    explanation: 'Sie ist für private Anleger grundsätzlich ein Kapitalertrag. Die steuerliche Behandlung kann sich unterscheiden, wenn die Beteiligung zum Betriebsvermögen gehört.',
+  },
+  {
+    id: 'abgeltungsteuer',
+    term: 'Abgeltungsteuer',
+    definition: 'Abgeltungsteuer ist die übliche Bezeichnung für den besonderen Steuertarif auf viele private Kapitalerträge.',
+    explanation: 'Die Steuer wird häufig als Kapitalertragsteuer direkt von der auszahlenden Stelle einbehalten. Ob der Steuerabzug die Steuer abschließend abgilt, hängt von den gesetzlichen Voraussetzungen ab.',
+  },
+  {
+    id: 'sparer-pauschbetrag',
+    term: 'Sparer-Pauschbetrag',
+    definition: 'Der Sparer-Pauschbetrag ist ein gesetzlicher Pauschbetrag, der bei privaten Einkünften aus Kapitalvermögen berücksichtigt wird.',
+    explanation: 'Seine Höhe kann sich ändern. Ein Freistellungsauftrag sorgt dafür, dass eine auszahlende Stelle den verfügbaren Betrag bereits beim Steuerabzug berücksichtigen kann.',
+  },
+  {
+    id: 'freistellungsauftrag',
+    term: 'Freistellungsauftrag',
+    definition: 'Mit einem Freistellungsauftrag kann eine Person eine auszahlende Stelle anweisen, den verfügbaren Sparer-Pauschbetrag beim Steuerabzug zu berücksichtigen.',
+    explanation: 'Der Auftrag darf insgesamt den gesetzlichen Pauschbetrag nicht übersteigen. Er ist keine Nichtveranlagungs-Bescheinigung und ersetzt keine Steuererklärung, wenn diese erforderlich ist.',
+  },
+  {
     id: 'grundfreibetrag',
     term: 'Grundfreibetrag',
     definition: 'Der Grundfreibetrag ist die im Einkommensteuertarif festgelegte Grenze, bis zu der keine tarifliche Einkommensteuer anfällt.',

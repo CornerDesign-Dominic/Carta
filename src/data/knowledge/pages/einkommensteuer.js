@@ -163,6 +163,7 @@ const einkommensteuer = {
     'steuern',
     'koerperschaftsteuer',
     'gewerbesteuer',
+    'kapitalertragsteuer',
     'lohnsteuer',
     'umsatzsteuer',
   ],
