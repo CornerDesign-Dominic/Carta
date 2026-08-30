@@ -36,6 +36,7 @@ import kleinunternehmerregelung from './pages/kleinunternehmerregelung.js';
 import steuerfreieUmsaetze from './pages/steuerfreie-umsaetze.js';
 import reverseCharge from './pages/reverse-charge.js';
 import innergemeinschaftlicheLieferung from './pages/innergemeinschaftliche-lieferung.js';
+import rechtsformen from './pages/rechtsformen.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -79,6 +80,7 @@ export const knowledgePages = {
   'steuerfreie-umsaetze': steuerfreieUmsaetze,
   'reverse-charge': reverseCharge,
   'innergemeinschaftliche-lieferung': innergemeinschaftlicheLieferung,
+  'rechtsformen': rechtsformen,
 };
 
 export function findKnowledgePage(slug) {

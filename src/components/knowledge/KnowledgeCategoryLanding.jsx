@@ -30,6 +30,7 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
       topics: group.topics?.filter((topic) => topic.slug && findKnowledgePage(topic.slug)) ?? [],
     }))
     .filter((group) => group.topics.length > 0);
+  const comparisonTable = landingPage.comparisonTable;
 
   return (
     <>
@@ -62,6 +63,28 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
                 </ul>
               </section>
             ))}
+          </div>
+        </section>
+      )}
+
+      {comparisonTable && (
+        <section className="knowledge-comparison-section" aria-labelledby="knowledge-comparison-title">
+          <h2 id="knowledge-comparison-title">{comparisonTable.title}</h2>
+          <div className="tools-info-table-wrap">
+            <table className="tools-info-table knowledge-comparison-table">
+              <thead>
+                <tr>
+                  {comparisonTable.columns.map((column) => <th key={column}>{column}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonTable.rows.map((row) => (
+                  <tr key={row[0]}>
+                    {row.map((cell, index) => <td key={`${row[0]}-${comparisonTable.columns[index]}`}>{cell}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
       )}

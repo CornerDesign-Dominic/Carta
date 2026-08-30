@@ -160,6 +160,45 @@ export const knowledgeCategories = [
     ],
   },
   {
+    id: 'rechtsformen',
+    landingSlug: 'rechtsformen',
+    title: 'Rechtsformen',
+    description: 'Grundlagen zu Unternehmensrechtsformen, Haftung, Kapital und Organisation.',
+    topicsTitle: 'Rechtsformen im Überblick',
+    pages: [
+      { slug: 'rechtsformen', title: 'Rechtsformen' },
+    ],
+    topicGroups: [
+      {
+        id: 'einzelunternehmen',
+        title: 'Einzelunternehmen',
+        topics: [
+          { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
+          { slug: 'eingetragener-kaufmann', title: 'eingetragener Kaufmann / e. K.' },
+        ],
+      },
+      {
+        id: 'personengesellschaften',
+        title: 'Personengesellschaften',
+        topics: [
+          { slug: 'gbr', title: 'GbR' },
+          { slug: 'ohg', title: 'OHG' },
+          { slug: 'kg', title: 'KG' },
+          { slug: 'gmbh-co-kg', title: 'GmbH & Co. KG' },
+        ],
+      },
+      {
+        id: 'kapitalgesellschaften',
+        title: 'Kapitalgesellschaften',
+        topics: [
+          { slug: 'gmbh', title: 'GmbH' },
+          { slug: 'ug-haftungsbeschraenkt', title: 'UG (haftungsbeschränkt)' },
+          { slug: 'ag', title: 'AG' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'gruendung',
     title: 'Gründung',
     description: 'Grundlagen für Selbstständige, Gründer und kleine Unternehmen.',
