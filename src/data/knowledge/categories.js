@@ -509,6 +509,7 @@ export const knowledgeCategories = [
       { slug: 'zuschlaege', title: 'Zuschläge' },
       { slug: 'mindestlohn', title: 'Mindestlohn' },
       { slug: 'urlaubsanspruch', title: 'Urlaubsanspruch' },
+      { slug: 'teilzeit', title: 'Teilzeit' },
       { slug: 'ausbildungsverguetung', title: 'Ausbildungsvergütung' },
       { slug: 'einmalzahlungen', title: 'Einmalzahlungen' },
       { slug: 'entgeltfortzahlung', title: 'Entgeltfortzahlung' },
@@ -559,6 +560,7 @@ export const knowledgeCategories = [
           { slug: 'zuschlaege', title: 'Zuschläge' },
           { slug: 'mindestlohn', title: 'Mindestlohn' },
           { slug: 'urlaubsanspruch', title: 'Urlaubsanspruch' },
+          { slug: 'teilzeit', title: 'Teilzeit' },
         ],
       },
       {

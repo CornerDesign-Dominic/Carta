@@ -60,6 +60,7 @@ import ueberstunden from './pages/ueberstunden.js';
 import zuschlaege from './pages/zuschlaege.js';
 import mindestlohn from './pages/mindestlohn.js';
 import urlaubsanspruch from './pages/urlaubsanspruch.js';
+import teilzeit from './pages/teilzeit.js';
 import ausbildungsverguetung from './pages/ausbildungsverguetung.js';
 import einmalzahlungen from './pages/einmalzahlungen.js';
 import entgeltfortzahlung from './pages/entgeltfortzahlung.js';
@@ -141,6 +142,7 @@ export const knowledgePages = {
   zuschlaege,
   mindestlohn,
   urlaubsanspruch,
+  teilzeit,
   ausbildungsverguetung,
   einmalzahlungen,
   entgeltfortzahlung,
