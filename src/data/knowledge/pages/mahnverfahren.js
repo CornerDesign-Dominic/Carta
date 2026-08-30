@@ -197,6 +197,7 @@ const mahnverfahren = {
     "mahnwesen",
     "rechnung",
     "gerichtliches-mahnverfahren",
+    "mahnbescheid",
   ],
   sources: [
     {

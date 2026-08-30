@@ -47,6 +47,7 @@ export const knowledgeCategories = [
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
       { slug: 'mahnverfahren', title: 'Mahnverfahren' },
       { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
+      { slug: 'mahnbescheid', title: 'Mahnbescheid' },
     ],
     topicGroups: [
       {
@@ -63,6 +64,7 @@ export const knowledgeCategories = [
         topics: [
           { slug: 'mahnverfahren', title: 'Mahnverfahren' },
           { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
+          { slug: 'mahnbescheid', title: 'Mahnbescheid' },
         ],
       },
     ],
