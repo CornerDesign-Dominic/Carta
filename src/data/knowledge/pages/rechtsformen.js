@@ -36,7 +36,7 @@ const rechtsformen = {
         cells: ['Einzelunternehmen', 'Inhaber persönlich und unbeschränkt', 'Keine gesetzliche Anforderung', 'Eine natürliche Person', 'Inhaber führt und vertritt', 'Einkommensteuer; ggf. Gewerbesteuer', 'EÜR oder Buchführung, je nach Pflicht', 'Keine zwingende Eintragung', 'Keine', 'Einzelgründung mit überschaubarem Risiko'],
       },
       {
-        slug: 'eingetragener-kaufmann',
+        slug: 'ek',
         title: 'e. K.',
         cells: ['e. K.', 'Inhaber persönlich und unbeschränkt', 'Keine gesetzliche Anforderung', 'Eine natürliche Person', 'Inhaber führt und vertritt', 'Einkommensteuer und Gewerbesteuer', 'Kaufmännische Buchführung; Befreiung im Einzelfall möglich', 'Handelsregister erforderlich', 'HRA', 'Kaufmännischer Einzelbetrieb'],
       },

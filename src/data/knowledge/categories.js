@@ -168,6 +168,7 @@ export const knowledgeCategories = [
     pages: [
       { slug: 'rechtsformen', title: 'Rechtsformen' },
       { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
+      { slug: 'ek', title: 'e. K.' },
       { slug: 'gbr', title: 'GbR' },
       { slug: 'gmbh', title: 'GmbH' },
       { slug: 'ug', title: 'UG (haftungsbeschränkt)' },
@@ -182,7 +183,7 @@ export const knowledgeCategories = [
         title: 'Einzelunternehmen',
         topics: [
           { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
-          { slug: 'eingetragener-kaufmann', title: 'eingetragener Kaufmann / e. K.' },
+          { slug: 'ek', title: 'e. K. – eingetragener Kaufmann / eingetragene Kauffrau' },
         ],
       },
       {

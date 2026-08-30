@@ -361,6 +361,12 @@ export const glossaryEntries = [
     explanation: 'Es wird von den Registergerichten geführt. Je nach Rechtsform erfolgt die Eintragung insbesondere in Abteilung A oder Abteilung B; nicht jedes Einzelunternehmen ist eintragungspflichtig.',
   },
   {
+    id: 'firmierung',
+    term: 'Firma',
+    definition: 'Die Firma ist der Name, unter dem ein Kaufmann seine Geschäfte betreibt und unterschreibt.',
+    explanation: 'Sie ist nicht automatisch mit dem Namen des Inhabers gleichzusetzen. Die Firmierung muss sich zur Kennzeichnung des Unternehmens eignen und darf keine irreführenden Angaben enthalten.',
+  },
+  {
     id: 'gesellschafter',
     term: 'Gesellschafter',
     definition: 'Ein Gesellschafter ist eine Person oder Gesellschaft, die an einer Gesellschaft beteiligt ist.',
