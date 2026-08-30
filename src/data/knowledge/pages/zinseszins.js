@@ -2,7 +2,7 @@ import { defaultDisclaimer } from '../shared.js';
 
 const zinseszins = {
   slug: 'zinseszins',
-  category: 'BWL & Rechnungswesen',
+  category: 'Finanzierung & Investition',
   title: 'Zinseszins',
   description: 'Zinseszins einfach erklärt: So wachsen Kapital und bereits gutgeschriebene Zinsen über mehrere Zeiträume.',
   seo: {

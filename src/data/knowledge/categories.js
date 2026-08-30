@@ -87,14 +87,291 @@ export const knowledgeCategories = [
     ],
   },
   {
-    id: 'bwl-rechnungswesen',
-    title: 'BWL & Rechnungswesen',
-    description: 'Grundlagen zu Steuern, Rechnungswesen und betriebswirtschaftlichen Zusammenhängen.',
+    id: 'buchhaltung-rechnungswesen',
+    landingSlug: 'buchhaltung-rechnungswesen',
+    title: 'Buchhaltung & Rechnungswesen',
+    description: 'Grundlagen zu Buchführung, Abschlüssen und der systematischen Erfassung von Geschäftsvorfällen.',
+    topicsTitle: 'Themen in Buchhaltung & Rechnungswesen',
     pages: [
-      { slug: 'zinsen', title: 'Zinsen' },
-      { slug: 'zinseszins', title: 'Zinseszins' },
+      { slug: 'buchhaltung-rechnungswesen', title: 'Buchhaltung & Rechnungswesen' },
+    ],
+    topicGroups: [
+      {
+        id: 'buchfuehrung',
+        title: 'Buchführung im Alltag',
+        topics: [
+          { slug: 'buchhaltung', title: 'Buchhaltung und Buchführung' },
+          { slug: 'geschaeftsvorfaelle', title: 'Geschäftsvorfälle' },
+          { slug: 'soll-und-haben', title: 'Soll und Haben' },
+          { slug: 'debitoren-kreditoren', title: 'Debitoren und Kreditoren' },
+          { slug: 'belege', title: 'Belege' },
+          { slug: 'eigenbeleg', title: 'Eigenbeleg' },
+        ],
+      },
+      {
+        id: 'abschluesse',
+        title: 'Auswertungen und Abschlüsse',
+        topics: [
+          { slug: 'euer', title: 'Einnahmenüberschussrechnung (EÜR)' },
+          { slug: 'bilanz', title: 'Bilanz' },
+          { slug: 'guv', title: 'Gewinn- und Verlustrechnung (GuV)' },
+          { slug: 'anlagenbuchhaltung', title: 'Anlagenbuchhaltung' },
+          { slug: 'jahresabschluss', title: 'Jahresabschluss' },
+          { slug: 'inventur-inventar', title: 'Inventur und Inventar' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'kostenrechnung-controlling',
+    landingSlug: 'kostenrechnung-controlling',
+    title: 'Kostenrechnung & Controlling',
+    description: 'Kosten, Kalkulationen und Kennzahlen für betriebliche Entscheidungen verständlich eingeordnet.',
+    topicsTitle: 'Themen in Kostenrechnung & Controlling',
+    pages: [
+      { slug: 'kostenrechnung-controlling', title: 'Kostenrechnung & Controlling' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
+    ],
+    topicGroups: [
+      {
+        id: 'kostenstruktur',
+        title: 'Kosten erfassen und zuordnen',
+        topics: [
+          { slug: 'fixe-variable-kosten', title: 'Fixe und variable Kosten' },
+          { slug: 'kostenarten', title: 'Kostenarten' },
+          { slug: 'kostenstellen', title: 'Kostenstellen' },
+          { slug: 'kostentraeger', title: 'Kostenträger' },
+          { slug: 'bab', title: 'Betriebsabrechnungsbogen (BAB)' },
+        ],
+      },
+      {
+        id: 'kalkulation',
+        title: 'Kalkulation und Entscheidungen',
+        topics: [
+          { slug: 'deckungsbeitrag', title: 'Deckungsbeitrag' },
+          { slug: 'zuschlagskalkulation', title: 'Zuschlagskalkulation' },
+          { slug: 'break-even-point', title: 'Break-even-Point' },
+          { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
+        ],
+      },
+      {
+        id: 'steuerung',
+        title: 'Steuerung und Kennzahlen',
+        topics: [
+          { slug: 'rentabilitaet-wirtschaftlichkeit', title: 'Rentabilität und Wirtschaftlichkeit' },
+          { slug: 'kennzahlen', title: 'Kennzahlen' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'finanzierung-investition',
+    landingSlug: 'finanzierung-investition',
+    title: 'Finanzierung & Investition',
+    description: 'Finanzierungsformen, Liquidität und Investitionsentscheidungen für Unternehmen im Überblick.',
+    topicsTitle: 'Themen in Finanzierung & Investition',
+    pages: [
+      { slug: 'finanzierung-investition', title: 'Finanzierung & Investition' },
+      { slug: 'zinsen', title: 'Zinsen' },
+      { slug: 'zinseszins', title: 'Zinseszins' },
+    ],
+    topicGroups: [
+      {
+        id: 'finanzierungsformen',
+        title: 'Finanzierungsformen',
+        topics: [
+          { slug: 'eigenkapital-fremdkapital', title: 'Eigenkapital und Fremdkapital' },
+          { slug: 'darlehen', title: 'Darlehen' },
+          { slug: 'leasing', title: 'Leasing' },
+          { slug: 'factoring', title: 'Factoring' },
+          { slug: 'skonto', title: 'Skonto' },
+          { slug: 'liquiditaet', title: 'Liquidität' },
+        ],
+      },
+      {
+        id: 'investitionsentscheidungen',
+        title: 'Investitionsentscheidungen',
+        topics: [
+          { slug: 'investitionsrechnung', title: 'Investitionsrechnung' },
+          { slug: 'amortisation', title: 'Amortisation' },
+          { slug: 'kapitalwert', title: 'Kapitalwert' },
+          { slug: 'finanzierungskosten', title: 'Finanzierungskosten' },
+        ],
+      },
+      {
+        id: 'verzinsung',
+        title: 'Zinsen und Verzinsung',
+        topics: [
+          { slug: 'zinsen', title: 'Zinsen' },
+          { slug: 'zinseszins', title: 'Zinseszins' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'einkauf-verkauf',
+    landingSlug: 'einkauf-verkauf',
+    title: 'Einkauf & Verkauf / Warenwirtschaft',
+    description: 'Abläufe und Belege von der Bestellung bis zur Lieferung, Zahlung und Lagersteuerung.',
+    topicsTitle: 'Themen in Einkauf & Verkauf',
+    pages: [
+      { slug: 'einkauf-verkauf', title: 'Einkauf & Verkauf / Warenwirtschaft' },
+      { slug: 'angebot', title: 'Angebot' },
+      { slug: 'lieferschein', title: 'Lieferschein' },
+      { slug: 'rechnung', title: 'Rechnung' },
+      { slug: 'quittung', title: 'Quittung' },
+    ],
+    topicGroups: [
+      {
+        id: 'beschaffung-und-auftrag',
+        title: 'Beschaffung und Auftrag',
+        topics: [
+          { slug: 'angebot', title: 'Angebot' },
+          { slug: 'bestellung', title: 'Bestellung' },
+          { slug: 'auftragsbestaetigung', title: 'Auftragsbestätigung' },
+          { slug: 'lieferbedingungen', title: 'Lieferbedingungen' },
+        ],
+      },
+      {
+        id: 'lieferung-und-zahlung',
+        title: 'Lieferung und Zahlung',
+        topics: [
+          { slug: 'lieferschein', title: 'Lieferschein' },
+          { slug: 'wareneingang', title: 'Wareneingang' },
+          { slug: 'rechnung', title: 'Rechnung' },
+          { slug: 'quittung', title: 'Quittung' },
+          { slug: 'zahlungsbedingungen', title: 'Zahlungsbedingungen' },
+          { slug: 'rabatt', title: 'Rabatt' },
+          { slug: 'skonto', title: 'Skonto' },
+        ],
+      },
+      {
+        id: 'lager',
+        title: 'Lager und Warenbestand',
+        topics: [
+          { slug: 'lagerbestand', title: 'Lagerbestand' },
+          { slug: 'mindestbestand', title: 'Mindestbestand' },
+          { slug: 'meldebestand', title: 'Meldebestand' },
+          { slug: 'inventur-inventar', title: 'Inventur' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'unternehmensfuehrung',
+    landingSlug: 'unternehmensfuehrung',
+    title: 'Unternehmensführung',
+    description: 'Ziele, Organisation, Verantwortung und Steuerung eines Unternehmens verständlich erklärt.',
+    topicsTitle: 'Themen der Unternehmensführung',
+    pages: [
+      { slug: 'unternehmensfuehrung', title: 'Unternehmensführung' },
+      { slug: 'businessplan', title: 'Businessplan' },
+      { slug: 'rechtsformen', title: 'Rechtsformen' },
+    ],
+    topicGroups: [
+      {
+        id: 'ziele-und-planung',
+        title: 'Ziele, Planung und Strategie',
+        topics: [
+          { slug: 'unternehmensziele', title: 'Unternehmensziele' },
+          { slug: 'businessplan', title: 'Businessplan' },
+          { slug: 'planung', title: 'Planung' },
+          { slug: 'strategie', title: 'Strategie' },
+          { slug: 'kennzahlen', title: 'Kennzahlen' },
+        ],
+      },
+      {
+        id: 'organisation-und-verantwortung',
+        title: 'Organisation und Verantwortung',
+        topics: [
+          { slug: 'organisation', title: 'Organisation' },
+          { slug: 'rechtsformen', title: 'Rechtsformen' },
+          { slug: 'prokura', title: 'Prokura' },
+          { slug: 'handlungsvollmacht', title: 'Handlungsvollmacht' },
+          { slug: 'geschaeftsfuehrung', title: 'Geschäftsführung' },
+        ],
+      },
+      {
+        id: 'risiko-und-regeln',
+        title: 'Risiko und Regeln',
+        topics: [
+          { slug: 'risikomanagement', title: 'Risikomanagement' },
+          { slug: 'compliance', title: 'Compliance' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'marketing-vertrieb',
+    landingSlug: 'marketing-vertrieb',
+    title: 'Marketing & Vertrieb',
+    description: 'Grundlagen von der Marktpositionierung bis zur Kundengewinnung und zum Verkauf.',
+    topicsTitle: 'Themen in Marketing & Vertrieb',
+    pages: [
+      { slug: 'marketing-vertrieb', title: 'Marketing & Vertrieb' },
+      { slug: 'angebot', title: 'Angebot' },
+      { slug: 'rechnung', title: 'Rechnung' },
+    ],
+    topicGroups: [
+      {
+        id: 'markt-und-positionierung',
+        title: 'Markt und Positionierung',
+        topics: [
+          { slug: 'marketing-mix', title: 'Marketing-Mix und 4P' },
+          { slug: 'zielgruppe', title: 'Zielgruppe' },
+          { slug: 'marktanalyse', title: 'Marktanalyse' },
+          { slug: 'usp', title: 'Alleinstellungsmerkmal (USP)' },
+          { slug: 'preisstrategie', title: 'Preisstrategie' },
+        ],
+      },
+      {
+        id: 'vertrieb-und-kunden',
+        title: 'Vertrieb und Kunden',
+        topics: [
+          { slug: 'vertrieb', title: 'Vertrieb' },
+          { slug: 'kundenakquise', title: 'Kundenakquise' },
+          { slug: 'crm', title: 'Customer-Relationship-Management (CRM)' },
+          { slug: 'angebot', title: 'Angebot' },
+          { slug: 'rechnung', title: 'Rechnung' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'digitalisierung',
+    landingSlug: 'digitalisierung',
+    title: 'Digitalisierung',
+    description: 'Digitale Dokumente, Archivierung und Geschäftsprozesse sicher und praktisch einordnen.',
+    topicsTitle: 'Themen der Digitalisierung',
+    pages: [
+      { slug: 'digitalisierung', title: 'Digitalisierung' },
+      { slug: 'belege', title: 'Belege' },
+      { slug: 'rechnung', title: 'Rechnung' },
+      { slug: 'eigenbeleg', title: 'Eigenbeleg' },
+    ],
+    topicGroups: [
+      {
+        id: 'digitale-dokumente',
+        title: 'Digitale Dokumente',
+        topics: [
+          { slug: 'e-rechnung', title: 'E-Rechnung' },
+          { slug: 'belege', title: 'Belege' },
+          { slug: 'rechnung', title: 'Rechnung' },
+          { slug: 'eigenbeleg', title: 'Eigenbeleg' },
+          { slug: 'digitale-signatur', title: 'Digitale Signatur' },
+        ],
+      },
+      {
+        id: 'aufbewahrung-und-prozesse',
+        title: 'Aufbewahrung und Prozesse',
+        topics: [
+          { slug: 'gobd', title: 'GoBD' },
+          { slug: 'elektronische-archivierung', title: 'Elektronische Archivierung' },
+          { slug: 'cloud-software', title: 'Cloud-Software' },
+          { slug: 'digitale-geschaeftsprozesse', title: 'Digitale Geschäftsprozesse' },
+        ],
+      },
     ],
   },
   {
@@ -222,6 +499,7 @@ export const knowledgeCategories = [
       { slug: 'arbeitgeber-arbeitnehmeranteile', title: 'Arbeitgeber- und Arbeitnehmeranteile' },
       { slug: 'minijob', title: 'Minijob' },
       { slug: 'kurzfristige-beschaeftigung', title: 'Kurzfristige Beschäftigung' },
+      { slug: 'sachbezug', title: 'Sachbezug' },
     ],
     topicGroups: [
       {

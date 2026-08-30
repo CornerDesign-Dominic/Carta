@@ -54,6 +54,14 @@ import bruttolohnNettolohn from './pages/bruttolohn-nettolohn.js';
 import arbeitgeberArbeitnehmeranteile from './pages/arbeitgeber-arbeitnehmeranteile.js';
 import minijob from './pages/minijob.js';
 import kurzfristigeBeschaeftigung from './pages/kurzfristige-beschaeftigung.js';
+import sachbezug from './pages/sachbezug.js';
+import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
+import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
+import finanzierungInvestition from './pages/finanzierung-investition.js';
+import einkaufVerkauf from './pages/einkauf-verkauf.js';
+import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
+import marketingVertrieb from './pages/marketing-vertrieb.js';
+import digitalisierung from './pages/digitalisierung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -115,6 +123,14 @@ export const knowledgePages = {
   'arbeitgeber-arbeitnehmeranteile': arbeitgeberArbeitnehmeranteile,
   minijob,
   'kurzfristige-beschaeftigung': kurzfristigeBeschaeftigung,
+  sachbezug,
+  'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
+  'kostenrechnung-controlling': kostenrechnungControlling,
+  'finanzierung-investition': finanzierungInvestition,
+  'einkauf-verkauf': einkaufVerkauf,
+  unternehmensfuehrung,
+  'marketing-vertrieb': marketingVertrieb,
+  digitalisierung,
 };
 
 export function findKnowledgePage(slug) {

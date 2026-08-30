@@ -2,7 +2,7 @@ import { defaultDisclaimer } from '../shared.js';
 
 const breakEvenPoint = {
   slug: 'break-even-point',
-  category: 'BWL & Rechnungswesen',
+  category: 'Kostenrechnung & Controlling',
   title: 'Break-even-Point',
   description: 'Break-even-Point einfach erklärt: Gewinnschwelle, Deckungsbeitrag, Break-even-Menge, Umsatz und Zeitpunkt berechnen.',
   seo: {

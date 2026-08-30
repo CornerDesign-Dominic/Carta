@@ -2,7 +2,7 @@ import { defaultDisclaimer } from '../shared.js';
 
 const kostenvergleichsrechnung = {
   slug: 'kostenvergleichsrechnung',
-  category: 'BWL & Rechnungswesen',
+  category: 'Kostenrechnung & Controlling',
   title: 'Kostenvergleichsrechnung',
   description: 'Kostenvergleichsrechnung einfach erklärt: Alternativen nach Anschaffungs-, laufenden und Restkosten vergleichen.',
   seo: {

@@ -2,7 +2,7 @@ import { defaultDisclaimer } from '../shared.js';
 
 const zinsen = {
   slug: 'zinsen',
-  category: 'BWL & Rechnungswesen',
+  category: 'Finanzierung & Investition',
   title: 'Zinsen',
   description: 'Zinsen einfach erklärt: Kapital, Zinssatz, Laufzeit, einfache Zinsrechnung und der Unterschied zu Zinseszins.',
   seo: {

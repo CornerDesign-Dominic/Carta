@@ -565,6 +565,24 @@ export const glossaryEntries = [
     explanation: 'Bei kurzfristigen Beschäftigungen ist sie insbesondere bei einem regelmäßigen Verdienst über der Geringfügigkeitsgrenze zu prüfen. Die Beurteilung hängt von den gesamten Umständen ab.',
   },
   {
+    id: 'sachbezug',
+    term: 'Sachbezug',
+    definition: 'Ein Sachbezug ist eine nicht in Geld bestehende Leistung aus einem Arbeitsverhältnis.',
+    explanation: 'Dazu können zum Beispiel Waren, bestimmte Gutscheine oder Geldkarten, Mahlzeiten und Unterkunft gehören. Ob ein Sachbezug steuer- oder beitragspflichtig ist, richtet sich nach Art, Wert und den jeweiligen gesetzlichen Voraussetzungen.',
+  },
+  {
+    id: 'geldwerter-vorteil',
+    term: 'Geldwerter Vorteil',
+    definition: 'Ein geldwerter Vorteil ist ein Vorteil aus dem Arbeitsverhältnis, der einen wirtschaftlichen Wert hat, aber nicht als Barlohn ausgezahlt wird.',
+    explanation: 'Ein Sachbezug kann ein geldwerter Vorteil sein. Ob und wie er in der Lohnabrechnung berücksichtigt wird, hängt von den einschlägigen Steuer- und Sozialversicherungsregeln ab.',
+  },
+  {
+    id: 'freibetrag',
+    term: 'Freibetrag',
+    definition: 'Ein Freibetrag ist ein Betrag, der bei der Berechnung einer Steuer oder Abgabe vom maßgeblichen Wert abgezogen wird.',
+    explanation: 'Anders als bei einer Freigrenze bleibt bei einem Überschreiten grundsätzlich nur der Teil oberhalb des Freibetrags belastet. Welche Freibeträge gelten, richtet sich nach der jeweiligen Regelung.',
+  },
+  {
     id: 'arbeitsentgelt',
     term: 'Arbeitsentgelt',
     definition: 'Arbeitsentgelt sind laufende oder einmalige Einnahmen aus einer Beschäftigung, unabhängig davon, ob ein Rechtsanspruch darauf besteht.',
