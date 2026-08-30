@@ -168,6 +168,7 @@ export const knowledgeCategories = [
     pages: [
       { slug: 'rechtsformen', title: 'Rechtsformen' },
       { slug: 'einzelunternehmen', title: 'Einzelunternehmen' },
+      { slug: 'gbr', title: 'GbR' },
     ],
     topicGroups: [
       {

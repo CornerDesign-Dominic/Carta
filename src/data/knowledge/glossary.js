@@ -360,6 +360,18 @@ export const glossaryEntries = [
     definition: 'Das Handelsregister ist ein öffentliches Register für kaufmännische Unternehmen und Gesellschaften.',
     explanation: 'Es wird von den Registergerichten geführt. Je nach Rechtsform erfolgt die Eintragung insbesondere in Abteilung A oder Abteilung B; nicht jedes Einzelunternehmen ist eintragungspflichtig.',
   },
+  {
+    id: 'gesellschafter',
+    term: 'Gesellschafter',
+    definition: 'Ein Gesellschafter ist eine Person oder Gesellschaft, die an einer Gesellschaft beteiligt ist.',
+    explanation: 'Welche Rechte, Pflichten, Beiträge und Haftungsfolgen damit verbunden sind, richtet sich nach der Rechtsform, dem Gesellschaftsvertrag und den gesetzlichen Regeln.',
+  },
+  {
+    id: 'egbr',
+    term: 'eGbR',
+    definition: 'Eine eGbR ist eine Gesellschaft bürgerlichen Rechts, die im Gesellschaftsregister eingetragen ist.',
+    explanation: 'Der Namenszusatz macht die Eintragung nach außen erkennbar. Die eGbR bleibt eine GbR und begrenzt die persönliche Haftung der Gesellschafter nicht.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

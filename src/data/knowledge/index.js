@@ -38,6 +38,7 @@ import reverseCharge from './pages/reverse-charge.js';
 import innergemeinschaftlicheLieferung from './pages/innergemeinschaftliche-lieferung.js';
 import rechtsformen from './pages/rechtsformen.js';
 import einzelunternehmen from './pages/einzelunternehmen.js';
+import gbr from './pages/gbr.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -83,6 +84,7 @@ export const knowledgePages = {
   'innergemeinschaftliche-lieferung': innergemeinschaftlicheLieferung,
   'rechtsformen': rechtsformen,
   'einzelunternehmen': einzelunternehmen,
+  'gbr': gbr,
 };
 
 export function findKnowledgePage(slug) {
