@@ -3,11 +3,11 @@ import { defaultDisclaimer } from '../shared.js';
 const mahnverfahren = {
   slug: "mahnverfahren",
   category: "Mahnwesen",
-  title: "Mahnverfahren",
-  description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen und möglichen nächsten Schritten.",
+  title: "Mahnung",
+  description: "Eine Mahnung fordert zur Zahlung einer offenen Forderung auf und hilft, die nächsten Schritte bei ausbleibender Zahlung einzuordnen.",
   seo: {
-    title: "Mahnverfahren einfach erklärt | Belege24",
-    description: "Das Mahnverfahren ordnet den Umgang mit fälligen offenen Forderungen und möglichen nächsten Schritten.",
+    title: "Mahnung einfach erklärt | Belege24",
+    description: "Erfahre, wann eine Mahnung sinnvoll ist, welche Angaben sie enthält und welche Schritte bei ausbleibender Zahlung folgen können.",
     canonicalPath: "/wissen/mahnverfahren",
   },
   article: {
@@ -69,7 +69,7 @@ const mahnverfahren = {
 },
 
       {
-  heading: "Möglichkeiten nach dem Mahnverfahren",
+  heading: "Möglichkeiten nach einer Mahnung",
   paragraphs: [
     "Bleibt die Zahlung trotz Mahnungen aus, können weitere Schritte nötig werden. Welche Lösung passt, hängt von Forderung, Kunde, Nachweisen und Kostenrisiko ab.",
   ],

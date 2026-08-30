@@ -45,7 +45,7 @@ export const knowledgeCategories = [
       { slug: 'mahnwesen', title: 'Mahnwesen' },
       { slug: 'faelligkeit', title: 'Fälligkeit' },
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
-      { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+      { slug: 'mahnverfahren', title: 'Mahnung' },
       { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
       { slug: 'mahnbescheid', title: 'Mahnbescheid' },
       { slug: 'vollstreckungsbescheid', title: 'Vollstreckungsbescheid' },
@@ -53,17 +53,28 @@ export const knowledgeCategories = [
     topicGroups: [
       {
         id: 'offene-forderungen',
-        title: 'Offene Forderungen',
+        title: 'Allgemeine Themen rund um Forderungen',
         topics: [
           { slug: 'faelligkeit', title: 'Fälligkeit' },
+          { slug: 'zahlungsverzug', title: 'Zahlungsverzug' },
+          { slug: 'mahnkosten', title: 'Mahnkosten' },
           { slug: 'verzugszinsen', title: 'Verzugszinsen' },
+          { slug: 'verjaehrung-von-forderungen', title: 'Verjährung von Forderungen' },
         ],
       },
       {
-        id: 'mahnung-und-durchsetzung',
-        title: 'Mahnung und Durchsetzung',
+        id: 'aussergerichtliches-mahnwesen',
+        title: 'Außergerichtliches Mahnwesen',
         topics: [
-          { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+          { slug: 'mahnverfahren', title: 'Mahnung' },
+          { slug: 'zahlungserinnerung', title: 'Zahlungserinnerung' },
+          { slug: 'inkasso', title: 'Inkasso' },
+        ],
+      },
+      {
+        id: 'gerichtliche-durchsetzung',
+        title: 'Gerichtliche Durchsetzung',
+        topics: [
           { slug: 'gerichtliches-mahnverfahren', title: 'Gerichtliches Mahnverfahren' },
           { slug: 'mahnbescheid', title: 'Mahnbescheid' },
           { slug: 'vollstreckungsbescheid', title: 'Vollstreckungsbescheid' },

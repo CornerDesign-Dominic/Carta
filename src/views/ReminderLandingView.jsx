@@ -60,7 +60,7 @@ export default function ReminderLandingView({ onNavigate }) {
               Eine Zahlungserinnerung eignet sich für einen ersten freundlichen Hinweis. Bleibt die Forderung offen, kannst du mit der ersten und zweiten Mahnung deutlicher werden und anschließend eine letzte Zahlungsfrist setzen.
             </p>
             <p>
-              Weitere Grundlagen findest du im Wissensbereich unter <Link to="/wissen/mahnverfahren">Mahnverfahren einfach erklärt</Link>.
+              Weitere Grundlagen findest du im Wissensbereich unter <Link to="/wissen/mahnverfahren">Mahnung einfach erklärt</Link>.
             </p>
           </section>
 
