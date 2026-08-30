@@ -140,6 +140,7 @@ const umsatzsteuer = {
     'kleinunternehmerregelung',
     'steuerfreie-umsaetze',
     'reverse-charge',
+    'innergemeinschaftliche-lieferung',
   ],
   sources: [
     {

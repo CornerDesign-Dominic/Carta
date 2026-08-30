@@ -96,6 +96,7 @@ export const knowledgeCategories = [
       { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
       { slug: 'steuerfreie-umsaetze', title: 'Steuerfreie Umsätze' },
       { slug: 'reverse-charge', title: 'Reverse Charge' },
+      { slug: 'innergemeinschaftliche-lieferung', title: 'Innergemeinschaftliche Lieferung' },
     ],
     topicGroups: [
       {
@@ -132,6 +133,7 @@ export const knowledgeCategories = [
           { slug: 'kleinunternehmerregelung', title: 'Kleinunternehmerregelung' },
           { slug: 'steuerfreie-umsaetze', title: 'Steuerfreie Umsätze' },
           { slug: 'reverse-charge', title: 'Reverse Charge' },
+          { slug: 'innergemeinschaftliche-lieferung', title: 'Innergemeinschaftliche Lieferung' },
         ],
       },
     ],

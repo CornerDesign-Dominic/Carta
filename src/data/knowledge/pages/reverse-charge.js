@@ -107,7 +107,7 @@ const reverseCharge = {
     { question: 'Kann der Leistungsempfänger bei Reverse Charge Vorsteuer abziehen?', answer: 'Die nach § 13b geschuldete Steuer kann unter den Voraussetzungen des § 15 UStG als Vorsteuer abziehbar sein. Das hängt insbesondere von der Verwendung der Leistung ab.' },
     { question: 'Ist Reverse Charge dasselbe wie steuerfrei?', answer: 'Nein. Bei Reverse Charge wird die Steuer auf den Leistungsempfänger verlagert. Bei einem steuerfreien Umsatz wird die Steuer aufgrund einer Befreiung nicht erhoben.' },
   ],
-  related: ['steuern', 'umsatzsteuer', 'vorsteuer', 'steuerfreie-umsaetze', 'rechnung'],
+  related: ['steuern', 'umsatzsteuer', 'vorsteuer', 'steuerfreie-umsaetze', 'rechnung', 'innergemeinschaftliche-lieferung'],
   sources: [
     { label: '§ 3a UStG – Ort der sonstigen Leistung', url: 'https://www.gesetze-im-internet.de/ustg_1980/__3a.html' },
     { label: '§ 13b UStG – Leistungen, für die der Leistungsempfänger die Steuer schuldet', url: 'https://www.gesetze-im-internet.de/ustg_1980/__13b.html' },

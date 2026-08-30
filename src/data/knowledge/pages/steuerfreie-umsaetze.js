@@ -112,7 +112,7 @@ const steuerfreieUmsaetze = {
     { question: 'Kann ich bei steuerfreien Umsätzen Vorsteuer abziehen?', answer: 'Das hängt von der konkreten Steuerbefreiung ab. Bei vielen Befreiungen ist der Vorsteuerabzug ausgeschlossen, bei einigen bleibt er nach § 15 Absatz 3 UStG erhalten.' },
     { question: 'Ist die Kleinunternehmerregelung eine Steuerbefreiung?', answer: 'Ja, sie ist eine besondere Umsatzsteuerbefreiung nach § 19 UStG. Sie ist aber von leistungsbezogenen Befreiungen nach § 4 UStG zu unterscheiden.' },
   ],
-  related: ['steuern', 'umsatzsteuer', 'vorsteuer', 'kleinunternehmerregelung', 'reverse-charge'],
+  related: ['steuern', 'umsatzsteuer', 'vorsteuer', 'kleinunternehmerregelung', 'reverse-charge', 'innergemeinschaftliche-lieferung'],
   sources: [
     { label: '§ 1 UStG – Steuerbare Umsätze', url: 'https://www.gesetze-im-internet.de/ustg_1980/__1.html' },
     { label: '§ 4 UStG – Steuerbefreiungen bei Lieferungen und sonstigen Leistungen', url: 'https://www.gesetze-im-internet.de/ustg_1980/__4.html' },

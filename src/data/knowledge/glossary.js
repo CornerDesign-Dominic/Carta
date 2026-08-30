@@ -68,6 +68,30 @@ export const glossaryEntries = [
     explanation: 'Im Reverse-Charge-Verfahren kann der Leistungsempfänger unter den gesetzlichen Voraussetzungen die Umsatzsteuer schulden.',
   },
   {
+    id: 'innergemeinschaftliche-lieferung',
+    term: 'Innergemeinschaftliche Lieferung',
+    definition: 'Eine innergemeinschaftliche Lieferung ist eine Warenlieferung von einem EU-Mitgliedstaat in einen anderen EU-Mitgliedstaat, die beim Lieferer unter gesetzlichen Voraussetzungen steuerfrei sein kann.',
+    explanation: 'Dafür müssen unter anderem die Voraussetzungen zum Abnehmer, zur Warenbewegung und zum innergemeinschaftlichen Erwerb erfüllt und nachgewiesen sein.',
+  },
+  {
+    id: 'innergemeinschaftlicher-erwerb',
+    term: 'Innergemeinschaftlicher Erwerb',
+    definition: 'Ein innergemeinschaftlicher Erwerb ist die umsatzsteuerliche Anschaffung von Ware aus einem anderen EU-Mitgliedstaat im Bestimmungsland.',
+    explanation: 'Er steht regelmäßig im Zusammenhang mit einer steuerfreien innergemeinschaftlichen Lieferung im Ausgangsmitgliedstaat.',
+  },
+  {
+    id: 'umsatzsteuer-id',
+    term: 'Umsatzsteuer-ID',
+    definition: 'Die Umsatzsteuer-Identifikationsnummer ist eine Kennung für Unternehmer im Umsatzsteuerverkehr innerhalb der Europäischen Union.',
+    explanation: 'Sie hilft, Unternehmer bei grenzüberschreitenden EU-Geschäften umsatzsteuerlich einzuordnen. Ihre Gültigkeit sollte vor bestimmten Lieferungen oder Leistungen geprüft werden.',
+  },
+  {
+    id: 'zusammenfassende-meldung',
+    term: 'Zusammenfassende Meldung',
+    definition: 'Die Zusammenfassende Meldung ist eine elektronische Meldung über bestimmte grenzüberschreitende EU-Umsätze an das Bundeszentralamt für Steuern.',
+    explanation: 'Sie dient dem Abgleich von Umsatzsteuerdaten zwischen den Mitgliedstaaten. Welche Umsätze und Fristen gelten, richtet sich nach den gesetzlichen Vorgaben.',
+  },
+  {
     id: 'umsatzsteuer-zahllast',
     term: 'Umsatzsteuer-Zahllast',
     definition: 'Die Umsatzsteuer-Zahllast ist vereinfacht der Betrag, der nach Verrechnung von Umsatzsteuer und abziehbarer Vorsteuer an das Finanzamt zu zahlen ist.',

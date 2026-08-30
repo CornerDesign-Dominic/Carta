@@ -28,6 +28,7 @@ import vorsteuer from './pages/vorsteuer.js';
 import kleinunternehmerregelung from './pages/kleinunternehmerregelung.js';
 import steuerfreieUmsaetze from './pages/steuerfreie-umsaetze.js';
 import reverseCharge from './pages/reverse-charge.js';
+import innergemeinschaftlicheLieferung from './pages/innergemeinschaftliche-lieferung.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -63,6 +64,7 @@ export const knowledgePages = {
   'kleinunternehmerregelung': kleinunternehmerregelung,
   'steuerfreie-umsaetze': steuerfreieUmsaetze,
   'reverse-charge': reverseCharge,
+  'innergemeinschaftliche-lieferung': innergemeinschaftlicheLieferung,
 };
 
 export function findKnowledgePage(slug) {
