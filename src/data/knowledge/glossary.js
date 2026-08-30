@@ -630,6 +630,12 @@ export const glossaryEntries = [
     definition: 'Überstunden sind Arbeitsstunden, die über die individuell vereinbarte regelmäßige Arbeitszeit hinausgehen.',
     explanation: 'Ob sie angeordnet, vergütet oder durch Freizeit ausgeglichen werden, richtet sich insbesondere nach Arbeitsvertrag, Tarifvertrag, Betriebsvereinbarung und dem konkreten Einsatz.',
   },
+  {
+    id: 'grundlohn',
+    term: 'Grundlohn',
+    definition: 'Der Grundlohn ist die laufende Vergütung für die regelmäßige Arbeitszeit, die bei steuerfreien Zuschlägen auf einen Stundenlohn umgerechnet wird.',
+    explanation: 'Für die Steuerfreiheit von Zuschlägen nach § 3b EStG wird der Grundlohn höchstens mit 50 Euro je Stunde angesetzt. Für die Sozialversicherung gelten bei SFN-Zuschlägen eigene Grenzen.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

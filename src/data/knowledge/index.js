@@ -56,6 +56,7 @@ import minijob from './pages/minijob.js';
 import kurzfristigeBeschaeftigung from './pages/kurzfristige-beschaeftigung.js';
 import sachbezug from './pages/sachbezug.js';
 import ueberstunden from './pages/ueberstunden.js';
+import zuschlaege from './pages/zuschlaege.js';
 import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
 import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
@@ -126,6 +127,7 @@ export const knowledgePages = {
   'kurzfristige-beschaeftigung': kurzfristigeBeschaeftigung,
   sachbezug,
   ueberstunden,
+  zuschlaege,
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
   'finanzierung-investition': finanzierungInvestition,

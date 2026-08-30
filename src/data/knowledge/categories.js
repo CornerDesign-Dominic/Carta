@@ -501,6 +501,7 @@ export const knowledgeCategories = [
       { slug: 'kurzfristige-beschaeftigung', title: 'Kurzfristige Beschäftigung' },
       { slug: 'sachbezug', title: 'Sachbezug' },
       { slug: 'ueberstunden', title: 'Überstunden' },
+      { slug: 'zuschlaege', title: 'Zuschläge' },
     ],
     topicGroups: [
       {
@@ -539,6 +540,7 @@ export const knowledgeCategories = [
           { slug: 'arbeitszeit', title: 'Arbeitszeit', path: '/tools/arbeitszeitrechner' },
           { slug: 'stundenlohn', title: 'Stundenlohn', path: '/tools/stundenlohnrechner' },
           { slug: 'ueberstunden', title: 'Überstunden' },
+          { slug: 'zuschlaege', title: 'Zuschläge' },
         ],
       },
       {
