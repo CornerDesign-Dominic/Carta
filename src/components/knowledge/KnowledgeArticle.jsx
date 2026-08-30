@@ -160,6 +160,44 @@ export default function KnowledgeArticle({
                 ))}
               </ul>
             )}
+            {section.formulaCards?.length > 0 && (
+              <div className="knowledge-formula-card-list">
+                {section.formulaCards.map((card) => (
+                  <section className="knowledge-formula-card" key={card.title}>
+                    <p className="knowledge-formula-card-kicker">{card.label ?? 'Schema'}</p>
+                    <h3>{card.title}</h3>
+                    <p className="knowledge-formula-card-expression">{card.formula}</p>
+                    {card.description && (
+                      <p>{renderArticleText(card.description, enableGlossary, onSelectGlossaryTerm)}</p>
+                    )}
+                  </section>
+                ))}
+              </div>
+            )}
+            {section.exampleCards?.length > 0 && (
+              <div className="knowledge-example-card-list">
+                {section.exampleCards.map((example) => (
+                  <section className="knowledge-example-card" key={example.title}>
+                    <p className="knowledge-example-card-kicker">Beispiel</p>
+                    <h3>{example.title}</h3>
+                    {example.paragraphs?.map((paragraph) => (
+                      <p key={typeof paragraph === 'string' ? paragraph : JSON.stringify(paragraph)}>
+                        {renderArticleText(paragraph, enableGlossary, onSelectGlossaryTerm)}
+                      </p>
+                    ))}
+                    {example.effects?.length > 0 && (
+                      <ul aria-label="Buchhalterische Wirkung">
+                        {example.effects.map((effect) => (
+                          <li key={typeof effect === 'string' ? effect : JSON.stringify(effect)}>
+                            {renderArticleText(effect, enableGlossary, onSelectGlossaryTerm)}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </section>
+                ))}
+              </div>
+            )}
           </section>
         ))}
       </article>

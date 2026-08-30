@@ -67,6 +67,9 @@ import einkaufVerkauf from './pages/einkauf-verkauf.js';
 import unternehmensfuehrung from './pages/unternehmensfuehrung.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
 import digitalisierung from './pages/digitalisierung.js';
+import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
+import sollUndHaben from './pages/soll-und-haben.js';
+import konten from './pages/konten.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -141,6 +144,9 @@ export const knowledgePages = {
   unternehmensfuehrung,
   'marketing-vertrieb': marketingVertrieb,
   digitalisierung,
+  geschaeftsvorfaelle,
+  'soll-und-haben': sollUndHaben,
+  konten,
 };
 
 export function findKnowledgePage(slug) {

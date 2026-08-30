@@ -94,6 +94,9 @@ export const knowledgeCategories = [
     topicsTitle: 'Themen in Buchhaltung & Rechnungswesen',
     pages: [
       { slug: 'buchhaltung-rechnungswesen', title: 'Buchhaltung & Rechnungswesen' },
+      { slug: 'geschaeftsvorfaelle', title: 'Geschäftsvorfälle' },
+      { slug: 'soll-und-haben', title: 'Soll und Haben' },
+      { slug: 'konten', title: 'Konten' },
     ],
     topicGroups: [
       {
@@ -103,6 +106,7 @@ export const knowledgeCategories = [
           { slug: 'buchhaltung', title: 'Buchhaltung und Buchführung' },
           { slug: 'geschaeftsvorfaelle', title: 'Geschäftsvorfälle' },
           { slug: 'soll-und-haben', title: 'Soll und Haben' },
+          { slug: 'konten', title: 'Konten' },
           { slug: 'debitoren-kreditoren', title: 'Debitoren und Kreditoren' },
           { slug: 'belege', title: 'Belege' },
           { slug: 'eigenbeleg', title: 'Eigenbeleg' },

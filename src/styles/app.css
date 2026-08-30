@@ -9679,6 +9679,98 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   color: var(--accent);
 }
 
+.knowledge-formula-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.knowledge-formula-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(79, 111, 104, 0.28);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-card) 76%, var(--color-accent-surface));
+}
+
+.knowledge-formula-card-kicker {
+  color: var(--accent-deep) !important;
+  font-size: 0.7rem !important;
+  font-weight: 760;
+  letter-spacing: 0.06em;
+  line-height: 1.2 !important;
+  text-transform: uppercase;
+}
+
+.knowledge-formula-card h3 {
+  margin: 0;
+  color: var(--accent-deep);
+  font-size: 0.98rem;
+  line-height: 1.38;
+}
+
+.knowledge-formula-card-expression {
+  margin: 2px 0 !important;
+  color: var(--accent-deep) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1rem !important;
+  font-weight: 760;
+  letter-spacing: 0.01em;
+  line-height: 1.45 !important;
+}
+
+.knowledge-formula-card > p:last-child {
+  font-size: 0.92rem !important;
+  line-height: 1.58 !important;
+}
+
+.knowledge-example-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.knowledge-example-card {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 16px;
+  border: 1px solid rgba(79, 111, 104, 0.24);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-card) 82%, var(--color-accent-surface));
+}
+
+.knowledge-example-card-kicker {
+  color: var(--accent-deep) !important;
+  font-size: 0.7rem !important;
+  font-weight: 760;
+  letter-spacing: 0.06em;
+  line-height: 1.2 !important;
+  text-transform: uppercase;
+}
+
+.knowledge-example-card h3 {
+  margin: 0;
+  color: var(--accent-deep);
+  font-size: 0.98rem;
+  line-height: 1.38;
+}
+
+.knowledge-example-card p,
+.knowledge-example-card ul {
+  font-size: 0.92rem !important;
+  line-height: 1.58 !important;
+}
+
+.knowledge-example-card ul {
+  gap: 5px;
+  margin-top: 1px;
+}
+
 .knowledge-panel,
 .knowledge-tool-card,
 .knowledge-empty-state {
@@ -12233,6 +12325,8 @@ body.tool-document-print-mode .tool-document-date-picker {
 @media (max-width: 760px) {
   .knowledge-highlight-grid,
   .knowledge-category-grid,
+  .knowledge-formula-card-list,
+  .knowledge-example-card-list,
   .tools-overview-grid,
   .tools-calculator-layout,
   .tools-form-grid {

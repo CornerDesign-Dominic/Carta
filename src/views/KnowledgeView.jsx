@@ -6,12 +6,26 @@ import KnowledgeLanding from '../components/knowledge/KnowledgeLanding.jsx';
 import KnowledgeSidebar from '../components/knowledge/KnowledgeSidebar.jsx';
 import { findKnowledgePage } from '../data/knowledgePages.js';
 
-// Das Glossar ist technisch vorbereitet, wird aber erst mit einem späteren Release veröffentlicht.
-const isKnowledgeGlossaryEnabled = false;
+const isKnowledgeGlossaryEnabled = true;
+
+function hasGlossaryTerm(content) {
+  if (Array.isArray(content)) {
+    return content.some(hasGlossaryTerm);
+  }
+
+  if (!content || typeof content !== 'object') {
+    return false;
+  }
+
+  return content.type === 'glossary' || Object.values(content).some(hasGlossaryTerm);
+}
 
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
   const [activeGlossaryId, setActiveGlossaryId] = useState(null);
   const activePage = activeSlug ? findKnowledgePage(activeSlug) : null;
+  const hasActiveGlossaryTerms = hasGlossaryTerm(
+    activePage?.article?.sections ?? activePage?.sections ?? activePage?.articleSections,
+  );
   const documentIdByToolLink = {
     '/dokumente/rechnung/standard': 'write-invoice',
     '/dokumente/rechnung': 'write-invoice',
@@ -90,7 +104,7 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
         )}
       </section>
 
-      {isKnowledgeGlossaryEnabled && activeSlug && (
+      {isKnowledgeGlossaryEnabled && activeSlug && hasActiveGlossaryTerms && (
         <KnowledgeGlossaryPanel activeGlossaryId={activeGlossaryId} />
       )}
     </main>
