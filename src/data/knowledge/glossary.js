@@ -1503,6 +1503,30 @@ export const glossaryEntries = [
     explanation: 'Dadurch wächst die Berechnungsgrundlage mit jeder Verzinsung. Wie stark sich das auswirkt, hängt vor allem von Zinssatz, Laufzeit und Verzinsungsintervall ab.',
   },
   {
+    id: 'barwert',
+    term: 'Barwert',
+    definition: 'Der Barwert ist der heutige Wert einer Zahlung, die erst in der Zukunft erwartet wird.',
+    explanation: 'Er entsteht durch Abzinsung mit einem festgelegten Zinssatz und macht Zahlungen zu unterschiedlichen Zeitpunkten vergleichbar.',
+  },
+  {
+    id: 'abzinsung',
+    term: 'Abzinsung',
+    definition: 'Abzinsung rechnet eine künftige Zahlung mit einem Zinssatz auf ihren heutigen Wert zurück.',
+    explanation: 'Je weiter eine Zahlung in der Zukunft liegt oder je höher der Zinssatz ist, desto niedriger ist ihr Barwert.',
+  },
+  {
+    id: 'kalkulationszinssatz',
+    term: 'Kalkulationszinssatz',
+    definition: 'Der Kalkulationszinssatz ist der für eine Investitionsrechnung verwendete Zinssatz zur Bewertung künftiger Zahlungen.',
+    explanation: 'Er kann zum Beispiel Finanzierungskosten, eine Mindestverzinsung, Alternativanlagen und das Risiko abbilden. Seine Wahl beeinflusst das Ergebnis wesentlich.',
+  },
+  {
+    id: 'kapitalwert',
+    term: 'Kapitalwert',
+    definition: 'Der Kapitalwert ist die Summe aller abgezinsten Nettozahlungen einer Investition abzüglich der Anfangsinvestition.',
+    explanation: 'Ein positiver Kapitalwert bedeutet bei den verwendeten Annahmen und dem Kalkulationszinssatz einen Überschuss über die geforderte Verzinsung.',
+  },
+  {
     id: 'break-even-point',
     term: 'Break-even-Point',
     definition: 'Der Break-even-Point ist die Gewinnschwelle, an der Erlöse und Gesamtkosten gleich hoch sind.',
