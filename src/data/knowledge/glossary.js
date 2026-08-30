@@ -414,6 +414,24 @@ export const glossaryEntries = [
     definition: 'HRA ist die Abkürzung für eine Registernummer in Abteilung A des Handelsregisters.',
     explanation: 'In Abteilung A werden insbesondere Einzelkaufleute, OHGs und KGs eingetragen. Kapitalgesellschaften wie GmbH und UG stehen dagegen grundsätzlich in Abteilung B (HRB).',
   },
+  {
+    id: 'komplementaer',
+    term: 'Komplementär',
+    definition: 'Ein Komplementär ist der persönlich haftende Gesellschafter einer Kommanditgesellschaft.',
+    explanation: 'Er führt und vertritt die KG grundsätzlich. Seine Haftung für Verbindlichkeiten der Gesellschaft ist nicht auf einen bestimmten Betrag beschränkt.',
+  },
+  {
+    id: 'kommanditist',
+    term: 'Kommanditist',
+    definition: 'Ein Kommanditist ist ein beschränkt haftender Gesellschafter einer Kommanditgesellschaft.',
+    explanation: 'Er ist grundsätzlich von Geschäftsführung und Vertretung ausgeschlossen. Seine Haftung gegenüber Gläubigern richtet sich nach Haftsumme, Einlage und deren tatsächlicher Leistung.',
+  },
+  {
+    id: 'haftsumme',
+    term: 'Haftsumme',
+    definition: 'Die Haftsumme ist der im Handelsregister eingetragene Betrag, bis zu dem ein Kommanditist gegenüber Gläubigern grundsätzlich haftet.',
+    explanation: 'Sie ist nicht automatisch mit der vereinbarten Einlage identisch. In welchem Umfang die Haftung ausgeschlossen ist oder wieder auflebt, hängt insbesondere von der Leistung oder Rückzahlung der Einlage ab.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));

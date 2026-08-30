@@ -42,6 +42,7 @@ import gbr from './pages/gbr.js';
 import gmbh from './pages/gmbh.js';
 import ug from './pages/ug.js';
 import ohg from './pages/ohg.js';
+import kg from './pages/kg.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -91,6 +92,7 @@ export const knowledgePages = {
   'gmbh': gmbh,
   'ug': ug,
   'ohg': ohg,
+  'kg': kg,
 };
 
 export function findKnowledgePage(slug) {
