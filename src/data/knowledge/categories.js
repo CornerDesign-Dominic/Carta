@@ -232,6 +232,7 @@ export const knowledgeCategories = [
         topics: [
           { slug: 'eigenfinanzierung', title: 'Eigenfinanzierung' },
           { slug: 'fremdfinanzierung', title: 'Fremdfinanzierung' },
+          { slug: 'leasing', title: 'Leasing' },
           { slug: 'innen-aussenfinanzierung', title: 'Innen- & Außenfinanzierung' },
         ],
       },

@@ -2125,3 +2125,9 @@ const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, en
 export function findGlossaryEntry(id) {
   return glossaryEntriesById.get(id) ?? null;
 }
+  {
+    id: 'leasing',
+    term: 'Leasing',
+    definition: 'Leasing überlässt einem Nutzer ein Wirtschaftsgut gegen vereinbarte Zahlungen für eine bestimmte Laufzeit.',
+    explanation: 'Der Leasinggeber stellt das Gut bereit, der Leasingnehmer nutzt es und zahlt meist regelmäßige Raten. Eigentum, Rückgabe, Kaufoption und Restwertrisiko richten sich nach dem Vertrag.',
+  },

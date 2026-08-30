@@ -129,6 +129,7 @@ const fremdfinanzierung = {
   related: [
     'finanzierung-investition',
     'eigenfinanzierung',
+    'leasing',
     'zinsen',
     'verschuldungsgrad',
     'eigenkapital-fremdkapital',
