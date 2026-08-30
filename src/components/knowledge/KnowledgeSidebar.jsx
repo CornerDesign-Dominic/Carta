@@ -21,7 +21,11 @@ export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }
   }
 
   const visiblePages = knowledgeCategories
-    .flatMap((category) => category.pages)
+    .flatMap((category) => (
+      category.landingSlug
+        ? category.pages.filter((page) => page.slug === category.landingSlug)
+        : category.pages
+    ))
     .filter((page) => visibleKnowledgeSlugs.includes(page.slug));
 
   return (
