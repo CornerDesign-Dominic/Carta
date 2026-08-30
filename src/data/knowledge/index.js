@@ -58,6 +58,7 @@ import sachbezug from './pages/sachbezug.js';
 import ueberstunden from './pages/ueberstunden.js';
 import zuschlaege from './pages/zuschlaege.js';
 import einmalzahlungen from './pages/einmalzahlungen.js';
+import entgeltfortzahlung from './pages/entgeltfortzahlung.js';
 import buchhaltungRechnungswesen from './pages/buchhaltung-rechnungswesen.js';
 import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
@@ -130,6 +131,7 @@ export const knowledgePages = {
   ueberstunden,
   zuschlaege,
   einmalzahlungen,
+  entgeltfortzahlung,
   'buchhaltung-rechnungswesen': buchhaltungRechnungswesen,
   'kostenrechnung-controlling': kostenrechnungControlling,
   'finanzierung-investition': finanzierungInvestition,

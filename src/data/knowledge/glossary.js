@@ -636,6 +636,12 @@ export const glossaryEntries = [
     definition: 'Der Grundlohn ist die laufende Vergütung für die regelmäßige Arbeitszeit, die bei steuerfreien Zuschlägen auf einen Stundenlohn umgerechnet wird.',
     explanation: 'Für die Steuerfreiheit von Zuschlägen nach § 3b EStG wird der Grundlohn höchstens mit 50 Euro je Stunde angesetzt. Für die Sozialversicherung gelten bei SFN-Zuschlägen eigene Grenzen.',
   },
+  {
+    id: 'arbeitsunfaehigkeit',
+    term: 'Arbeitsunfähigkeit',
+    definition: 'Arbeitsunfähigkeit liegt vor, wenn ein Beschäftigter seine arbeitsvertragliche Tätigkeit wegen Krankheit nicht ausüben kann oder dadurch eine Verschlimmerung der Erkrankung zu erwarten wäre.',
+    explanation: 'Sie ist von einer bloßen Erkrankung zu unterscheiden. Für Anzeige, Nachweis, Entgeltfortzahlung und Krankengeld gelten je nach Beschäftigung und Krankenversicherung besondere Regeln.',
+  },
 ];
 
 const glossaryEntriesById = new Map(glossaryEntries.map((entry) => [entry.id, entry]));
