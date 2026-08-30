@@ -162,6 +162,7 @@ export const knowledgeCategories = [
       { slug: 'kostenrechnung-controlling', title: 'Kostenrechnung & Controlling' },
       { slug: 'kostenarten-kostenstellen-kostentraeger', title: 'Kostenarten, Kostenstellen & Kostenträger' },
       { slug: 'fixe-variable-kosten', title: 'Fixe und variable Kosten' },
+      { slug: 'bab', title: 'Betriebsabrechnungsbogen (BAB)' },
       { slug: 'deckungsbeitrag', title: 'Deckungsbeitrag' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },

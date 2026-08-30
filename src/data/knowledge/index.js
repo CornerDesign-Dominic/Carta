@@ -21,6 +21,7 @@ import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
 import kostenartenKostenstellenKostentraeger from './pages/kostenarten-kostenstellen-kostentraeger.js';
 import fixeVariableKosten from './pages/fixe-variable-kosten.js';
 import deckungsbeitrag from './pages/deckungsbeitrag.js';
+import bab from './pages/bab.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -128,6 +129,7 @@ export const knowledgePages = {
   'kostenarten-kostenstellen-kostentraeger': kostenartenKostenstellenKostentraeger,
   'fixe-variable-kosten': fixeVariableKosten,
   deckungsbeitrag,
+  bab,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,

@@ -765,6 +765,24 @@ export const glossaryEntries = [
     explanation: 'Sie werden zunächst einer Kostenstelle zugeordnet und anschließend mit nachvollziehbaren Schlüsseln oder Zuschlägen auf Kostenträger verteilt.',
   },
   {
+    id: 'betriebsabrechnungsbogen',
+    term: 'Betriebsabrechnungsbogen (BAB)',
+    definition: 'Ein Betriebsabrechnungsbogen verteilt Gemeinkosten auf Kostenstellen.',
+    explanation: 'Er ordnet indirekte Kosten wie Miete oder Energie zunächst Bereichen wie Produktion, Verwaltung oder Vertrieb zu und kann die Grundlage für Zuschlagssätze bilden.',
+  },
+  {
+    id: 'verteilungsschluessel',
+    term: 'Verteilungsschlüssel',
+    definition: 'Ein Verteilungsschlüssel legt fest, wie Kosten auf mehrere Kostenstellen oder Kostenträger aufgeteilt werden.',
+    explanation: 'Ein sinnvoller Schlüssel orientiert sich möglichst an der tatsächlichen Nutzung oder Verursachung, zum Beispiel an Fläche, Verbrauch, Maschinenstunden oder Mitarbeiterzahl.',
+  },
+  {
+    id: 'zuschlagssatz',
+    term: 'Zuschlagssatz',
+    definition: 'Ein Zuschlagssatz verrechnet Gemeinkosten über eine passende Bezugsgröße in einer Kalkulation.',
+    explanation: 'Er setzt zum Beispiel die Gemeinkosten einer Kostenstelle ins Verhältnis zu Materialeinzelkosten oder Fertigungslöhnen. Die Bezugsgröße sollte zur Kostenstruktur passen.',
+  },
+  {
     id: 'variable-kosten',
     term: 'Variable Kosten',
     definition: 'Variable Kosten verändern sich mit der produzierten, verkauften oder erbrachten Menge.',
