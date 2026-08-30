@@ -40,6 +40,7 @@ export const knowledgeCategories = [
     description: 'Steuerarten und steuerliche Grundlagen für den geschäftlichen Alltag.',
     pages: [
       { slug: 'steuern', title: 'Steuern' },
+      { slug: 'einkommensteuer', title: 'Einkommensteuer' },
       { slug: 'umsatzsteuer', title: 'Umsatzsteuer' },
     ],
     topicGroups: [
@@ -47,7 +48,7 @@ export const knowledgeCategories = [
         id: 'steuerarten',
         title: 'Steuerarten',
         topics: [
-          { slug: 'einkommensteuer', title: 'Einkommensteuer', description: 'Steuer auf das Einkommen natürlicher Personen.' },
+          { slug: 'einkommensteuer', title: 'Einkommensteuer', description: 'Steuer auf das Einkommen natürlicher Personen; die Wissensseite ist bereits verfügbar.' },
           { slug: 'lohnsteuer', title: 'Lohnsteuer', description: 'Erhebungsform der Einkommensteuer bei Arbeitslohn.' },
           { slug: 'koerperschaftsteuer', title: 'Körperschaftsteuer', description: 'Steuer auf das Einkommen bestimmter juristischer Personen.' },
           { slug: 'gewerbesteuer', title: 'Gewerbesteuer', description: 'Steuer auf den Gewerbeertrag eines Gewerbebetriebs.' },

@@ -117,6 +117,30 @@ export const glossaryEntries = [
     explanation: 'Er trägt zunächst zur Deckung der Fixkosten bei. Erst wenn die Fixkosten gedeckt sind, kann ein positiver Gewinn entstehen.',
   },
   {
+    id: 'zu-versteuerndes-einkommen',
+    term: 'Zu versteuerndes Einkommen',
+    definition: 'Das zu versteuernde Einkommen ist die Bemessungsgrundlage, auf die der Einkommensteuertarif grundsätzlich angewendet wird.',
+    explanation: 'Es entsteht nach den gesetzlich vorgesehenen Schritten zur Ermittlung der Einkünfte und Abzüge. Es ist deshalb nicht mit Einnahmen, Umsatz oder Bruttolohn gleichzusetzen.',
+  },
+  {
+    id: 'grundfreibetrag',
+    term: 'Grundfreibetrag',
+    definition: 'Der Grundfreibetrag ist die im Einkommensteuertarif festgelegte Grenze, bis zu der keine tarifliche Einkommensteuer anfällt.',
+    explanation: 'Die Höhe wird gesetzlich festgelegt und kann sich ändern. Für die konkrete Steuerberechnung ist immer der Tarif des jeweiligen Jahres maßgeblich.',
+  },
+  {
+    id: 'werbungskosten',
+    term: 'Werbungskosten',
+    definition: 'Werbungskosten sind Aufwendungen zur Erwerbung, Sicherung und Erhaltung von Einnahmen.',
+    explanation: 'Sie werden bei der Einkunftsart berücksichtigt, bei der sie entstehen. Ob ein konkreter Aufwand abziehbar ist, hängt von den gesetzlichen Voraussetzungen ab.',
+  },
+  {
+    id: 'einkommensteuer-vorauszahlung',
+    term: 'Einkommensteuer-Vorauszahlung',
+    definition: 'Eine Einkommensteuer-Vorauszahlung ist eine vom Finanzamt festgesetzte Zahlung auf die voraussichtliche Einkommensteuer des laufenden Jahres.',
+    explanation: 'Sie wird später auf die festgesetzte Einkommensteuer angerechnet. Die Höhe kann angepasst werden, wenn sich die voraussichtlichen Einkünfte wesentlich verändern.',
+  },
+  {
     id: 'restwert',
     term: 'Restwert',
     definition: 'Der Restwert ist der erwartete Wert eines Wirtschaftsguts am Ende eines betrachteten Zeitraums.',
