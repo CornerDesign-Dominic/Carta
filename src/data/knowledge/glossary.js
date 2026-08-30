@@ -1086,6 +1086,18 @@ export const glossaryEntries = [
     explanation: 'Es gehört regelmäßig zum Fremdkapital. Laufzeit, Zinsen, Sicherheiten und Tilgung richten sich nach dem Darlehensvertrag.',
   },
   {
+    id: 'tilgung',
+    term: 'Tilgung',
+    definition: 'Tilgung ist die Rückzahlung eines Darlehens oder einer anderen Schuld.',
+    explanation: 'Sie reduziert die Restschuld. Zinszahlungen sind davon zu unterscheiden: Sie sind die Kosten für die Überlassung des Kapitals und senken die Schuld grundsätzlich nicht.',
+  },
+  {
+    id: 'restschuld',
+    term: 'Restschuld',
+    definition: 'Die Restschuld ist der Teil eines Darlehens, der nach bereits geleisteten Tilgungen noch offen ist.',
+    explanation: 'Auf die Restschuld werden die Zinsen nach den vertraglichen Regeln berechnet. Sie zeigt auch, welcher Betrag zu einem bestimmten Zeitpunkt noch zurückgezahlt werden muss.',
+  },
+  {
     id: 'eigenkapitalquote',
     term: 'Eigenkapitalquote',
     definition: 'Die Eigenkapitalquote zeigt, welcher Anteil des Gesamtkapitals durch Eigenkapital finanziert ist.',

@@ -80,6 +80,7 @@ import kostenrechnungControlling from './pages/kostenrechnung-controlling.js';
 import finanzierungInvestition from './pages/finanzierung-investition.js';
 import eigenfinanzierung from './pages/eigenfinanzierung.js';
 import fremdfinanzierung from './pages/fremdfinanzierung.js';
+import darlehenKreditarten from './pages/darlehen-kreditarten.js';
 import leasing from './pages/leasing.js';
 import innenAussenfinanzierung from './pages/innen-aussenfinanzierung.js';
 import kontokorrentkredit from './pages/kontokorrentkredit.js';
@@ -266,6 +267,7 @@ export const knowledgePages = {
   'kostenrechnung-controlling': kostenrechnungControlling,
   'finanzierung-investition': finanzierungInvestition,
   eigenfinanzierung,
+  'darlehen-kreditarten': darlehenKreditarten,
   fremdfinanzierung,
   'innen-aussenfinanzierung': innenAussenfinanzierung,
   kontokorrentkredit,
