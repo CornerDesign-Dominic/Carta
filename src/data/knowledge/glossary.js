@@ -119,8 +119,20 @@ export const glossaryEntries = [
   {
     id: 'zu-versteuerndes-einkommen',
     term: 'Zu versteuerndes Einkommen',
-    definition: 'Das zu versteuernde Einkommen ist die Bemessungsgrundlage, auf die der Einkommensteuertarif grundsätzlich angewendet wird.',
-    explanation: 'Es entsteht nach den gesetzlich vorgesehenen Schritten zur Ermittlung der Einkünfte und Abzüge. Es ist deshalb nicht mit Einnahmen, Umsatz oder Bruttolohn gleichzusetzen.',
+    definition: 'Das zu versteuernde Einkommen ist die Bemessungsgrundlage, auf die der Einkommensteuertarif oder Körperschaftsteuersatz grundsätzlich angewendet wird.',
+    explanation: 'Es entsteht nach den gesetzlich vorgesehenen Schritten zur Ermittlung der Einkünfte und Abzüge. Es ist deshalb nicht mit Einnahmen, Umsatz, Bruttolohn oder dem handelsrechtlichen Jahresüberschuss gleichzusetzen.',
+  },
+  {
+    id: 'koerperschaft',
+    term: 'Körperschaft',
+    definition: 'Eine Körperschaft ist eine rechtlich eigenständige Organisation, die selbst Trägerin von Rechten und Pflichten sein kann.',
+    explanation: 'Dazu gehören zum Beispiel Kapitalgesellschaften wie GmbH und AG, aber auch weitere gesetzlich bestimmte Organisationen. Ihr Einkommen wird grundsätzlich getrennt von dem ihrer Gesellschafter betrachtet.',
+  },
+  {
+    id: 'gewinnausschuettung',
+    term: 'Gewinnausschüttung',
+    definition: 'Bei einer Gewinnausschüttung gibt eine Kapitalgesellschaft einen Teil ihres Gewinns an ihre Gesellschafter weiter.',
+    explanation: 'Sie unterscheidet sich von einem betrieblichen Aufwand. Ob und wie die Ausschüttung bei den Gesellschaftern besteuert wird, hängt von deren persönlicher und rechtlicher Situation ab.',
   },
   {
     id: 'grundfreibetrag',
