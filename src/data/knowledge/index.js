@@ -86,6 +86,7 @@ import lieferantenkredit from './pages/lieferantenkredit.js';
 import factoring from './pages/factoring.js';
 import gewinnvergleichsrechnung from './pages/gewinnvergleichsrechnung.js';
 import rentabilitaetsvergleichsrechnung from './pages/rentabilitaetsvergleichsrechnung.js';
+import amortisationsrechnung from './pages/amortisationsrechnung.js';
 import statischeInvestitionsrechnung from './pages/statische-investitionsrechnung.js';
 import dynamischeInvestitionsrechnung from './pages/dynamische-investitionsrechnung.js';
 import kennzahlen from './pages/kennzahlen.js';
@@ -250,6 +251,7 @@ export const knowledgePages = {
   'innen-aussenfinanzierung': innenAussenfinanzierung,
   gewinnvergleichsrechnung,
   rentabilitaetsvergleichsrechnung,
+  amortisationsrechnung,
   factoring,
   lieferantenkredit,
   kontokorrentkredit,

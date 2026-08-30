@@ -714,6 +714,18 @@ export const glossaryEntries = [
     explanation: 'Sie mindert als Aufwand das Ergebnis und reduziert den Buchwert. Handels- und Steuerrecht können bei Methode und Voraussetzungen voneinander abweichen.',
   },
   {
+    id: 'amortisation',
+    term: 'Amortisation',
+    definition: 'Amortisation beschreibt den Zeitraum oder Vorgang, in dem sich eine Investition durch ihre erwarteten Rückflüsse rechnerisch bezahlt macht.',
+    explanation: 'Die Amortisationsdauer zeigt, wann die anfängliche Anschaffungsauszahlung erreicht wird. Sie sagt für sich allein nichts über Rückflüsse danach, Risiko oder den Zeitwert des Geldes aus.',
+  },
+  {
+    id: 'rueckfluss',
+    term: 'Rückfluss',
+    definition: 'Ein Rückfluss ist der einer Investition zugerechnete Betrag, der die anfängliche Anschaffungsauszahlung schrittweise zurückführt.',
+    explanation: 'In einer vereinfachten statischen Amortisationsrechnung wird er oft aus Gewinn und Abschreibung gebildet. Welche Bestandteile dazugehören, hängt von der gewählten Berechnung ab.',
+  },
+  {
     id: 'afa',
     term: 'Absetzung für Abnutzung (AfA)',
     definition: 'AfA ist die steuerliche Bezeichnung für die planmäßige Abschreibung abnutzbarer Wirtschaftsgüter.',
