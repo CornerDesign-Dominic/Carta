@@ -12,6 +12,7 @@ import faelligkeit from './pages/faelligkeit.js';
 import verzugszinsen from './pages/verzugszinsen.js';
 import zinsen from './pages/zinsen.js';
 import zinseszins from './pages/zinseszins.js';
+import breakEvenPoint from './pages/break-even-point.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -31,6 +32,7 @@ export const knowledgePages = {
   'verzugszinsen': verzugszinsen,
   'zinsen': zinsen,
   'zinseszins': zinseszins,
+  'break-even-point': breakEvenPoint,
 };
 
 export function findKnowledgePage(slug) {

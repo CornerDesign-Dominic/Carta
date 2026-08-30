@@ -93,6 +93,30 @@ export const glossaryEntries = [
     explanation: 'Dadurch wächst die Berechnungsgrundlage mit jeder Verzinsung. Wie stark sich das auswirkt, hängt vor allem von Zinssatz, Laufzeit und Verzinsungsintervall ab.',
   },
   {
+    id: 'break-even-point',
+    term: 'Break-even-Point',
+    definition: 'Der Break-even-Point ist die Gewinnschwelle, an der Erlöse und Gesamtkosten gleich hoch sind.',
+    explanation: 'Unterhalb der Gewinnschwelle decken die Erlöse die Kosten noch nicht vollständig. Oberhalb können bei gleichbleibenden Annahmen Gewinne entstehen.',
+  },
+  {
+    id: 'fixkosten',
+    term: 'Fixkosten',
+    definition: 'Fixkosten fallen innerhalb eines betrachteten Zeitraums unabhängig von der produzierten oder verkauften Menge an.',
+    explanation: 'Dazu können zum Beispiel Miete, Versicherungen oder feste Gehälter gehören. Ob eine Kostenart fix ist, hängt vom betrachteten Zeitraum und Geschäftsmodell ab.',
+  },
+  {
+    id: 'variable-kosten',
+    term: 'Variable Kosten',
+    definition: 'Variable Kosten verändern sich mit der produzierten, verkauften oder erbrachten Menge.',
+    explanation: 'Typische Beispiele sind Material, Verpackung oder provisionsabhängige Kosten. Für die Break-even-Rechnung werden sie häufig je Einheit betrachtet.',
+  },
+  {
+    id: 'deckungsbeitrag',
+    term: 'Deckungsbeitrag',
+    definition: 'Der Deckungsbeitrag ist der Betrag, der nach Abzug der variablen Kosten vom Verkaufspreis übrig bleibt.',
+    explanation: 'Er trägt zunächst zur Deckung der Fixkosten bei. Erst wenn die Fixkosten gedeckt sind, kann ein positiver Gewinn entstehen.',
+  },
+  {
     id: 'mahnkosten',
     term: 'Mahnkosten',
     definition: 'Mahnkosten sind zusätzliche Kosten, die durch eine Mahnung wegen einer verspäteten Zahlung entstehen können.',
