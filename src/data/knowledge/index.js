@@ -19,6 +19,7 @@ import zinseszins from './pages/zinseszins.js';
 import breakEvenPoint from './pages/break-even-point.js';
 import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
 import kostenartenKostenstellenKostentraeger from './pages/kostenarten-kostenstellen-kostentraeger.js';
+import fixeVariableKosten from './pages/fixe-variable-kosten.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
@@ -112,6 +113,7 @@ export const knowledgePages = {
   'break-even-point': breakEvenPoint,
   'kostenvergleichsrechnung': kostenvergleichsrechnung,
   'kostenarten-kostenstellen-kostentraeger': kostenartenKostenstellenKostentraeger,
+  'fixe-variable-kosten': fixeVariableKosten,
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,

@@ -145,6 +145,7 @@ export const knowledgeCategories = [
     pages: [
       { slug: 'kostenrechnung-controlling', title: 'Kostenrechnung & Controlling' },
       { slug: 'kostenarten-kostenstellen-kostentraeger', title: 'Kostenarten, Kostenstellen & Kostenträger' },
+      { slug: 'fixe-variable-kosten', title: 'Fixe und variable Kosten' },
       { slug: 'break-even-point', title: 'Break-even-Point' },
       { slug: 'kostenvergleichsrechnung', title: 'Kostenvergleichsrechnung' },
     ],

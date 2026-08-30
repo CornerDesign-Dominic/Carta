@@ -597,6 +597,18 @@ export const glossaryEntries = [
     explanation: 'Typische Beispiele sind Material, Verpackung oder provisionsabhängige Kosten. Für die Break-even-Rechnung werden sie häufig je Einheit betrachtet.',
   },
   {
+    id: 'mischkosten',
+    term: 'Mischkosten',
+    definition: 'Mischkosten enthalten einen fixen und einen variablen Kostenanteil.',
+    explanation: 'Ein Beispiel ist ein Vertrag mit Grundgebühr und verbrauchsabhängiger Abrechnung. Für Auswertungen kann es sinnvoll sein, beide Bestandteile getrennt zu schätzen.',
+  },
+  {
+    id: 'sprungfixe-kosten',
+    term: 'Sprungfixe Kosten',
+    definition: 'Sprungfixe Kosten bleiben innerhalb einer Kapazitätsstufe gleich und steigen bei einem Kapazitätssprung auf ein höheres Niveau.',
+    explanation: 'Das kann zum Beispiel durch zusätzliche Räume, Personal oder Maschinen ausgelöst werden. Innerhalb der jeweiligen Stufe verhalten sie sich zunächst wie Fixkosten.',
+  },
+  {
     id: 'deckungsbeitrag',
     term: 'Deckungsbeitrag',
     definition: 'Der Deckungsbeitrag ist der Betrag, der nach Abzug der variablen Kosten vom Verkaufspreis übrig bleibt.',
