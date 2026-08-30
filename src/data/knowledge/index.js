@@ -17,6 +17,8 @@ import kostenvergleichsrechnung from './pages/kostenvergleichsrechnung.js';
 import steuern from './pages/steuern.js';
 import einkommensteuer from './pages/einkommensteuer.js';
 import lohnsteuer from './pages/lohnsteuer.js';
+import belege from './pages/belege.js';
+import mahnwesen from './pages/mahnwesen.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -41,6 +43,8 @@ export const knowledgePages = {
   'steuern': steuern,
   'einkommensteuer': einkommensteuer,
   'lohnsteuer': lohnsteuer,
+  'belege': belege,
+  'mahnwesen': mahnwesen,
 };
 
 export function findKnowledgePage(slug) {

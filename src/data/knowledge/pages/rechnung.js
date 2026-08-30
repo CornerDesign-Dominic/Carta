@@ -125,6 +125,7 @@ const rechnung = {
     },
   ],
   related: [
+    "belege",
     "angebot",
     "lieferschein",
     "gutschrift",

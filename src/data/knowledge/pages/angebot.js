@@ -136,6 +136,7 @@ const angebot = {
     },
   ],
   related: [
+    'belege',
     'rechnung',
     'lieferschein',
     'gutschrift',

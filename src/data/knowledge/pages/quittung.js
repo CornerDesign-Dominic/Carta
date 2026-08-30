@@ -93,6 +93,7 @@ const quittung = {
     },    
   ],
   related: [
+    'belege',
     'rechnung',
     'gutschrift',
     'lieferschein',

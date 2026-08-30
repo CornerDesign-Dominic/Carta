@@ -117,6 +117,9 @@ export default function KnowledgeArticle({
   );
   const faqs = article.faqs ?? [];
   const sources = article.sources ?? [];
+  const relatedPages = (article.related ?? [])
+    .map((relatedSlug) => findKnowledgePage(relatedSlug))
+    .filter(Boolean);
   const updatedAt = formatGermanDate(article.updatedAt);
   const isToolCta = generator?.href?.startsWith('/tools/');
 
@@ -175,6 +178,19 @@ export default function KnowledgeArticle({
             <span>{generator.label}</span>
             <span aria-hidden="true">→</span>
           </button>
+        </section>
+      )}
+
+      {relatedPages.length > 0 && (
+        <section className="knowledge-related-section" aria-labelledby="knowledge-related-title">
+          <h2 id="knowledge-related-title">Ähnliche Themen</h2>
+          <div className="knowledge-related-list">
+            {relatedPages.map((relatedPage) => (
+              <button type="button" onClick={() => onSelectRelated(relatedPage.slug)} key={relatedPage.slug}>
+                {relatedPage.title}
+              </button>
+            ))}
+          </div>
         </section>
       )}
 

@@ -1,8 +1,6 @@
 import { knowledgeCategories } from '../../data/knowledgePages.js';
 import SidebarHomeIcon from '../SidebarHomeIcon.jsx';
 
-const visibleKnowledgeSlugs = ['rechnung', 'angebot', 'lieferschein', 'gutschrift', 'quittung', 'eigenbeleg', 'faelligkeit', 'verzugszinsen', 'mahnverfahren', 'zinsen', 'zinseszins', 'break-even-point', 'kostenvergleichsrechnung', 'steuern', 'einkommensteuer', 'lohnsteuer', 'umsatzsteuer'];
-
 export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }) {
   function handleInternalLinkClick(event, callback) {
     if (
@@ -21,12 +19,8 @@ export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }
   }
 
   const visiblePages = knowledgeCategories
-    .flatMap((category) => (
-      category.landingSlug
-        ? category.pages.filter((page) => page.slug === category.landingSlug)
-        : category.pages
-    ))
-    .filter((page) => visibleKnowledgeSlugs.includes(page.slug));
+    .filter((category) => category.landingSlug)
+    .flatMap((category) => category.pages.filter((page) => page.slug === category.landingSlug));
 
   return (
     <aside className="document-sidebar knowledge-sidebar" aria-label="Wissensnavigation">

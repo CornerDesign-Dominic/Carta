@@ -97,6 +97,7 @@ const gutschrift = {
     },
   ],
   related: [
+    "belege",
     "rechnung",
     "angebot",
     "lieferschein",

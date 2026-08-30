@@ -134,6 +134,7 @@ const lieferschein = {
     },
   ],
   related: [
+    'belege',
     'rechnung',
     'angebot',
     'gutschrift',

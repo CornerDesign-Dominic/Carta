@@ -129,6 +129,7 @@ const faelligkeit = {
     },
   ],
   related: [
+    'mahnwesen',
     'rechnung',
     'mahnverfahren',
   ],

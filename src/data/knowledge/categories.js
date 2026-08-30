@@ -1,9 +1,12 @@
 export const knowledgeCategories = [
   {
     id: 'belege',
+    landingSlug: 'belege',
     title: 'Belege',
     description: 'Grundlagen zu Rechnungen, Angeboten, Lieferscheinen und weiteren kaufmännischen Belegen.',
+    topicsTitle: 'Belegarten',
     pages: [
+      { slug: 'belege', title: 'Belege' },
       { slug: 'rechnung', title: 'Rechnung' },
       { slug: 'angebot', title: 'Angebot' },
       { slug: 'lieferschein', title: 'Lieferschein' },
@@ -11,15 +14,55 @@ export const knowledgeCategories = [
       { slug: 'quittung', title: 'Quittung' },
       { slug: 'eigenbeleg', title: 'Eigenbeleg' },
     ],
+    topicGroups: [
+      {
+        id: 'verkauf-und-leistung',
+        title: 'Verkaufs- und Leistungsbelege',
+        topics: [
+          { slug: 'rechnung', title: 'Rechnung' },
+          { slug: 'angebot', title: 'Angebot' },
+          { slug: 'lieferschein', title: 'Lieferschein' },
+        ],
+      },
+      {
+        id: 'korrektur-und-zahlungsnachweise',
+        title: 'Korrektur und Zahlungsnachweise',
+        topics: [
+          { slug: 'gutschrift', title: 'Gutschrift' },
+          { slug: 'quittung', title: 'Quittung' },
+          { slug: 'eigenbeleg', title: 'Eigenbeleg' },
+        ],
+      },
+    ],
   },
   {
     id: 'mahnwesen',
+    landingSlug: 'mahnwesen',
     title: 'Mahnwesen',
     description: 'Wissen zu Zahlungserinnerungen, Mahnstufen, Verzug und offenen Forderungen.',
+    topicsTitle: 'Themen im Mahnwesen',
     pages: [
+      { slug: 'mahnwesen', title: 'Mahnwesen' },
       { slug: 'faelligkeit', title: 'Fälligkeit' },
       { slug: 'verzugszinsen', title: 'Verzugszinsen' },
       { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+    ],
+    topicGroups: [
+      {
+        id: 'offene-forderungen',
+        title: 'Offene Forderungen',
+        topics: [
+          { slug: 'faelligkeit', title: 'Fälligkeit' },
+          { slug: 'verzugszinsen', title: 'Verzugszinsen' },
+        ],
+      },
+      {
+        id: 'mahnung-und-durchsetzung',
+        title: 'Mahnung und Durchsetzung',
+        topics: [
+          { slug: 'mahnverfahren', title: 'Mahnverfahren' },
+        ],
+      },
     ],
   },
   {
@@ -38,6 +81,7 @@ export const knowledgeCategories = [
     landingSlug: 'steuern',
     title: 'Steuern',
     description: 'Steuerarten und steuerliche Grundlagen für den geschäftlichen Alltag.',
+    topicsTitle: 'Steuerarten',
     pages: [
       { slug: 'steuern', title: 'Steuern' },
       { slug: 'einkommensteuer', title: 'Einkommensteuer' },

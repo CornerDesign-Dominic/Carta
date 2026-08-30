@@ -149,6 +149,7 @@ const eigenbeleg = {
     },
   ],
   related: [
+    'belege',
     'rechnung',
     'quittung',
     'gutschrift',

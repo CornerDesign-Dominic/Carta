@@ -38,7 +38,7 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
 
       {activeTopicGroups?.length > 0 && (
         <section className="knowledge-category-section" aria-labelledby="knowledge-category-topics">
-          <h2 id="knowledge-category-topics">Steuerarten</h2>
+          <h2 id="knowledge-category-topics">{category.topicsTitle ?? 'Themen'}</h2>
           <div className="invoice-variant-groups">
             {activeTopicGroups.map((group) => (
               <section className="invoice-variant-group" aria-labelledby={`knowledge-category-${group.id}`} key={group.id}>
