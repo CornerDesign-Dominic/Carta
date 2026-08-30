@@ -73,6 +73,13 @@ export const glossaryEntries = [
     important: 'Nicht jede verspätete Zahlung führt automatisch sofort zu Zahlungsverzug. Entscheidend sind die gesetzlichen Voraussetzungen und die konkrete Fälligkeit.',
   },
   {
+    id: 'basiszinssatz',
+    term: 'Basiszinssatz',
+    definition: 'Der Basiszinssatz ist ein gesetzlich festgelegter Referenzzinssatz, der unter anderem für die Berechnung gesetzlicher Verzugszinsen verwendet wird.',
+    explanation: 'Er wird zum 1. Januar und zum 1. Juli angepasst. Der gesetzliche Verzugszinssatz ergibt sich aus dem Basiszinssatz zuzüglich eines festen Aufschlags.',
+    important: 'Für eine Berechnung ist immer der Basiszinssatz des jeweiligen Zeitraums maßgeblich.',
+  },
+  {
     id: 'mahnkosten',
     term: 'Mahnkosten',
     definition: 'Mahnkosten sind zusätzliche Kosten, die durch eine Mahnung wegen einer verspäteten Zahlung entstehen können.',

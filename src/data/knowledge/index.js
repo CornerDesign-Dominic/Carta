@@ -9,6 +9,7 @@ import mahnverfahren from './pages/mahnverfahren.js';
 import businessplan from './pages/businessplan.js';
 import umsatzsteuer from './pages/umsatzsteuer.js';
 import faelligkeit from './pages/faelligkeit.js';
+import verzugszinsen from './pages/verzugszinsen.js';
 
 export { knowledgeCategories } from './categories.js';
 export { defaultDisclaimer } from './shared.js';
@@ -25,6 +26,7 @@ export const knowledgePages = {
   'businessplan': businessplan,
   'umsatzsteuer': umsatzsteuer,
   'faelligkeit': faelligkeit,
+  'verzugszinsen': verzugszinsen,
 };
 
 export function findKnowledgePage(slug) {

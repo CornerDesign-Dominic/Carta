@@ -28,6 +28,14 @@ function renderArticleText(content, enableGlossary, onSelectGlossaryTerm) {
       );
     }
 
+    if (part?.type === 'link' && part.href) {
+      return (
+        <a href={part.href} key={`${part.href}-${index}`}>
+          {part.text}
+        </a>
+      );
+    }
+
     return part?.text ?? null;
   });
 }

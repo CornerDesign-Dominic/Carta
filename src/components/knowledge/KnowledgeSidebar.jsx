@@ -1,7 +1,7 @@
 import { knowledgeCategories } from '../../data/knowledgePages.js';
 import SidebarHomeIcon from '../SidebarHomeIcon.jsx';
 
-const visibleKnowledgeSlugs = ['rechnung', 'angebot', 'lieferschein', 'gutschrift', 'quittung', 'eigenbeleg', 'faelligkeit', 'mahnverfahren', 'umsatzsteuer'];
+const visibleKnowledgeSlugs = ['rechnung', 'angebot', 'lieferschein', 'gutschrift', 'quittung', 'eigenbeleg', 'faelligkeit', 'verzugszinsen', 'mahnverfahren', 'umsatzsteuer'];
 
 export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }) {
   function handleInternalLinkClick(event, callback) {

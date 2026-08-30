@@ -55,9 +55,10 @@ const faelligkeit = {
       {
         heading: 'Fälligkeit ist nicht automatisch Zahlungsverzug',
         paragraphs: [
-          'Wenn das Fälligkeitsdatum erreicht ist, ist die Forderung zunächst fällig und kann verlangt werden. Ein ',
           [
-            'Zahlungsverzug liegt erst vor, wenn zusätzlich die Voraussetzungen des Verzugs erfüllt sind. Häufig tritt er nach einer Mahnung ein, die erst nach Fälligkeit erfolgt. In bestimmten Fällen ist keine Mahnung erforderlich, etwa bei einem nach dem Kalender bestimmten Zahlungstermin.',
+            'Wenn das Fälligkeitsdatum erreicht ist, ist die Forderung zunächst fällig und kann verlangt werden. Ein ',
+            { type: 'glossary', id: 'zahlungsverzug', text: 'Zahlungsverzug' },
+            ' liegt erst vor, wenn zusätzlich die Voraussetzungen des Verzugs erfüllt sind. Häufig tritt er nach einer Mahnung ein, die erst nach Fälligkeit erfolgt. In bestimmten Fällen ist keine Mahnung erforderlich, etwa bei einem nach dem Kalender bestimmten Zahlungstermin.',
           ],
           [
             'Bei Entgeltforderungen kann Verzug spätestens 30 Tage nach Fälligkeit und Zugang der Rechnung eintreten. Gegenüber Verbrauchern gilt diese Folge nur, wenn die Rechnung oder Zahlungsaufstellung besonders darauf hinweist. Auch dann bleiben die Umstände des Einzelfalls relevant.',

@@ -18,6 +18,7 @@ export const knowledgeCategories = [
     description: 'Wissen zu Zahlungserinnerungen, Mahnstufen, Verzug und offenen Forderungen.',
     pages: [
       { slug: 'faelligkeit', title: 'Fälligkeit' },
+      { slug: 'verzugszinsen', title: 'Verzugszinsen' },
       { slug: 'mahnverfahren', title: 'Mahnverfahren' },
     ],
   },
