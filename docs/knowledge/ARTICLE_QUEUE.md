@@ -38,53 +38,54 @@ Mögliche Statuswerte:
 
 ## Offene Artikel
 
-### Incoterms
+### Marketing-Mix und 4P
 Status: offen
-Kategorie: Recht & Verträge
+Kategorie: Marketing & Vertrieb
 Schwerpunkt:
-- Zweck und Systematik der Incoterms 2020 verständlich erklären
-- wichtige Klauseln kompakt einordnen, ohne jede Variante unnötig auszubreiten
-- Kosten-, Risiko- und Transportverantwortung voneinander abgrenzen
-- klarstellen, was Incoterms nicht regeln, insbesondere Eigentumsübergang und Zahlungsbedingungen
+- Grundidee des Marketing-Mix verständlich erklären
+- Product, Price, Place und Promotion kompakt einordnen
+- Zusammenspiel der vier Bereiche anhand eines einfachen Praxisbeispiels zeigen
+- Grenzen des 4P-Modells nur kurz einordnen
 Review-Grund: -
 
-### Gefahrenübergang
+### Zielgruppe
 Status: offen
-Kategorie: Recht & Verträge
+Kategorie: Marketing & Vertrieb
 Schwerpunkt:
-- erklären, wann das Risiko für Verlust oder Beschädigung einer Ware übergeht
-- Kaufvertrag, Versendungskauf und typische B2B-Situationen verständlich unterscheiden
-- Zusammenhang und Abgrenzung zu Incoterms und Eigentumsübergang darstellen
+- Begriff und Nutzen einer klar definierten Zielgruppe erklären
+- typische Merkmale zur Segmentierung kompakt darstellen
+- Unterschied zwischen Zielgruppe und Persona kurz einordnen
+- Praxisbezug für kleine und mittlere Unternehmen herstellen
 Review-Grund: -
 
-### Eigentumsvorbehalt
+### Marktanalyse
 Status: offen
-Kategorie: Recht & Verträge
+Kategorie: Marketing & Vertrieb
 Schwerpunkt:
-- einfachen Eigentumsvorbehalt praxisnah erklären
-- Besitz, Eigentum und Zahlung voneinander abgrenzen
-- erweiterten und verlängerten Eigentumsvorbehalt nur kompakt einordnen
-- Bedeutung für Verkäufer und Käufer darstellen
+- Zweck und typische Bestandteile einer Marktanalyse erklären
+- Marktgröße, Wettbewerb, Kunden und Entwicklungen kompakt behandeln
+- Primär- und Sekundärforschung auf Grundniveau unterscheiden
+- zeigen, wie Ergebnisse für unternehmerische Entscheidungen genutzt werden
 Review-Grund: -
 
-### Allgemeine Geschäftsbedingungen (AGB)
+### Alleinstellungsmerkmal (USP)
 Status: offen
-Kategorie: Recht & Verträge
+Kategorie: Marketing & Vertrieb
 Schwerpunkt:
-- Zweck und typische Inhalte von AGB erklären
-- Einbeziehung in Verträge und Grenzen der Wirksamkeit verständlich darstellen
-- Unterschiede zwischen B2B und B2C nur soweit für das Grundverständnis relevant behandeln
-- keine vollständige juristische Detailprüfung einzelner Klauseln
+- erklären, was ein USP ist und welchen Nutzen er hat
+- Abgrenzung zu allgemeinen Werbeaussagen und Markenversprechen darstellen
+- Merkmale eines tragfähigen USP kompakt nennen
+- ein kurzes, realistisches Beispiel verwenden
 Review-Grund: -
 
-### ADSp
+### Preisstrategie
 Status: offen
-Kategorie: Recht & Verträge
+Kategorie: Marketing & Vertrieb
 Schwerpunkt:
-- Zweck und Bedeutung der Allgemeinen Deutschen Spediteurbedingungen erklären
-- Anwendungsbereich und Einbeziehung in Verträge darstellen
-- Haftungsregelungen nur auf praxisrelevantem Grundniveau erläutern
-- Abgrenzung zu Gesetz, individuellen Verträgen und AGB darstellen
+- Zweck von Preisstrategien und ihre Wirkung auf Positionierung und Absatz erklären
+- gängige Strategien wie Hochpreis-, Niedrigpreis- und Penetrationsstrategie kompakt einordnen
+- Kosten, Nachfrage, Wettbewerb und Zahlungsbereitschaft als Einflussfaktoren darstellen
+- keine unnötig lange Aufzählung seltener Sonderstrategien
 Review-Grund: -
 
 ## Beispiel
