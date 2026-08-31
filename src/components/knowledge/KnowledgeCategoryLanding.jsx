@@ -32,7 +32,7 @@ function SupplyChainIcon({ name }) {
     stroke: 'currentColor',
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
-    strokeWidth: '1.7',
+    strokeWidth: '1.8',
   };
 
   const icons = {
@@ -111,7 +111,6 @@ function SupplyChainOverview() {
           <span className="supply-chain-information-line" aria-hidden="true" />
           <span className="supply-chain-information-label">← Informationsfluss</span>
         </div>
-        <p className="supply-chain-information-notes">Bedarf · Bestellung · Prognose · Status · Rückmeldung</p>
       </div>
     </section>
   );
