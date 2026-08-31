@@ -38,7 +38,54 @@ Mögliche Statuswerte:
 
 ## Offene Artikel
 
-<!-- Neue Artikel hier eintragen. -->
+### Incoterms
+Status: offen
+Kategorie: Recht & Verträge
+Schwerpunkt:
+- Zweck und Systematik der Incoterms 2020 verständlich erklären
+- wichtige Klauseln kompakt einordnen, ohne jede Variante unnötig auszubreiten
+- Kosten-, Risiko- und Transportverantwortung voneinander abgrenzen
+- klarstellen, was Incoterms nicht regeln, insbesondere Eigentumsübergang und Zahlungsbedingungen
+Review-Grund: -
+
+### Gefahrenübergang
+Status: offen
+Kategorie: Recht & Verträge
+Schwerpunkt:
+- erklären, wann das Risiko für Verlust oder Beschädigung einer Ware übergeht
+- Kaufvertrag, Versendungskauf und typische B2B-Situationen verständlich unterscheiden
+- Zusammenhang und Abgrenzung zu Incoterms und Eigentumsübergang darstellen
+Review-Grund: -
+
+### Eigentumsvorbehalt
+Status: offen
+Kategorie: Recht & Verträge
+Schwerpunkt:
+- einfachen Eigentumsvorbehalt praxisnah erklären
+- Besitz, Eigentum und Zahlung voneinander abgrenzen
+- erweiterten und verlängerten Eigentumsvorbehalt nur kompakt einordnen
+- Bedeutung für Verkäufer und Käufer darstellen
+Review-Grund: -
+
+### Allgemeine Geschäftsbedingungen (AGB)
+Status: offen
+Kategorie: Recht & Verträge
+Schwerpunkt:
+- Zweck und typische Inhalte von AGB erklären
+- Einbeziehung in Verträge und Grenzen der Wirksamkeit verständlich darstellen
+- Unterschiede zwischen B2B und B2C nur soweit für das Grundverständnis relevant behandeln
+- keine vollständige juristische Detailprüfung einzelner Klauseln
+Review-Grund: -
+
+### ADSp
+Status: offen
+Kategorie: Recht & Verträge
+Schwerpunkt:
+- Zweck und Bedeutung der Allgemeinen Deutschen Spediteurbedingungen erklären
+- Anwendungsbereich und Einbeziehung in Verträge darstellen
+- Haftungsregelungen nur auf praxisrelevantem Grundniveau erläutern
+- Abgrenzung zu Gesetz, individuellen Verträgen und AGB darstellen
+Review-Grund: -
 
 ## Beispiel
 
