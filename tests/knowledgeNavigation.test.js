@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   findKnowledgeHubForSlug,
+  getKnowledgeBreadcrumbItems,
   getKnowledgeArticleSections,
   getKnowledgeHubSectionItems,
   getKnowledgeHubs,
@@ -22,6 +23,18 @@ describe('knowledge navigation', () => {
     expect(findKnowledgeHubForSlug('kostenrechnung-controlling')?.title).toBe('Kostenrechnung & Controlling');
     expect(findKnowledgeHubForSlug('kapitalwertmethode')?.title).toBe('Dynamische Investitionsrechnung');
     expect(findKnowledgeHubForSlug('kostenvergleichsrechnung')?.title).toBe('Kostenrechnung & Controlling');
+  });
+
+  it('derives breadcrumb paths from the knowledge hub structure', () => {
+    expect(getKnowledgeBreadcrumbItems('belege')).toEqual([
+      { label: 'Wissen', href: '/wissen', type: 'landing' },
+      { label: 'Belege', type: 'current' },
+    ]);
+    expect(getKnowledgeBreadcrumbItems('rechnung')).toEqual([
+      { label: 'Wissen', href: '/wissen', type: 'landing' },
+      { label: 'Belege', href: '/wissen/belege', type: 'hub' },
+      { label: 'Rechnung', type: 'current' },
+    ]);
   });
 
   it('uses hub topic groups as stable jump targets', () => {

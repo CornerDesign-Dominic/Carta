@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { findKnowledgePage } from '../../data/knowledgePages.js';
 import {
-  findKnowledgeHubForSlug,
   getKnowledgeArticleSections,
   getKnowledgeHubSectionItems,
 } from '../../data/knowledgeNavigation.js';
-import SidebarHomeIcon from '../SidebarHomeIcon.jsx';
 
 function isPlainLeftClick(event) {
   return !event.defaultPrevented
@@ -14,15 +12,6 @@ function isPlainLeftClick(event) {
     && !event.ctrlKey
     && !event.altKey
     && !event.shiftKey;
-}
-
-function handleInternalLinkClick(event, callback) {
-  if (!isPlainLeftClick(event)) {
-    return;
-  }
-
-  event.preventDefault();
-  callback();
 }
 
 function useActiveKnowledgeSection(sectionItems, pendingSectionIdRef) {
@@ -90,19 +79,18 @@ function useActiveKnowledgeSection(sectionItems, pendingSectionIdRef) {
   return [activeSectionId, setActiveSectionId];
 }
 
-export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }) {
+export default function KnowledgeSidebar({ activeSlug }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pendingSectionTimerRef = useRef(0);
   const pendingSectionIdRef = useRef('');
   const activePage = activeSlug ? findKnowledgePage(activeSlug) : null;
-  const activeHub = findKnowledgeHubForSlug(activeSlug);
   const isHubPage = Boolean(activeSlug && activePage?.type === 'category-landing');
   const isArticlePage = Boolean(activeSlug && activePage && activePage.type !== 'category-landing');
   const sectionItems = useMemo(() => (
     isHubPage ? getKnowledgeHubSectionItems(activeSlug) : getKnowledgeArticleSections(activePage)
   ), [activePage, activeSlug, isHubPage]);
   const [activeSectionId, setActiveSectionId] = useActiveKnowledgeSection(sectionItems, pendingSectionIdRef);
-  const toggleLabel = isHubPage ? 'In diesem Themenbereich' : 'In diesem Artikel';
+  const toggleLabel = isHubPage ? 'Auf dieser Seite' : 'In diesem Artikel';
 
   useEffect(() => {
     window.clearTimeout(pendingSectionTimerRef.current);
@@ -158,93 +146,34 @@ export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }
     );
   }
 
-  function handleNavigateHome(event) {
-    handleInternalLinkClick(event, () => {
-      onShowLanding();
-      setIsMobileOpen(false);
-    });
+  if (!activeSlug || (!isHubPage && !isArticlePage)) {
+    return null;
   }
 
-  function handleNavigateHub(event) {
-    if (!activeHub) {
-      return;
-    }
-
-    handleInternalLinkClick(event, () => {
-      onSelect(activeHub.landingSlug);
-      setIsMobileOpen(false);
-    });
-  }
-
-  const sidebarMode = !activeSlug ? 'landing' : isHubPage ? 'hub' : 'article';
+  const sidebarMode = isHubPage ? 'hub' : 'article';
 
   return (
     <aside className={`document-sidebar knowledge-sidebar knowledge-sidebar--${sidebarMode}`} aria-label="Wissensnavigation">
-      {activeSlug && (
-        <button
-          className="knowledge-sidebar-toggle"
-          type="button"
-          aria-expanded={isMobileOpen}
-          aria-controls="knowledge-sidebar-body"
-          onClick={() => setIsMobileOpen((current) => !current)}
-        >
-          <span>{toggleLabel}</span>
-          <span className={isMobileOpen ? 'knowledge-chevron is-open' : 'knowledge-chevron'} aria-hidden="true" />
-        </button>
-      )}
+      <button
+        className="knowledge-sidebar-toggle"
+        type="button"
+        aria-expanded={isMobileOpen}
+        aria-controls="knowledge-sidebar-body"
+        onClick={() => setIsMobileOpen((current) => !current)}
+      >
+        <span>{toggleLabel}</span>
+        <span className={isMobileOpen ? 'knowledge-chevron is-open' : 'knowledge-chevron'} aria-hidden="true" />
+      </button>
 
-      <div
+      <h2 className="knowledge-sidebar-heading">{toggleLabel}</h2>
+
+      <nav
         className={isMobileOpen ? 'knowledge-sidebar-body is-open' : 'knowledge-sidebar-body'}
         id="knowledge-sidebar-body"
+        aria-label={toggleLabel}
       >
-        <a
-          className={!activeSlug ? 'sidebar-title sidebar-home-link is-active' : 'sidebar-title sidebar-home-link'}
-          href="/wissen"
-          aria-label="Zur Wissensübersicht"
-          title="Zur Wissensübersicht"
-          onClick={handleNavigateHome}
-        >
-          <SidebarHomeIcon />
-          <span>Wissen</span>
-        </a>
-        <div className="sidebar-title-divider" aria-hidden="true" />
-
-        {activeSlug && (
-          <nav className="sidebar-nav knowledge-sidebar-nav" aria-label={toggleLabel}>
-            {activeHub && (
-              isHubPage ? (
-                <span className="knowledge-sidebar-current is-active">{activeHub.title}</span>
-              ) : (
-                <a
-                  className="knowledge-sidebar-hub-link"
-                  href={`/wissen/${activeHub.landingSlug}`}
-                  onClick={handleNavigateHub}
-                >
-                  {activeHub.title}
-                </a>
-              )
-            )}
-
-            {isArticlePage && (
-              <span className="knowledge-sidebar-current knowledge-sidebar-article is-active">
-                {activePage.title}
-              </span>
-            )}
-
-            {renderSectionLinks()}
-          </nav>
-        )}
-
-        {!activeSlug && (
-          <a
-            className="knowledge-sidebar-landing-note"
-            href="#knowledge-hub-overview-title"
-            onClick={(event) => handleSectionClick(event, 'knowledge-hub-overview-title')}
-          >
-            Wissensbereiche ansehen
-          </a>
-        )}
-      </div>
+        {renderSectionLinks()}
+      </nav>
     </aside>
   );
 }

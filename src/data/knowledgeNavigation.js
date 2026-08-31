@@ -87,6 +87,32 @@ export function findKnowledgeHubForSlug(slug) {
     ?? null;
 }
 
+export function getKnowledgeBreadcrumbItems(slug) {
+  const page = findKnowledgePage(slug);
+  const hub = findKnowledgeHubForSlug(slug);
+
+  if (!page || !hub) {
+    return [];
+  }
+
+  const items = [
+    { label: 'Wissen', href: '/wissen', type: 'landing' },
+    {
+      label: hub.title,
+      href: `/wissen/${hub.landingSlug}`,
+      type: 'hub',
+    },
+  ];
+
+  if (hub.landingSlug === slug) {
+    items[1] = { label: hub.title, type: 'current' };
+    return items;
+  }
+
+  items.push({ label: page.title, type: 'current' });
+  return items;
+}
+
 export function getKnowledgeHubSectionItems(slug) {
   const hub = findKnowledgeHubForSlug(slug);
 

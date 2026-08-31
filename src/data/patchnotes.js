@@ -1,6 +1,13 @@
 export const patchnotes = [
   {
     date: '2026-08-31',
+    title: 'Wissen: Pfad und Abschnittsnavigation getrennt',
+    changes: [
+      'Wissensseiten zeigen ihren Pfad oberhalb des Inhalts; die linke Sidebar enthält nur noch Sprunglinks der aktuellen Seite.',
+    ],
+  },
+  {
+    date: '2026-08-31',
     title: 'Navigation: einheitliche Sidebarbreite',
     changes: [
       'Die linken Sidebars nutzen auf Desktop nun durchgängig eine Außenbreite von 264 px.',

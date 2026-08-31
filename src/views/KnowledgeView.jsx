@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import KnowledgeArticle from '../components/knowledge/KnowledgeArticle.jsx';
+import KnowledgeBreadcrumb from '../components/knowledge/KnowledgeBreadcrumb.jsx';
 import KnowledgeCategoryLanding from '../components/knowledge/KnowledgeCategoryLanding.jsx';
 import KnowledgeGlossaryPanel from '../components/knowledge/KnowledgeGlossaryPanel.jsx';
 import KnowledgeLanding from '../components/knowledge/KnowledgeLanding.jsx';
@@ -97,11 +98,16 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
     <main className="documents-layout knowledge-layout">
       <KnowledgeSidebar
         activeSlug={activeSlug}
-        onSelect={handleSelectSlug}
-        onShowLanding={handleShowLanding}
       />
 
       <section className="paper-page document-paper knowledge-paper" aria-labelledby="knowledge-title">
+        {activeSlug && (
+          <KnowledgeBreadcrumb
+            activeSlug={activeSlug}
+            onSelect={handleSelectSlug}
+            onShowLanding={handleShowLanding}
+          />
+        )}
         {!activeSlug && <KnowledgeLanding onSelect={handleSelectSlug} />}
         {activePage?.type === 'category-landing' && (
           <KnowledgeCategoryLanding slug={activeSlug} onSelectTopic={handleSelectTopic} />
