@@ -1013,6 +1013,12 @@ h1 {
   min-width: 0;
 }
 
+.document-sidebar,
+.tools-sidebar,
+.master-data-sidebar {
+  box-sizing: border-box;
+}
+
 .document-sidebar {
   position: sticky;
   top: var(--layout-sticky-top);
@@ -8826,7 +8832,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1699px) {
   .documents-layout,
   .tools-layout,
   .master-data-layout {
@@ -9387,6 +9393,15 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   font-size: 0.84rem;
 }
 
+.knowledge-sidebar--article .knowledge-sidebar-section-links {
+  gap: 4px;
+}
+
+.knowledge-sidebar--article .knowledge-sidebar-section-links a {
+  padding: 6px 8px;
+  line-height: 1.35;
+}
+
 .knowledge-sidebar-section-links a:hover,
 .knowledge-sidebar-landing-note:hover {
   border-color: transparent;
@@ -9494,7 +9509,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   line-height: 1.55;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1699px) {
   .knowledge-layout .knowledge-sidebar {
     width: 100%;
   }
@@ -9516,6 +9531,12 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   .knowledge-sidebar--article .knowledge-sidebar-body.is-open,
   .knowledge-sidebar--landing .knowledge-sidebar-body {
     display: grid;
+  }
+}
+
+@media (min-width: 1300px) and (max-width: 1699px) {
+  .knowledge-layout .knowledge-sidebar {
+    width: var(--layout-sidebar-width);
   }
 }
 
@@ -15454,7 +15475,7 @@ h2,
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1700px) {
   /* The centre track is the viewport reference. Optional side modules only
      occupy the flexible outer tracks and therefore cannot move or shrink it. */
   .documents-layout,

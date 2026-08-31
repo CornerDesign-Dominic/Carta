@@ -1,6 +1,14 @@
 export const patchnotes = [
   {
     date: '2026-08-31',
+    title: 'Navigation: einheitliche Sidebarbreite',
+    changes: [
+      'Die linken Sidebars nutzen auf Desktop nun durchgängig eine Außenbreite von 264 px.',
+      'Sprunglinks in Wissensartikeln sind kompakter, ohne die Orientierung im aktuellen Hub und Artikel zu verdichten.',
+    ],
+  },
+  {
+    date: '2026-08-31',
     title: 'Wissen: kontextabhängige Navigation',
     changes: [
       'Die Wissensnavigation zeigt auf Hub- und Artikelseiten nur noch den aktuellen Kontext mit passenden Sprunglinks.',

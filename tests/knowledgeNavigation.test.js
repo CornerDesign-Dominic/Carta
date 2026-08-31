@@ -70,4 +70,16 @@ describe('knowledge navigation', () => {
       type: 'sources',
     });
   });
+
+  it('keeps article navigation to structured main sections while retaining long articles', () => {
+    const reminderSections = getKnowledgeArticleSections('mahnverfahren').map((section) => section.navLabel);
+    const longArticleSections = getKnowledgeArticleSections('zielvereinbarungen')
+      .filter((section) => !section.type);
+
+    expect(reminderSections).toContain('Möglicher Ablauf im Mahnprozess');
+    expect(reminderSections).toContain('Möglichkeiten nach einer Mahnung');
+    expect(reminderSections).not.toContain('Zahlungserinnerung');
+    expect(reminderSections).not.toContain('Inkasso');
+    expect(longArticleSections).toHaveLength(14);
+  });
 });
