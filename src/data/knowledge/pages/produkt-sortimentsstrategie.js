@@ -1,0 +1,22 @@
+import { defaultDisclaimer } from '../shared.js';
+const page = {
+  slug: 'produkt-sortimentsstrategie', category: 'Marketing & Vertrieb', title: 'Produkt- und Sortimentsstrategie',
+  description: 'Produktprogramm, Produktlinien, Varianten sowie Breite und Tiefe des Sortiments an Zielgruppe, Positionierung und Wirtschaftlichkeit ausrichten.',
+  seo: { title: 'Produkt- und Sortimentsstrategie erklärt | Belege24', description: 'Produktprogramm, Sortiment, Produktlinien, Varianten sowie Sortimentsbreite und -tiefe verständlich einordnen.', canonicalPath: '/wissen/produkt-sortimentsstrategie' },
+  article: { intro: 'Die Produkt- und Sortimentsstrategie legt fest, welche Leistungen ein Unternehmen anbietet, wie sie zu Produktlinien und Varianten geordnet werden und wie sich das Programm weiterentwickeln soll.', sections: [
+    { heading: 'Zentrale Begriffe', matrixCards: [{ title: 'Programm, Linie, Breite und Tiefe', cells: [
+      { code: 'Programm', title: 'Gesamtheit der Angebote', context: 'Alle Produkte und Leistungen', text: 'Das Produktprogramm bildet den gesamten Leistungsumfang des Unternehmens.' },
+      { code: 'Produktlinie', title: 'Verwandte Angebote', context: 'Gemeinsamer Bedarf oder Technik', text: 'Eine Linie bündelt zusammengehörige Produkte oder Varianten.' },
+      { code: 'Breite', title: 'Anzahl verschiedener Linien', context: 'Wie viele Angebotsbereiche?', text: 'Ein breites Sortiment deckt unterschiedliche Bedarfe ab.' },
+      { code: 'Tiefe', title: 'Varianten innerhalb einer Linie', context: 'Wie viele Ausführungen?', text: 'Ein tiefes Sortiment bietet mehr Auswahl innerhalb eines Bereichs.' },
+    ] }] },
+    { heading: 'Zielgruppe und Positionierung', paragraphs: [[ 'Sortiment und Varianten sollen relevante Bedürfnisse der ', { type: 'link', href: '/wissen/zielgruppe', text: 'Zielgruppe' }, ' abdecken. Mehr Auswahl ist nicht automatisch besser.'], [ 'Die ', { type: 'link', href: '/wissen/positionierungsstrategie', text: 'Positionierung' }, ' beeinflusst Qualität, Leistungsumfang und Abgrenzung der Linien.']] },
+    { heading: 'Wirtschaftlichkeit und Komplexität', paragraphs: ['Jede Variante kann Einkauf, Lager, Produktion, Datenpflege, Vertrieb und Service aufwendiger machen. Umsatz allein zeigt nicht, ob sie einen sinnvollen Beitrag leistet.', 'Deckungsbeitrag, Nachfrage, Kannibalisierung, strategische Rolle und Abhängigkeiten werden gemeinsam betrachtet.'] },
+    { heading: 'Praxisbeispiel', exampleCards: [{ title: 'Bäckerei mit wachsendem Sortiment', paragraphs: ['Eine Bäckerei führt drei Brotlinien: klassisch, Vollkorn und glutenfrei. Statt jede Linie in vielen kaum unterscheidbaren Größen und Rezepturen anzubieten, wertet sie Nachfrage, Ausschuss und Produktionswechsel aus und reduziert schwache Varianten.'], effects: ['Breite bleibt zielgruppengerecht', 'Tiefe wird wirtschaftlich begrenzt', 'Komplexität und Abfall sinken'] }] },
+    { heading: 'Sortiment weiterentwickeln', paragraphs: [[ 'Daten aus dem ', { type: 'link', href: '/wissen/produktlebenszyklus', text: 'Produktlebenszyklus' }, ' und aus Portfolioanalysen liefern Hinweise, ersetzen aber keine Einzelentscheidung.'], 'Neue Varianten werden mit klarer Rolle getestet; schwache Angebote werden verbessert, gebündelt oder beendet, ohne notwendige Ergänzungsfunktionen zu übersehen.'] },
+  ] }, generator: null,
+  keyPoints: ['Produktprogramm umfasst alle Leistungen', 'Breite bezeichnet Linien, Tiefe Varianten', 'Sortiment folgt Zielgruppe und Positionierung', 'Mehr Varianten erhöhen häufig Komplexität', 'Wirtschaftlichkeit und strategische Rolle werden gemeinsam bewertet'],
+  commonMistakes: ['Sortimentsbreite und -tiefe verwechseln', 'jede Kundenanfrage mit einer neuen Variante beantworten', 'nur Umsatz statt Ergebnis und Komplexität betrachten', 'Ergänzungs- und Verbundwirkungen übersehen'],
+  faqs: [{ question: 'Was ist eine Produktlinie?', answer: 'Eine Gruppe verwandter Angebote mit gemeinsamem Bedarf, Einsatz oder technischer Grundlage.' }, { question: 'Was bedeutet Sortimentsbreite?', answer: 'Die Anzahl unterschiedlicher Produktlinien oder Angebotsbereiche.' }, { question: 'Was bedeutet Sortimentstiefe?', answer: 'Die Anzahl der Varianten innerhalb einer Produktlinie.' }],
+  related: ['produktlebenszyklus', 'portfolioanalyse', 'positionierungsstrategie', 'zielgruppe'], sources: [], updatedAt: '2026-08-31', reviewedAt: '2026-08-31', disclaimer: defaultDisclaimer,
+}; export default page;

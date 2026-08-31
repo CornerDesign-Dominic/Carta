@@ -114,6 +114,21 @@ const marktanalyse = {
         ],
       },
       {
+        heading: 'Marktforschung als systematische Informationsgewinnung',
+        paragraphs: [
+          'Marktforschung bezeichnet die systematische Gewinnung, Aufbereitung und Auswertung von Informationen zu Märkten, Kunden und Wettbewerb. Eine Marktanalyse nutzt solche Informationen für eine konkrete Bestandsaufnahme und Entscheidungsfrage. Die Begriffe werden in der Praxis teilweise überlappend verwendet; Belege24 nutzt diese Arbeitsabgrenzung.',
+          'Marktforschung kann einmalig für ein Vorhaben oder fortlaufend als Marktbeobachtung organisiert werden. Fragestellung, Auswahl, Methode und Auswertung werden dokumentiert, damit die Aussagekraft erkennbar bleibt.',
+        ],
+      },
+      {
+        heading: 'Qualitative und quantitative Ansätze',
+        paragraphs: [
+          'Qualitative Methoden wie leitfadengestützte Interviews oder Beobachtungen helfen, Motive, Sprache, Abläufe und bislang unbekannte Zusammenhänge zu verstehen. Sie liefern Tiefe, sind aber nicht ohne Weiteres auf den Gesamtmarkt übertragbar.',
+          'Quantitative Methoden arbeiten mit standardisierten und zahlenmäßig auswertbaren Daten, etwa Befragungen, Transaktionsdaten oder Statistiken. Sie können Häufigkeiten und Unterschiede sichtbar machen; schlechte Fragen oder eine ungeeignete Stichprobe werden durch eine große Fallzahl nicht automatisch geheilt.',
+          'Beide Ansätze lassen sich verbinden: qualitative Erkundung für relevante Fragen, quantitative Prüfung für Verteilung und Größenordnung und anschließende Vertiefung auffälliger Ergebnisse.',
+        ],
+      },
+      {
         heading: 'Marktanalyse Schritt für Schritt erstellen',
         formulaCards: [
           {

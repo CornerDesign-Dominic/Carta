@@ -216,6 +216,28 @@ import zielgruppe from './pages/zielgruppe.js';
 import marktanalyse from './pages/marktanalyse.js';
 import usp from './pages/usp.js';
 import preisstrategie from './pages/preisstrategie.js';
+import marketingstrategie from './pages/marketingstrategie.js';
+import markenstrategieMarkenarchitektur from './pages/markenstrategie-markenarchitektur.js';
+import markenidentitaetMarkenpositionierung from './pages/markenidentitaet-markenpositionierung.js';
+import unternehmensProduktnamen from './pages/unternehmens-produktnamen.js';
+import corporateIdentity from './pages/corporate-identity.js';
+import kundennutzenValueProposition from './pages/kundennutzen-value-proposition.js';
+import kernleistungZusatzleistungLeistungsbuendel from './pages/kernleistung-zusatzleistung-leistungsbuendel.js';
+import kanoModell from './pages/kano-modell.js';
+import kundenerwartungServicequalitaetKundenzufriedenheit from './pages/kundenerwartung-servicequalitaet-kundenzufriedenheit.js';
+import leistungsdifferenzierung from './pages/leistungsdifferenzierung.js';
+import serviceversprechenServiceLevel from './pages/serviceversprechen-service-level.js';
+import marktsegmentierungZielgruppenbildung from './pages/marktsegmentierung-zielgruppenbildung.js';
+import positionierungsstrategie from './pages/positionierungsstrategie.js';
+import wettbewerbsstrategien from './pages/wettbewerbsstrategien.js';
+import ansoffMatrix from './pages/ansoff-matrix.js';
+import pushPullStrategie from './pages/push-pull-strategie.js';
+import produktSortimentsstrategie from './pages/produkt-sortimentsstrategie.js';
+import kommunikationsstrategie from './pages/kommunikationsstrategie.js';
+import multichannelOmnichannelMarketing from './pages/multichannel-omnichannel-marketing.js';
+import b2bB2cMarketing from './pages/b2b-b2c-marketing.js';
+import customerJourneyTouchpoints from './pages/customer-journey-touchpoints.js';
+import marketingzieleMarketingkennzahlen from './pages/marketingziele-marketingkennzahlen.js';
 import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
 import sollUndHaben from './pages/soll-und-haben.js';
@@ -464,6 +486,28 @@ export const knowledgePages = {
   marktanalyse,
   usp,
   preisstrategie,
+  marketingstrategie,
+  'markenstrategie-markenarchitektur': markenstrategieMarkenarchitektur,
+  'markenidentitaet-markenpositionierung': markenidentitaetMarkenpositionierung,
+  'unternehmens-produktnamen': unternehmensProduktnamen,
+  'corporate-identity': corporateIdentity,
+  'kundennutzen-value-proposition': kundennutzenValueProposition,
+  'kernleistung-zusatzleistung-leistungsbuendel': kernleistungZusatzleistungLeistungsbuendel,
+  'kano-modell': kanoModell,
+  'kundenerwartung-servicequalitaet-kundenzufriedenheit': kundenerwartungServicequalitaetKundenzufriedenheit,
+  leistungsdifferenzierung,
+  'serviceversprechen-service-level': serviceversprechenServiceLevel,
+  'marktsegmentierung-zielgruppenbildung': marktsegmentierungZielgruppenbildung,
+  positionierungsstrategie,
+  wettbewerbsstrategien,
+  'ansoff-matrix': ansoffMatrix,
+  'push-pull-strategie': pushPullStrategie,
+  'produkt-sortimentsstrategie': produktSortimentsstrategie,
+  kommunikationsstrategie,
+  'multichannel-omnichannel-marketing': multichannelOmnichannelMarketing,
+  'b2b-b2c-marketing': b2bB2cMarketing,
+  'customer-journey-touchpoints': customerJourneyTouchpoints,
+  'marketingziele-marketingkennzahlen': marketingzieleMarketingkennzahlen,
   digitalisierung,
   geschaeftsvorfaelle,
   'soll-und-haben': sollUndHaben,

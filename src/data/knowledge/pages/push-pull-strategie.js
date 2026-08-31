@@ -1,0 +1,20 @@
+import { defaultDisclaimer } from '../shared.js';
+const page = {
+  slug: 'push-pull-strategie', category: 'Marketing & Vertrieb', title: 'Push- und Pull-Strategie',
+  description: 'Push und Pull beschreiben, ob Marktbearbeitung stärker über Vertriebspartner oder über Nachfrage bei Endkunden wirkt.',
+  seo: { title: 'Push- und Pull-Strategie erklärt | Belege24', description: 'Rolle von Vertrieb, Handel, Werbung und Kundennachfrage verstehen und Push und Pull sinnvoll kombinieren.', canonicalPath: '/wissen/push-pull-strategie' },
+  article: { intro: 'Push- und Pull-Strategien beschreiben zwei Wege der Marktbearbeitung. Push richtet Aktivitäten stärker auf Vertriebspartner und Absatzkanäle; Pull erzeugt Nachfrage bei Endkunden, die das Angebot im Kanal nachfragen.', sections: [
+    { heading: 'Push und Pull vergleichen', matrixCards: [{ title: 'Druck durch den Kanal oder Nachfrage aus dem Markt', cells: [
+      { code: 'Push', title: 'Über den Absatzkanal', context: 'Vertrieb, Handel, Partner', text: 'Schulung, Konditionen, persönliche Betreuung und Verkaufsförderung unterstützen die aktive Platzierung.' },
+      { code: 'Pull', title: 'Nachfrage bei Kunden', context: 'Werbung, Marke, Information', text: 'Endkunden sollen das Angebot kennen, bevorzugen und beim Anbieter oder Handel nachfragen.' },
+    ] }] },
+    { heading: 'Wann Push sinnvoll sein kann', paragraphs: ['Push ist besonders relevant, wenn Handel oder Vertriebspartner Auswahl, Beratung oder Verfügbarkeit stark beeinflussen. Auch erklärungsbedürftige B2B-Leistungen nutzen häufig persönlichen Vertrieb.', 'Zu starker Druck kann zu Lagerbeständen, kurzfristigen Rabatten oder Verkäufen ohne nachhaltige Nachfrage führen.'] },
+    { heading: 'Wann Pull sinnvoll sein kann', paragraphs: ['Pull passt, wenn Kunden aktiv suchen, Markenpräferenz wichtig ist oder digitale Kanäle einen direkten Zugang ermöglichen. Kommunikation muss einen relevanten Nutzen vermitteln.', 'Bekanntheit allein reicht nicht, wenn Angebot nicht verfügbar ist oder der Vertrieb die Nachfrage nicht bedienen kann.'] },
+    { heading: 'Kombination in der Praxis', exampleCards: [{ title: 'Neues Werkzeug im Fachhandel', paragraphs: ['Der Hersteller schult Fachhändler, stellt Vorführgeräte und klare Konditionen bereit (Push). Gleichzeitig erklärt er Anwendung und Nutzen in Fachmedien und Suchkanälen, sodass Betriebe gezielt danach fragen (Pull).'], effects: ['Handel kann beraten und liefern', 'Kundennachfrage unterstützt den Absatz', 'Botschaft und Verfügbarkeit sind abgestimmt'] }] },
+    { heading: 'Strategie auswählen und kontrollieren', paragraphs: [[ 'Zielgruppe, Kaufprozess, Kanalstruktur und ', { type: 'link', href: '/wissen/marketing-mix', text: 'Marketing-Mix' }, ' bestimmen die Gewichtung.'], 'Kennzahlen werden getrennt betrachtet: Partneraktivität, Verfügbarkeit und Abverkauf für Push; Bekanntheit, Suchnachfrage und direkte Anfragen für Pull.'] },
+  ] }, generator: null,
+  keyPoints: ['Push arbeitet stärker über Absatzkanäle', 'Pull erzeugt Nachfrage bei Endkunden', 'Beide Ansätze können kombiniert werden', 'Kaufprozess und Kanalstruktur bestimmen die Gewichtung', 'Verfügbarkeit und Nachfrage müssen zusammenpassen'],
+  commonMistakes: ['Push mit bloßem Verkaufsdruck gleichsetzen', 'Pull nur als Werbung verstehen', 'Nachfrage erzeugen, ohne Verfügbarkeit zu sichern', 'Partneranreize ohne tatsächlichen Abverkauf bewerten'],
+  faqs: [{ question: 'Was ist eine Push-Strategie?', answer: 'Eine Marktbearbeitung, die Vertriebspartner oder Verkaufskanäle zur aktiven Platzierung und zum Verkauf befähigt.' }, { question: 'Was ist eine Pull-Strategie?', answer: 'Eine Marktbearbeitung, die Nachfrage und Präferenz bei Endkunden erzeugen soll.' }, { question: 'Kann ein Unternehmen Push und Pull kombinieren?', answer: 'Ja. Viele Märkte benötigen sowohl leistungsfähige Kanäle als auch erkennbare Kundennachfrage.' }],
+  related: ['marketingstrategie', 'marketing-mix', 'kommunikationsstrategie', 'multichannel-omnichannel-marketing'], sources: [], updatedAt: '2026-08-31', reviewedAt: '2026-08-31', disclaimer: defaultDisclaimer,
+}; export default page;

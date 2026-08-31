@@ -155,7 +155,7 @@ const produktlebenszyklus = {
       answer: 'Das hängt von Nachfrage, Kosten, Wettbewerb, Ressourcen und Strategie ab. Die Phase ist ein Analysehinweis und keine alleinige Entscheidungsregel.',
     },
   ],
-  related: ['bcg-matrix', 'unternehmensstrategie', 'marketing-vertrieb'],
+  related: ['bcg-matrix', 'portfolioanalyse', 'produkt-sortimentsstrategie', 'unternehmensstrategie'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

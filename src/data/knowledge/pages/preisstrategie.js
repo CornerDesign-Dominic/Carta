@@ -60,6 +60,20 @@ const preisstrategie = {
         ],
       },
       {
+        heading: 'Mittelpreispositionierung',
+        paragraphs: [
+          'Eine Mittelpreispositionierung liegt im wahrgenommenen Vergleichsfeld zwischen deutlich günstigen und hochpreisigen Angeboten. Sie kann ein ausgewogenes Verhältnis von Leistung, Risiko und Preis vermitteln, ist aber nicht automatisch eine klare Positionierung.',
+          'Entscheidend ist, welchen Wert die Zielgruppe für den Preis erhält und wodurch das Angebot innerhalb des breiten Mittelfelds erkennbar bleibt. „Nicht zu teuer und nicht zu billig“ ersetzt kein Nutzenversprechen.',
+        ],
+      },
+      {
+        heading: 'Preispositionierung verbindet Preis und wahrgenommenen Wert',
+        paragraphs: [
+          'Preispositionierung beschreibt, wie das Preisniveau im Verhältnis zu wahrgenommenem Nutzen, Zielgruppe und Wettbewerbsangeboten eingeordnet werden soll. Hoch-, Mittel- und Niedrigpreis sind deshalb keine absoluten Eurobeträge, sondern beziehen sich auf einen abgegrenzten Markt und vergleichbare Leistungsbündel.',
+          'Ein niedriger Preis bei hohem wahrgenommenem Wert kann attraktiv wirken, muss aber wirtschaftlich tragfähig sein. Ein hoher Preis verlangt keinen Luxusauftritt, wohl aber einen relevanten und glaubwürdig belegten Mehrwert.',
+        ],
+      },
+      {
         heading: 'Penetrationsstrategie',
         paragraphs: [
           [

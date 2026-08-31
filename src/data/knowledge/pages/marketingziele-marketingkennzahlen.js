@@ -1,0 +1,27 @@
+import { defaultDisclaimer } from '../shared.js';
+const page = {
+  slug: 'marketingziele-marketingkennzahlen', category: 'Marketing & Vertrieb', title: 'Marketingziele und Marketingkennzahlen',
+  description: 'Marketingziele bestimmen die gewünschte Wirkung; passende Kennzahlen machen Fortschritt von Bekanntheit über Leads bis Umsatz überprüfbar.',
+  seo: { title: 'Marketingziele und Marketingkennzahlen | Belege24', description: 'Reichweite, Conversion Rate, Kundenakquisitionskosten und Marketing-ROI immer passend zum jeweiligen Marketingziel einordnen.', canonicalPath: '/wissen/marketingziele-marketingkennzahlen' },
+  article: { intro: 'Marketingziele beschreiben die gewünschte Wirkung von Marketing. Kennzahlen verdichten beobachtbare Ergebnisse. Erst die Verbindung zum Ziel entscheidet, ob eine Kennzahl nützlich ist.', sections: [
+    { heading: 'Ziele entlang der Wirkung', matrixCards: [{ title: 'Von Bekanntheit bis Ergebnis', cells: [
+      { code: 'Bekanntheit', title: 'Wahrgenommen werden', context: 'Reichweite und Erinnerung', text: 'Kennzahlen zeigen Kontakte, nicht automatisch Verständnis oder Kauf.' },
+      { code: 'Interesse', title: 'Relevante Reaktion', context: 'Besuche, Interaktion, Anfragen', text: 'Qualität und Zielgruppenpassung sind wichtiger als reine Menge.' },
+      { code: 'Leads', title: 'Qualifizierte Kontakte', context: 'Potenzielle Kunden', text: 'Definition und Reifegrad eines Leads müssen klar sein.' },
+      { code: 'Umsatz / Bindung', title: 'Geschäftliche Wirkung', context: 'Abschluss, Wiederkauf, Wert', text: 'Marketingbeitrag wird zusammen mit Vertrieb, Preis und Leistung betrachtet.' },
+    ] }] },
+    { heading: 'Vier zentrale Kennzahlen', subsections: [
+      { heading: 'Reichweite', paragraphs: ['Reichweite zählt erreichte Personen oder Kontakte je nach Plattformdefinition. Sie ist für Bekanntheitsziele relevant, sagt allein aber wenig über Wirkung aus.'] },
+      { heading: 'Conversion Rate', paragraphs: ['Die Conversion Rate ist der Anteil definierter gewünschter Handlungen an einer klar benannten Ausgangsmenge. Zähler, Nenner, Zeitraum und Handlung müssen feststehen.'] },
+      { heading: 'Kundenakquisitionskosten', paragraphs: ['Kundenakquisitionskosten setzen zurechenbare Marketing- und Vertriebskosten ins Verhältnis zu neu gewonnenen Kunden. Abgrenzung und Zeitraum beeinflussen das Ergebnis.'] },
+      { heading: 'Marketing-ROI', paragraphs: ['Ein Marketing-ROI setzt einen abgegrenzten wirtschaftlichen Rückfluss ins Verhältnis zu Marketingkosten. Gemeinkosten, Zeitverzug und gemeinsame Wirkungen mehrerer Kontakte begrenzen eine exakte Zurechnung.'] },
+    ] },
+    { heading: 'Kennzahl und Ziel verbinden', formulaCards: [{ label: 'Grundsatz', title: 'Ziel → Kennzahl → Definition → Daten → Entscheidung', formula: 'Gewünschte Wirkung festlegen → passende Messgröße wählen → Berechnung und Zeitraum definieren → Datenqualität prüfen → Abweichung einordnen', description: 'Eine leicht verfügbare Zahl ist nicht automatisch eine sinnvolle Steuerungsgröße.' }] },
+    { heading: 'Praxisbeispiel', exampleCards: [{ title: 'Qualifizierte Anfragen statt bloßer Klicks', paragraphs: ['Ein B2B-Dienstleister will monatlich zehn qualifizierte Erstgespräche mit regionalen Produktionsbetrieben. Er misst passende Seitenbesuche, Terminbuchungen, qualifizierte Gespräche, Angebote und Abschlüsse. Hohe Reichweite außerhalb der Zielgruppe gilt nicht als Zielerfolg.'], effects: ['Zielgruppe und gewünschte Handlung sind definiert', 'Kennzahlen bilden mehrere Stufen ab', 'Qualität wird nicht durch Menge ersetzt'] }] },
+    { heading: 'Grenzen der Zurechnung', paragraphs: [[ 'Entscheidungen entstehen häufig über mehrere ', { type: 'link', href: '/wissen/customer-journey-touchpoints', text: 'Touchpoints' }, '. Ein einzelnes Attributionsmodell ist daher eine Vereinfachung.'], [ 'Die ', { type: 'link', href: '/wissen/marketingstrategie', text: 'Marketingstrategie' }, ' bestimmt, welche Wirkungen priorisiert und über welchen Zeitraum bewertet werden.']] },
+  ] }, generator: null,
+  keyPoints: ['Kennzahlen werden aus Marketingzielen abgeleitet', 'Reichweite misst nicht automatisch Wirkung', 'Conversion braucht klaren Zähler und Nenner', 'Akquisitionskosten benötigen eine einheitliche Kostenabgrenzung', 'Marketing-ROI und Attribution bleiben annahmenabhängig'],
+  commonMistakes: ['verfügbare Zahlen ohne Zielbezug verwenden', 'Reichweite mit Zielgruppenerreichung gleichsetzen', 'Conversion Rates mit unterschiedlichen Nennern vergleichen', 'Marketing und Vertrieb bei Akquisitionskosten inkonsistent abgrenzen', 'Wirkung vollständig einem letzten Kontakt zuschreiben'],
+  faqs: [{ question: 'Was ist eine Conversion Rate?', answer: 'Der Anteil einer definierten gewünschten Handlung an einer klar festgelegten Ausgangsmenge.' }, { question: 'Was sind Kundenakquisitionskosten?', answer: 'Abgegrenzte Kosten der Neukundengewinnung geteilt durch die Zahl neu gewonnener Kunden im passenden Zeitraum.' }, { question: 'Welche Marketingkennzahl ist die wichtigste?', answer: 'Das hängt vom Ziel ab. Keine einzelne Kennzahl ist für Bekanntheit, Nachfrage, Abschluss und Bindung gleichermaßen ausreichend.' }],
+  related: ['marketingstrategie', 'customer-journey-touchpoints', 'kennzahlen', 'zielsysteme-smart-ziele'], sources: [], updatedAt: '2026-08-31', reviewedAt: '2026-08-31', disclaimer: defaultDisclaimer,
+}; export default page;

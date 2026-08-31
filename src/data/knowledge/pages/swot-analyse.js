@@ -143,7 +143,7 @@ const swotAnalyse = {
     { question: 'Wie viele Faktoren gehören in eine SWOT-Analyse?', answer: 'Es gibt keine feste Zahl. Wenige konkrete und priorisierte Faktoren sind meist hilfreicher als lange, ungewichtete Listen.' },
     { question: 'Was passiert nach der SWOT-Analyse?', answer: 'Wichtige Faktoren werden kombiniert, daraus Optionen entwickelt und geeignete Optionen in konkrete Maßnahmen und Kontrollen übersetzt.' },
   ],
-  related: ['unternehmensstrategie', 'unternehmensziele', 'vision-mission-leitbild', 'businessplan'],
+  related: ['unternehmensstrategie', 'marktanalyse', 'unternehmensziele', 'businessplan'],
   sources: [],
   updatedAt: '2026-08-30',
   reviewedAt: '2026-08-30',

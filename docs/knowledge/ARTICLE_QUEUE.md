@@ -90,7 +90,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Marketingstrategie
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Aufbau einer Marketingstrategie von Zielen über Zielgruppe und Positionierung bis zu Maßnahmen erklären
@@ -99,7 +99,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Markenstrategie und Markenarchitektur
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - erklären, wie Unternehmen eine oder mehrere Marken strategisch strukturieren
@@ -108,7 +108,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Markenidentität und Markenpositionierung
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Markenkern, Markenwerte, Markenversprechen und gewünschte Wahrnehmung zusammenführen
@@ -117,7 +117,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Unternehmens- und Produktnamen
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Anforderungen an verständliche und wiedererkennbare Unternehmens- und Produktnamen erklären
@@ -126,7 +126,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Corporate Identity
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Corporate Identity als Gesamtbild eines Unternehmens erklären
@@ -135,7 +135,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Kundennutzen und Value Proposition
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - funktionalen, wirtschaftlichen und emotionalen Kundennutzen verständlich erklären
@@ -144,7 +144,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Kernleistung, Zusatzleistung und Leistungsbündel
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Kernleistung und ergänzende Neben- bzw. Zusatzleistungen unterscheiden
@@ -153,7 +153,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Muss-, Soll- und Kann-Leistungen / Kano-Modell
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Muss-, Soll- und Kann-Leistungen als praktische Einordnung von Kundenerwartungen erklären
@@ -162,7 +162,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Kundenerwartung, Servicequalität und Kundenzufriedenheit
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Zusammenhang zwischen Erwartung, wahrgenommener Leistung und Zufriedenheit erklären
@@ -171,7 +171,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Leistungsdifferenzierung
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - erklären, wie sich Angebote über Leistung statt ausschließlich über Preis unterscheiden können
@@ -180,7 +180,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Serviceversprechen und Service Level
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Serviceversprechen und messbare Leistungsstandards unterscheiden
@@ -189,7 +189,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Marktsegmentierung und Zielgruppenbildung
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - erklären, wie ein Gesamtmarkt in sinnvolle Segmente aufgeteilt wird
@@ -199,7 +199,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Positionierungsstrategie
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - erklären, welche Stellung ein Unternehmen oder Angebot im Markt anstrebt
@@ -208,7 +208,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Wettbewerbsstrategien
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Kostenführerschaft, Differenzierung und Fokus- bzw. Nischenstrategie verständlich einordnen
@@ -217,7 +217,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Wachstumsstrategien und Ansoff-Matrix
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Marktdurchdringung, Marktentwicklung, Produktentwicklung und Diversifikation erklären
@@ -226,7 +226,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Push- und Pull-Strategie
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Push und Pull als unterschiedliche Wege der Marktbearbeitung erklären
@@ -235,7 +235,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Produkt- und Sortimentsstrategie
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Produktprogramm, Sortiment, Produktlinien und Varianten verständlich einordnen
@@ -244,7 +244,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Produktlebenszyklus und Portfolioanalyse
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - typische Phasen des Produktlebenszyklus erklären
@@ -253,7 +253,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Preisstrategie und Preispositionierung
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - bestehende Wissensseite `Preisstrategie` zuerst prüfen und bevorzugt erweitern statt eine zweite nahezu gleiche Seite anzulegen
@@ -262,7 +262,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Kommunikationsstrategie
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Ziele, Zielgruppen, Botschaften und Kommunikationskanäle zusammenführen
@@ -271,7 +271,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Multi- und Omnichannel-Marketing
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Single-, Multi- und Omnichannel verständlich voneinander abgrenzen
@@ -280,7 +280,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### B2B- und B2C-Marketing
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Unterschiede bei Zielgruppen, Kaufentscheidungen, Kommunikation und Vertriebswegen erklären
@@ -289,7 +289,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Customer Journey und Touchpoints
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - typische Phasen vom ersten Kontakt bis zur Kundenbindung erklären
@@ -298,7 +298,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Marketingziele und Marketingkennzahlen
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - typische Marketingziele von Bekanntheit über Leads bis Umsatz einordnen
@@ -307,7 +307,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Marktforschung und Marktanalyse
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - bestehende Wissensseite `Marktanalyse` zuerst prüfen und bevorzugt erweitern statt eine doppelte Seite anzulegen
@@ -316,7 +316,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### SWOT-Analyse
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Strengths, Weaknesses, Opportunities und Threats verständlich erklären
