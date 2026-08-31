@@ -9760,8 +9760,8 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 .supply-chain-station:not(:last-child)::after {
   position: absolute;
   top: 21px;
-  left: calc(50% + 22px);
-  width: calc(100% - 44px);
+  left: calc(50% + 30px);
+  width: calc(100% - 60px);
   height: 2px;
   background: var(--color-border);
   content: '';
@@ -9770,7 +9770,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
 .supply-chain-station:not(:last-child)::before {
   position: absolute;
   top: 17px;
-  right: calc(-50% + 22px);
+  right: calc(-50% + 30px);
   z-index: 1;
   width: 9px;
   height: 9px;
@@ -9820,10 +9820,10 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   }
 
   .supply-chain-station:not(:last-child)::after {
-    top: 44px;
+    top: 48px;
     left: 21px;
     width: 2px;
-    height: 20px;
+    height: 12px;
   }
 
   .supply-chain-station:not(:last-child)::before {
