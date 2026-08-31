@@ -39,7 +39,7 @@ Mögliche Statuswerte:
 ## Offene Artikel
 
 ### Marketing-Mix und 4P
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Grundidee des Marketing-Mix verständlich erklären
@@ -49,7 +49,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Zielgruppe
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Begriff und Nutzen einer klar definierten Zielgruppe erklären
@@ -59,7 +59,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Marktanalyse
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Zweck und typische Bestandteile einer Marktanalyse erklären
@@ -69,7 +69,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Alleinstellungsmerkmal (USP)
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - erklären, was ein USP ist und welchen Nutzen er hat
@@ -79,7 +79,7 @@ Schwerpunkt:
 Review-Grund: -
 
 ### Preisstrategie
-Status: offen
+Status: fertig
 Kategorie: Marketing & Vertrieb
 Schwerpunkt:
 - Zweck von Preisstrategien und ihre Wirkung auf Positionierung und Absatz erklären

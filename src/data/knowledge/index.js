@@ -211,6 +211,11 @@ import managementByKonzepte from './pages/management-by-konzepte.js';
 import mitarbeitermotivation from './pages/mitarbeitermotivation.js';
 import konfliktmanagement from './pages/konfliktmanagement.js';
 import marketingVertrieb from './pages/marketing-vertrieb.js';
+import marketingMix from './pages/marketing-mix.js';
+import zielgruppe from './pages/zielgruppe.js';
+import marktanalyse from './pages/marktanalyse.js';
+import usp from './pages/usp.js';
+import preisstrategie from './pages/preisstrategie.js';
 import digitalisierung from './pages/digitalisierung.js';
 import geschaeftsvorfaelle from './pages/geschaeftsvorfaelle.js';
 import sollUndHaben from './pages/soll-und-haben.js';
@@ -454,6 +459,11 @@ export const knowledgePages = {
   mitarbeitermotivation,
   konfliktmanagement,
   'marketing-vertrieb': marketingVertrieb,
+  'marketing-mix': marketingMix,
+  zielgruppe,
+  marktanalyse,
+  usp,
+  preisstrategie,
   digitalisierung,
   geschaeftsvorfaelle,
   'soll-und-haben': sollUndHaben,
