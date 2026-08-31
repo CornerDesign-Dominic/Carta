@@ -211,9 +211,9 @@ export default function KnowledgeCategoryLanding({ slug, onSelectTopic }) {
         </section>
       )}
 
-      <p className="knowledge-disclaimer">{landingPage.disclaimer}</p>
-
       {slug === 'einkauf-verkauf' && <SupplyChainOverview />}
+
+      <p className="knowledge-disclaimer">{landingPage.disclaimer}</p>
     </>
   );
 }

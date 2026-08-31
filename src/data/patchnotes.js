@@ -1,5 +1,13 @@
 export const patchnotes = [
   {
+    date: '2026-08-31',
+    title: 'Wissen: kontextabhängige Navigation',
+    changes: [
+      'Die Wissensnavigation zeigt auf Hub- und Artikelseiten nur noch den aktuellen Kontext mit passenden Sprunglinks.',
+      'Die zentrale Wissensseite bündelt alle vorhandenen Hubs als Übersicht.',
+    ],
+  },
+  {
     date: '2026-07-26',
     title: 'Projektangaben: einzeln ausblendbar',
     changes: [

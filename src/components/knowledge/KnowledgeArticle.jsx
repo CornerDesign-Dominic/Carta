@@ -1,4 +1,5 @@
 import { findKnowledgePage } from '../../data/knowledgePages.js';
+import { getKnowledgeArticleSections } from '../../data/knowledgeNavigation.js';
 import KnowledgeFaqCard from './KnowledgeFaqCard.jsx';
 import GlossaryTerm from './GlossaryTerm.jsx';
 
@@ -86,26 +87,8 @@ export default function KnowledgeArticle({
     ?? article.hero?.intro
     ?? article.intro
     ?? article.description;
-  const articleSections = article.article?.sections ?? article.sections ?? article.articleSections ?? [
-    {
-      heading: `Was ist ${article.title}?`,
-      paragraphs: [article.intro],
-    },
-    {
-      heading: 'Wichtige Punkte',
-      paragraphs: ['Die folgenden Punkte helfen dabei, das Thema schnell einzuordnen.'],
-      list: article.keyPoints,
-    },
-    {
-      heading: 'Praxis',
-      paragraphs: [article.typicalUse],
-    },
-    {
-      heading: 'Worauf sollte man achten?',
-      paragraphs: ['Diese Fehler kommen in der Praxis häufig vor und sollten vermieden werden.'],
-      list: article.commonMistakes,
-    },
-  ].filter((section) => section.paragraphs?.length || section.list?.length || section.subsections?.length);
+  const articleSections = getKnowledgeArticleSections(article);
+  const contentSections = articleSections.filter((section) => !section.type);
   const generator = article.generator ?? (
     article.toolLabel || article.toolLink || article.ctaText
       ? {
@@ -129,8 +112,8 @@ export default function KnowledgeArticle({
       <p className="intro document-intro">{articleIntro}</p>
 
       <article className="knowledge-article-body">
-        {articleSections.map((section) => (
-          <section className="knowledge-article-section" key={section.heading}>
+        {contentSections.map((section) => (
+          <section className="knowledge-article-section" id={section.id} key={section.id}>
             <h2>{section.heading}</h2>
             {section.paragraphs?.map((paragraph) => (
               <p key={typeof paragraph === 'string' ? paragraph : JSON.stringify(paragraph)}>
@@ -254,7 +237,11 @@ export default function KnowledgeArticle({
         </section>
       )}
 
-      <section className="knowledge-faq-section" aria-label="Häufige Fragen und Hinweise">
+      <section
+        className="knowledge-faq-section"
+        id={faqs.length > 0 ? articleSections.find((section) => section.type === 'faq')?.id : undefined}
+        aria-label="Häufige Fragen und Hinweise"
+      >
         {faqs.length > 0 && (
           <div className="knowledge-faq-list">
             {faqs.map((faq) => (
@@ -264,7 +251,11 @@ export default function KnowledgeArticle({
         )}
 
         {sources.length > 0 && (
-          <section className="knowledge-sources" aria-label="Quellen">
+          <section
+            className="knowledge-sources"
+            id={articleSections.find((section) => section.type === 'sources')?.id}
+            aria-label="Quellen"
+          >
             <h2>Quellen</h2>
             <ul>
               {sources.map((source) => (

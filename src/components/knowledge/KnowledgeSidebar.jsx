@@ -1,53 +1,250 @@
-import { knowledgeCategories } from '../../data/knowledgePages.js';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { findKnowledgePage } from '../../data/knowledgePages.js';
+import {
+  findKnowledgeHubForSlug,
+  getKnowledgeArticleSections,
+  getKnowledgeHubSectionItems,
+} from '../../data/knowledgeNavigation.js';
 import SidebarHomeIcon from '../SidebarHomeIcon.jsx';
 
+function isPlainLeftClick(event) {
+  return !event.defaultPrevented
+    && event.button === 0
+    && !event.metaKey
+    && !event.ctrlKey
+    && !event.altKey
+    && !event.shiftKey;
+}
+
+function handleInternalLinkClick(event, callback) {
+  if (!isPlainLeftClick(event)) {
+    return;
+  }
+
+  event.preventDefault();
+  callback();
+}
+
+function useActiveKnowledgeSection(sectionItems, pendingSectionIdRef) {
+  const [activeSectionId, setActiveSectionId] = useState('');
+
+  useEffect(() => {
+    if (sectionItems.length === 0 || typeof window === 'undefined') {
+      setActiveSectionId('');
+      return undefined;
+    }
+
+    let frame = 0;
+    const sectionIds = sectionItems.map((item) => item.id);
+
+    function updateActiveSection() {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        if (pendingSectionIdRef.current) {
+          setActiveSectionId(pendingSectionIdRef.current);
+          return;
+        }
+
+        const headerOffset = Math.min(window.innerHeight * 0.4, 360);
+        const currentSectionId = sectionIds.reduce((currentId, sectionId) => {
+          const section = document.getElementById(sectionId);
+
+          if (!section) {
+            return currentId;
+          }
+
+          return section.getBoundingClientRect().top <= headerOffset ? sectionId : currentId;
+        }, sectionIds[0]);
+
+        setActiveSectionId(currentSectionId);
+      });
+    }
+
+    function updateActiveSectionFromHash() {
+      const hashId = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+
+      if (sectionIds.includes(hashId)) {
+        setActiveSectionId(hashId);
+      }
+    }
+
+    if (decodeURIComponent(window.location.hash.replace(/^#/, ''))) {
+      updateActiveSectionFromHash();
+    } else {
+      updateActiveSection();
+    }
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+    window.addEventListener('hashchange', updateActiveSectionFromHash);
+    window.addEventListener('popstate', updateActiveSectionFromHash);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+      window.removeEventListener('hashchange', updateActiveSectionFromHash);
+      window.removeEventListener('popstate', updateActiveSectionFromHash);
+    };
+  }, [pendingSectionIdRef, sectionItems]);
+
+  return [activeSectionId, setActiveSectionId];
+}
+
 export default function KnowledgeSidebar({ activeSlug, onSelect, onShowLanding }) {
-  function handleInternalLinkClick(event, callback) {
-    if (
-      event.defaultPrevented
-      || event.button !== 0
-      || event.metaKey
-      || event.ctrlKey
-      || event.altKey
-      || event.shiftKey
-    ) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const pendingSectionTimerRef = useRef(0);
+  const pendingSectionIdRef = useRef('');
+  const activePage = activeSlug ? findKnowledgePage(activeSlug) : null;
+  const activeHub = findKnowledgeHubForSlug(activeSlug);
+  const isHubPage = Boolean(activeSlug && activePage?.type === 'category-landing');
+  const isArticlePage = Boolean(activeSlug && activePage && activePage.type !== 'category-landing');
+  const sectionItems = useMemo(() => (
+    isHubPage ? getKnowledgeHubSectionItems(activeSlug) : getKnowledgeArticleSections(activePage)
+  ), [activePage, activeSlug, isHubPage]);
+  const [activeSectionId, setActiveSectionId] = useActiveKnowledgeSection(sectionItems, pendingSectionIdRef);
+  const toggleLabel = isHubPage ? 'In diesem Themenbereich' : 'In diesem Artikel';
+
+  useEffect(() => {
+    window.clearTimeout(pendingSectionTimerRef.current);
+    pendingSectionIdRef.current = '';
+    setIsMobileOpen(false);
+  }, [activeSlug]);
+
+  useEffect(() => () => {
+    window.clearTimeout(pendingSectionTimerRef.current);
+  }, []);
+
+  function handleSectionClick(event, sectionId) {
+    if (!isPlainLeftClick(event)) {
+      return;
+    }
+
+    const section = document.getElementById(sectionId);
+
+    if (!section) {
       return;
     }
 
     event.preventDefault();
-    callback();
+    window.history.pushState(null, '', `${window.location.pathname}${window.location.search}#${sectionId}`);
+    window.clearTimeout(pendingSectionTimerRef.current);
+    pendingSectionIdRef.current = sectionId;
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveSectionId(sectionId);
+    pendingSectionTimerRef.current = window.setTimeout(() => {
+      pendingSectionIdRef.current = '';
+    }, 900);
+    setIsMobileOpen(false);
   }
 
-  const visiblePages = knowledgeCategories
-    .filter((category) => category.landingSlug)
-    .flatMap((category) => category.pages.filter((page) => page.slug === category.landingSlug));
+  function renderSectionLinks() {
+    if (sectionItems.length === 0) {
+      return null;
+    }
 
-  return (
-    <aside className="document-sidebar knowledge-sidebar" aria-label="Wissensnavigation">
-      <a
-        className={!activeSlug ? 'sidebar-title sidebar-home-link is-active' : 'sidebar-title sidebar-home-link'}
-        href="/wissen"
-        aria-label="Zur Wissensübersicht"
-        title="Zur Wissensübersicht"
-        onClick={(event) => handleInternalLinkClick(event, onShowLanding)}
-      >
-        <SidebarHomeIcon />
-        <span>Wissen</span>
-      </a>
-      <div className="sidebar-title-divider" aria-hidden="true" />
-
-      <nav className="sidebar-nav knowledge-sidebar-nav">
-        {visiblePages.map((page) => (
+    return (
+      <div className="knowledge-sidebar-section-links">
+        {sectionItems.map((item) => (
           <a
-            className={activeSlug === page.slug ? 'is-active' : undefined}
-            href={`/wissen/${page.slug}`}
-            onClick={(event) => handleInternalLinkClick(event, () => onSelect(page.slug))}
-            key={page.slug}
+            className={activeSectionId === item.id ? 'is-active' : undefined}
+            href={`#${item.id}`}
+            onClick={(event) => handleSectionClick(event, item.id)}
+            key={item.id}
           >
-            {page.title}
+            {item.navLabel ?? item.label}
           </a>
         ))}
-      </nav>
+      </div>
+    );
+  }
+
+  function handleNavigateHome(event) {
+    handleInternalLinkClick(event, () => {
+      onShowLanding();
+      setIsMobileOpen(false);
+    });
+  }
+
+  function handleNavigateHub(event) {
+    if (!activeHub) {
+      return;
+    }
+
+    handleInternalLinkClick(event, () => {
+      onSelect(activeHub.landingSlug);
+      setIsMobileOpen(false);
+    });
+  }
+
+  const sidebarMode = !activeSlug ? 'landing' : isHubPage ? 'hub' : 'article';
+
+  return (
+    <aside className={`document-sidebar knowledge-sidebar knowledge-sidebar--${sidebarMode}`} aria-label="Wissensnavigation">
+      {activeSlug && (
+        <button
+          className="knowledge-sidebar-toggle"
+          type="button"
+          aria-expanded={isMobileOpen}
+          aria-controls="knowledge-sidebar-body"
+          onClick={() => setIsMobileOpen((current) => !current)}
+        >
+          <span>{toggleLabel}</span>
+          <span className={isMobileOpen ? 'knowledge-chevron is-open' : 'knowledge-chevron'} aria-hidden="true" />
+        </button>
+      )}
+
+      <div
+        className={isMobileOpen ? 'knowledge-sidebar-body is-open' : 'knowledge-sidebar-body'}
+        id="knowledge-sidebar-body"
+      >
+        <a
+          className={!activeSlug ? 'sidebar-title sidebar-home-link is-active' : 'sidebar-title sidebar-home-link'}
+          href="/wissen"
+          aria-label="Zur Wissensübersicht"
+          title="Zur Wissensübersicht"
+          onClick={handleNavigateHome}
+        >
+          <SidebarHomeIcon />
+          <span>Wissen</span>
+        </a>
+        <div className="sidebar-title-divider" aria-hidden="true" />
+
+        {activeSlug && (
+          <nav className="sidebar-nav knowledge-sidebar-nav" aria-label={toggleLabel}>
+            {activeHub && (
+              isHubPage ? (
+                <span className="knowledge-sidebar-current is-active">{activeHub.title}</span>
+              ) : (
+                <a
+                  className="knowledge-sidebar-hub-link"
+                  href={`/wissen/${activeHub.landingSlug}`}
+                  onClick={handleNavigateHub}
+                >
+                  {activeHub.title}
+                </a>
+              )
+            )}
+
+            {isArticlePage && (
+              <span className="knowledge-sidebar-current knowledge-sidebar-article is-active">
+                {activePage.title}
+              </span>
+            )}
+
+            {renderSectionLinks()}
+          </nav>
+        )}
+
+        {!activeSlug && (
+          <a
+            className="knowledge-sidebar-landing-note"
+            href="#knowledge-hub-overview-title"
+            onClick={(event) => handleSectionClick(event, 'knowledge-hub-overview-title')}
+          >
+            Wissensbereiche ansehen
+          </a>
+        )}
+      </div>
     </aside>
   );
 }

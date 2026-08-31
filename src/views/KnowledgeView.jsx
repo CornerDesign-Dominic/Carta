@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import KnowledgeArticle from '../components/knowledge/KnowledgeArticle.jsx';
 import KnowledgeCategoryLanding from '../components/knowledge/KnowledgeCategoryLanding.jsx';
 import KnowledgeGlossaryPanel from '../components/knowledge/KnowledgeGlossaryPanel.jsx';
@@ -21,6 +22,7 @@ function hasGlossaryTerm(content) {
 }
 
 export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) {
+  const location = useLocation();
   const [activeGlossaryId, setActiveGlossaryId] = useState(null);
   const activePage = activeSlug ? findKnowledgePage(activeSlug) : null;
   const hasActiveGlossaryTerms = hasGlossaryTerm(
@@ -79,6 +81,17 @@ export default function KnowledgeView({ activeSlug, onNavigate, onSelectSlug }) 
   useEffect(() => {
     setActiveGlossaryId(null);
   }, [activeSlug]);
+
+  useEffect(() => {
+    if (!location.hash) {
+      return;
+    }
+
+    const targetId = decodeURIComponent(location.hash.slice(1));
+    window.requestAnimationFrame(() => {
+      document.getElementById(targetId)?.scrollIntoView({ block: 'start' });
+    });
+  }, [activeSlug, location.hash]);
 
   return (
     <main className="documents-layout knowledge-layout">
