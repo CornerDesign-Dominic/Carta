@@ -88,28 +88,25 @@ function SupplyChainOverview() {
       <p>Material, Waren und Informationen bewegen sich entlang der gesamten Wertschöpfungskette.</p>
 
       <div className="supply-chain-diagram" aria-label="Waren- und Informationsfluss entlang einer typischen Supply Chain">
-        <div className="supply-chain-flow-label">
-          <span>Waren- &amp; Leistungsfluss</span>
-          <span aria-hidden="true">→</span>
+        <div className="supply-chain-flow-guide supply-chain-flow-guide-forward" aria-label="Waren- und Leistungsfluss nach rechts">
+          <span className="supply-chain-flow-guide-line" aria-hidden="true" />
+          <span className="supply-chain-flow-guide-label">Waren- &amp; Leistungsfluss</span>
         </div>
 
         <div className="supply-chain-flow">
-          {supplyChainStations.map((station, index) => (
-            <div className="supply-chain-flow-item" key={station.label}>
-              <div className="supply-chain-station">
-                <span className="supply-chain-station-icon">
-                  <SupplyChainIcon name={station.icon} />
-                </span>
-                <span>{station.label}</span>
-              </div>
-              {index < supplyChainStations.length - 1 && <span className="supply-chain-connector" aria-hidden="true" />}
+          {supplyChainStations.map((station) => (
+            <div className="supply-chain-station" key={station.label}>
+              <span className="supply-chain-station-icon">
+                <SupplyChainIcon name={station.icon} />
+              </span>
+              <span>{station.label}</span>
             </div>
           ))}
         </div>
 
-        <div className="supply-chain-information-flow" aria-label="Informationsfluss zurück zum Lieferanten">
-          <span className="supply-chain-information-line" aria-hidden="true" />
-          <span className="supply-chain-information-label">← Informationsfluss</span>
+        <div className="supply-chain-flow-guide supply-chain-flow-guide-reverse" aria-label="Informationsfluss zurück zum Lieferanten">
+          <span className="supply-chain-flow-guide-line" aria-hidden="true" />
+          <span className="supply-chain-flow-guide-label">Informationsfluss</span>
         </div>
       </div>
     </section>

@@ -9534,30 +9534,61 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   background: var(--color-surface);
 }
 
-.supply-chain-flow-label {
+.supply-chain-flow-guide {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-primary);
-  font-size: 0.82rem;
-  font-weight: 740;
-  letter-spacing: 0.01em;
+  justify-content: center;
 }
 
-.supply-chain-flow-label span:last-child {
-  font-size: 1.1rem;
-  line-height: 1;
+.supply-chain-flow-guide-line {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-border);
+}
+
+.supply-chain-flow-guide-line::before,
+.supply-chain-flow-guide-line::after {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  content: '';
+}
+
+.supply-chain-flow-guide-forward .supply-chain-flow-guide-line::after {
+  top: -4px;
+  right: 1px;
+  border-top: 2px solid var(--color-border);
+  border-right: 2px solid var(--color-border);
+  transform: rotate(45deg);
+}
+
+.supply-chain-flow-guide-reverse .supply-chain-flow-guide-line::before {
+  top: -5px;
+  left: 1px;
+  border-bottom: 2px solid var(--color-border);
+  border-left: 2px solid var(--color-border);
+  transform: rotate(45deg);
+}
+
+.supply-chain-flow-guide-label {
+  position: relative;
+  z-index: 1;
+  padding: 0 12px;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  font-weight: 720;
+  line-height: 1.35;
 }
 
 .supply-chain-flow {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr) 32px) minmax(0, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: start;
-  margin-top: 18px;
-}
-
-.supply-chain-flow-item {
-  display: contents;
+  margin-top: 20px;
 }
 
 .supply-chain-station {
@@ -9589,67 +9620,8 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
   height: 24px;
 }
 
-.supply-chain-connector {
-  position: relative;
-  align-self: start;
-  height: 2px;
-  margin-top: 21px;
-  background: color-mix(in srgb, var(--color-primary) 58%, var(--color-border));
-}
-
-.supply-chain-connector::after {
-  position: absolute;
-  top: -4px;
-  right: 0;
-  width: 9px;
-  height: 9px;
-  border-top: 2px solid var(--color-primary);
-  border-right: 2px solid var(--color-primary);
-  content: '';
-  transform: rotate(45deg);
-}
-
-.supply-chain-information-flow {
-  position: relative;
-  display: flex;
-  justify-content: center;
+.supply-chain-flow-guide-reverse {
   margin-top: 26px;
-}
-
-.supply-chain-information-line {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 0;
-  height: 2px;
-  background: color-mix(in srgb, var(--color-muted) 72%, var(--color-border));
-}
-
-.supply-chain-information-line::before {
-  position: absolute;
-  top: -5px;
-  left: 1px;
-  width: 10px;
-  height: 10px;
-  border-bottom: 2px solid var(--color-muted);
-  border-left: 2px solid var(--color-muted);
-  content: '';
-  transform: rotate(45deg);
-}
-
-.supply-chain-information-label {
-  position: relative;
-  z-index: 1;
-  padding: 0 12px;
-  background: var(--color-surface);
-  color: var(--color-muted);
-  font-size: 0.8rem;
-  font-weight: 720;
-  line-height: 1.35;
-}
-
-.supply-chain-information-label::first-letter {
-  color: var(--color-primary);
 }
 
 @media (max-width: 900px) {
@@ -9658,12 +9630,6 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
     flex-direction: column;
     align-items: flex-start;
     margin-top: 16px;
-  }
-
-  .supply-chain-flow-item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
   }
 
   .supply-chain-station {
@@ -9677,24 +9643,7 @@ body.document-print-mode.receipt-print-mode .short-self-receipt-sheet .short-sel
     margin-bottom: 0;
   }
 
-  .supply-chain-connector {
-    width: 2px;
-    height: 20px;
-    margin: 0 0 0 21px;
-    background: color-mix(in srgb, var(--color-primary) 58%, var(--color-border));
-  }
-
-  .supply-chain-connector::after {
-    top: auto;
-    right: -4px;
-    bottom: 0;
-    border-top: 0;
-    border-right: 2px solid var(--color-primary);
-    border-bottom: 2px solid var(--color-primary);
-    transform: rotate(45deg);
-  }
-
-  .supply-chain-information-flow {
+  .supply-chain-flow-guide-reverse {
     margin-top: 24px;
   }
 }
