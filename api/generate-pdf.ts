@@ -1,5 +1,10 @@
 import { embedBelege24DocumentInPdf, embedJsonAttachmentInPdf } from '../src/documentModel/pdfAttachment.js';
 
+// The full Chromium package embeds a roughly 60 MiB browser binary in every
+// deployment. Keep the matching pack outside the Function bundle instead.
+// A project environment variable can point to a managed Blob/CDN in production.
+const DEFAULT_CHROMIUM_PACK_URL = 'https://enqzmazybyvxx9ix.public.blob.vercel-storage.com/chromium/v143.0.0/chromium-v143.0.0-pack.x64.tar';
+
 export const config = {
   maxDuration: 60,
   api: {
@@ -53,12 +58,14 @@ function isPdfBuffer(buffer: Buffer) {
   return Buffer.isBuffer(buffer) && buffer.subarray(0, 5).toString('ascii') === '%PDF-';
 }
 
-async function getExecutablePath(chromium: { executablePath(): Promise<string> }) {
+async function getExecutablePath(chromium: { executablePath(input?: string): Promise<string> }) {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
     return process.env.PUPPETEER_EXECUTABLE_PATH;
   }
 
-  return chromium.executablePath();
+  return chromium.executablePath(
+    process.env.CHROMIUM_REMOTE_PACK_URL || DEFAULT_CHROMIUM_PACK_URL,
+  );
 }
 
 export default async function handler(request: any, response: any) {
@@ -103,7 +110,7 @@ export default async function handler(request: any, response: any) {
     }
 
     const [{ default: chromiumModule }, { default: puppeteer }] = await Promise.all([
-      import('@sparticuz/chromium'),
+      import('@sparticuz/chromium-min'),
       import('puppeteer-core'),
     ]);
     const chromium: any = chromiumModule;

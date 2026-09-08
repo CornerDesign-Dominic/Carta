@@ -1,0 +1,32 @@
+name: Vercel Function bundle guard
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+jobs:
+  function-bundle-size:
+    name: Verify Function bundle size
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: team_VzdMx2LJQk5EVPXx1uGdJjlU
+      VERCEL_PROJECT_ID: prj_iT8O6O64WGxdQXXrw7SzGzgCGcCS
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_FUNCTION_SIZE_LIMIT_MIB: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Verify CI credentials
+        run: |
+          test -n "$VERCEL_TOKEN"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run check:vercel-function-size

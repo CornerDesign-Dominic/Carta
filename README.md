@@ -25,6 +25,10 @@ PDF läuft über die bestehende Projektlogik: Das Frontend sendet bereinigtes HT
 
 Lokal kann für Puppeteer ein eigener Chromium-Pfad über `PUPPETEER_EXECUTABLE_PATH` gesetzt werden.
 
+In Vercel wird `@sparticuz/chromium-min` eingesetzt, damit der Chromium-Browser nicht in jeder Function-Kopie gespeichert wird. Der versionsfixierte Browser-Pack liegt im öffentlichen Vercel Blob Store des Projekts und wird beim ersten Cold Start geladen. `CHROMIUM_REMOTE_PACK_URL` ist für Production, Preview und Development auf diese URL gesetzt; ohne diese Variable nutzt die Function denselben kontrollierten Fallback.
+
+`npm run check:vercel-function-size` erstellt einen Vercel-Produktionsbuild und bricht bei einer Function ab, die größer als 10 MiB ist. Der GitHub-Workflow `.github/workflows/vercel-function-size.yml` führt dieselbe Prüfung bei Änderungen aus. Dafür muss einmalig das GitHub-Repository-Secret `VERCEL_TOKEN` hinterlegt werden; der Token wird nicht im Repository gespeichert.
+
 ## Technischer Hinweis
 
 Der interne Projektname darf weiterhin `Carta` bleiben.

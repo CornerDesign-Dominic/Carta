@@ -11,10 +11,11 @@
     "build": "node scripts/generate-sitemap.js && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:vercel-function-size": "node scripts/check-vercel-function-size.mjs"
   },
   "dependencies": {
-    "@sparticuz/chromium": "143.0.0",
+    "@sparticuz/chromium-min": "143.0.0",
     "pdf-lib": "^1.17.1",
     "puppeteer-core": "latest",
     "react": "latest",
