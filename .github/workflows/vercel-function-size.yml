@@ -26,6 +26,8 @@ jobs:
       - name: Verify CI credentials
         run: |
           test -n "$VERCEL_TOKEN"
+      - name: Link Vercel project
+        run: npx vercel@latest link --yes --project carta --scope cornerdesign-dominics-projects --token "$VERCEL_TOKEN"
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
